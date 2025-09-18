@@ -170,10 +170,25 @@ Topics to discuss include the following:
 \begin{enumerate}
     \item Why is it important to create a development plan prior to starting the
     project?
+
+    \textbf{Omar Alam:} Creating a development plan for a large project is crucial to ensure that the team is aligned on goals
+    and that expectations are understood by everyone. It helps keep everyone accountable since we are all agreeing to the same rules
+    and any disagreements on processes can be resolved by referring back to the plan.
     \item In your opinion, what are the advantages and disadvantages of using
     CI/CD?
+
+    \textbf{Omar Alam}: CI/CD has many advantages, most of which tie back to the concept of iterative development. It allows us to ensure
+    that the code branch that is considered production-ready ("main") is always in a deployable state. It also allows us to catch bugs when multiple 
+    developers are working on and merging in the same codebase. The main disadvantage of CI/CD is the intiial setup time and feasability of using it.
+    In some cases, CI/CD may not be feasible which might end up applying to our project. This is mainly due to the embedded nature of our project 
+    and the lack of support for CI/CD on embedded systems. Furthermore, setting up unit tests in CI/CD will require us to write platform agnostic
+    code that can also run on the embedded micro-controller and our development machines. This will require extra effort and guidelines to get right.
     \item What disagreements did your group have in this deliverable, if any,
     and how did you resolve them?
+
+    \textbf{Omar Alam}: Since the team project is exepcted to require embedded hardware, we had disagreements on whether or not we could adequately
+    specify elements needed to complete the "Expected Technology" section. We resolved this by researching the hardware we might end up using and 
+    determining that we could make reasonable assumptions on the technology we would be using.
 \end{enumerate}
 
 \newpage{}
