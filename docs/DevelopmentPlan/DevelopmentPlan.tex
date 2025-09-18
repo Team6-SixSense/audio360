@@ -23,40 +23,26 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Sept. 16, 2025 & Kalp & Proof of Concept Documentation Plan\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
+2025-09-22 & Nirmal, Sathurshan, Omar, Kalp, Jay & Initial Write-up\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \newpage{}
 
-\wss{Put your introductory blurb here.  Often the blurb is a brief roadmap of
-what is contained in the report.}
-
-\wss{Additional information on the development plan can be found in the
-\href{https://gitlab.cas.mcmaster.ca/courses/capstone/-/blob/main/Lectures/L02b_POCAndDevPlan/POCAndDevPlan.pdf?ref_type=heads}
-{lecture slides}.}
+This document describes the development plan for the spatial awareness device \textit{audio360}. It contains internal logistics that our team will adhere to, and measures in place to ensure the confidentiality of our device.
 
 \section{Confidential Information?}
 
-\wss{State whether your project has confidential information from industry, or
-not.  If there is confidential information, point to the agreement you have in
-place.}
+There is no confidential information to protect.
 
-\wss{For most teams this section will just state that there is no confidential
-information to protect.}
 \section{IP to Protect}
 
-\wss{State whether there is IP to protect.  If there is, point to the agreement.
-All students who are working on a project that requires an IP agreement are also
-required to sign the ``Intellectual Property Guide Acknowledgement.''}
+There is no IP to protect.
 
 \section{Copyright License}
 
-\wss{What copyright license is your team adopting.  Point to the license in your
-repo.}
+Our team will be adopting the MIT \href{https://github.com/Nirmal-code/SixSense/blob/main/LICENSE}{License}.
 
 \section{Team Meeting Plan}
 
@@ -78,10 +64,37 @@ in-person.}
 
 \section{Team Member Roles}
 
-\wss{You should identify the types of roles you anticipate, like notetaker,
-leader, meeting chair, reviewer.  Assigning specific people to those roles is
-not necessary at this stage.  In a student team the role of the individuals will
-likely change throughout the year.}
+\begin{itemize}
+  \item Leader (Sathurshan Arulmohan)
+    \begin{itemize}
+      \item Point of contact for professor and TAs. 
+      \item Ensures that the team is on track to meet deadlines.
+      \item Project planning and scheduling.
+    \end{itemize}
+  \item Meeting chair (Kalp Shah)
+    \begin{itemize}
+      \item Creates the agenda for meetings.
+      \item Facilitates the meetings.
+      \item Ensures that the team sticks to the agenda.
+    \end{itemize}
+  \item Reviewer (Jay Sharma)
+    \begin{itemize}
+      \item Reviews all deliverables before deadline to ensure all sections are completed.
+      \item Reach out to the reviewers of each section to ensure they approve it before the deadline.
+    \end{itemize}
+  \item Note taker (Nirmal Chaudhari)
+    \begin{itemize}
+      \item Takes notes during meetings.
+      \item Create meeting notes summary after the meeting ends to grasp meeting content.
+      \item Coordinates with project leader after meeting ends for action items. 
+    \end{itemize}
+  \item System Specialist (Omar Alam)
+    \begin{itemize}
+      \item Manages and validates system design at a high level. 
+      \item Responsible for hardware \& software interfaces.
+      \item Handles budgeting and expenses, ensures total budget remains under \$500.
+    \end{itemize}
+\end{itemize}
 
 \section{Workflow Plan}
 
@@ -168,10 +181,25 @@ Topics to discuss include the following:
 \begin{enumerate}
     \item Why is it important to create a development plan prior to starting the
     project?
+
+    \textbf{Omar Alam:} Creating a development plan for a large project is crucial to ensure that the team is aligned on goals
+    and that expectations are understood by everyone. It helps keep everyone accountable since we are all agreeing to the same rules
+    and any disagreements on processes can be resolved by referring back to the plan.
     \item In your opinion, what are the advantages and disadvantages of using
     CI/CD?
+
+    \textbf{Omar Alam}: CI/CD has many advantages, most of which tie back to the concept of iterative development. It allows us to ensure
+    that the code branch that is considered production-ready ("main") is always in a deployable state. It also allows us to catch bugs when multiple 
+    developers are working on and merging in the same codebase. The main disadvantage of CI/CD is the intiial setup time and feasability of using it.
+    In some cases, CI/CD may not be feasible which might end up applying to our project. This is mainly due to the embedded nature of our project 
+    and the lack of support for CI/CD on embedded systems. Furthermore, setting up unit tests in CI/CD will require us to write platform agnostic
+    code that can also run on the embedded micro-controller and our development machines. This will require extra effort and guidelines to get right.
     \item What disagreements did your group have in this deliverable, if any,
     and how did you resolve them?
+
+    \textbf{Omar Alam}: Since the team project is exepcted to require embedded hardware, we had disagreements on whether or not we could adequately
+    specify elements needed to complete the "Expected Technology" section. We resolved this by researching the hardware we might end up using and 
+    determining that we could make reasonable assumptions on the technology we would be using.
 \end{enumerate}
 
 \newpage{}
@@ -221,40 +249,35 @@ deliverable?}
 
 \subsubsection*{Quality} 
 
-\wss{What are your team's expectations regarding the quality
-of team members' preparation for team meetings and the quality of the
-deliverables that members bring to the team?}
+Our team expects all members to come to meetings fully prepared with completed work, 
+clear progress updates, and constructive contributions to discussions.
+All deliverables must meet our established quality standards including proper code review, testing, and thorough documentation. 
+We emphasize proactive communication, early problem identification, and mutual support to ensure the team's success and maintain high 
+professional standards throughout the project.
 
 \subsubsection*{Attitude}
 
-\wss{What are your team's expectations regarding team members' ideas,
-interactions with the team, cooperation, attitudes, and anything else regarding
-team member contributions?  Do you want to introduce a code of conduct?  Do you
-want a conflict resolution plan?  Can adopt existing codes of conduct.}
+We expect all team members to maintain a positive, collaborative attitude and treat each other with respect and professionalism. 
+We encourage open communication, constructive feedback, and diverse perspectives while ensuring all interactions remain productive and inclusive. 
+Our team adopts a conflict resolution approach that prioritizes direct communication, active listening, and finding mutually beneficial solutions to 
+maintain a supportive working environment.
 
 \subsubsection*{Stay on Track}
 
-\wss{What methods will be used to keep the team on track? How will your team
-ensure that members contribute as expected to the team and that the team
-performs as expected? How will your team reward members who do well and manage
-members whose performance is below expectations?  What are the consequences for
-someone not contributing their fair share?}
-
-\wss{You may wish to use the project management metrics collected for the TA and
-instructor for this.}
-
-\wss{You can set target metrics for attendance, commits, etc.  What are the
-consequences if someone doesn't hit their targets?  Do they need to bring the
-coffee to the next team meeting?  Does the team need to make an appointment with
-their TA, or the instructor?  Are there incentives for reaching targets early?}
+We will track team performance through regular check-ins, commit frequency, and meeting attendance to ensure everyone contributes their fair share. 
+For members who exceed expectations and consistently deliver quality work, we will reward them with treats like Tim Hortons coffee or donuts to recognize their efforts. 
+For those not contributing their fair share, we will initially cover for them and provide support, but after repeated instances, we will issue formal warnings and escalate 
+to our TA or instructor if necessary to maintain team accountability and project success.
 
 \subsubsection*{Team Building}
 
-\wss{How will you build team cohesion (fun time, group rituals, etc.)? }
+We will build team cohesion by hosting social gatherings at our off-campus house, where we can work together on projects in a relaxed environment and spend time hanging out
+to strengthen our relationships. These informal settings will help us bond as a team while still maintaining productivity and collaboration on our project goals.
 
 \subsubsection*{Decision Making} 
 
-\wss{How will you make decisions in your group? Consensus?  Vote? How will you
-handle disagreements? }
+We will make decisions through consensus when possible, seeking common ground and agreement among all team members. However, when there is a clear divide or disagreement that 
+cannot be resolved through discussion, we will hold a formal vote to reach a decision and move forward with the project. This approach ensures we respect everyone's input while 
+maintaining progress when consensus cannot be achieved.
 
 \end{document}
