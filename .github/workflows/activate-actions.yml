@@ -1,6 +1,8 @@
 name: Bootstrap GitHub Actions App
 
-on: workflow_dispatch
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   activate:
