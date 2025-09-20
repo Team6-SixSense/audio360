@@ -200,6 +200,12 @@ Topics to discuss include the following:
     \textbf{Omar Alam:} Creating a development plan for a large project is crucial to ensure that the team is aligned on goals
     and that expectations are understood by everyone. It helps keep everyone accountable since we are all agreeing to the same rules
     and any disagreements on processes can be resolved by referring back to the plan.
+
+    \textbf{Sathurshan Arulmohan:} A development plan serves as a guidance for the project.
+    It lays out some of the key rules that the team agrees to adhere to, ensuring alignment and minimizing the risk of confusion or conflict later.
+    Developing this plan also helps clarify priorities.
+    For example, we have highlighted the importance of securing hardware components as early as possible and beginning software development on tasks that are independent of hardware availability.
+
     \item In your opinion, what are the advantages and disadvantages of using
     CI/CD?
 
@@ -209,12 +215,31 @@ Topics to discuss include the following:
     In some cases, CI/CD may not be feasible which might end up applying to our project. This is mainly due to the embedded nature of our project 
     and the lack of support for CI/CD on embedded systems. Furthermore, setting up unit tests in CI/CD will require us to write platform agnostic
     code that can also run on the embedded micro-controller and our development machines. This will require extra effort and guidelines to get right.
+
+    \textbf{Sathurshan Arulmohan:} The main advantage of CI is automation of build checks and tests, ensuring that the software is always in a working state.
+    This reduces the risk of introducing broken code into the main branch and provides developers with immediate feedback.
+    In our project, this is especially useful since development occurs on different OS, and we may not have access to the same microcontroller compiler locally.
+
+    The advantage of CD is that updates are automatically delivered to the target environment whenever new changes are merged.
+    This ensures that the deployed system always contains the latest code, reducing manual effort.
+    
+    On the other hand, CI can sometimes hinder progress.
+    For instance, if unrelated tests fail, developers may spend significant time debugging issues that are not caused by their own changes in a PR, slowing down feature delivery.
+    Similarly, CD can introduce challenges when automatic deployment is not desirable.
+    In some cases, it is preferable to release stable versions on a fixed schedule rather than pushing the latest changes immediately.
+
     \item What disagreements did your group have in this deliverable, if any,
     and how did you resolve them?
 
     \textbf{Omar Alam}: Since the team project is exepcted to require embedded hardware, we had disagreements on whether or not we could adequately
     specify elements needed to complete the "Expected Technology" section. We resolved this by researching the hardware we might end up using and 
     determining that we could make reasonable assumptions on the technology we would be using.
+
+    \textbf{Sathurshan Arulmohan:} During this deliverable, our team faced challenges in defining roles and responsibilities.
+    While everyone agreed that each member should have a clear role, there were disagreements about the significance and scope of certain roles, as some appeared to overlap with others.
+    After discussion and careful consideration, we resolved this by introducing the System Specialist role, responsible for both hardware and software integration.
+    Since our team is primarily software focused, having a dedicated member specializing in hardware provided balance and ensured smoother integration across the project.
+
 \end{enumerate}
 
 \newpage{}
