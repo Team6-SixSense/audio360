@@ -2,6 +2,32 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{fancyhdr}
+
+% Set up footer [ChatGPT]
+\pagestyle{fancy}
+\fancyhf{} % Clear all header and footer fields
+\fancyfoot[C]{\thepage} % Center page number in footer
+\renewcommand{\headrulewidth}{0pt} % Remove header rule
+\renewcommand{\footrulewidth}{0.4pt} % Add footer rule
+
+% Define custom footer with references [ChatGPT for formatting]
+\newcommand{\referencefooter}{%
+\fancypagestyle{references}{%
+\fancyhf{}%
+\fancyfoot[L]{\footnotesize%
+\begin{minipage}{\textwidth}%
+\textbf{References:}\\[2pt]%
+[1] E. Masterson, "Measuring the Impact of Hearing Loss on Quality of Life," NIOSH Science Blog, Apr. 27, 2016. [Online]. Available: https://blogs.cdc.gov/niosh-science-blog/2016/04/27/hearing-loss-years-lost/
+
+[2] Healthing.ca, "Hearing loss in Canada: Stats, impact and resources," Jun. 2025. [Online]. Available: https://www.healthing.ca/hearing-health/hearing-loss-in-canada-stats-impact-and-resources.
+
+[3] National Research Council (US) Committee on Disability Determination for Individuals with Hearing Impairments, R. A. Dobie, and S. Van Hemel, Eds., "Impact of Hearing Loss on Daily Life and the Workplace," in Hearing Loss: Determining Eligibility for Social Security Benefits. Washington, DC, USA: National Academies Press, 2004, ch. 6. [Online]. Available: https://www.ncbi.nlm.nih.gov/books/NBK207836/
+\end{minipage}}%
+\renewcommand{\headrulewidth}{0pt}%
+\renewcommand{\footrulewidth}{0.4pt}%
+}%
+}
 
 \title{Problem Statement and Goals\\\progname}
 
@@ -40,16 +66,34 @@ information.}
 
 \subsection{Problem}
 
+Individuals who are deaf or hard of hearing tend to have difficulties with staying situationally aware, generally leading to increased risk of injury.
+Many safety cues such as "the sounds of a tea kettle, the warning beep as a fork lift backs up, and the engine of an oncoming car may be missed". [1]
+General sound cues such as someone calling their name, or a phone ringing, may also be missed, often leading to miscommunication and elevated frustration.
+With 1 in 10 Canadians being impacted by hearing loss [2], there are over 4 million individuals in Canada dealing with these struggles every day.
+
+
 \subsection{Inputs and Outputs}
 
 \wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
 Use abstraction so that you can avoid details.}
 
+The high level input of the system is the audio from the surrounding environments, with the output being an indication of the direction of
+audio sources and their respective classifications.
+
 \subsection{Stakeholders}
+
+The primary stakeholders are individuals who are deaf or hard of hearing.
 
 \subsection{Environment}
 
 \wss{Hardware and Software Environment}
+
+The software environment is a Linux-based system running C/C++ code.
+The hardware environment is a 4 dimentional microphone array, with each microphone connected to the same 4-channel analog digital converter (ADC), and a pair of smart glasses (Rokid Smart Glasses).
+
+% Apply custom footer with references for this page [ChatGPT]
+\referencefooter
+\thispagestyle{references}
 
 \section{Goals}
 
