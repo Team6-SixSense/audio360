@@ -2,6 +2,7 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{cite}
 
 \title{Problem Statement and Goals\\\progname}
 
@@ -31,25 +32,27 @@ Date2 & Name(s) & Description of changes\\
 
 \section{Problem Statement}
 
-\wss{You should check your problem statement with the
-\href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
-{problem statement checklist}.} 
-
-\wss{You can change the section headings, as long as you include the required
-information.}
-
 \subsection{Problem}
+
+Individuals who are deaf or hard of hearing tend to have difficulties with staying situationally aware, generally leading to increased risk of injury.
+Many safety cues such as "the sounds of a tea kettle, the warning beep as a fork lift backs up, and the engine of an oncoming car may be missed". \cite{Masterson2016}
+General sound cues such as someone calling their name, or a phone ringing, may also be missed, often leading to miscommunication and elevated frustration.
+With 1 in 10 Canadians being impacted by hearing loss \cite{Healthing2025}, there are over 4 million individuals in Canada dealing with these struggles every day.
+
 
 \subsection{Inputs and Outputs}
 
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
-Use abstraction so that you can avoid details.}
+The high level input of the system is the audio from the surrounding environments, with the output
+being a visual indication of the direction of audio sources and their respective classifications.
 
 \subsection{Stakeholders}
 
+The primary stakeholders are individuals who are deaf or hard of hearing.
+
 \subsection{Environment}
 
-\wss{Hardware and Software Environment}
+The software environment is a real-time operating system (RTOS, i.e. FreeRTOS) running C/C++ code.
+The hardware environment is a 4 dimentional microphone array, with each microphone connected to a STM32F767 microcontroller for processing, as well as a pair of smart glasses (Rokid Smart Glasses) for the visual display.
 
 \section{Goals}
 
@@ -66,8 +69,6 @@ Use abstraction so that you can avoid details.}
 \newpage{}
 
 \section*{Appendix --- Reflection}
-
-\wss{Not required for CAS 741}
 
 \input{../Reflection.tex}
 
@@ -106,5 +107,8 @@ Use abstraction so that you can avoid details.}
     Dr. Mohrenschildt helped us better understand the expected time and resource costs of the project since he has experience with similar work and confirmed
     with us that our scope is neither too simple nor too ambitious for a Capstone project.
 \end{enumerate}  
+
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \end{document}
