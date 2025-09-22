@@ -2,6 +2,7 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{cite}
 
 \title{Problem Statement and Goals\\\progname}
 
@@ -31,25 +32,27 @@ Date2 & Name(s) & Description of changes\\
 
 \section{Problem Statement}
 
-\wss{You should check your problem statement with the
-\href{https://github.com/smiths/capTemplate/blob/main/docs/Checklists/ProbState-Checklist.pdf}
-{problem statement checklist}.} 
-
-\wss{You can change the section headings, as long as you include the required
-information.}
-
 \subsection{Problem}
+
+Individuals who are deaf or hard of hearing tend to have difficulties with staying situationally aware, generally leading to increased risk of injury.
+Many safety cues such as "the sounds of a tea kettle, the warning beep as a fork lift backs up, and the engine of an oncoming car may be missed". \cite{Masterson2016}
+General sound cues such as someone calling their name, or a phone ringing, may also be missed, often leading to miscommunication and elevated frustration.
+With 1 in 10 Canadians being impacted by hearing loss \cite{Healthing2025}, there are over 4 million individuals in Canada dealing with these struggles every day.
+
 
 \subsection{Inputs and Outputs}
 
-\wss{Characterize the problem in terms of ``high level'' inputs and outputs.  
-Use abstraction so that you can avoid details.}
+The high level input of the system is the audio from the surrounding environments, with the output
+being a visual indication of the direction of audio sources and their respective classifications.
 
 \subsection{Stakeholders}
 
+The primary stakeholders are individuals who are deaf or hard of hearing.
+
 \subsection{Environment}
 
-\wss{Hardware and Software Environment}
+The software environment is a real-time operating system (RTOS, i.e. FreeRTOS) running C/C++ code.
+The hardware environment is a 4 dimentional microphone array, with each microphone connected to a STM32F767 microcontroller for processing, as well as a pair of smart glasses (Rokid Smart Glasses) for the visual display.
 
 \section{Goals}
 
@@ -67,8 +70,6 @@ Use abstraction so that you can avoid details.}
 
 \section*{Appendix --- Reflection}
 
-\wss{Not required for CAS 741}
-
 \input{../Reflection.tex}
 
 \begin{enumerate}
@@ -79,23 +80,56 @@ Use abstraction so that you can avoid details.}
     
     \textbf{Jay Sharma:} We aligned quickly on the problem and split responsibilities in a way that played to each person's strengths. 
     Our LaTeX/Git workflow came together smoothly, which helped us iterate fast on the documents.
+
+    \textbf{Kalp Shah:} I think we all had a good understanding of the project after discussing it in detail during
+    the write up for the development plan. Due to this, everyone was able to quickly contribute to the problem statement
+    and goals without much difficulty.
+
+    \textbf{Sathurshan Arulmohan:} I focused on writing the Extras section of this deliverable.
+    Since these items were pre-approved by the course instructor during the project approval stage, the writing process was straightforward and required minimal revisions.
+
     \item What pain points did you experience during this deliverable, and how
     did you resolve them?
+
     \textbf{Omar Alam:} Since the project idea incorporates glasses with displays that are visible to the user, we had to do a significant amount
     of research to figure out if it was feasible in the time that we have. We resolved this by developing a contingency plan that would allow us to 
     still allow us to develop the core algorithms without the display glasses.
 
     \textbf{Jay Sharma:} Our main pain point was deciding on the hardware that we would use for the project. We had to spend a significant amount of time
      researching the different options and their feasibility.
+    
+    \textbf{Kalp Shah:} I think we did end up spending a lot of time exploring the scope and feasibility of the project while writing the development
+    plan which caused us to spend less time writing the problem statement and goals. We ended up writing it all on the day before the deadline which
+    was not a problem (as mentioned above - we already knew what to write), but cause a bit of stress.
+
+    \textbf{Sathurshan Arulmohan:} My main contribution to this deliverable was reviewing pull requests.
+    The challenge was understanding the expected quality and depth since it is the team's first submission.
+    To address this, we used Pull Requests to exchange feedback and propose improvements.
+    This process helped the team establish documentation standards and align on expectations.
+
     \item How did you and your team adjust the scope of your goals to ensure
     they are suitable for a Capstone project (not overly ambitious but also of
     appropriate complexity for a senior design project)?
+
     \textbf{Omar Alam:} My team and I spent a significant amount of time researching the feasibility of the project. Since the team does not have much
     experience with signal processing, we decided to consult with Dr. Mohrenschildt to get his opinion on the project. He provided us with valuable feedback on how
     to constraint our project goals to ensure that we can complete the project in the time we have.
     
     \textbf{Jay Sharma:} We started by mapping the problem space, did feasibility analyses, and set criteria around impact, difficulty, and time. 
     We also checked in with Prof. Mohrenschildt to advise the direction of our project and keep the scope focused for the capstone timeline.
+
+    \textbf{Kalp Shah:} A lot of what we did for defining the scope of the goals was done through research and consulting with Dr. Mohrenschildt and Dr. Smith.
+    Dr. Mohrenschildt helped us better understand the expected time and resource costs of the project since he has experience with similar work and confirmed
+    with us that our scope is neither too simple nor too ambitious for a Capstone project.
+
+    \textbf{Sathurshan Arulmohan:} During the project proposal stage, the scope of the project was large.
+    We had many features in mind, and we were not aware of the software and hardware complexities of achieving our vision.
+    To refine this, each member shared their desired learning outcomes and technical interests.
+    Through this discussion, we narrowed the scope of features and goals that balanced feasibility with sufficient challenge.
+
 \end{enumerate}  
+
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \end{document}
