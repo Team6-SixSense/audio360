@@ -46,17 +46,28 @@ Our team will be adopting the MIT \href{https://github.com/Nirmal-code/SixSense/
 
 \section{Team Meeting Plan}
 
-\wss{How often will you meet? where?}
+The team will meet twice a week in-person at a predetermined location.
+Each meetings will limited to a maximum of 30 minutes.
+Additional meetings may be scheduled as needed during lecture times if course instructor has no content to share.
+Team meetings will be organized by the the \hyperref[role:meeting_chair]{meeting chair} and follow the agenda similar to below:
 
-\wss{If the meeting is a physical location (not virtual), out of an abundance of
-caution for safety reasons you shouldn't put the location online}
+\begin{itemize}
+  \item Individual blockers/updates since last time met (10 minutes)
+  \item Individual next steps discussions (3 minutes)
+  \item Pre-determined questions (7 minutes)
+  \item Additional discussions (10 minutes)
+\end{itemize}
 
-\wss{How often will you meet with your industry advisor?  when?  where?}
+The team will meet with the project advisor in-person once every two weeks, on Mondays from 12:30 pm to 1:00 pm.
+If the team finds that an in-person meeting with the advisor is not necessary, the team will send a concise update through email.
 
-\wss{Will meetings be virtual?  At least some meetings should likely be
-in-person.}
+Meetings with advisor will be organized by the \hyperref[role:meeting_chair]{meeting chair} and follow an agenda similar to below:
 
-\wss{How will the meetings be structured?  There should be a chair for all meetings.  There should be an agenda for all meetings.}
+\begin{itemize}
+  \item Team updates from the past 2 weeks (5 minutes)
+  \item Pre-determined questions (15 minutes)
+  \item Additional discussions (10 minutes)
+\end{itemize}
 
 \section{Team Communication Plan}
 
@@ -86,7 +97,7 @@ The team will use the following communication methods for each of the scenarios 
       \item Ensures that the team is on track to meet deadlines.
       \item Project planning and scheduling.
     \end{itemize}
-  \item Meeting chair (Kalp Shah)
+  \item Meeting chair (Kalp Shah) \label{role:meeting_chair}
     \begin{itemize}
       \item Creates the agenda for meetings.
       \item Facilitates the meetings.
@@ -162,41 +173,105 @@ If successful, this would give us confidence to extend the project with the \hyp
 
 \section{Expected Technology}
 
-\wss{What programming language or languages do you expect to use?  What external
-libraries?  What frameworks?  What technologies.  Are there major components of
-the implementation that you expect you will implement, despite the existence of
-libraries that provide the required functionality.  For projects with machine
-learning, will you use pre-trained models, or be training your own model?  }
-
-\wss{The implementation decisions can, and likely will, change over the course
-of the project.  The initial documentation should be written in an abstract way;
-it should be agnostic of the implementation choices, unless the implementation
-choices are project constraints.  However, recording our initial thoughts on
-implementation helps understand the challenge level and feasibility of a
-project.  It may also help with early identification of areas where project
-members will need to augment their training.}
-
-Topics to discuss include the following:
-
+\subsection{Programming Languages}
+The following programming languages will be used throughout the project.
 \begin{itemize}
-\item Specific programming language
-\item Specific libraries
-\item Pre-trained models
-\item Specific linter tool (if appropriate)
-\item Specific unit testing framework
-\item Investigation of code coverage measuring tools
-\item Specific plans for Continuous Integration (CI), or an explanation that CI
-  is not being done
-\item Specific performance measuring tools (like Valgrind), if
-  appropriate
-\item Tools you will likely be using?
+  \item \textbf{C/C++}: For developing embedded software running on the microcontroller.
+  \item \textbf{Python}: For prototyping features and visualizing collected data for analytics.
 \end{itemize}
 
-\wss{git, GitHub and GitHub projects should be part of your technology.}
+All C/C++ header files and Pyhon code will include docstrings describing every file, class, and function to aid contributors.
+Docstring format will follow the convention outlined in the project's \nameref{sec:coding_standards}.
 
-\section{Coding Standard}
+\subsection{Libraries}
 
-\wss{What coding standard will you adopt?}
+\textbf{C/C++ Libraries}
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Library} & \textbf{Description} & \textbf{Usage} \\ \hline
+\href{https://www.fftw.org/}{FFTW} & Fast Fourier Transform Library & Used to translate signals from time to frequency domain efficiently. \\ \hline
+\end{tabularx}
+\caption{C/C++ libraries that will be used.}
+\end{table}
+
+\textbf{Python Libraries}
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Library} & \textbf{Description} & \textbf{Usage} \\ \hline
+\href{https://pypi.org/project/pyroomacoustics/}{pyroomaudio} & Room Acoustics Simulation Library  & Used for prototyping audio array processing algorithms. \\ \hline
+\href{https://numpy.org/}{Numpy} & Numerical Computing Library  & Used during prototyping for handling larger computations. \\ \hline
+\href{https://matplotlib.org/}{Matplotlib} & Plot Visualization Library  & Used for plotting data. \\ \hline
+\end{tabularx}
+\caption{Python libraries that will be used.}
+\end{table}
+
+\subsection{Linter and Formatting Tools}
+
+\href{https://clang.llvm.org/docs/ClangFormat.html}{ClangFormat} will be used for autoformatting C/C++ code, ensuring compliance with the \nameref{sec:coding_standards}.
+Additionally, Microsoft’s \href{https://code.visualstudio.com/docs/languages/cpp}{C/C++ extension} in Visual Studio Code will be used as the C/C++ linter.
+\href{https://pypi.org/project/pylint/}{pylint} will be used as the Python linter.
+
+\subsection{Testing Frameworks}
+\href{https://github.com/google/googletest}{GoogleTest} will be used as the main testing framework for C/C++ code.
+Since Python will primarily be used for prototyping and visualization, unit tests will generally not be written. However, if correctness becomes critical, \href{https://docs.pytest.org/}{pytest} will be used.
+
+Code coverage for C/C++ will be measured using \href{https://gcc.gnu.org/onlinedocs/gcc/Gcov.html}{gcov} and visualized with \href{https://wiki.documentfoundation.org/Development/Lcov}{lcov}.
+Coverage metrics will not be collected for Python tests if any are written.
+
+\subsection{CI/CD}
+
+\textbf{CI}
+\begin{enumerate}
+  \item Run all unit tests (\textit{PR blocking}).
+  \item Build source code using a compiler compatible with the target microcontroller (\textit{PR blocking}).
+\end{enumerate}
+\textbf{CD} % Don't create a new line before here; else auto-indent.
+\begin{enumerate}
+    \item Generate and publish code coverage reports.
+\end{enumerate}
+
+\subsection{Performance Measuring Tools}
+Due to hardware constraints of running on a microcontroller, performance profiling will rely on the profiler available within the microcontroller’s IDE.
+
+\subsection{Tools}
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Tool} & \textbf{Description} \\ \hline
+GitHub Projects (Kanban board) & Track issue progress and status. \\ \hline
+GitHub Milestones & Organize and group GitHub issues. \\ \hline
+\end{tabularx}
+\caption{Tools that will be used.}
+\end{table}
+
+\subsection{Hardware Components}
+\begin{itemize}
+  \item Four microphones
+  \item Analog to Digital Converter (ADC) modules, one per microphone
+  \item Microcontroller
+  \item Screen (monitor / smart glasses)
+  \item Glasses frame
+\end{itemize}
+
+
+\section{Coding Standard}\label{sec:coding_standards}
+
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Coding language} & \textbf{Coding Standard} \\ \hline
+C & \href{https://www.gnu.org/prep/standards/html_node/Writing-C.html}{GNU C coding standard} \\ \hline
+C++ & \href{https://google.github.io/styleguide/cppguide.html}{Google C++} \\ \hline
+Python & \href{https://peps.python.org/pep-0008/}{PEP8} \\ \hline
+\end{tabularx}
+\caption{Team adopted coding standards.}
+\end{table}
 
 \newpage{}
 
