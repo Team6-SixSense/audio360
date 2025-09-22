@@ -34,16 +34,21 @@ Date2 & Name(s) & Description of changes\\
 
 \subsection{Problem}
 
-Individuals who are deaf or hard of hearing tend to have difficulties with staying situationally aware, generally leading to increased risk of injury.
-Many safety cues such as "the sounds of a tea kettle, the warning beep as a fork lift backs up, and the engine of an oncoming car may be missed". \cite{Masterson2016}
-General sound cues such as someone calling their name, or a phone ringing, may also be missed, often leading to miscommunication and elevated frustration.
-With 1 in 10 Canadians being impacted by hearing loss \cite{Healthing2025}, there are over 4 million individuals in Canada dealing with these struggles every day.
+Individuals who are deaf or hard of hearing tend to have difficulties with
+staying situationally aware, generally leading to increased risk of injury. Many
+safety cues such as "the sounds of a tea kettle, the warning beep as a fork lift
+backs up, and the engine of an oncoming car may be missed". \cite{Masterson2016}
+General sound cues such as someone calling their name, or a phone ringing, may
+also be missed, often leading to miscommunication and elevated frustration. With
+1 in 10 Canadians being impacted by hearing loss \cite{Healthing2025}, there are
+over 4 million individuals in Canada dealing with these struggles every day.
 
 
 \subsection{Inputs and Outputs}
 
-The high level input of the system is the audio from the surrounding environments, with the output
-being a visual indication of the direction of audio sources and their respective classifications.
+The high level input of the system is the audio from the surrounding
+environments, with the output being a visual indication of the direction of
+audio sources and their respective classifications.
 
 \subsection{Stakeholders}
 
@@ -51,14 +56,19 @@ The primary stakeholders are individuals who are deaf or hard of hearing.
 
 \subsection{Environment}
 
-The software environment is a real-time operating system (RTOS, i.e. FreeRTOS) running C/C++ code.
-The hardware environment is a 4 dimentional microphone array, with each microphone connected to a STM32F767 microcontroller for processing, as well as a pair of smart glasses (Rokid Smart Glasses) for the visual display.
+The software environment is a real-time operating system (RTOS, i.e. FreeRTOS)
+running C/C++ code. The hardware environment is a 4 dimentional microphone
+array, with each microphone connected to a STM32F767 microcontroller for
+processing, as well as a pair of smart glasses (Rokid Smart Glasses) for the
+visual display.
 
 \section{Goals}
 
 \begin{itemize}
-    \item Capture real-time audio from 4-microphone array with synchronized sampling.
-    \item Estimate direction of arrival (DoA) with less than or equal to 45° error for single sound sources.
+    \item Capture real-time audio from 4-microphone array with synchronized
+    sampling.
+    \item Estimate direction of arrival (DoA) with less than or equal to 45°
+    error for single sound sources.
 \end{itemize}
 \section{Stretch Goals}
 
@@ -83,69 +93,101 @@ The hardware environment is a 4 dimentional microphone array, with each micropho
 \begin{enumerate}
     \item What went well while writing this deliverable? 
     
-    \textbf{Omar Alam:} I think all members of our team were proactive and genuinely interested in the project presented which made it easier
-    to delegate and expect high quality work. 
+    \textbf{Omar Alam:} I think all members of our team were proactive and
+    genuinely interested in the project presented which made it easier to
+    delegate and expect high quality work. 
     
-    \textbf{Jay Sharma:} We aligned quickly on the problem and split responsibilities in a way that played to each person's strengths. 
-    Our LaTeX/Git workflow came together smoothly, which helped us iterate fast on the documents.
+    \textbf{Jay Sharma:} We aligned quickly on the problem and split
+    responsibilities in a way that played to each person's strengths. Our
+    LaTeX/Git workflow came together smoothly, which helped us iterate fast on
+    the documents.
 
-    \textbf{Kalp Shah:} I think we all had a good understanding of the project after discussing it in detail during
-    the write up for the development plan. Due to this, everyone was able to quickly contribute to the problem statement
-    and goals without much difficulty.
+    \textbf{Kalp Shah:} I think we all had a good understanding of the project
+    after discussing it in detail during the write up for the development plan.
+    Due to this, everyone was able to quickly contribute to the problem
+    statement and goals without much difficulty.
 
-    \textbf{Sathurshan Arulmohan:} I focused on writing the Extras section of this deliverable.
-    Since these items were pre-approved by the course instructor during the project approval stage, the writing process was straightforward and required minimal revisions.
+    \textbf{Sathurshan Arulmohan:} I focused on writing the Extras section of
+    this deliverable. Since these items were pre-approved by the course
+    instructor during the project approval stage, the writing process was
+    straightforward and required minimal revisions.
 
-    \textbf{Nirmal Chaudhari:} I think our team worked well when dividing up the tickets, and assigning reviewers for each PR. 
-    Moreover, we had frequent sync ups to discuss and reach out to our stakeholders, and determine the scope of our overall project. 
+    \textbf{Nirmal Chaudhari:} I think our team worked well when dividing up the
+    tickets, and assigning reviewers for each PR. Moreover, we had frequent sync
+    ups to discuss and reach out to our stakeholders, and determine the scope of
+    our overall project. 
 
     \item What pain points did you experience during this deliverable, and how
     did you resolve them?
 
-    \textbf{Omar Alam:} Since the project idea incorporates glasses with displays that are visible to the user, we had to do a significant amount
-    of research to figure out if it was feasible in the time that we have. We resolved this by developing a contingency plan that would allow us to 
-    still allow us to develop the core algorithms without the display glasses.
+    \textbf{Omar Alam:} Since the project idea incorporates glasses with
+    displays that are visible to the user, we had to do a significant amount of
+    research to figure out if it was feasible in the time that we have. We
+    resolved this by developing a contingency plan that would allow us to still
+    allow us to develop the core algorithms without the display glasses.
 
-    \textbf{Jay Sharma:} Our main pain point was deciding on the hardware that we would use for the project. We had to spend a significant amount of time
+    \textbf{Jay Sharma:} Our main pain point was deciding on the hardware that
+     we would use for the project. We had to spend a significant amount of time
      researching the different options and their feasibility.
     
-    \textbf{Kalp Shah:} I think we did end up spending a lot of time exploring the scope and feasibility of the project while writing the development
-    plan which caused us to spend less time writing the problem statement and goals. We ended up writing it all on the day before the deadline which
-    was not a problem (as mentioned above - we already knew what to write), but cause a bit of stress.
+    \textbf{Kalp Shah:} I think we did end up spending a lot of time exploring
+    the scope and feasibility of the project while writing the development plan
+    which caused us to spend less time writing the problem statement and goals.
+    We ended up writing it all on the day before the deadline which was not a
+    problem (as mentioned above - we already knew what to write), but cause a
+    bit of stress.
 
-    \textbf{Sathurshan Arulmohan:} My main contribution to this deliverable was reviewing pull requests.
-    The challenge was understanding the expected quality and depth since it is the team's first submission.
-    To address this, we used Pull Requests to exchange feedback and propose improvements.
-    This process helped the team establish documentation standards and align on expectations.
+    \textbf{Sathurshan Arulmohan:} My main contribution to this deliverable was
+    reviewing pull requests. The challenge was understanding the expected
+    quality and depth since it is the team's first submission. To address this,
+    we used Pull Requests to exchange feedback and propose improvements. This
+    process helped the team establish documentation standards and align on
+    expectations.
 
-    \textbf{Nirmal Chaudhari:} Based on discussions with our supervisor, MVM, we were told it won't be easy to find a cheap solution that has 4 ADCs.
-    To remain consistent with our project goals and requirements, having one ADC for each microphone was crucial for real time audio recognition. 
-    Our supervisor was very helpful in helping us overcome this challenge as he suggested a couple options from which Omar investigated further. 
-    We later met as a team and decided that we will only know if its compatible or not after actually buying hardware. 
+    \textbf{Nirmal Chaudhari:} Based on discussions with our supervisor, MVM, we
+    were told it won't be easy to find a cheap solution that has 4 ADCs. To
+    remain consistent with our project goals and requirements, having one ADC
+    for each microphone was crucial for real time audio recognition. Our
+    supervisor was very helpful in helping us overcome this challenge as he
+    suggested a couple options from which Omar investigated further. We later
+    met as a team and decided that we will only know if its compatible or not
+    after actually buying hardware. 
 
     \item How did you and your team adjust the scope of your goals to ensure
     they are suitable for a Capstone project (not overly ambitious but also of
     appropriate complexity for a senior design project)?
 
-    \textbf{Omar Alam:} My team and I spent a significant amount of time researching the feasibility of the project. Since the team does not have much
-    experience with signal processing, we decided to consult with Dr. Mohrenschildt to get his opinion on the project. He provided us with valuable feedback on how
-    to constraint our project goals to ensure that we can complete the project in the time we have.
+    \textbf{Omar Alam:} My team and I spent a significant amount of time
+    researching the feasibility of the project. Since the team does not have
+    much experience with signal processing, we decided to consult with Dr.
+    Mohrenschildt to get his opinion on the project. He provided us with
+    valuable feedback on how to constraint our project goals to ensure that we
+    can complete the project in the time we have.
     
-    \textbf{Jay Sharma:} We started by mapping the problem space, did feasibility analyses, and set criteria around impact, difficulty, and time. 
-    We also checked in with Prof. Mohrenschildt to advise the direction of our project and keep the scope focused for the capstone timeline.
+    \textbf{Jay Sharma:} We started by mapping the problem space, did
+    feasibility analyses, and set criteria around impact, difficulty, and time.
+    We also checked in with Prof. Mohrenschildt to advise the direction of our
+    project and keep the scope focused for the capstone timeline.
 
-    \textbf{Kalp Shah:} A lot of what we did for defining the scope of the goals was done through research and consulting with Dr. Mohrenschildt and Dr. Smith.
-    Dr. Mohrenschildt helped us better understand the expected time and resource costs of the project since he has experience with similar work and confirmed
-    with us that our scope is neither too simple nor too ambitious for a Capstone project.
+    \textbf{Kalp Shah:} A lot of what we did for defining the scope of the goals
+    was done through research and consulting with Dr. Mohrenschildt and Dr.
+    Smith. Dr. Mohrenschildt helped us better understand the expected time and
+    resource costs of the project since he has experience with similar work and
+    confirmed with us that our scope is neither too simple nor too ambitious for
+    a Capstone project.
 
-    \textbf{Sathurshan Arulmohan:} During the project proposal stage, the scope of the project was large.
-    We had many features in mind, and we were not aware of the software and hardware complexities of achieving our vision.
-    To refine this, each member shared their desired learning outcomes and technical interests.
-    Through this discussion, we narrowed the scope of features and goals that balanced feasibility with sufficient challenge.
+    \textbf{Sathurshan Arulmohan:} During the project proposal stage, the scope
+    of the project was large. We had many features in mind, and we were not
+    aware of the software and hardware complexities of achieving our vision. To
+    refine this, each member shared their desired learning outcomes and
+    technical interests. Through this discussion, we narrowed the scope of
+    features and goals that balanced feasibility with sufficient challenge.
 
-    \textbf{Nirmal Chaudhari:} Our team decided to go with the iterative approach for this project. 
-    During our first meeting with MVM, we discussed the feasibility of this project and our supervisor mentioned we should research each part individually first. 
-    This ensures that we can validate our project goals early on, and adjust as needed. 
+    \textbf{Nirmal Chaudhari:} Our team decided to go with the iterative
+    approach for this project. During our first meeting with MVM, we discussed
+    the feasibility of this project and our supervisor mentioned we should
+    research each part individually first. This ensures that we can validate our
+    project goals early on, and adjust as needed. 
 
 \end{enumerate}  
 
