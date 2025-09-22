@@ -202,8 +202,6 @@ Topics to discuss include the following:
 
 \section*{Appendix --- Reflection}
 
-\wss{Not required for CAS 741}
-
 \input{../Reflection.tex}
 
 \begin{enumerate}
@@ -214,10 +212,19 @@ Topics to discuss include the following:
     and that expectations are understood by everyone. It helps keep everyone accountable since we are all agreeing to the same rules
     and any disagreements on processes can be resolved by referring back to the plan.
 
+    \textbf{Kalp Shah}: Creating a development plan for projects of this scope is really important as it gives us guidelines to follow
+    during development. With large projects such as these, we're bound to encounter many roadblocks but having a concrete development 
+    plan that all members of the team agree on (which is the most important part to me) gives us a good rulebook to look back on and 
+    follow. I find thinking about the technologies and workflows we'll use as not as important though, compared to the team communication 
+    and roles sections at least. I feel like the technologies and workflows tend to change as we learn more about the nature of the 
+    project, but having set defined roles and guidelines between the members that clarify how to deal with conflict, what expectations 
+    are, who should be responsible for what, etc. 
+    
     \textbf{Nirmal Chaudhari:} Creating a development plan is important because it helps the team establish clear goals and standards. 
     With everyone agreeing on the development plan, it will serve as a point of reference in the future, to ensure consistency among the team's work. 
     It also helps the team begin thinking about the requirements of the project, and what research needs to be done going forward. 
 
+    
     \item In your opinion, what are the advantages and disadvantages of using
     CI/CD?
 
@@ -227,6 +234,16 @@ Topics to discuss include the following:
     In some cases, CI/CD may not be feasible which might end up applying to our project. This is mainly due to the embedded nature of our project 
     and the lack of support for CI/CD on embedded systems. Furthermore, setting up unit tests in CI/CD will require us to write platform agnostic
     code that can also run on the embedded micro-controller and our development machines. This will require extra effort and guidelines to get right.
+
+    \textbf{Kalp Shah}: CI/CD is really good, espeically for larger pojects with a team such as these. In my eyes, they help the most with
+    maintainability - having a test suite and various workflows that execute after each small iteration of the project. This just helps us ensure
+    that we're not going to break something that we didn't intend to break. Espectially as you continue to add many features on existing ones over
+    the course of many months, where you've probably already forgotten what worked how they work or they were just implemented by another team member
+    entirely. CI/CD really helps to act as the second pair of managing eyes to make sure that everyone's code is always compatible with the past and
+    with each others, keeping a functional version of the project available at all times.The main disadvantage, though, is that it's a lot of setup,
+    and has it's own amount of overhead for maintenance. For example, always ensuring that the test suite is up-to-date after each feature iteration.
+    Although those are just good software practices, so maybe they are beneficial in that way too, who knows. But I'm sure that if we're not careful,
+    we might end up with a lot of unnecessary workflows that just add to the complexity of the project.
     
     \textbf{Nirmal Chaudhari}: Using CI/CD enables our team to develop code in an agile context, thus allowing iterative improvement of key features in our project.
     Moreover, CI/CD also pushes us to validate our code more frequently, using automated pipelines. 
@@ -235,6 +252,7 @@ Topics to discuss include the following:
     For projects with small deadlines, it may not be feasible to go with the iterative approach, since we may be forced to fully implement the project anyways. 
     Also, when considering things outside of software, like embedded systems, iterative development doesn't really work if the hardware we are using is just a single component. 
 
+    
     \item What disagreements did your group have in this deliverable, if any,
     and how did you resolve them?
 
@@ -242,6 +260,11 @@ Topics to discuss include the following:
     specify elements needed to complete the "Expected Technology" section. We resolved this by researching the hardware we might end up using and 
     determining that we could make reasonable assumptions on the technology we would be using.
 
+    \textbf{Kalp Shah}: Personally, I don't think we had any disagreements on anything. I think there were just sections, however, that we were just
+    unknowledgable about. For example, the "Expected Technology" section (hardware specifically) was one that sparked a lot of discussion since none
+    of us had really worked with much hardware before - and definitely not in the field of audio processing. But after conducting some research
+    and getting in touch with our supervisor (who gave us really good insight), we were able to move past that as well. 
+    
     \textbf{Nirmal Chaudhari}: Our team didn't really have any disagreements while working on this deliverable. 
     The only disagreement related to the work I was doing was naming convention for branches, and whether more than one issue should be implemented in a single branch. 
     We resolved this by meeting up in person, and agreeing that a branch can contain multiple features. 
