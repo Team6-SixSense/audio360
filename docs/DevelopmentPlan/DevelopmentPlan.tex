@@ -124,12 +124,44 @@ The team will use the following communication methods for each of the scenarios 
 
 \section{Workflow Plan}
 
-\begin{itemize}
-	\item How will you be using git, including branches, pull request, etc.?
-	\item How will you be managing issues, including template issues, issue
-	classification, etc.?
-  \item Use of CI/CD
-\end{itemize}
+Git will be used for version control and collaboration. 
+Each branch will correspond to one or more issue in our Kanban board, with the following naming convention \texttt{issue/\#<issue-number1>-\#<issue-number2>-...}. 
+If an issue has multiple sub-issues, then the sub-issues shouldn't be included in the branch name, only the parent issue number(s).
+Moreover, each commit should include what is being worked on (doc, fix, feature, test), the issue number that is being worked on, and a one line description of what was done. 
+For traceability, each commit made to the branch should be specific to one issue.\\\\
+
+When an issue is ready for review, a pull request must be created and assigned to at least one member of our team. 
+For traceability reasons, all issues addressed in a PR must be linked in the \texttt{development} section. 
+Github automatically makes this mapping if the issue number is in the commit message, which is why it's a rule. 
+The repository settings have been configured so that each PR requires at least 1 approval before being merged. 
+A default \href{https://github.com/Team6-SixSense/audio360/blob/main/.github/pull_request_template.md}{template} for PRs has also been created so the assignee can provide information of what exactly is done in that PR, and for all PRs to follow a consistent format. 
+A PR should never be force merged into main if it contains pipeline errors.\\\\
+
+Issues will be managed using the Kanban board projects linked to our github repository. 
+We will have one general Kanban board project for miscellaneous tasks like adding more github workflows, and then one Kanban board project for every major deliverable. 
+Each Kanban board project will have the same structure, with columns for Backlog, To Do, In Progress, In Review, and Done. 
+Each issue will be assigned to a team member before it is moved to the "In Progress" column. 
+Issues should only be moved to "In Review" when the work is complete and a PR has been created. 
+Once the PR has been approved and merged, the issue can be moved to "Done". 
+We will be using labels to classify the type of issue that was created. 
+The following labels will be used: documentation, bug, Development, enhancement, meeting and Research.
+
+\begin{table}[h!]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Label} & \textbf{Description} \\ \hline
+Documentation & Tasks related to updating any of the files in the \texttt{/doc} folder of this repository, or any readme files for the project. \\ \hline
+Bug & Issues or errors in the system that need to be fixed. \\ \hline
+Development & Active system implementation work for new features and/or core functionality. \\ \hline
+Enhancement & Improvements to existing features. Note: Development refers to new features that are introduced. This label is used if improvements are made to existing features. \\ \hline
+Meeting & Scheduled discussions, planning sessions, or syncs between team members. \\ \hline
+Research & Exploration, investigation, or prototyping to guide future development \\ \hline
+\end{tabularx}
+\caption{CLassification Labels}
+\end{table}
+
+
 
 \section{Project Decomposition and Scheduling}
 
