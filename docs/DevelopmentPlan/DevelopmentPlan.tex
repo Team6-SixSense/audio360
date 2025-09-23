@@ -98,9 +98,9 @@ listed:
   All project-critical documents need to be stored in the Github Repository.
   Large files that are not project-critical (e.g datasets, SDKs, etc.) can be
   stored in the university hosted OneDrive.
-  \item \textbf{Development communication:} Github Issues and Merge Requests.
+  \item \textbf{Development communication:} Github Issues and Pull Requests.
   All development-related communication that needs to be tracked for
-  traceability should be done through Github Issues and Merge Requests. This
+  traceability should be done through Github Issues and Pull Requests. This
   ensures that critical communication and decisions are documented and can be
   referenced later if needed.
   \item \textbf{Meeting Scheduling:} If a meeting needs to be scheduled outside
@@ -154,35 +154,38 @@ listed:
 
 Git will be used for version control and collaboration. Each branch will
 correspond to one or more issue in our Kanban board, with the following naming
-convention \texttt{issue/\#<issue-number1>-\#<issue-number2>-...}. If an issue
-has multiple sub-issues, then the sub-issues shouldn't be included in the branch
-name, only the parent issue number(s). Moreover, each commit should include what
-is being worked on (doc, fix, feature, test), the issue number that is being
-worked on, and a one line description of what was done. For traceability, each
-commit made to the branch should be specific to one issue.\\\\
+convention \texttt{issue/\#<issue-number1>-\#<issue-number2>-.../<description>}.
+If an issue has multiple sub-issues, then the sub-issues shouldn't be included
+in the branch name, only the parent issue number(s). Moreover, each commit
+should include what is being worked on (doc, fix, feature, test), the issue 
+number that is being worked on, and a one line description of what was done.
+For traceability, each commit made to the branch should be specific to one
+issue.
 
 When an issue is ready for review, a pull request must be created and assigned
 to at least one member of our team. For traceability reasons, all issues
 addressed in a PR must be linked in the \texttt{development} section. Github
 automatically makes this mapping if the issue number is in the commit message,
-which is why it's a rule. The repository settings have been configured so that
+which is why it is a rule. The repository settings have been configured so that
 each PR requires at least 1 approval before being merged. A default
 \href{https://github.com/Team6-SixSense/audio360/blob/main/.github/pull_request_template.md}{template}
 for PRs has also been created so the assignee can provide information of what
 exactly is done in that PR, and for all PRs to follow a consistent format. A PR
-should never be force merged into main if it contains pipeline errors.\\\\
+should never be force merged into main if it contains pipeline errors.
 
 Issues will be managed using the Kanban board projects linked to our github
-repository. We will have one general Kanban board project for miscellaneous
+repository. We will have one general 
+\href{https://github.com/orgs/Team6-SixSense/projects/1}{Kanban board project} 
+for miscellaneous
 tasks like adding more github workflows, and then one Kanban board project for
 every major deliverable. Each Kanban board project will have the same structure,
 with columns for Backlog, To Do, In Progress, In Review, and Done. Each issue
-will be assigned to a team member before it is moved to the "In Progress"
-column. Issues should only be moved to "In Review" when the work is complete and
-a PR has been created. Once the PR has been approved and merged, the issue can
-be moved to "Done". We will be using labels to classify the type of issue that
-was created. The following labels will be used: documentation, bug, Development,
-enhancement, meeting and Research.
+will be assigned to a team member before it is moved to the ``In Progress''
+column. Issues should only be moved to ``In Review'' when the work is complete
+and a PR has been created. Once the PR has been approved and merged, the issue
+can be moved to ``Done''. We will be using labels to classify the type of issue
+that was created. The following labels will be used: documentation, bug,
+Development, enhancement, meeting and Research.
 
 \begin{table}[h!]
 \centering
@@ -202,7 +205,7 @@ members. \\ \hline
 Research & Exploration, investigation, or prototyping to guide future
 development \\ \hline
 \end{tabularx}
-\caption{CLassification Labels}
+\caption{Classification Labels}
 \end{table}
 
 
@@ -238,12 +241,6 @@ boards for. Note, the dates listed in each milestone are subject to change.
 \end{enumerate}
 
 \section{Proof of Concept Demonstration Plan}
-
-\wss{What is the main risk, or risks, for the success of your project?  What
-will you demonstrate during your proof of concept demonstration to convince
-yourself that you will be able to overcome this risk?}
-
-\hspace{1cm}
 
 The biggest risk for the success of the project is the risk of not having a
 synchronized microphone array that can recognize the directionality of an audio
@@ -391,8 +388,6 @@ Python & \href{https://peps.python.org/pep-0008/}{PEP8} \\ \hline
 
 \section*{Appendix --- Reflection}
 
-\input{../Reflection.tex}
-
 \begin{enumerate}
     \item Why is it important to create a development plan prior to starting the
     project?
@@ -442,7 +437,7 @@ Python & \href{https://peps.python.org/pep-0008/}{PEP8} \\ \hline
 
     \textbf{Omar Alam}: CI/CD has many advantages, most of which tie back to the
     concept of iterative development. It allows us to ensure that the code
-    branch that is considered production-ready ("main") is always in a
+    branch that is considered production-ready (``main'') is always in a
     deployable state. It also allows us to catch bugs when multiple developers
     are working on and merging in the same codebase. The main disadvantage of
     CI/CD is the intiial setup time and feasability of using it. In some cases,
@@ -514,13 +509,13 @@ Python & \href{https://peps.python.org/pep-0008/}{PEP8} \\ \hline
 
     \textbf{Omar Alam}: Since the team project is exepcted to require embedded
     hardware, we had disagreements on whether or not we could adequately specify
-    elements needed to complete the "Expected Technology" section. We resolved
+    elements needed to complete the ``Expected Technology'' section. We resolved
     this by researching the hardware we might end up using and determining that
     we could make reasonable assumptions on the technology we would be using.
 
     \textbf{Kalp Shah}: Personally, I don't think we had any disagreements on
     anything. I think there were just sections, however, that we were just
-    unknowledgable about. For example, the "Expected Technology" section
+    unknowledgable about. For example, the ``Expected Technology'' section
     (hardware specifically) was one that sparked a lot of discussion since none
     of us had really worked with much hardware before - and definitely not in
     the field of audio processing. But after conducting some research and

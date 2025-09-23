@@ -7,6 +7,7 @@ The document `DevelopmentPlan.pdf` contains the information about the project de
 The sections for each below:
 
 **Project Development Plan**
+
 - Confidential Information
 - IP to Protect
 - Copyright License
@@ -20,6 +21,7 @@ The sections for each below:
 - Coding Standard
 
 **Team Charter**
+
 - External Goals
 - Attendance
 - Accountability and Teamwork
