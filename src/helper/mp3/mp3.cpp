@@ -1,0 +1,128 @@
+
+#define MINIMP3_IMPLEMENTATION
+
+#include "helper/mp3/mp3.h"
+#include "helper/plot/plot.hpp"
+#include <algorithm>
+#include <fstream>
+#include <matplot/matplot.h>
+
+MP3Data readMP3File(std::string filepath, bool shouldPlot) {
+
+  std::vector<unsigned char> rawMp3Data = readRawMP3(filepath);
+
+  // Decode MP3 bnary to Pulse Code Modulation (PCM).
+  // PCM allows to represent analog signals digitally.
+  mp3dec_t dec;
+  mp3dec_file_info_t info; // PCM will be stored here
+
+  mp3dec_init(&dec);
+  int statusCode = mp3dec_load_buf(&dec, rawMp3Data.data(), rawMp3Data.size(),
+                                   &info, nullptr, nullptr);
+
+  if (statusCode != 0) {
+    std::cerr << "[ERROR] Error in decoding MP3 binary data." << std::endl;
+  }
+
+  std::cout << "Decoded " << info.samples << " samples\n";
+  std::cout << "Sample rate: " << info.hz << " Hz\n";
+  std::cout << "Channels: " << info.channels << "\n";
+
+  // Process data based on channel type.
+  Channel channel = static_cast<Channel>(info.channels);
+  MP3Data data;
+
+  if (channel == Channel::Mono) {
+    MP3Data data = handleMonoChannel(info, shouldPlot);
+
+  } else if (channel == Channel::Stereo) {
+    MP3Data data = handleStereoChannel(info, shouldPlot);
+  }
+
+  return data;
+}
+
+std::vector<unsigned char> readRawMP3(std::string filepath) {
+  // Open the file in binary mode.
+  std::ifstream file(filepath, std::ios::binary);
+
+  if (!file) {
+    std::cerr << "[Error] Could not find file " << filepath << std::endl;
+  } else if (!file.is_open()) {
+    std::cerr << "[Error] Could not open file " << filepath << std::endl;
+  }
+
+  // Determine the file size.
+  file.seekg(0, file.end);
+  int fileSize = static_cast<int>(file.tellg());
+  file.seekg(0, file.beg);
+
+  // Store raw binary to a vector.
+  std::vector<char> signedRawMp3Data(fileSize);
+  std::vector<unsigned char> rawMp3Data(fileSize);
+
+  file.read(signedRawMp3Data.data(), fileSize);
+  file.close();
+
+  std::transform(signedRawMp3Data.begin(), signedRawMp3Data.end(),
+                 rawMp3Data.begin(),
+                 [](char c) { return static_cast<unsigned char>(c); });
+
+  return rawMp3Data;
+}
+
+MP3Data handleMonoChannel(mp3dec_file_info_t &info, bool shouldPlot) {
+  std::cout << "[INFO] Mono Channel" << std::endl;
+
+  std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
+
+  std::vector<double> normalizedPcm(info.samples);
+  std::vector<double> xAxis(info.samples);
+  double timestep = 1.0 / info.hz;
+  double timeStamp = 0.0;
+
+  // Normalize and store MP3 data into a vector.
+  for (size_t i = 0; i < info.samples; i++) {
+    normalizedPcm[i] = static_cast<double>(pcm[i]) / INT16_MAX;
+    timeStamp += timestep;
+    xAxis[i] = timeStamp;
+  }
+
+  if (shouldPlot) {
+    linePlot(xAxis, normalizedPcm);
+  }
+
+  MP3Data data = {info.samples, Channel::Mono, normalizedPcm, {}};
+  return data;
+}
+
+MP3Data handleStereoChannel(mp3dec_file_info_t &info, bool shouldPlot) {
+  std::cout << "[INFO] Stereo Channel" << std::endl;
+
+  std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
+
+  size_t numSamples = info.samples / 2 + 1;
+  std::vector<double> normalizedLeftPcm(numSamples);
+  std::vector<double> normalizedRightPcm(numSamples);
+  std::vector<double> xAxis(numSamples);
+  double timestep = 1.0 / info.hz;
+  double timeStamp = 0.0;
+
+  // Processing intertwining channel sample, normalizing, and store MP3 data
+  // into vector.
+  for (size_t i = 0; i < numSamples; i++) {
+    normalizedLeftPcm[i] = static_cast<double>(pcm[2 * i]) / INT16_MAX;
+    normalizedRightPcm[i] = static_cast<double>(pcm[2 * i + 1]) / INT16_MAX;
+    timeStamp += timestep;
+    xAxis[i] = timeStamp;
+  }
+
+  if (shouldPlot) {
+    linePlot(xAxis, normalizedLeftPcm);
+    linePlot(xAxis, normalizedRightPcm);
+  }
+
+  MP3Data data = {info.samples, Channel::Stereo, normalizedLeftPcm,
+                  normalizedRightPcm};
+  return data;
+}
