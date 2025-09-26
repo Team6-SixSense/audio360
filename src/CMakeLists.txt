@@ -16,6 +16,11 @@ if(NOT matplotplusplus_POPULATED)
     add_subdirectory(${matplotplusplus_SOURCE_DIR} ${matplotplusplus_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
+add_subdirectory(lib/fftw-3.3.10/)
+
+# set(FFTW3_DIR "${CMAKE_SOURCE_DIR}/build/src/lib/fftw-3.3.10")
+
+
 # Collect source files.
 file(GLOB_RECURSE SRC_FILES *.cpp)
 set(LIB_SRC_FILES ${SRC_FILES})
@@ -32,9 +37,11 @@ endif()
 # Create a library from source code.
 add_library(${SourceLib} ${LIB_SRC_FILES})
 target_link_libraries(${SourceExecutable} PRIVATE ${SourceLib})
-
-target_link_libraries(${SourceExecutable} PUBLIC matplot)
+target_link_libraries(${SourceExecutable} PUBLIC 
+matplot
+fftw3)
 target_link_libraries(${SourceLib} PUBLIC matplot)
+target_link_libraries(${SourceLib} PUBLIC fftw3)
 
 # Attach include dirs to the target.
 target_include_directories(${SourceExecutable} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
