@@ -2,12 +2,11 @@
 #define MINIMP3_IMPLEMENTATION
 
 #include "helper/mp3/mp3.h"
-#include "helper/plot/plot.hpp"
+// #include "helper/plot/plot.hpp"
 #include <algorithm>
 #include <fstream>
-#include <matplot/matplot.h>
 
-MP3Data readMP3File(std::string filepath, bool shouldPlot) {
+MP3Data readMP3File(std::string filepath) {
 
   std::vector<unsigned char> rawMp3Data = readRawMP3(filepath);
 
@@ -33,10 +32,10 @@ MP3Data readMP3File(std::string filepath, bool shouldPlot) {
   MP3Data data;
 
   if (channel == Channel::Mono) {
-    MP3Data data = handleMonoChannel(info, shouldPlot);
+    data = handleMonoChannel(info);
 
   } else if (channel == Channel::Stereo) {
-    MP3Data data = handleStereoChannel(info, shouldPlot);
+    data = handleStereoChannel(info);
   }
 
   return data;
@@ -71,7 +70,7 @@ std::vector<unsigned char> readRawMP3(std::string filepath) {
   return rawMp3Data;
 }
 
-MP3Data handleMonoChannel(mp3dec_file_info_t &info, bool shouldPlot) {
+MP3Data handleMonoChannel(mp3dec_file_info_t &info) {
   std::cout << "[INFO] Mono Channel" << std::endl;
 
   std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
@@ -88,20 +87,16 @@ MP3Data handleMonoChannel(mp3dec_file_info_t &info, bool shouldPlot) {
     xAxis[i] = timeStamp;
   }
 
-  if (shouldPlot) {
-    linePlot(xAxis, normalizedPcm);
-  }
-
   MP3Data data = {info.samples, Channel::Mono, normalizedPcm, {}};
   return data;
 }
 
-MP3Data handleStereoChannel(mp3dec_file_info_t &info, bool shouldPlot) {
+MP3Data handleStereoChannel(mp3dec_file_info_t &info) {
   std::cout << "[INFO] Stereo Channel" << std::endl;
 
   std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
 
-  size_t numSamples = info.samples / 2 + 1;
+  size_t numSamples = info.samples / 2;
   std::vector<double> normalizedLeftPcm(numSamples);
   std::vector<double> normalizedRightPcm(numSamples);
   std::vector<double> xAxis(numSamples);
@@ -115,11 +110,6 @@ MP3Data handleStereoChannel(mp3dec_file_info_t &info, bool shouldPlot) {
     normalizedRightPcm[i] = static_cast<double>(pcm[2 * i + 1]) / INT16_MAX;
     timeStamp += timestep;
     xAxis[i] = timeStamp;
-  }
-
-  if (shouldPlot) {
-    linePlot(xAxis, normalizedLeftPcm);
-    linePlot(xAxis, normalizedRightPcm);
   }
 
   MP3Data data = {info.samples, Channel::Stereo, normalizedLeftPcm,

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "helper/mp3/minimp3.h"
 #include "helper/mp3/minimp3_ex.h"
 #include <iostream>
@@ -29,10 +31,9 @@ struct MP3Data {
  *
  * @param filename path to MP3 file. This is relative to where the binary is
  * being ran.
- * @param shouldPlot True to plot audio wave. False otherwise.
  * @return MP3Data PCM of MP3 file data.
  */
-MP3Data readMP3File(std::string filepath, bool shouldPlot = false);
+MP3Data readMP3File(std::string filepath);
 
 /**
  * @brief Read MP3 file and return raw binary contents.
@@ -47,16 +48,14 @@ std::vector<unsigned char> readRawMP3(std::string filepath);
  * @brief Handles mono channel MP3 processing.
  *
  * @param info MP3 file info indentifies by minimp3 library.
- * @param shouldPlot True to plot audio wave. False otherwise.
  * @return MP3Data PCM of MP3 file data.
  */
-MP3Data handleMonoChannel(mp3dec_file_info_t &info, bool shouldPlot);
+MP3Data handleMonoChannel(mp3dec_file_info_t &info);
 
 /**
  * @brief Handles stereo channel MP3 processing.
  *
  * @param info MP3 file info indentifies by minimp3 library.
- * @param shouldPlot True to plot audio wave. False otherwise.
  * @return MP3Data PCM of MP3 file data.
  */
-MP3Data handleStereoChannel(mp3dec_file_info_t &info, bool shouldPlot);
+MP3Data handleStereoChannel(mp3dec_file_info_t &info);
