@@ -1,5 +1,6 @@
 
 #include "signal_processing/fft.h"
+#include "helper/constants.h"
 #include <cmath>
 #include <iostream>
 
@@ -29,19 +30,37 @@ FFT::~FFT() {
   fftw_free(out);
 }
 
-std::vector<double> FFT::signalToFrequency(std::vector<double> &signal) {
-
+FrequencyDomain FFT::signalToFrequency(std::vector<double> &signal,
+                                       WindowFunction windowFunction) {
+  this->applyWindow(signal, windowFunction);
   this->insertSignal(signal);
   fftw_execute(plan);
   return this->createOutput();
+}
+
+void FFT::applyWindow(std::vector<double> &signal,
+                      WindowFunction windowFunction) {
+  switch (windowFunction) {
+  case WindowFunction::NONE:
+    std::cout << "[INFO] No windowing function is applied." << std::endl;
+    break;
+  case WindowFunction::HANN_WINDOW:
+    HannWindow().applyWindow(signal);
+    break;
+  default:
+    std::cout
+        << "[WARN] Window function is not supported. Signal remain the same."
+        << std::endl;
+  }
 }
 
 void FFT::insertSignal(std::vector<double> &signal) {
   std::copy(signal.begin(), signal.end(), this->in);
 }
 
-std::vector<double> FFT::createOutput() {
-  std::vector<double> frequency(this->outputSize);
+FrequencyDomain FFT::createOutput() {
+
+  FrequencyDomain frequencyDomain(this->outputSize);
 
   // TODO: Potential to vectorize this calculation. Either with eigen or via
   // hardware.
@@ -49,7 +68,10 @@ std::vector<double> FFT::createOutput() {
     double real = this->out[i][0];
     double img = this->out[i][1];
 
-    frequency[i] = std::sqrt(real * real + img * img);
+    frequencyDomain.frequency[i] = (i * SAMPLE_FREQUENCY) / this->inputSize;
+    frequencyDomain.real[i] = real;
+    frequencyDomain.img[i] = img;
+    frequencyDomain.magnitude[i] = std::sqrt(real * real + img * img);
   }
-  return frequency;
+  return frequencyDomain;
 }

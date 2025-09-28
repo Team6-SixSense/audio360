@@ -15,7 +15,8 @@ set(LIB_SRC_FILES ${SRC_FILES})
 list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp")
 
 # Create a library from source code.
-add_library(${SourceLib} STATIC ${LIB_SRC_FILES})
+add_library(${SourceLib} SHARED ${LIB_SRC_FILES})
+target_sources(${SourceLib} PUBLIC ${LIB_SRC_FILES})
 
 # Define executable.
 add_executable(${SourceExecutable} main.cpp)
@@ -24,11 +25,11 @@ add_executable(${SourceExecutable} main.cpp)
 target_include_directories(${SourceExecutable} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(${SourceLib} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(${SourceLib} PRIVATE
+target_link_libraries(${SourceLib} PUBLIC
     fftw3
 )
 
-target_link_libraries(${SourceExecutable} PRIVATE
+target_link_libraries(${SourceExecutable} PUBLIC
     ${SourceLib}
     fftw3
 )
