@@ -3,8 +3,14 @@ name: ARM GCC Build
 on:
   push:
     branches: [ main ]
+    paths: 
+      - 'src/**/*.{c,cpp,h,hpp}'
+      - 'test/**/*.{c,cpp,h,hpp}'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'src/**/*.{c,cpp,h,hpp}'
+      - 'test/**/*.{c,cpp,h,hpp}'
 
 jobs:
   build:
