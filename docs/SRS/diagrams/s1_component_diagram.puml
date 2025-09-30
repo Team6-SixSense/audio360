@@ -1,0 +1,43 @@
+@startuml
+title Software Component Diagram
+
+interface "Frequency Data API" as FreqDataAPI
+interface "Logging API" as Logging
+interface "User Input Interface" as UserInputInterface
+
+package "Microcontroller Software" { 
+    component "Embedded Firmware" as Firmware
+    component "Driver Layer" as Drivers
+    component "Signal Processing" as SignalProcessing
+
+    interface "Hardware Interface" as HardwareInterface
+    interface "Signal Process API" as SignalProcessAPI
+    
+    Firmware -up-|> HardwareInterface 
+    Drivers -down- HardwareInterface
+    Firmware -left-|> SignalProcessAPI 
+    SignalProcessing -right- SignalProcessAPI
+    SignalProcessing -up-|> HardwareInterface 
+    
+    Firmware -down- FreqDataAPI 
+    Firmware -down-|> Logging 
+}
+
+package "Connecting Device Software" { 
+    component "Program" as Program
+    component "Frequency Analysis" as FreqAnalysis
+    component "Visualization Controller" as VizController
+
+    interface "Update Data API" as UpdateData
+    interface "Update View API" as UpdateView
+    
+    FreqAnalysis -down-|> UpdateView 
+    VizController -up- UpdateView 
+    Program -right-|> UpdateData 
+    FreqAnalysis -left- UpdateData
+    Program -up-|> FreqDataAPI 
+    Program -up-|> UserInputInterface
+    Program -up-|> Logging 
+}
+
+@enduml
