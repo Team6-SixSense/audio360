@@ -280,3 +280,6 @@ TSWLatexianTemp*
 
 # Python cache
 **/__pycache__/
+
+# Compiled source code
+build/*
