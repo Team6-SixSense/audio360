@@ -2,8 +2,8 @@
 
 #include "helper/mp3/minimp3.h"
 #include "helper/mp3/minimp3_ex.h"
-#include <iostream>
 #include <vector>
+#include <string>
 
 /** @brief Classification of MP3 channels. */
 enum class Channel {

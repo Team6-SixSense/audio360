@@ -10,7 +10,7 @@ if (POLICY CMP0042)
   cmake_policy (SET CMP0042 NEW)
 endif ()
 
-option (BUILD_SHARED_LIBS "Build shared libraries" ON)
+option (BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option (BUILD_TESTS "Build tests" ON)
 
 option (ENABLE_OPENMP "Use OpenMP for multithreading" OFF)
@@ -308,7 +308,15 @@ if (BUILD_SHARED_LIBS)
   add_definitions (-DFFTW_DLL)
 endif ()
 
+set(ARM_MCU_FLAGS
+        -mcpu=cortex-m7
+        -mthumb
+        -mfpu=fpv5-sp-d16
+        -mfloat-abi=hard
+)
+
 add_library (${fftw3_lib} ${SOURCEFILES})
+
 target_include_directories (${fftw3_lib} INTERFACE $<INSTALL_INTERFACE:include>)
 if (MSVC AND NOT (CMAKE_C_COMPILER_ID STREQUAL "Intel"))
   target_compile_definitions (${fftw3_lib} PRIVATE /bigobj)

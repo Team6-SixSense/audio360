@@ -5,6 +5,7 @@
 // #include "helper/plot/plot.hpp"
 #include <algorithm>
 #include <fstream>
+#include <stdio.h>
 
 MP3Data readMP3File(std::string filepath) {
 
@@ -20,12 +21,12 @@ MP3Data readMP3File(std::string filepath) {
                                    &info, nullptr, nullptr);
 
   if (statusCode != 0) {
-    std::cerr << "[ERROR] Error in decoding MP3 binary data." << std::endl;
+     printf("[ERROR] Error in decoding MP3 binary data.");
   }
 
-  std::cout << "Decoded " << info.samples << " samples\n";
-  std::cout << "Sample rate: " << info.hz << " Hz\n";
-  std::cout << "Channels: " << info.channels << "\n";
+  printf("Decoded %d samples\n", info.samples);
+  printf("Sample rate: %d Hz\n", info.hz);
+  printf("Channels: %d\n", info.channels);
 
   // Process data based on channel type.
   Channel channel = static_cast<Channel>(info.channels);
@@ -46,9 +47,9 @@ std::vector<unsigned char> readRawMP3(std::string filepath) {
   std::ifstream file(filepath, std::ios::binary);
 
   if (!file) {
-    std::cerr << "[Error] Could not find file " << filepath << std::endl;
+    printf("[Error] Could not find file %s", filepath.c_str());
   } else if (!file.is_open()) {
-    std::cerr << "[Error] Could not open file " << filepath << std::endl;
+    printf("[Error] Could not open file %s",filepath.c_str());
   }
 
   // Determine the file size.
@@ -71,7 +72,7 @@ std::vector<unsigned char> readRawMP3(std::string filepath) {
 }
 
 MP3Data handleMonoChannel(mp3dec_file_info_t &info) {
-  std::cout << "[INFO] Mono Channel" << std::endl;
+  printf("[INFO] Mono Channel");
 
   std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
 
@@ -92,7 +93,7 @@ MP3Data handleMonoChannel(mp3dec_file_info_t &info) {
 }
 
 MP3Data handleStereoChannel(mp3dec_file_info_t &info) {
-  std::cout << "[INFO] Stereo Channel" << std::endl;
+  printf("[INFO] Stereo Channel");
 
   std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
 

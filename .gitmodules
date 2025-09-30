@@ -1,3 +1,6 @@
 [submodule "docs/SRS-Meyer"]
 	path = docs/SRS-Meyer
 	url = https://github.com/ace-lectures/cas-handbook-req-template.git
+[submodule "src/STM32CubeF7"]
+	path = src/STM32CubeF7
+	url = https://github.com/STMicroelectronics/STM32CubeF7.git
