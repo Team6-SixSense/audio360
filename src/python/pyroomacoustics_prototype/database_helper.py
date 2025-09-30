@@ -1,9 +1,22 @@
-from pydub import AudioSegment
+"""
+This module provides helper functions for saving, retrieving, and deleting audio data locally.
+"""
+
 import shutil
 import os
+from pydub import AudioSegment
 
 
 def save_audio_data(audio_data: AudioSegment, filename: str, dir_name: str) -> bool:
+    """
+    Saves provided AudioSegment data to local data folder with prefix and filename.
+
+    :param audio_data: The audio data of type AudioSegment.
+    :param filename: The filename of the file to be saved.
+    :param dir_name: The folder in the local data folder before the filename.
+    :return: Boolean value representing success of save operation.
+    """
+
     try:
         # Make the base directory
         base_dir = os.path.join(os.path.dirname(__file__), "data", dir_name)
@@ -21,6 +34,13 @@ def save_audio_data(audio_data: AudioSegment, filename: str, dir_name: str) -> b
 
 
 def delete_audio_data(dir_name: str) -> bool:
+    """
+    Deletes audio files from local data folder.
+
+    :param dir_name: The folder in the data folder to be removed.
+    :return: Boolean representing success of deletion operation.
+    """
+
     try:
         base_dir = os.path.join(os.path.dirname(__file__), "data", dir_name)
         shutil.rmtree(base_dir)
@@ -31,6 +51,14 @@ def delete_audio_data(dir_name: str) -> bool:
 
 
 def load_audio_data(dir_name: str, filename: str) -> AudioSegment:
+    """
+    Loads audio data from local data folder as an AudioSegment python object.
+
+    :param dir_name: The folder name in the local data folder to retrieve the audio from.
+    :param filename: The filename of the audio that is to be retrieved.
+    :return: AudioSegment object containing audio data.
+    """
+
     filepath = os.path.join(os.path.dirname(__file__), "data", dir_name, filename)
     try:
         return AudioSegment.from_mp3(filepath)
