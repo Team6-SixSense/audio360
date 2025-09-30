@@ -60,6 +60,7 @@
 
 \usepackage{fullpage}
 
+\setlength{\parindent}{0pt} % Set no indent to entire document.
 
 \begin{document}
 
@@ -406,6 +407,14 @@ requirements.
 microphones that are synchronized to capture audio from the 
 environment to create a single multi-channel audio signal.
 
+
+\textbf{microcontroller:}\label{def:microcontroller} Compact embedded hardware
+system with a CPU, memory, input/output peripherals, designed process real-time
+data directly on the device.
+
+\textbf{microphone:}\label{def:microphone} Input sensor to a device that
+converts audio soundwaves to digital bytestream.
+
 \subsection{E.2 Components}
 \wss{List of elements of the environment that may affect or be affected by the system and project. Includes other systems to which the system must be interfaced.}
 
@@ -424,7 +433,52 @@ environment to create a single multi-channel audio signal.
 \section{System}
 
 \subsection{S.1 Components}
-\wss{Overall structure expressed by the list of major software and, if applicable, hardware parts.}
+
+\begin{figure}[H]     
+    \centering 
+    \includegraphics[width=0.75\textwidth]{diagrams/s1_component_diagram.png}
+    \caption{Software component diagram.}
+    \label{fig:software_component_diagram}
+\end{figure}
+
+\subsubsection{Software Components}
+
+\begin{itemize}
+  \item \textbf{Embedded Firmware:} Main component responsible for managing all
+  embedded software on the Microcontroller.
+
+  \item \textbf{Driver Layer:} Component responsible for providing drivers on
+  the microcontroller. It provides interfaces for high level applications to
+  interact with hardware components.
+
+  \item \textbf{Signal Processing:} Component responsible for processing raw
+  audio signals in real-time sent by the microphones.
+  
+  \item \textbf{Program:} Main component that run computational expensive tasks
+  and acts as the controller for the user interface.
+  
+  \item \textbf{Frequency Analysis:} Component responsible for analyzing
+  frequency signals that was extracted from the microcontroller.
+  
+  \item \textbf{Visualization Controller:} Component reposonsible for
+  creating and sending visualization output to the glasses.
+\end{itemize}
+
+\subsubsection{Hardware Components}
+
+\begin{itemize}
+  \item \textbf{\href{def:microphone}{Microphone}:} Component responsible for
+  collecting audio signals from the environment.
+
+  \item \textbf{Output display:} Component responsible for displaying visuals to
+  the user.
+
+  \item \textbf{\href{def:microcontroller}{Microcontroller}:} Component
+  responsible for processing real time data of sensor inputs.
+
+  \item \textbf{Connecting Device:} Component responsible for running software
+  program and interacting with the microcontroller.
+\end{itemize}
 
 \subsection{S.2 Functionality}
 \wss{One section, S.2.n, for each of the components identified in S.2, describing the corresponding behaviors (functional and non-functional properties).}
