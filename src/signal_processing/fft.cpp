@@ -2,7 +2,7 @@
 #include "signal_processing/fft.h"
 #include "helper/constants.h"
 #include <cmath>
-#include <iostream>
+#include <stdio.h>
 
 /**
  * Implementation for using fftw library provided by their documentation;
@@ -42,15 +42,13 @@ void FFT::applyWindow(std::vector<double> &signal,
                       WindowFunction windowFunction) {
   switch (windowFunction) {
   case WindowFunction::NONE:
-    std::cout << "[INFO] No windowing function is applied." << std::endl;
+    printf("[INFO] No windowing function is applied.");
     break;
   case WindowFunction::HANN_WINDOW:
     HannWindow().applyWindow(signal);
     break;
   default:
-    std::cout
-        << "[WARN] Window function is not supported. Signal remain the same."
-        << std::endl;
+    printf("[WARN] Window function is not supported. Signal remain the same.");
   }
 }
 
