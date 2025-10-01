@@ -977,7 +977,25 @@ This staged approach ensures that the most safety-critical features are implemen
 \wss{Main responsibilities in the project; required project staff and their needed qualifications.}
 
 \subsection{P.2 Imposed technical choices}
-\wss{Any a priori choices binding the project to specific tools, hardware, languages or other technical parameters.}
+
+\textbf{Microcontroller:}  
+The system shall use a dedicated microcontroller with a minimum clock speed of
+200 MHz. This constraint is imposed to ensure that the audio processing tasks
+defined in functional requirement \href{NFR1_3}{NFR1.3} can be
+completed within timing constraints. A microcontroller is also chosen
+because it can be physically embedded within the glasses, ensuring
+low power consumption, compact integration, and user comfort.
+
+\textbf{Microphones:}  
+The system shall use between two and four microphones to collect audio data
+from the environment. This range of microphones enables directional detection
+while minimizing hardware complexity, cost, and power consumption.
+
+\textbf{Programming Languages:}  
+The embedded firmware shall be implemented in C/C++. This choice is imposed
+because compiled C/C++ binaries can be directly executed on the microcontroller,
+and the language provides low level access to system resources, memory, and
+hardware acceleration functions necessary for efficient signal processing.
 
 \subsection{P.3 Schedule and milestones}
 \wss{List of tasks to be carried out and their scheduling.}
