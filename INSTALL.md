@@ -1,28 +1,74 @@
-Instructions for building:
+# Instructions for building
 
-Common steps across all platforms:
-1. Download and install the ARM GNU toolchain compiler and debugger from https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads
-2. Download and install Ninja for your platform using instructions from here: https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages
-3. Download and install CMake: https://cmake.org/download/
-4. Once they are installed, restart your computer so environment variables take effect.
-5. For Windows, install the Visual Studio Compiler
-6. For Mac OS, install XCode
-7. For Linux, the distribution you are using should come with a compiler - No extra steps necessary.
+## Required Software
 
-For the STM32 MCU:
- 
+### All platforms
+
+1. Download and install the ARM GNU toolchain compiler and debugger from <https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads>.
+2. Download and install Ninja for your platform using instructions from <https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages>.
+3. Download and install CMake from <https://cmake.org/download/>.
+4. Restart your computer so environment variables take effect.
+
+### Windows
+
+1. Install the Visual Studio Compiler (MSVC)
+
+### MacOS
+
+1. Install XCode.
+
+### Linux
+
+1. The distribution you are using should come with a compiler; No extra steps necessary.
+
+## Building
+
+### Building for STM32 MCU (target hardware)
+
+1. Ensure the path to ARM gcc compiler is included in `PATH` environment variable. Alternatively set `ARM_GCC_BIN` cmake variable manually.
+
+   ```text
+   example path: C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.3 rel1/bin
+   ```
+
+2. In a terminal or IDE, CD to this directory and list the available presets.
+
+   ```bash
+   cmake --list-presets
+   ```
+
+3. Choose the `arm-cortex-m7` preset.
+
+   ```bash
+   cmake --preset arm-cortex-m7
+   ```
+
+4. Once CMake successfully generates the build files, build the .elf binary using the following.
+
+   ```bash
+   cmake --build --preset build-arm
+   ```
+
+5. The binary will be available in `build/arm/src/<release_type>`.
+
+### Building for Windows (Testing purposes)
+
 1. In a terminal or IDE, CD to this directory and list the available presets:
-``cmake --list-presets``
-2. 2.Choose the ``arm-cortex-m7`` preset: ``cmake --preset arm-cortex-m7``
-3. Once CMake successfully generates the build files, build the .elf binary using: ``cmake --build --preset build-arm``
-4. Binary will be available in ``build/arm/src``.
 
-For Windows Binary:
-1. In a terminal or IDE, CD to this directory and list the available presets:
-   ``cmake --list-presets``
-2. Choose the ``native-x86_64-Visual-Studio`` preset: ``cmake --preset native-x86_64-Visual-Studio``
-3. Once CMake successfully generates the build files, build the .elf binary using: ``cmake --build --preset build-x86_64-VS``
-4. Binary will be available in ``build/arm/src``.
+   ```bash
+   cmake --list-presets
+   ```
 
-Mac OS & Linux:
-1. TBD - have not tried on Mac or Linux yet. 
+2. Choose the `native-x86_64-Visual-Studio` preset.
+
+   ```bash
+   cmake --preset native-x86_64-Visual-Studio
+   ```
+
+3. Once CMake successfully generates the build files, build the .elf binary using the following.
+
+   ```bash
+   cmake --build --preset build-x86_64-VS
+   ```
+
+4. Binary will be available in `build/x86_64/src/<release_type>`.
