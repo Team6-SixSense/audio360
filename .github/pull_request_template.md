@@ -3,4 +3,4 @@
 
 ## 🎯 Related Issues
 
-- #issue_id
+- closes #issue_id
