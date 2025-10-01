@@ -19,8 +19,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y gcc-arm-none-eabi cmake make ninja-build
 
+    - name: Pull submodules
+      run: git submodule update --init --recursive 
+
     - name: Configure (cross-compile)
-      run: cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=cmake/arm-gcc-toolchain.cmake -DCI_RUN=ON
+      run: cmake --preset arm-cortex-m7
 
     - name: Build
-      run: cmake --build build
+      run: cmake --build --preset build-arm
