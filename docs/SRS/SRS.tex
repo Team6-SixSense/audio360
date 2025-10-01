@@ -204,6 +204,25 @@ hardware acceleration functions necessary for efficient signal processing.
 \subsection{P.5 Required technology elements}
 \wss{External systems, hardware and software, expected to be necessary for building the system.}
 
+\textbf{Microphones:}
+Capable of sampling audio at 44100 Hz in order to capture the full audible
+spectrum without aliasing. This complies with non function requirement 
+\href{NFR7_1}{NFR7.1}
+  
+\textbf{Analog to Digital Converter:}
+An analog to digital converter is required between each the microphone and
+the microcontroller to convert analog signals into digital form suitable
+for processing.
+  
+\textbf{Microcontroller:} 
+The microcontroller shall have sufficient processing speed and I/O bandwidth to
+synchronously acquire data from multiple microphones without delays or sampling
+misalignment.
+  
+\textbf{Output Display:}
+A visual display module to show processed information to users who are hard of
+hearing.
+
 \subsection{P.6 Risks and mitigation analysis}
 \wss{Potential obstacles to meeting the schedule of P.4, and measures for adapting the plan if they do arise.}
 
