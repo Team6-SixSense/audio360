@@ -1,5 +1,3 @@
-% THIS DOCUMENT IS TAILORED TO REQUIREMENTS FOR SCIENTIFIC COMPUTING.  IT SHOULDN'T
-% BE USED FOR NON-SCIENTIFIC COMPUTING PROJECTS
 \documentclass[12pt]{article}
 
 \usepackage{amsmath, mathtools}
@@ -20,8 +18,6 @@
 \usepackage{pdflscape}
 \usepackage{afterpage}
 \usepackage{cite}
-
-%\usepackage{refcheck}
 
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
@@ -444,31 +440,37 @@ converts audio soundwaves to digital bytestream.
 \subsubsection{Software Components}
 
 \begin{itemize}
-  \item \textbf{Embedded Firmware:} Main component responsible for managing all
-  embedded software on the Microcontroller.
+  \item \textbf{Embedded Firmware:} \label{comp:embedded_firmware}
+  Main component responsible for managing all embedded software on the
+  Microcontroller.
 
-  \item \textbf{Driver Layer:} Component responsible for providing drivers on
-  the microcontroller. It provides interfaces for high level applications to
-  interact with hardware components.
+  \item \textbf{Driver Layer:} \label{comp:driver_layer}
+  Component responsible for providing drivers on the microcontroller. It
+  provides interfaces for high level applications to interact with
+  hardware components.
 
-  \item \textbf{Signal Processing:} Component responsible for processing raw
-  audio signals in real-time sent by the microphones.
+  \item \textbf{Signal Processing:} \label{comp:signal_processing}
+  Component responsible for processing raw audio signals in real-time sent
+  by the microphones.
   
-  \item \textbf{Program:} Main component that run computational expensive tasks
-  and acts as the controller for the user interface.
+  \item \textbf{Program:} \label{comp:program}
+  Main component that run computational expensive tasks and acts as the
+  controller for the user interface.
   
-  \item \textbf{Frequency Analysis:} Component responsible for analyzing
-  frequency signals that was extracted from the microcontroller.
+  \item \textbf{Frequency Analysis:} \label{comp:frequency_analysis}
+  Component responsible for analyzing frequency signals that was
+  extracted from the microcontroller.
   
-  \item \textbf{Visualization Controller:} Component reposonsible for
-  creating and sending visualization output to the glasses.
+  \item \textbf{Visualization Controller:} \label{comp:viz_controller}
+  Component reposonsible for creating and sending visualization output to the
+  glasses.
 \end{itemize}
 
 \subsubsection{Hardware Components}
 
 \begin{itemize}
-  \item \textbf{\href{def:microphone}{Microphone}:} Component responsible for
-  collecting audio signals from the environment.
+  \item \textbf{\href{def:microphone}{Microphone}:}\label{comp:microphone}
+  Component responsible for collecting audio signals from the environment.
 
   \item \textbf{Output display:} Component responsible for displaying visuals to
   the user.
@@ -481,7 +483,166 @@ converts audio soundwaves to digital bytestream.
 \end{itemize}
 
 \subsection{S.2 Functionality}
-\wss{One section, S.2.n, for each of the components identified in S.2, describing the corresponding behaviors (functional and non-functional properties).}
+
+\subsubsection{\href{comp:embedded_firmware}{Embedded Firmware}}
+Functional Requirements
+\begin{enumerate}
+  \item \label{FR1_1}\textbf{FR1.1:} The firmware shall schedule tasks
+  based on its priority.
+  
+  \item \label{FR1_2}\textbf{FR1.2:} The firmware shall process and
+  synchronize audio signals from all microphones connected to the
+  microcontroller.
+  
+  \item \label{FR1_3}\textbf{FR1.3:} The firmware shall detect and flag audio
+  anomalies such as clipping, lost signal and silence.
+
+  \item \label{FR1_4}\textbf{FR1.4:} The firmware shall provide an interface
+  that allows external devices to extract processed audio data and its
+  corresponding frequency domain representation.
+\end{enumerate}
+
+Non-Functional Requirements
+\begin{enumerate}
+  \item \label{NFR1_1}\textbf{NFR1.1:} The firmware shall process audio
+  signals in real-time with monotonic frame sequences.
+  
+  \item \label{NFR1_2}\textbf{NFR1.2:} The firmware shall have a audio
+  processing success rate of atleast 90\% over 5 seconds.
+  
+  \item \label{NFR1_3}\textbf{NFR1.3:} The firmware shall operate
+  faster than the connected \href{NFR7_1}{microphone sample rate 44100Hz}.
+\end{enumerate}
+
+\subsubsection{\href{comp:driver_layer}{Driver Layer}}
+Functional Requirements
+\begin{enumerate}
+  \item \label{FR2_1}\textbf{FR2.1:} The driver layer shall provide an
+  interface for higher level software to interact with hardware based on
+  system permissions.
+
+  \item \label{FR2_2}\textbf{FR2.2:} The driver layer shall return error codes 
+  upon return to higher-level software to support error handling.
+\end{enumerate}
+
+Non-Functional Requirements
+\begin{enumerate}
+  \item \label{NFR2_1}\textbf{NFR2.1:} The driver shall maintain data integrity
+  thoguht locking when writing to memory to ensure data that is still being
+  used is not lost.
+\end{enumerate}
+
+\subsubsection{\href{comp:signal_processing}{Signal Processing}} 
+Functional Requirements
+\begin{enumerate}
+  \item \label{FR3_1}\textbf{FR3.1:} The signal processing component shall
+  convert digital audio waveform to frequency domain.
+
+  \item \label{FR3_2}\textbf{FR3.2:} The signal processing component shall
+  normalize the amplitude of incoming and outgoing signals.
+
+  \item \label{FR3_3}\textbf{FR3.3:} The signal processing component shall
+  filter incoming audio signals to reduce frequency spectral leakage.
+
+  \item \label{FR3_4}\textbf{FR3.4:} The signal processing component shall
+  use available hardware acceleration method for efficient computations.
+\end{enumerate}
+
+Non-Functional Requirements
+\begin{enumerate}
+  \item \label{NFR3_1}\textbf{NFR3.1:} The signal processing component shall 
+  represent audio signals in the frequency domain with less than 10\% error from
+  the true values.
+  \item \label{NFR3_2}\textbf{NFR3.2:} The signal processing component shall be
+  scalable to handle different input signal sizes without missing timing
+  constraints defined in \href{NFR1_3}{NFR1.3} for input signal size up to
+  44100 frames.
+\end{enumerate}
+
+\subsubsection{\href{comp:program}{Program}} 
+Functional Requirements
+\begin{enumerate}
+  \item \label{FR4_1}\textbf{FR4.1:} The program shall retrieve frequency
+  domain data from the microcontroller via UART for further processing.
+
+  \item \label{FR4_2}\textbf{FR4.2:} The program shall notify dependent
+  components when new frequency data is available. The latest data shall always
+  be used.
+\end{enumerate}
+
+Non-Functional Requirements
+\begin{enumerate}
+  \item \label{NFR4_1}\textbf{NFR4.1:} The program shall poll data without
+  conflicting with ongoing microcontroller writes, ensuring no data loss.
+
+  \item \label{NFR4_2}\textbf{NFR4.2:} The program shall retrieve frequency data
+  within the timing constraints of the embedded firmware defined in
+  \href{NFR1_3}{NFR1.3} .
+\end{enumerate}
+
+\subsubsection{\href{comp:frequency_analysis}{Frequency Analysis}} 
+Functional Requirements
+\begin{enumerate}
+  \item \label{FR5_1}\textbf{FR5.1:} The frequency analysis component shall
+  classify sound sources based on features extracted from the frequency domain
+  representation of the audio signal.
+
+   \item \label{FR5_2}\textbf{FR5.2:} The frequency analysis component shall
+   estimate the direction of arrival of the audio source using frequency domain
+   representation of the audio signal.
+\end{enumerate}
+
+Non-Functional Requirements
+\begin{enumerate}
+  \item \label{NFR5_1}\textbf{NFR5.1:} The frequency analysis shall classify
+  atleast 3 distinct sound sources relevant to people who are hard of hearing.
+
+  \item \label{NFR5_2}\textbf{NFR5.2:} The component shall achieve a minimum
+  classification accuracy of 90\% under normal operating conditions.
+
+  \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
+  direction of arrival of an audio source with a maximum error of 20 degrees,
+  to avoid misleading users in safety-critical situations.
+\end{enumerate}
+
+\subsubsection{\href{comp:viz_controller}{Visualization Controller}}
+Functional Requirements
+\begin{enumerate}
+  \item \label{FR6_1}\textbf{FR6.1:} The visualization controller component
+  shall notify users of the direction of an audio source whenever it is
+  detected by the system.
+  \item \label{FR6_2}\textbf{FR6.2:} The visualization controller component
+  shall alert users when the core safety features such as direction
+  determination or classification fail, to ensure user safety.
+\end{enumerate}
+
+Non-Functional Requirements
+\begin{enumerate}
+  \item \label{NFR6_1}\textbf{FR6.1:} The visualization controller component
+  shall prioritize to display the most safety-critical information at the
+  time because screen space is limited.
+  \item \label{NFR6_2}\textbf{FR6.2:} The visualization controller component
+  shall present information in a non-intrusive manner, minimizing visual
+  obstruction so users can safely perform external activities.
+
+\end{enumerate}
+
+\subsubsection{\href{comp:microphone}{Microphone}}
+Functional Requirements
+\begin{enumerate}
+  \item \label{FR7_1}\textbf{FR7.1:} The microphone shall collect soundwaves
+  from its environment and translate to digital representation.
+\end{enumerate}
+
+Non-Functional Requirements
+\begin{enumerate}
+  \item \label{NFR7_1}\textbf{FR7.1:} The microphone shall collect soundwaves
+  at 44100Hz. According to Nyquist's theorem, audio sampling should be greater
+  than two times the highest frequency to avoid aliasing \cite{DataForth2025}.
+  The maximum frequecy audible to humans is approximately 20kHz
+  \cite{Neuroscience2001}.
+\end{enumerate}
+
 
 \subsection{S.3 Interfaces}
 \wss{How the system makes the functionality of S.2 available to the rest of the world, particularly user interfaces and program interfaces (APIs).}
