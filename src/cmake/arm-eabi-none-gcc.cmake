@@ -10,8 +10,8 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 # Critical: don't try to link a host exe during compiler checks.
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-set(STARTUP ${PROJECT_SOURCE_DIR}/src/STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Source/Templates/gcc/startup_stm32f767xx.s)
-set(SYSTEM  ${PROJECT_SOURCE_DIR}/src/STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c)
+set(STARTUP ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Source/Templates/gcc/startup_stm32f767xx.s)
+set(SYSTEM  ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c)
 # implements SystemInit(), clocks, caches
 
 # --- Where to find the GNU ARM toolchain ---
@@ -19,10 +19,17 @@ set(SYSTEM  ${PROJECT_SOURCE_DIR}/src/STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F
 # Otherwise, set it here or pass -DARM_GCC_BIN="C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.3 rel1/bin"
 set(ARM_GCC_BIN "" CACHE PATH "Path to arm-none-eabi-* binaries (bin directory)")
 
+# file extension on Windows
+if(WIN32)
+    set(_EXT ".exe")
+else()
+    set(_EXT "")
+endif()
+
 # Compilers and binutils
-find_program(CMAKE_C_COMPILER   arm-none-eabi-gcc   HINTS "${ARM_GCC_BIN}" REQUIRED)
-find_program(CMAKE_CXX_COMPILER arm-none-eabi-g++   HINTS "${ARM_GCC_BIN}" REQUIRED)
-find_program(CMAKE_ASM_COMPILER arm-none-eabi-gcc   HINTS "${ARM_GCC_BIN}" REQUIRED)
+set(CMAKE_C_COMPILER   "${ARM_GCC_BIN}/arm-none-eabi-gcc${_EXT}"   CACHE FILEPATH "" FORCE)
+set(CMAKE_CXX_COMPILER "${ARM_GCC_BIN}/arm-none-eabi-g++${_EXT}"   CACHE FILEPATH "" FORCE)
+set(CMAKE_ASM_COMPILER "${ARM_GCC_BIN}/arm-none-eabi-gcc${_EXT}"   CACHE FILEPATH "" FORCE)
 
 find_program(CMAKE_AR           arm-none-eabi-ar    HINTS "${ARM_GCC_BIN}")
 find_program(CMAKE_RANLIB       arm-none-eabi-ranlib HINTS "${ARM_GCC_BIN}")
@@ -47,7 +54,7 @@ set(CMAKE_CXX_FLAGS_INIT "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -
 set(CMAKE_ASM_FLAGS_INIT "${ARM_MCU_FLAGS}")
 
 # Linker script (adjust path if needed)
-set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/src/cmake/stm32-f7.ld")
+set(LINKER_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/../cmake/stm32-f7.ld")
 
 # Linker flags
 set(CMAKE_EXE_LINKER_FLAGS_INIT
@@ -58,12 +65,12 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT
 
 # Add ARM-specific startup/system sources
 set(STARTUP_FILE
-        ${CMAKE_SOURCE_DIR}/src/STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Source/Templates/gcc/startup_stm32f767xx.s
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Source/Templates/gcc/startup_stm32f767xx.s
         CACHE FILEPATH "Startup assembly file"
 )
 
 set(SYSTEM_FILE
-        ${CMAKE_SOURCE_DIR}/src/STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Source/Templates/system_stm32f7xx.c
         CACHE FILEPATH "SystemInit source file"
 )
 
@@ -71,8 +78,8 @@ set(SYSTEM_FILE
 set(EXTRA_SOURCES ${STARTUP_FILE} ${SYSTEM_FILE} CACHE INTERNAL "")
 set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD CACHE INTERNAL "")
 set(EXTRA_INCLUDES
-        ${CMAKE_SOURCE_DIR}/src/STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Include
-        ${CMAKE_SOURCE_DIR}/src/STM32CubeF7/Drivers/CMSIS/Include
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Include
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Include
         CACHE INTERNAL ""
 )
 

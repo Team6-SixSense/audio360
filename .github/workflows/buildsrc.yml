@@ -1,0 +1,29 @@
+name: ARM GCC Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install ARM GCC Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-none-eabi cmake make ninja-build
+
+    - name: Pull submodules
+      run: git submodule update --init --recursive 
+
+    - name: Configure (cross-compile)
+      run: cmake --preset arm-cortex-m7
+
+    - name: Build
+      run: cmake --build --preset build-arm

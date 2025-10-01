@@ -9,7 +9,7 @@ if(NOT CMAKE_CROSSCOMPILING)
 endif()
 
 # Collect source files.
-file(GLOB_RECURSE SRC_FILES 
+file(GLOB_RECURSE SRC_FILES
     helper/*.cpp
     signal_processing/*.cpp
 )
@@ -21,6 +21,14 @@ add_library(${SourceLib} STATIC ${LIB_SRC_FILES})
 target_sources(${SourceLib} PUBLIC ${LIB_SRC_FILES})
 
 # Define executable.
+
+# TODO: remove later
+# if(NOT CI_RUN)
+#     add_executable(${SourceExecutable} main.cpp)
+# else()
+#     # Build as static library for CI to skip linking steps.
+#     add_library(${SourceExecutable} STATIC main.cpp)
+# endif()
 add_executable(${SourceExecutable} main.cpp ${EXTRA_SOURCES})
 
 set(INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})

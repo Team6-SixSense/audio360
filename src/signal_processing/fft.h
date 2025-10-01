@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib\fftw-3.3.10\api\fftw3.h"
+#include "lib/fftw-3.3.10/api/fftw3.h"
 #include "signal_processing/window.h"
 #include <vector>
 
