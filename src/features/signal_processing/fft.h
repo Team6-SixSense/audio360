@@ -5,9 +5,13 @@
 #include "stm32f767xx.h"
 
 #include "arm_math.h"
+#else
+#define __USE_SQUARE_BRACKETS_FOR_ELEMENT_ACCESS_OPERATOR // Used by simple FFT
+#include "lib/simple_fft/include/simple_fft/fft.hpp"
+#include <complex>
 #endif
 
-#include "signal_processing/window.h"
+#include "features/signal_processing/window.hpp"
 #include <vector>
 
 /** @brief Struct for representing FFT output in the frequency domain. */
@@ -99,6 +103,12 @@ private:
   /** @brief output signal. This memory is shared with fttw_plan plan. */
   float *out;
 
+#ifdef STM_BUILD
   /** @brief Real FFT instance for using CMSIS DSP library */
   arm_rfft_fast_instance_f32 rfft_instance;
+#else
+  /** @brief Complex output vector representing frequency domain when using the
+   * Simple-FFT library. */
+  std::vector<std::complex<double>> complexOutput;
+#endif
 };

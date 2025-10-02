@@ -8,6 +8,11 @@
 2. Download and install Ninja for your platform using instructions from <https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages>.
 3. Download and install CMake from <https://cmake.org/download/>.
 4. Restart your computer so environment variables take effect.
+5. Update all git submodules
+
+   ```bash
+   git submodule update --init --recursive
+   ```
 
 ### Windows
 

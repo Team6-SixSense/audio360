@@ -7,7 +7,7 @@ set(SourceLib "Audio360Lib")
 # Collect source files.
 file(GLOB_RECURSE SRC_FILES
     helper/*.cpp
-    signal_processing/*.cpp
+    features/*.cpp
 )
 set(LIB_SRC_FILES ${SRC_FILES})
 list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp")
@@ -19,9 +19,9 @@ target_sources(${SourceLib} PUBLIC ${LIB_SRC_FILES})
 # Define executable.
 add_executable(${SourceExecutable} main.cpp ${EXTRA_SOURCES})
 
+# Attach include dirs to the target.
 set(INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Attach include dirs to the target.
 target_include_directories(${SourceExecutable} PUBLIC ${INCLUDE_DIRS} )
 target_include_directories(${SourceLib} PUBLIC ${INCLUDE_DIRS} )
 
@@ -35,6 +35,17 @@ if(DEFINED EXTRA_INCLUDES)
     target_include_directories(${SourceExecutable} PRIVATE ${EXTRA_INCLUDES})
     target_include_directories(${SourceLib} PRIVATE ${EXTRA_INCLUDES})
 endif()
+
+if(NOT CMAKE_CROSSCOMPILING)
+    # Attach include dirs to the target.
+    set(NON_PROD_LIB_INCLUDE_DIR
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/simple_fft/include/simple_fft
+    )
+
+    target_include_directories(${SourceExecutable} PRIVATE ${NON_PROD_LIB_INCLUDE_DIR})
+    target_include_directories(${SourceLib} PRIVATE ${NON_PROD_LIB_INCLUDE_DIR})
+endif()
+
 
 target_link_libraries(${SourceExecutable} PUBLIC
     ${SourceLib}

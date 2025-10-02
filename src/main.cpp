@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #ifndef STM_BUILD
-#include "signal_processing/fft.h"
+#include "features/signal_processing/fft.h"
 #endif
 
 int main() {

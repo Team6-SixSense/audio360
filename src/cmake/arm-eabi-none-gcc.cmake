@@ -27,9 +27,15 @@ else()
 endif()
 
 # Compilers and binutils
-set(CMAKE_C_COMPILER   "${ARM_GCC_BIN}/arm-none-eabi-gcc${_EXT}"   CACHE FILEPATH "" FORCE)
-set(CMAKE_CXX_COMPILER "${ARM_GCC_BIN}/arm-none-eabi-g++${_EXT}"   CACHE FILEPATH "" FORCE)
-set(CMAKE_ASM_COMPILER "${ARM_GCC_BIN}/arm-none-eabi-gcc${_EXT}"   CACHE FILEPATH "" FORCE)
+if (ARM_GCC_BIN)
+    set(CMAKE_C_COMPILER   "${ARM_GCC_BIN}/arm-none-eabi-gcc${_EXT}"   CACHE FILEPATH "" FORCE)
+    set(CMAKE_CXX_COMPILER "${ARM_GCC_BIN}/arm-none-eabi-g++${_EXT}"   CACHE FILEPATH "" FORCE)
+    set(CMAKE_ASM_COMPILER "${ARM_GCC_BIN}/arm-none-eabi-gcc${_EXT}"   CACHE FILEPATH "" FORCE)
+else()
+    set(CMAKE_C_COMPILER   "${ARM_GCC_BIN}arm-none-eabi-gcc${_EXT}"   CACHE FILEPATH "" FORCE)
+    set(CMAKE_CXX_COMPILER "${ARM_GCC_BIN}arm-none-eabi-g++${_EXT}"   CACHE FILEPATH "" FORCE)
+    set(CMAKE_ASM_COMPILER "${ARM_GCC_BIN}arm-none-eabi-gcc${_EXT}"   CACHE FILEPATH "" FORCE)
+endif()
 
 find_program(CMAKE_AR           arm-none-eabi-ar    HINTS "${ARM_GCC_BIN}")
 find_program(CMAKE_RANLIB       arm-none-eabi-ranlib HINTS "${ARM_GCC_BIN}")

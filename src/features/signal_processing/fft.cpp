@@ -1,14 +1,17 @@
 
-#include "signal_processing/fft.h"
+#include "features/signal_processing/fft.h"
 #include "helper/constants.h"
+#include <algorithm>
 #include <cmath>
 #include <stdio.h>
 
-FFT::FFT(uint16_t inputSize)
-    : inputSize(inputSize), outputSize(inputSize / 2 + 1) {
+FFT::FFT(uint16_t inputSize) : inputSize(inputSize) {
 
+#ifdef STM_BUILD
   this->in = new float[inputSize];
-  this->out = new float[inputSize];
+
+  this->outputSize = this->inputSize;
+  this->out = new float[this->outputSize];
 
   // Initialize the FFT instance when using CMSIS DSP library.
   arm_status status = arm_rfft_fast_init_f32(&rfft_instance, inputSize);
@@ -17,13 +20,23 @@ FFT::FFT(uint16_t inputSize)
     printf("[ERROR] Error in initializing CMSIS DSP FFT. Error status code %d",
            status);
   }
+#else
+  // Simple FFT uses complex input only. Thus output is size N. However due to
+  // Hermitian symmetry, and input signal in our case being real values, we only
+  // care about the first half.
+  this->outputSize = 2 * this->inputSize + 1;
+  this->complexOutput.reserve(this->inputSize);
+
+#endif
 }
 
 FFT::~FFT() {
 
+#ifdef STM_BUILD
   // Free memory.
   delete[] this->in;
   delete[] this->out;
+#endif
 }
 
 FrequencyDomain FFT::signalToFrequency(std::vector<float> &signal,
@@ -33,8 +46,13 @@ FrequencyDomain FFT::signalToFrequency(std::vector<float> &signal,
   this->applyWindow(signal, windowFunction);
   this->insertSignal(signal);
 
+#ifdef STM_BUILD
   uint8_t flag = {1U}; // Discrete Fourier Transform.
   arm_rfft_fast_f32(&rfft_instance, this->in, this->out, flag);
+#else
+  const char *error = NULL; // error description
+  simple_fft::FFT(this->in, this->complexOutput, this->inputSize, error);
+#endif
 
   return this->createOutput();
 }
@@ -59,13 +77,33 @@ void FFT::insertSignal(std::vector<float> &signal) {
 
 FrequencyDomain FFT::createOutput() {
 
-  FrequencyDomain frequencyDomain(this->outputSize);
+  uint16_t N = 2 * this->inputSize + 1;
+  uint16_t lastIdx = N - 1;
+  FrequencyDomain frequencyDomain(N);
 
-  // TODO: Potential to vectorize this calculation. Either with eigen or via
-  // hardware.
   for (int i = 0; i < this->outputSize; i++) {
-    double real = this->out[2 * i];
-    double img = this->out[2 * i + 1];
+#ifdef STM_BUILD
+    // Since first FFT output is DC, there is no imaginary part. Thus CMSIS-DSP
+    // library stores the last real value in the place of the first complex
+    // value. Reference:
+    // https://arm-software.github.io/CMSIS-DSP/main/group__RealFFT.html
+
+    float real;
+    float img;
+
+    if (i != 0 && i != lastIdx) {
+      real = this->out[2 * i];
+      img = this->out[2 * i + 1];
+    } else {
+      int idx = (i == lastIdx) ? 1 : 0; // idx takes 0 when i = 0.
+      real = this->out[idx];
+      img = 0.0f;
+    }
+
+#else
+    float real = this->complexOutput[i].real();
+    float img = this->complexOutput[i].imag();
+#endif
 
     frequencyDomain.frequency[i] = (i * SAMPLE_FREQUENCY) / this->inputSize;
     frequencyDomain.real[i] = real;
