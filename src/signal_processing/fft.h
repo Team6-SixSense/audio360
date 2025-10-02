@@ -1,25 +1,31 @@
 #pragma once
 
-#include "lib/fftw-3.3.10/api/fftw3.h"
+#ifdef STM_BUILD
+// stm32f767xx include must be first include to use CMSIS library.
+#include "stm32f767xx.h"
+
+#include "arm_math.h"
+#endif
+
 #include "signal_processing/window.h"
 #include <vector>
 
 /** @brief Struct for representing FFT output in the frequency domain. */
 struct FrequencyDomain {
   /** @brief The number of the data in the FFT output. */
-  size_t N;
+  uint16_t N;
 
   /** @brief The frequency (Hz) */
-  std::vector<double> frequency;
+  std::vector<float> frequency;
 
   /** @brief The real component of the frequency contribution. */
-  std::vector<double> real;
+  std::vector<float> real;
 
   /** @brief The imaginary component of the frequency contribution. */
-  std::vector<double> img;
+  std::vector<float> img;
 
   /** @brief The magnitude of the frequency component. */
-  std::vector<double> magnitude;
+  std::vector<float> magnitude;
 
   /**
    * @brief Construct a new Frequency Domain struct.
@@ -41,7 +47,7 @@ public:
    * @param signal Sample signal of size inputSize. This is used to optimize to
    * find the best FFT algorithm.
    */
-  FFT(size_t inputSize, std::vector<double> signal);
+  FFT(uint16_t inputSize);
 
   /** @brief Destroy the FFT object. */
   ~FFT();
@@ -55,7 +61,7 @@ public:
    * @return FrequencyDomain The signal represented in the frequency domain.
    */
   FrequencyDomain
-  signalToFrequency(std::vector<double> &signal,
+  signalToFrequency(std::vector<float> &signal,
                     WindowFunction windowFunction = WindowFunction::NONE);
 
 private:
@@ -65,14 +71,14 @@ private:
    * @param signal input signal.
    * @param windowFunction Window function.
    */
-  void applyWindow(std::vector<double> &signal, WindowFunction windowFunction);
+  void applyWindow(std::vector<float> &signal, WindowFunction windowFunction);
 
   /**
    * @brief Inserts signal to internal memory of this class.
    *
    * @param signal input signal.
    */
-  void insertSignal(std::vector<double> &signal);
+  void insertSignal(std::vector<float> &signal);
 
   /**
    * @brief Translate FFT algo's output to a portable output to return.
@@ -82,18 +88,17 @@ private:
   FrequencyDomain createOutput();
 
   /** @brief The size of the input signal. */
-  size_t inputSize{0};
+  uint16_t inputSize{0U};
 
   /** @brief The size of the output signal. */
-  size_t outputSize;
-
-  /** @brief The FFTW plan. This is the algo that is optimized for inputSize
-   * signal. */
-  fftw_plan plan;
+  uint16_t outputSize;
 
   /** @brief input signal. This memory is shared with fttw_plan plan. */
-  double *in;
+  float *in;
 
   /** @brief output signal. This memory is shared with fttw_plan plan. */
-  fftw_complex *out;
+  float *out;
+
+  /** @brief Real FFT instance for using CMSIS DSP library */
+  arm_rfft_fast_instance_f32 rfft_instance;
 };

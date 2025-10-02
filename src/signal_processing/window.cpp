@@ -2,11 +2,11 @@
 #include "helper/constants.h"
 #include <cmath>
 
-void HannWindow::applyWindow(std::vector<double> &signal) {
-  double N = static_cast<double>(signal.size());
+template <typename T> void HannWindow<T>::applyWindow(std::vector<T> &signal) {
+  T N = static_cast<T>(signal.size());
   int n = 0;
-  for (double &signalValue : signal) {
-    double w = std::pow(std::sin(PI * n / (N - 1)), 2.0);
+  for (T &signalValue : signal) {
+    T w = std::pow(std::sin(PI_32 * n / (N - 1)), 2.0);
     signalValue *= w;
     n++;
   }

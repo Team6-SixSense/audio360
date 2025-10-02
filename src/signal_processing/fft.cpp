@@ -4,55 +4,56 @@
 #include <cmath>
 #include <stdio.h>
 
-/**
- * Implementation for using fftw library provided by their documentation;
- * Section 2.1. and 2.3. https://www.fftw.org/fftw3.pdf
- */
-
-FFT::FFT(size_t inputSize, std::vector<double> signal)
+FFT::FFT(uint16_t inputSize)
     : inputSize(inputSize), outputSize(inputSize / 2 + 1) {
 
-  // Create a plan. This will optimize and find the best algo to run based on
-  // the size of the signal and optimizer type.
-  this->in = (double *)fftw_malloc(sizeof(double) * this->inputSize);
-  this->insertSignal(signal); // Need a reference signal for optimization.
-  this->out =
-      (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * this->outputSize);
-  this->plan =
-      fftw_plan_dft_r2c_1d(this->inputSize, this->in, this->out, FFTW_ESTIMATE);
+  this->in = new float[inputSize];
+  this->out = new float[inputSize];
+
+  // Initialize the FFT instance when using CMSIS DSP library.
+  arm_status status = arm_rfft_fast_init_f32(&rfft_instance, inputSize);
+
+  if (status != arm_status::ARM_MATH_SUCCESS) {
+    printf("[ERROR] Error in initializing CMSIS DSP FFT. Error status code %d",
+           status);
+  }
 }
 
 FFT::~FFT() {
 
   // Free memory.
-  fftw_destroy_plan(plan);
-  fftw_free(in);
-  fftw_free(out);
+  delete[] this->in;
+  delete[] this->out;
 }
 
-FrequencyDomain FFT::signalToFrequency(std::vector<double> &signal,
+FrequencyDomain FFT::signalToFrequency(std::vector<float> &signal,
                                        WindowFunction windowFunction) {
+  // TODO: check that the signal size is equal to the inputsize
+
   this->applyWindow(signal, windowFunction);
   this->insertSignal(signal);
-  fftw_execute(plan);
+
+  uint8_t flag = {1U}; // Discrete Fourier Transform.
+  arm_rfft_fast_f32(&rfft_instance, this->in, this->out, flag);
+
   return this->createOutput();
 }
 
-void FFT::applyWindow(std::vector<double> &signal,
+void FFT::applyWindow(std::vector<float> &signal,
                       WindowFunction windowFunction) {
   switch (windowFunction) {
   case WindowFunction::NONE:
     printf("[INFO] No windowing function is applied.");
     break;
   case WindowFunction::HANN_WINDOW:
-    HannWindow().applyWindow(signal);
+    HannWindow<float>().applyWindow(signal);
     break;
   default:
     printf("[WARN] Window function is not supported. Signal remain the same.");
   }
 }
 
-void FFT::insertSignal(std::vector<double> &signal) {
+void FFT::insertSignal(std::vector<float> &signal) {
   std::copy(signal.begin(), signal.end(), this->in);
 }
 
@@ -63,8 +64,8 @@ FrequencyDomain FFT::createOutput() {
   // TODO: Potential to vectorize this calculation. Either with eigen or via
   // hardware.
   for (int i = 0; i < this->outputSize; i++) {
-    double real = this->out[i][0];
-    double img = this->out[i][1];
+    double real = this->out[2 * i];
+    double img = this->out[2 * i + 1];
 
     frequencyDomain.frequency[i] = (i * SAMPLE_FREQUENCY) / this->inputSize;
     frequencyDomain.real[i] = real;

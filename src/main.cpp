@@ -8,7 +8,7 @@ int main() {
 
 #ifndef STM_BUILD
   std::vector<double> test_vec;
-  FFT fft_test(test_vec.size(), test_vec);
+  FFT fft_test(static_cast<uint16_t>(test_vec.size()));
 #endif
   printf("Hello SixSense\n");
 
