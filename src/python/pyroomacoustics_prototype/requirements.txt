@@ -1,4 +1,0 @@
-pyroomacoustics
-matplotlib
-scipy
-pydub
