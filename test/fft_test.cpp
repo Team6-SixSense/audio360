@@ -1,6 +1,6 @@
+#include "features/signal_processing/fft.h"
 #include "helper/constants.h"
 #include "helper/mp3/mp3.h"
-#include "signal_processing/fft.h"
 #include <gtest/gtest.h>
 
 /** @brief Given a 285 Hz sine audio signal, assert that the FFT has the largest
@@ -11,11 +11,11 @@ TEST(FFTTest, SignalToFrequency_285Hz) {
 
   // Choose an arbitray window in the middle of the mp3.
   const int OFFSET = 100000;
-  std::vector<double> input(data.channel1.begin() + OFFSET,
-                            data.channel1.begin() + OFFSET + WINDOW_SIZE);
+  std::vector<float> input(data.channel1.begin() + OFFSET,
+                           data.channel1.begin() + OFFSET + WINDOW_SIZE);
 
-  // Run  FFT.
-  FFT fft = FFT(input.size(), input);
+  // Run FFT.
+  FFT fft = FFT(static_cast<uint16_t>(input.size()));
   FrequencyDomain frequencyDomain =
       fft.signalToFrequency(input, WindowFunction::HANN_WINDOW);
 

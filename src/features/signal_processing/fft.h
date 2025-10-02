@@ -36,7 +36,7 @@ struct FrequencyDomain {
    *
    * @param size The number of data points.
    */
-  FrequencyDomain(size_t size)
+  FrequencyDomain(uint16_t size)
       : N(size), frequency(size), real(size), img(size), magnitude(size) {}
 };
 

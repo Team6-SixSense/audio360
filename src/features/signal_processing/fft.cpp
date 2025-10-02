@@ -6,10 +6,9 @@
 #include <stdio.h>
 
 FFT::FFT(uint16_t inputSize) : inputSize(inputSize) {
-
-#ifdef STM_BUILD
   this->in = new float[inputSize];
 
+#ifdef STM_BUILD
   this->outputSize = this->inputSize;
   this->out = new float[this->outputSize];
 
@@ -24,8 +23,8 @@ FFT::FFT(uint16_t inputSize) : inputSize(inputSize) {
   // Simple FFT uses complex input only. Thus output is size N. However due to
   // Hermitian symmetry, and input signal in our case being real values, we only
   // care about the first half.
-  this->outputSize = 2 * this->inputSize + 1;
-  this->complexOutput.reserve(this->inputSize);
+  this->outputSize = (this->inputSize / 2) + 1;
+  this->complexOutput.resize(this->inputSize);
 
 #endif
 }
@@ -77,7 +76,7 @@ void FFT::insertSignal(std::vector<float> &signal) {
 
 FrequencyDomain FFT::createOutput() {
 
-  uint16_t N = 2 * this->inputSize + 1;
+  uint16_t N = (this->inputSize / 2) + 1;
   uint16_t lastIdx = N - 1;
   FrequencyDomain frequencyDomain(N);
 
@@ -101,11 +100,12 @@ FrequencyDomain FFT::createOutput() {
     }
 
 #else
-    float real = this->complexOutput[i].real();
-    float img = this->complexOutput[i].imag();
+    float real = static_cast<float>(this->complexOutput[i].real());
+    float img = static_cast<float>(this->complexOutput[i].imag());
 #endif
 
-    frequencyDomain.frequency[i] = (i * SAMPLE_FREQUENCY) / this->inputSize;
+    frequencyDomain.frequency[i] =
+        (i * SAMPLE_FREQUENCY) / static_cast<float>(this->inputSize);
     frequencyDomain.real[i] = real;
     frequencyDomain.img[i] = img;
     frequencyDomain.magnitude[i] = std::sqrt(real * real + img * img);

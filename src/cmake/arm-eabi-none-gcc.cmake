@@ -6,6 +6,8 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
+# Disable tests for ARM build.
+set(BUILD_TESTS OFF CACHE BOOL "ON to build tests" FORCE)
 
 # Critical: don't try to link a host exe during compiler checks.
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
