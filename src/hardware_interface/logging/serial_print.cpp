@@ -18,7 +18,7 @@ void setupLogging() {
   HAL_Init();
 
   // Configure the system clock to 216 MHz
-  //SystemClock_Config();
+  // SystemClock_Config();
 
   // Initialize Board Support Language (BSP) for LED3
   BSP_LED_Init(LED3);
@@ -32,12 +32,13 @@ void setupLogging() {
       - BaudRate    = 9600 baud  (9600 symbols per second)
       - Hardware flow control disabled (RTS and CTS signals)
   */
+
   UartHandle.Instance = USART3;
 
   UartHandle.Init.BaudRate = 9600;
-  UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
+  UartHandle.Init.WordLength = UART_WORDLENGTH_7B;
   UartHandle.Init.StopBits = UART_STOPBITS_1;
-  UartHandle.Init.Parity = UART_PARITY_ODD;
+  UartHandle.Init.Parity = UART_PARITY_NONE;
   UartHandle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   UartHandle.Init.Mode = UART_MODE_TX_RX;
   UartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
@@ -51,6 +52,8 @@ void setupLogging() {
 static void Error_Handler() {
   // Turn LED3 on.
   BSP_LED_On(LED3);
+  while (1) {
+  }
 }
 
 /**
