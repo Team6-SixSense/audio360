@@ -77,3 +77,18 @@
    ```
 
 4. Binary will be available in `build/x86_64/src/<release_type>`.
+
+## Deploying onto STM32
+
+1. Install clion. This will be used for debugging and deploying.
+2. Download the latest of openOCD from <https://gnutoolchains.com/arm-eabi/openocd/>
+3. Set the executable path of openOCD on clion.
+4. link the .cfg file
+5. Set up GDB with interface and target config.
+
+TODO: define the files names that need to be linked here.
+
+### Windows Note
+
+1. Install the ST-LINK driver to communicate with the board via usb. <https://www.st.com/content/st_com/en/products/development-tools/software-development-tools/stm32-software-development-tools/stm32-utilities/stsw-link009.html#get-software>
+2. Follow the instruction in the readme.txt from the downloaded folder.
