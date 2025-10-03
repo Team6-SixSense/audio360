@@ -100,14 +100,28 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT
 
 
 
+set(UART_PRINTF_FILES
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144/stm32f7xx_nucleo_144.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_rcc.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_uart.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_gpio.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_pwr_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c
+
+        CACHE FILEPATH "UART printf source files"
+)
+
 # Export to parent CMakeLists.txt
-set(EXTRA_SOURCES ${STARTUP} ${SYSTEM} CACHE INTERNAL "")
+set(EXTRA_SOURCES ${STARTUP} ${SYSTEM} ${UART_PRINTF_FILES} CACHE INTERNAL "")
 set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD CACHE INTERNAL "")
 set(EXTRA_INCLUDES
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Core/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Include
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Inc
         CACHE INTERNAL ""
 )
 
