@@ -504,16 +504,218 @@ This section provides detailed versions of the high-level scenarios from \ref{it
 \section{Project}
 
 \subsection{P.1 Roles and personnel}
-\wss{Main responsibilities in the project; required project staff and their needed qualifications.}
+
+All project staff have responsibilities they need must carry out in addition to individual work required for deliverables. 
+The roles, qualifications for the role and their assignment are outlined below. 
+
+\begin{itemize}
+  \item Leader (Sathurshan Arulmohan)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Point of contact for professor and TAs. 
+          \item Ensures that the team is on track to meet deadlines.
+          \item Project planning and scheduling.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Strong organizational and leadership skills. 
+          \item Has experience in coordinating group projects and managing timelines. 
+          \item Strong communication skills. 
+        \end{itemize}
+    \end{itemize}
+  \item Meeting Chair (Kalp Shah)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Creates the agenda for meetings.
+          \item Facilitates the meetings.
+          \item Ensures that the team sticks to the agenda.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Great time management and facilitation skills. 
+          \item Strong interpersonal, communication and organizational skills. 
+          \item Prior experience in leadering meetings. 
+        \end{itemize}
+    \end{itemize}
+  \item Reviewer (Jay Sharma)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Reviews all deliverables before deadline to ensure all sections are completed.
+          \item Reach out to the reviewers of each section to ensure they approve it before the deadline.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Attention to detail and strong analytical skills.
+          \item Experience in document quality assurance, and proof reading. 
+          \item Understanding of project requirements and documentation standards. 
+        \end{itemize}
+    \end{itemize}
+  \item Note taker (Nirmal Chaudhari)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Takes notes during meetings.
+          \item Create meeting notes summary after the meeting ends to grasp meeting content.
+          \item Coordinates with project leader after meeting ends for action items. 
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Strong written communication, and summarization skills. 
+          \item Multi-tasking abilities, able to capture technical discussions while contributiing to meetings. 
+          \item Ability to type fast, with little error. 
+        \end{itemize}
+    \end{itemize}
+  \item System Specialist (Omar Alam)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Manages and validates system design at a high level. 
+          \item Responsible for hardware \& software interfaces.
+          \item Handles budgeting and expenses, ensures total budget remains under \$500.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Technical background in software and hardware system design. 
+          \item Experience with system architecture and prototyping.  
+          \item Basic knowledge of budgeting and resource allocation. 
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+Moreover, each project member has been designated as an \textbf{expert} in a specific area of research essential to the development of this system. 
+The designated research areas are outlined below:
+
+\begin{itemize}\setlength\itemsep{4pt}\setlength{\leftmargini}{2em}
+    \item Investigation of compatible libraries supporting Fast Fourier Transform (FFT) operations for the selected microcontroller \textbf{(Sathurshan Arulmohan)}.
+    \item Evaluation and selection of a suitable microcontroller for system implementation \textbf{(Omar Alam)}.
+    \item Analysis of methods to extract directionality from a microphone array \textbf{(Kalp Shah)}.
+    \item Exploration of techniques for separating multiple audio sources from a single microphone input using Independent Component Analysis (ICA) \textbf{(Jay Sharma)}.
+    \item Development of heuristic-based approaches for classifying different sounds through audio fingerprinting \textbf{(Nirmal Chaudhari)}.
+\end{itemize}
+
+\noindent
+All experts share the following responsibilities for their area of research. 
+
+\begin{itemize}\setlength\itemsep{4pt}\setlength{\leftmargini}{2em}
+  \item Look through research articles, and technical evaluations to come up with feasibile approaches for proposed methods. 
+  \item Collaborate with other team members to discuss findings. 
+  \item Maintain clear and organized documentation of sources and proposed methods. 
+  \item Ensure that all research and implementation choices align with project objectives, timeline and budgeting costs. 
+\end{itemize}
 
 \subsection{P.2 Imposed technical choices}
 \wss{Any a priori choices binding the project to specific tools, hardware, languages or other technical parameters.}
 
 \subsection{P.3 Schedule and milestones}
-\wss{List of tasks to be carried out and their scheduling.}
+
+To better understand the needs of our stakeholders, there are various milestones that need to be completed within the realm of elicitation and documentation in the 
+requirements engineering process. These milestones can be generalized as a list of tasks, with their deadlines outlined below.
+
+\begin{enumerate}
+  \item Initial Supervisor Consultation (mvm) (2025-09-15)
+  \item Extraction of project soft and hard goals (2025-09-22)
+  \item Technical analysis for feasibility of project goals (2025-09-29)
+  \item Extraction of requirements from goals and technical assessment (2025-10-2)
+  \item Requirements Documentation (2025-10-10)
+\end{enumerate}
 
 \subsection{P.4 Tasks and deliverables}
 \wss{Details of individual tasks listed under P.3 and their expected outcomes.}
+
+\begin{enumerate}
+
+  \item \textbf{Initial Supervisor Consultation (2025-09-15)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Meet with the supevisor to clarify the project vision. 
+      \item Discuss key goals, available resources and expected POC outcomes. 
+      \item Identify initial research domains. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Team has a shared understanding of project objectives and potential risks associated with the project scope and goals. 
+      \item Supervisor confirms feasibility of the project, and vision for the POC. 
+      \item Defined list of research priorities (outlined in section P.1).
+      \item Establish communication methods and frequency for supervisor check-ins. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Extraction of project soft and hard goals (2025-09-22)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Based on supervisor consultation, brainstorm and document list of soft goals. 
+      \item Deconstruct soft goals into a list of hard goals using definition, contribution, decomposition techniques. 
+      \item Discuss trade-offs of defined hard goals. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Comprehensive list of soft and hard goals, clearly defining the project direction. 
+      \item Consensus among team members and supervisor on achievable project objectives. 
+      \item Prioritized list of goals for verification testing. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Technical analysis for feasibility of project goals (2025-09-29)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Review research articles relevant to goals extracted during the elicitation stage. 
+      \item Conduct feasibility assessments for key goals set in the project. 
+      \item Run small-scale prototype, or test to confirm technical viability. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Confirmation of which project goals are technically achievable within the scope.
+      \item Revised goals based on hardware and software capabilities. 
+      \item Early identification of design constraints. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Extraction of requirements from goals and technical assessment (2025-10-2)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Translate validated soft and hard goals into specific system requirements. 
+      \item Identify dependencies and relationships between requirements. 
+      \item Ensure each requirement is unambiguous, measurable and achievable within the scope. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Drafted list of functional and non-functional requirements derived from goals. 
+      \item Clear mapping between project goals and corresponding requirements. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Requirements Documentation (2025-10-10)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Iteratively updating sections in SRS document based on the results of different tasks mentioned in P.3. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}\setlength\itemsep{2pt}
+      \item Completed Rev 0 SRS document
+  \end{itemize}
+
+  \vspace{0.8em}
+
+\end{enumerate}
+
 
 \subsection{P.5 Required technology elements}
 \wss{External systems, hardware and software, expected to be necessary for building the system.}
