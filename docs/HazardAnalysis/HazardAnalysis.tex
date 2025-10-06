@@ -153,6 +153,37 @@ and microphone performance.
 
 \section{Critical Assumptions}
 
+\begin{enumerate}
+    \item Microphone
+    \begin{itemize}
+        \item All microphones exihibit consistent sensitvity  once calibrated. 
+        \item Microphones operate correctly within normal operating temperatures of 0–35°C. 
+    \end{itemize}
+    
+    \item Microcontroller
+    \begin{itemize}
+        \item The 4 analog-to-digital converters (ADC) provides stable and synchronized sampling. 
+        \item Processor's clock frequency remains sable under normal operating temperatures 0–35°C. 
+    \end{itemize}
+
+    \item Output Display
+    \begin{itemize}
+        \item Visual indicators on the smart glass remain visible in typical lighting conditions. 
+    \end{itemize}
+
+    \item System Integration
+    \begin{itemize}
+        \item Startup and shutdown sequences initialize and terminate all peripherals safely. 
+    \end{itemize}
+
+    \item Driver Layer
+    \begin{itemize}
+        \item ADC drivers sample microphone input signals correctly without loss. 
+        \item Output display driver interfaces correctly with the processor. 
+    \end{itemize}
+\end{enumerate}
+
+
 \wss{These assumptions that are made about the software or system.  You should
 minimize the number of assumptions that remove potential hazards.  For instance,
 you could assume a part will never fail, but it is generally better to include
