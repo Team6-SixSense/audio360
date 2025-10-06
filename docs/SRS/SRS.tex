@@ -429,19 +429,104 @@ requirements.
 \end{itemize}
 
 \subsection{E.2 Components}
-\wss{List of elements of the environment that may affect or be affected by the system and project. Includes other systems to which the system must be interfaced.}
+
+\begin{enumerate}
+  \item Physical Environment
+  \begin{itemize}
+    \item Ambient noise sources that the system needs to detect and classify (car going by, people talking, dog barking)
+    \item Weather conditions that may distort the microphone input (wind, rain)
+    \item Room acoustics that will differ based on the space the user is in (inside a building vs outside)
+  \end{itemize}
+
+  \item User interaction
+  \begin{itemize}
+    \item The system will be mounted on the user's head, so that will be affected by the system. 
+    \item The user's head movement will also affect the system, since it may affect the microphone orientation and sound localization. 
+  \end{itemize}
+
+  \item Legal Components
+  \begin{itemize}
+    \item Privacy standards related to contunous audio capture in public spaces. 
+  \end{itemize}
+\end{enumerate}
 
 \subsection{E.3 Constraints}
-\wss{Obligations and limits imposed on the project and system by the environment.}
+
+\begin{enumerate}
+  \item Legal constraints
+  \begin{itemize}
+    \item Criminal Code - Private Communications (Section 184). Under this provision, it's an offense to listen, record or acquire a private communication without consent.
+    Although audio retrieved from the environment won't be stored, this provision may limit where the user is able to use this device. Most likely, they 
+    may only be able to use this device in public places.
+    \item Privacy \& Personal Information Laws (PIPEDA). Under this act, if data is stored, transmitted or analyzed, this act triggers obligations that must follow under the privacy law. 
+    These obligations include consent, secure handling and limited handling. These obligations may limit what can be done with the audio sources.
+  \end{itemize}
+
+  \item User interaction constraints
+  \begin{itemize}
+    \item Since the device must fit on the user's head, the system is limited in size, which limits the robustness of the hardware being are using. As such,
+    the system will be constrained on what software algorithms it can run. For example, deep machine learning algorithms will not be feasible on this device. 
+    \item Since the user will be using this system throughout the day, the system must operate on a portable power source.
+  \end{itemize}
+
+  \item Funding constraints
+  \begin{itemize}
+    \item With a limited maximum budget of \$500, the system is very limited on what hardware can be bought. This restriction will limit the system's functionality 
+    since it means the system will have to be very selective of which algorithms it can use.
+  \end{itemize}
+
+  \item Physical environment constraints
+  \begin{itemize}
+    \item Since the system should be functional in all types of weathers when the user is outside, the system must be encapsulated and water proof. 
+  \end{itemize}
+\end{enumerate}
+
 
 \subsection{E.4 Assumptions}
-\wss{Properties of the environment that may be assumed, with the goal of facilitating the project and simplifying the system.}
+
+\begin{enumerate}
+  \item Physical environment assumptions
+  \begin{itemize}
+    \item The environment will not exceed normal outdoor temperature ranges (0-35C). 
+    \item The device will be used in moderate environments, not in places with overwhelming amount of background noises (concerts, factories).
+    \item The environment will always be dry, no percipitation outside, eliminating the need for the system to be waterproof for now. 
+  \end{itemize}
+
+  \item User interaction Assumptions
+  \begin{itemize}
+    \item The user's head orientation remains stable (minimal rapid head motion) when the device detects sound direction. 
+  \end{itemize}
+
+  \item Legal Assumptions
+  \begin{itemize}
+    \item The user will always use the device in public, where there is no expectation of privacy. 
+    \item No audio data is permanently stored, trasnmitted or analyzed outside of the system. 
+  \end{itemize}
+\end{enumerate}
 
 \subsection{E.5 Effects}
-\wss{Elements and properties of the environment that the system will affect.}
+
+Since the system is mainly just processing input from the environment, it won't largely affect many of the environmental components mentioned above. 
+The main environmental component that the system will affect are users. Listed below are two ways the system will affect users.
+\begin{itemize}
+  \item The system will generate a small amount of heat, which may make the user feel more hot than usual. 
+  \item The system will raise awareness of the user's surroudings, reducing the likelihood of accidents when in public. 
+\end{itemize}
 
 \subsection{E.6 Invariants}
-\wss{Properties of the environment that the systemâ€™s operation must preserve.}
+
+\begin{enumerate}
+  \item User Safety \& Comfort
+  \begin{itemize}
+    \item The system must not significantly reduce the user's field of vision. 
+    \item The system must not emit heat at levels that cause discomfort or harm to the user. 
+  \end{itemize}
+
+  \item Legal Boundaries
+  \begin{itemize}
+    \item The system must maintain the privacy integrity of sounds it collects. This means, it doesn't permanently store any sounds collected from the environment. 
+  \end{itemize}
+\end{enumerate}
 
 \section{System}
 
