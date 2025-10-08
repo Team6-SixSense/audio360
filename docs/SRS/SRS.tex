@@ -411,7 +411,7 @@ data directly on the device.
 \textbf{microphone:}\label{def:microphone} Input sensor to a device that
 converts audio soundwaves to digital bytestream.
 
-\textbf{normal operating condition:}\label{def:normal_operatin_condition} The
+\textbf{normal operating condition:}\label{def:normal_operation_condition} The
 state in which the system, including hardware and softwre, operate within
 expected environmental and usage parameters. This includes audio input sampled
 at the correct sample rate, input audio signals are within the human audible
@@ -455,14 +455,14 @@ range (0Hz – 20kHz) \cite{Neuroscience2001}, and audio input levels below 90 d
   provides interfaces for high level applications to interact with
   hardware components.
 
-  \item \textbf{Audio Filtering:} \label{comp:signal_processing}
+  \item \textbf{Audio Filtering:} \label{comp:audio_filtering}
   Component responsible for processing raw audio signals in real-time sent
   by the microphones.
 
-  \item \textbf{Calibration Component:} \label{comp:signal_processing}
+  \item \textbf{Calibration Component:} \label{comp:calibration}
   Component for calibrating on-board hardware, such as microphones.
   
-  \item \textbf{Audio360 Engine:} \label{comp:program}
+  \item \textbf{Audio360 Engine:} \label{comp:audio360Engine}
   Main component responsible for running Audio360 features. It serves as the
   primary interface and controller for the Audio360 system. The component is
   designed to be hardware agnostic, allowing seamless integration with any
@@ -504,11 +504,7 @@ Functional Requirements
   synchronize audio signals from all microphones connected to the
   microcontroller.
 
-  \item \label{FR1_3}\textbf{FR1.3:} The firmware shall provide an interface
-  that allows external devices to extract processed audio data and its
-  corresponding frequency domain representation.
-
-  \item \label{FR1_4}\textbf{FR1.4:} The firmware shall handle memory and
+  \item \label{FR1_3}\textbf{FR1.3:} The firmware shall handle memory and
   feature functional errors to prevent the micrcontroller from crashing.
 \end{itemize}
 
@@ -544,59 +540,60 @@ Non-Functional Requirements
   proper error handling.
 \end{itemize}
 
-\subsubsection{\href{comp:signal_processing}{Signal Processing}} 
+\subsubsection{\href{comp:audio_filtering}{Audio Filtering}} 
 Functional Requirements
 \begin{itemize}
-  \item \label{FR3_1}\textbf{FR3.1:} The signal processing component shall
+  \item \label{FR3_1}\textbf{FR3.1:} The audio filtering component shall
   convert digital audio waveform to frequency domain.
 
-  \item \label{FR3_2}\textbf{FR3.2:} The signal processing component shall
+  \item \label{FR3_2}\textbf{FR3.2:} The audio filtering component shall
   normalize the amplitude of incoming and outgoing signals.
 
-  \item \label{FR3_3}\textbf{FR3.3:} The signal processing component shall
+  \item \label{FR3_3}\textbf{FR3.3:} The audio filtering component shall
   filter incoming audio signals to reduce frequency spectral leakage.
 
-  \item \label{FR3_4}\textbf{FR3.4:} The signal processing component shall
+  \item \label{FR3_4}\textbf{FR3.4:} The audio filtering component shall
   use available hardware acceleration method for efficient computations.
 
-  \item \label{FR3_5}\textbf{FR3.5:} The signal processing component shall
+  \item \label{FR3_5}\textbf{FR3.5:} The audio filtering component shall
   detect and flag audio anomalies such as clipping, lost signal and silence.
 \end{itemize}
 
 Non-Functional Requirements
 \begin{itemize}
-  \item \label{NFR3_1}\textbf{NFR3.1:} The signal processing component shall 
+  \item \label{NFR3_1}\textbf{NFR3.1:} The audio filtering component shall 
   represent audio signals in the frequency domain with less than 10\% error from
   the true value.
-  \item \label{NFR3_2}\textbf{NFR3.2:} The signal processing component shall be
+  \item \label{NFR3_2}\textbf{NFR3.2:} The audio filtering component shall be
   scalable to handle different input signal sizes without missing timing
   constraints defined in \href{NFR1_2}{NFR1.2} for input signal size up to
   44100 frames.
 
-  \item \label{NFR3_3}\textbf{NFR3.3:} The firmware shall have a audio
-  processing success rate end to end of atleast 90\% over 60 seconds.
+  \item \label{NFR3_3}\textbf{NFR3.3:} The audio filtering component shall have
+  an audio processing success rate end to end of atleast 90\% over 60 seconds.
 \end{itemize}
 
-\subsubsection{\href{comp:program}{Program}} 
+\subsubsection{\href{comp:audio360Engine}{Audio360 Engine}} 
 Functional Requirements
 \begin{itemize}
-  \item \label{FR4_1}\textbf{FR4.1:} The program shall retrieve data, such as
-  frequency domain and errors, from the microcontroller via UART for further
-  processing.
+  \item \label{FR4_1}\textbf{FR4.1:} The Audio360 Engine shall retrieve data,
+  such as frequency domain and errors, from the microcontroller via UART for
+  further processing.
 
-  \item \label{FR4_2}\textbf{FR4.2:} The program shall notify dependent
+  \item \label{FR4_2}\textbf{FR4.2:} The Audio360 Engine shall notify dependent
   components when new frequency data is available. The latest data shall always
   be used.
 \end{itemize}
 
 Non-Functional Requirements
 \begin{itemize}
-  \item \label{NFR4_1}\textbf{NFR4.1:} The program shall poll data without
-  conflicting with ongoing microcontroller memory writes, ensuring no data loss.
+  \item \label{NFR4_1}\textbf{NFR4.1:} The Audio360 Engine shall poll data
+  without conflicting with ongoing microcontroller memory writes, ensuring no
+  data loss.
 
-  \item \label{NFR4_2}\textbf{NFR4.2:} The program shall retrieve frequency data
-  within the timing constraints of the embedded firmware defined in
-  \href{NFR1_2}{NFR1.2} .
+  \item \label{NFR4_2}\textbf{NFR4.2:} The Audio360 Engine shall retrieve
+  frequency data within the timing constraints of the embedded firmware defined
+  in \href{NFR1_2}{NFR1.2} .
 \end{itemize}
 
 \subsubsection{\href{comp:frequency_analysis}{Frequency Analysis}} 
@@ -631,7 +628,7 @@ Non-Functional Requirements
 
   \item \label{NFR5_2}\textbf{NFR5.2:} The frequency analysis component shall
   achieve a minimum classification accuracy of 90\% under
-  \href{def:normal_operatin_condition}{normal operating conditions}.
+  \href{def:normal_operation_condition}{normal operating conditions}.
 
   \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
   direction of arrival of an audio source with a maximum error of 0.35 rad,
