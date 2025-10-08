@@ -18,8 +18,7 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
-
-\usepackage[round]{natbib}
+\usepackage{cite}
 
 %\usepackage{refcheck}
 
@@ -93,46 +92,318 @@
 \section{Goal}
 
 \subsection{G.1 Context and overall objective}
-\wss{High-level view of the project: organizational context and reason for building a system.} 
 
-\begin{goal}\label{goal:first}
-This is a goal example. If you need explicit (and automatic) numbering, you can use the definitions in the \texttt{.tex} template.
+With around 4 million Canadians affected by hearing loss \cite{Healthing2025}, 
+there is a significant need for assistive technologies that can improve 
+situational awareness and safety.
+Many safety cues and general sound alerts such as the sound of a car 
+approaching, a kettle whistling,
+or a phone ringing may be missed, leading to increased risk of injury and
+miscommunication.
+
+Many existing solutions focus on speech transcription, but lack the ability to
+provide directional information about sound sources or classify non-speech
+sounds. This project aims to address this gap by developing an assistive device
+that provides real-time visual indications of sound source locations and 
+classifications.
+
+The objective of this project is to develop an assistive device that aids
+individuals who are deaf or hard of hearing by providing real-time visual
+indications of sound source locations and classifications (ex. 'car on your 
+left').
+
+Some of the high-level goals of the project are:
+
+\begin{goal}\label{goal:audio_capture}
+Capture real-time audio data from a 
+\href{def:microphone_array}{microphone array}
+with synchronized sampling to enable accurate situational analysis
+of sound sources.
 \end{goal}
 
-\begin{req}\label{req:cross}
-This is a requirement example. It illustrates how numbering is continuous and cross-types (if this is what you need).
-\end{req}
+\begin{goal}\label{goal:audio_direction_analysis}
+Analyze captured audio to determine the direction of arrival (DoA) of
+sound sources with minimal error and with minimal latency nearing real-time.
+\end{goal}
+
+\begin{goal}\label{goal:audio_identification_analysis}
+Analyze captured audio to classify the sound sources with their English
+label (ex. 'car', 'phone', 'kettle', 'alarm', 'speech').
+\end{goal}
+
+\begin{goal}\label{goal:visual_display}
+Display audio classification and transcription on smart glasses in real-time
+without obstructing the user's field of view.
+\end{goal}
+
+\begin{goal}\label{goal:user_friendly_interaction}
+Provide a user-friendly interaction with the smart glasses,
+allowing the user to easily set up, use, and understand visual indicators.
+\end{goal}
+
+\begin{goal}\label{goal:user_comfort}
+Ensure that the system is comfortable to wear for extended periods of time,
+with minimal discomfort or fatigue.
+\end{goal}
     
 \subsection{G.2 Current situation}
-\wss{Current state of processes to be addressed by the project and the resulting system.}
 
-\begin{req}\label{req:memo}
-This is a requirement example. 
-It refines \ref{goal:first}
-\end{req}
-    
+Currently, individuals who are deaf or hard of hearing face significant
+challenges in maintaining situational awareness due to missed audio cues.
+Existing assistive technologies address some aspects of this problem, but
+leave critical gaps:
+
+\begin{itemize}
+\item \textbf{Smart glasses with transcription capabilities:} Some devices
+can listen to live human audio and transcribe it to text (multilingual) in
+real-time, displaying the transcript on a smartphone display.
+However, these solutions focus solely on speech transcription and do not
+provide directional information about sound sources or classify non-speech
+sounds.
+
+\item \textbf{Hearing aids:} Traditional hearing aids amplify ambient sounds
+to improve awareness of audio sources at various volumes \cite{NIDCD2022}. 
+While this helps individuals with partial hearing loss, it does not assist 
+those who are profoundly deaf, nor does it provide visual cues about sound 
+direction or classification.
+
+\item \textbf{Notification systems:} Some home automation systems can send
+visual alerts (e.g., flashing lights) when specific sounds are detected,
+such as doorbells or smoke alarms. However, these systems are limited to
+fixed locations and predetermined sound types, lacking portability and
+real-time directional awareness.
+\end{itemize}
+
+The current solutions fail to address the critical need for real-time,
+portable, directional awareness of environmental sounds, leaving individuals
+vulnerable to missing important safety cues such as approaching vehicles,
+warning beeps from machinery, or emergency alerts.
+
 \subsection{G.3 Expected benefits}
-\wss{New processes, or improvement to existing processes, made possible by the projectâ€™s results.}
+
+The proposed system will deliver significant improvements to the daily lives
+and safety of individuals who are deaf or hard of hearing:
+
+\begin{itemize}
+\item \textbf{Real-time spatial awareness:} Enable identification of sound
+source locations on a 2D plane in real-time, allowing users to quickly
+orient themselves toward important sounds such as someone calling their name,
+an approaching vehicle, or an emergency alarm.
+
+\item \textbf{Enhanced safety:} Reduce the risk of injury by alerting users
+to critical safety cues that are typically communicated through sound, such
+as warning beeps from forklifts, tea kettles whistling, car engines
+or emergency sirens (from emergency vehicles) approaching from behind.
+
+\item \textbf{Improved situational awareness:} Provide continuous awareness
+of the acoustic environment without requiring the user to constantly scan
+their surroundings, reducing cognitive load and enabling more natural
+interactions with their environment.
+
+\item \textbf{Sound classification:} Differentiate between various types of
+sounds (e.g., speech, alarms, vehicles, household appliances) to help users
+prioritize their attention and responses appropriately.
+
+\item \textbf{Reduced frustration and miscommunication:} Minimize instances
+of missed phone calls, doorbell rings, or verbal attempts to gain the user's
+attention, leading to smoother social interactions and reduced social
+isolation.
+
+\item \textbf{Portable and wearable solution:} Unlike fixed home automation
+systems, the smart glasses form factor provides continuous protection and
+awareness regardless of location, whether at home, work, or in public spaces.
+
+\item \textbf{Independence and confidence:} Empower users to navigate their
+environment more independently without relying on others to alert them to
+important sounds, fostering greater autonomy in daily activities.
+\end{itemize}
+
 
 
 \subsection{G.4 Functionality overview}
-\wss{Overview of the functions (behavior) of the system. Principal properties only (details are in the System book).}
+
+The system will provide the following principal functions:
+
+\begin{itemize}
+\item \textbf{Real-time audio capture:} Continuously capture audio signals
+from a synchronized microphone array mounted on smart glasses, ensuring
+precise temporal alignment for accurate spatial analysis.
+
+\item \textbf{Direction of arrival (DoA) estimation:} Process captured audio
+to determine the angular direction of sound sources on a 2D plane relative
+to the user's position, with a target accuracy of ±45° for single sound
+sources.
+
+\item \textbf{Sound source classification:} Analyze audio characteristics to
+classify detected sounds into meaningful categories (e.g., speech, vehicle
+sounds, alarms, household appliances) using audio fingerprinting techniques,
+with a target accuracy of at least 90\%.
+
+\item \textbf{Visual feedback generation:} Generate intuitive visual
+representations of detected sound sources, including their direction and
+classification, displayed on the smart glasses interface with minimal
+latency ($\leq 1$ second).
+
+\item \textbf{Multi-source handling:} Detect and track multiple simultaneous
+sound sources when feasible, prioritizing the most relevant or critical
+sounds based on classification and proximity.
+
+\item \textbf{Real-time processing:} Execute all signal processing,
+direction estimation and classification algorithms real-time,
+with consistent performance and low latency.
+
+\item \textbf{Noise cancellation or audio filtering:} The system will
+modify or filter the actual sounds in the environment based on direction
+of arrival in order to improve directional hearing. This would help improve
+the quality of the transcriptions provided by the system.
+\end{itemize}
 
 \subsection{G.5 High-level usage scenarios}
-\wss{Fundamental usage paths through the system.}
+
+The following scenarios illustrate fundamental usage paths through the system:
+
+\subsubsection{Scenario 1: Pedestrian crossing detection}
+A user is walking in an urban environment and approaches a street
+intersection. As they prepare to cross, a car approaches from their left
+side. The system detects the engine sound, estimates its direction (e.g.,
+90° to the left), classifies it as a vehicle, and displays a visual
+indicator on the smart glasses showing the direction and classification.
+The user recognizes the alert and waits for the vehicle to pass before
+crossing safely.
+
+\subsubsection{Scenario 2: Kitchen safety alert}
+A user is cooking in their kitchen when a tea kettle on the stove begins
+to whistle. The system captures the high-pitched sound through the
+microphone array, determines that it is coming from behind and to the
+right (e.g., 135°), classifies it as a kettle or alarm sound, and displays
+a directional indicator. The user turns toward the alert and removes the
+kettle from heat, preventing a potential hazard.
+
+\subsubsection{Scenario 3: Social interaction}
+A user is in a crowded room when someone calls their name from across the
+space. The system detects the speech sound, estimates the direction (e.g.,
+30° to the right), classifies it as speech or a human voice, and displays
+the information on the glasses. The user turns in the indicated direction
+to make eye contact and engage in conversation, reducing social friction
+and missed interactions.
+
+\subsubsection{Scenario 4: Workplace awareness}
+A user is working in an industrial setting when a forklift begins reversing
+nearby, emitting a warning beep. The system detects the beeping pattern,
+determines its direction (e.g., directly behind at 180°), classifies it as
+a warning signal, and alerts the user with a prominent visual indicator.
+The user steps aside to maintain a safe distance from the moving equipment.
 
 \subsection{G.6 Limitations and exclusions}
-\wss{Aspects that the system need not address.}
+
+The following aspects are explicitly outside the scope of this project:
+
+\begin{itemize}
+\item \textbf{Autonomous danger assessment:} The system will not independently
+evaluate whether a detected sound represents an immediate danger or
+automatically alert the user of hazardous situations. It will present
+directional and classification information, leaving interpretation and
+response decisions to the user.
+
+\item \textbf{Augmented reality overlay:} The system will not provide
+full augmented reality capabilities with spatial overlays showing sound
+locations directly mapped onto the user's field of view. Visual feedback
+will be presented through a simpler display interface on the smart glasses.
+
+\item \textbf{User response monitoring:} The system will not track whether
+the user has noticed, acknowledged, or responded to presented alerts. There
+is no feedback loop to ensure user reaction or to escalate notifications.
+
+\item \textbf{Multilingual speech transcription:} Audio transcription
+functionality, if implemented, will be limited to English only. Support
+for other languages is not included in the current scope.
+
+\item \textbf{3D spatial localization:} Direction estimation will be
+constrained to a 2D horizontal plane around the user. Elevation angle
+determination (above or below the user's head level) is excluded from
+the core functionality.
+
+\item \textbf{Sound source distance estimation:} While direction will be
+provided, the system will not attempt to estimate the absolute distance
+to sound sources.
+
+\item \textbf{Continuous recording or data storage:} The system will not
+record or store audio data beyond what is necessary for real-time processing.
+No historical logs of detected sounds will be maintained.
+
+\item \textbf{Network connectivity:} All processing will
+occur locally on the embedded hardware. The system will not require internet
+connectivity or cloud-based services for core functionality.
+\end{itemize}
 
 \subsection{G.7 Stakeholders and requirements sources}
-\wss{Groups of people who can affect the project or be affected by it, and other places to consider for information about the project and system.}
+
+\subsubsection{Primary stakeholders}
+
+\begin{itemize}
+\item \textbf{Individuals who are deaf or hard of hearing:} The primary
+end-users of the system, who will directly benefit from improved
+situational awareness and safety. This group is quite large in population,
+with approximately 4 million people who experience hearing loss 
+in Canada alone (1 in 10).
+\end{itemize}
+
+\subsubsection{Secondary stakeholders}
+
+\begin{itemize}
+\item \textbf{Family members and caregivers:} Individuals who support people
+with hearing loss and will benefit from improved communication and reduced
+safety concerns.
+
+\item \textbf{Employers and workplace safety officers:} Organizations that
+employ individuals with hearing loss and are responsible for maintaining
+safe working environments.
+
+\item \textbf{Accessibility advocates and organizations:} Groups focused on
+improving quality of life and independence for individuals with disabilities.
+
+\item \textbf{Healthcare providers and audiologists:} Professionals who may
+recommend or integrate such assistive technologies into patient care plans.
+
+\item \textbf{Future developers and researchers:} The broader engineering
+and scientific community who may build upon this work or apply similar
+techniques to related problems.
+\end{itemize}
+
+\subsubsection{Requirements sources}
+
+\begin{itemize}
+\item \textbf{Academic literature:} Research on hearing loss impact,
+assistive technologies, direction of arrival algorithms, and audio
+classification techniques.
+
+\item \textbf{Domain experts:} Consultation with domain experts, such as 
+Dr. Mohrenschildt, for technical feasibility and requirements validation.
+
+\item \textbf{Existing assistive technologies:} Analysis of current solutions
+such as hearing aids, transcription glasses, and home alert systems to
+identify gaps and opportunities.
+
+\item \textbf{Hardware and software documentation:} Technical specifications
+for microcontroller, source code libraries, smart glasses hardware,
+and microphone array components.
+
+\item \textbf{Standards and best practices:} IEEE standards for embedded
+systems, accessibility guidelines, and real-time system design principles.
+
+\item \textbf{Proof of concept testing:} Empirical results from prototyping
+and laboratory testing to validate technical approaches and refine
+requirements.
+\end{itemize}
 
 
 \section{Environment}
 
 \subsection{E.1 Glossary}
-\wss{Clear and precise definitions of all the vocabulary specific to the application domain, including technical terms, words from ordinary language used in a special meaning, and acronyms.
-This chapter should not be empty!}
+
+\textbf{Microphone Array:}\label{def:microphone_array} A collection of 
+microphones that are synchronized to capture audio from the 
+environment to create a single multi-channel audio signal.
 
 \subsection{E.2 Components}
 \wss{List of elements of the environment that may affect or be affected by the system and project. Includes other systems to which the system must be interfaced.}
@@ -192,6 +463,8 @@ This chapter should not be empty!}
 \subsection{P.7 Requirements process and report}
 \wss{Initially, description of what the requirements process will be; later, report on its steps.}
 
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \newpage{}
 \section*{Appendix --- Reflection}
