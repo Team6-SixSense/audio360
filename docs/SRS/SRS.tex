@@ -21,11 +21,6 @@
 \usepackage{afterpage}
 \usepackage{cite}
 
-\usepackage{tikz}
-\usetikzlibrary{positioning, shapes, arrows.meta}
-\usepackage{float}
-\usepackage[round]{natbib}
-
 %\usepackage{refcheck}
 
 \hypersetup{
@@ -122,7 +117,7 @@ Some of the high-level goals of the project are:
 
 \begin{goal}\label{goal:audio_capture}
 Capture real-time audio data from a 
-\href{def:microphone_array}{microphone array}
+\hyperref[def:microphone_array]{microphone array}
 with synchronized sampling to enable accurate situational analysis
 of sound sources.
 \end{goal}
@@ -474,7 +469,7 @@ The development of this project requires iterating over various stages of the re
     \begin{enumerate}
         \item Conduct stakeholder interviews and surveys to gather users' needs. 
         \item Review background documents and research articles describing how core features have been implemented in the past. 
-        \item Consult with the technical supervisor of this application (MVM~\ref{itm:domain-experts}) to gain insight into what approaches can be used. 
+        \item Consult with the technical supervisor of this application (\hyperref[itm:domain-experts]{MVM}) to gain insight into what approaches can be used. 
     \end{enumerate}
 
     \item \textbf{Analysis}
@@ -489,7 +484,7 @@ The development of this project requires iterating over various stages of the re
     \item \textbf{Documentation}
     \begin{enumerate}
         \item Write requirements in a structured format that is clear, testable, and unambiguous. 
-        \item Use numbering for different requirements and goals for traceability. 
+        \item Use labels for different requirements and goals for traceability. 
     \end{enumerate}
 
     \item \textbf{Specification}
@@ -506,25 +501,22 @@ The development of this project requires iterating over various stages of the re
 \end{enumerate}
 
 
-As this project follows the V-model methodology, the team will aim to make the various stages of the requirements process mentioned above
+As this project follows the V-model methodology, Figure \ref{fig:v-model-process}, the team will aim to make the various stages of the requirements process mentioned above
 linear. Since although this model allows the team to re-visit previous parts, it will cost a lot to change in later stages of the project. 
 This is why this team is heavily prioritizing the initial stages of the requirements process. 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\textwidth]{./images/v_model.png}
+    \includegraphics[width=0.75\textwidth]{./images/v_model.png}
     \caption{Illustration of the v-model process.}
     \label{fig:v-model-process}
 \end{figure}
 
-<<<<<<< HEAD
+\newpage
 \bibliographystyle{IEEEtran}
 \bibliography{../../refs/References}
 
-\newpage{}
-=======
 \newpage
->>>>>>> a796262 (fix[doc] - issue#126: Addressing requirement process feedback)
 \section*{Appendix --- Reflection}
 
 \input{../Reflection.tex}
