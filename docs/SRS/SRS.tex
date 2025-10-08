@@ -6,6 +6,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{caption}
 \usepackage{colortbl}
 \usepackage{xr}
 \usepackage{hyperref}
@@ -247,7 +248,7 @@ with a target accuracy of at least 90\%.
 \item \textbf{Visual feedback generation:} Generate intuitive visual
 representations of detected sound sources, including their direction and
 classification, displayed on the smart glasses interface with minimal
-latency ($\leq 1$ second).
+latency ($\leq$1 second).
 
 \item \textbf{Multi-source handling:} Detect and track multiple simultaneous
 sound sources when feasible, prioritizing the most relevant or critical
@@ -382,7 +383,7 @@ techniques to related problems.
 assistive technologies, direction of arrival algorithms, and audio
 classification techniques.
 
-\item \textbf{Domain experts:} Consultation with domain experts, such as 
+\item \textbf{Domain experts:}\label{itm:domain-experts} Consultation with domain experts, such as 
 Dr. Mohrenschildt, for technical feasibility and requirements validation.
 
 \item \textbf{Existing assistive technologies:} Analysis of current solutions
@@ -473,7 +474,7 @@ The development of this project requires iterating over various stages of the re
     \begin{enumerate}
         \item Conduct stakeholder interviews and surveys to gather users' needs. 
         \item Review background documents and research articles describing how core features have been implemented in the past. 
-        \item Consult with the technical supervisor of this application (MVM) to gain insight into what approaches can be used. 
+        \item Consult with the technical supervisor of this application (MVM~\ref{itm:domain-experts}) to gain insight into what approaches can be used. 
     \end{enumerate}
 
     \item \textbf{Analysis}
@@ -504,44 +505,26 @@ The development of this project requires iterating over various stages of the re
     \end{enumerate}
 \end{enumerate}
 
-As this project follows an agile methodology, the process will not be strictly linear. 
-It may be necessary to revisit different stages of the requirements process to pivot or redefine success criteria based on continuous feedback from key stakeholders.
+
+As this project follows the V-model methodology, the team will aim to make the various stages of the requirements process mentioned above
+linear. Since although this model allows the team to re-visit previous parts, it will cost a lot to change in later stages of the project. 
+This is why this team is heavily prioritizing the initial stages of the requirements process. 
 
 \begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    ovalproc/.style={ellipse, draw, thick, minimum width=3.2cm, minimum height=1cm, font=\small, align=center},
-    arrow/.style={->, thick}
-]
-
-% Nodes
-\node[ovalproc] (elicitation) {Elicitation};
-\node[ovalproc, above right=of elicitation] (analysis) {Analysis};
-\node[ovalproc, right=of analysis] (specification) {Specification};
-\node[ovalproc, right=of elicitation] (documentation) {Documentation};
-\node[ovalproc, right=of documentation] (validation) {Validation};
-
-% Arrows
-\draw[arrow] (elicitation) -- (analysis);
-\draw[arrow] (analysis) -- (specification);
-\draw[arrow] (specification) -- (validation);
-\draw[arrow] (elicitation) -- (documentation);
-\draw[arrow] (analysis) -- (documentation);
-\draw[arrow] (specification) -- (documentation);
-\draw[arrow] (validation) -- (documentation);
-\draw[arrow] (documentation) -- (elicitation);
-\draw[arrow] (documentation) -- (analysis);
-\draw[arrow] (documentation) -- (specification);
-\draw[arrow] (documentation) -- (validation);
-
-\end{tikzpicture}
-\caption{Iterative requirements process showing feedback between stages.}
+    \centering
+    \includegraphics[width=0.4\textwidth]{./images/v_model.png}
+    \caption{Illustration of the v-model process.}
+    \label{fig:v-model-process}
 \end{figure}
 
+<<<<<<< HEAD
 \bibliographystyle{IEEEtran}
 \bibliography{../../refs/References}
 
 \newpage{}
+=======
+\newpage
+>>>>>>> a796262 (fix[doc] - issue#126: Addressing requirement process feedback)
 \section*{Appendix --- Reflection}
 
 \input{../Reflection.tex}
