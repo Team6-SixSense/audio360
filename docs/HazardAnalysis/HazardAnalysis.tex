@@ -64,11 +64,80 @@ hazards.}
 
 \section{System Boundaries and Components}
 
-\wss{Dividing the system into components will help you brainstorm the hazards.
-You shouldn't do a full design of the components, just get a feel for the major
-ones.  For projects that involve hardware, the components will typically include
-each individual piece of hardware.  If your software will have a database, or an
-important library, these are also potential components.}
+This section is broken down into two subsections: one for components within the
+system boundary, and one for components outside the system boundary.
+
+\subsection{Inside the System Boundary}
+
+The following components are within the system's control and responsibility:
+
+\begin{itemize}
+\item \textbf{Embedded firmware:} Real-time operating system and all
+embedded software running on the processing unit.
+
+\item \textbf{Signal processing module:} Real-time digital signal processing
+algorithms including frequency domain transforms, filtering, and time-domain
+analysis.
+
+\item \textbf{Direction of arrival (DoA) estimation:} Algorithms for
+computing sound source direction on a 2D plane based on time difference of
+arrival and phase differences across microphones.
+
+\item \textbf{Audio classification engine:} Sound fingerprinting and
+classification logic to identify and categorize detected sounds (e.g.,
+speech, vehicles, alarms).
+
+\item \textbf{Visualization Controller:} \label{comp:viz_controller}
+Component reposonsible for creating and sending visualization output to the
+glasses.
+
+\item \textbf{Configuration and calibration:} Microphone array calibration
+routines and system configuration parameters.
+\end{itemize}
+
+\subsection{Outside the System Boundary}
+
+The following external entities interact with the system but are not under
+its direct control:
+
+\begin{itemize}
+\item \textbf{Users:} Individuals who are deaf or hard of hearing wearing
+the device. Their actions, responses to alerts, and interpretation of
+displayed information are outside the system's control.
+
+\item \textbf{Environmental sounds:} Acoustic signals in the physical
+environment, including speech, vehicle noises, alarms, and ambient sounds.
+The system detects and processes these but does not generate or control
+them.
+
+\item \textbf{Audio capture subsystem:} Synchronized sampling logic for the
+microphone array, including analog-to-digital conversion interfaces and
+buffer management. This component is included in the microcontroller and is not
+within our system's control.
+
+\item \textbf{Physical microphone hardware:} Microphone sensors that capture
+acoustic pressure waves. While the system controls their digital interface,
+the physical transduction mechanism is external.
+
+\item \textbf{Smart glasses hardware:} The physical display device,
+including its screen, optics, power management, and form factor. The system
+sends display commands but does not control the hardware's internal
+operation.
+
+\item \textbf{\href{def:microcontroller}{Microcontroller}:}
+\label{comp:microcontroller} Component responsible for processing real time
+data of sensor inputs. This hardware component's performance and reliability
+are outside our system's control.
+
+\item \textbf{Power supply:} Battery or external power source providing
+electrical power to system components. Power management at the hardware
+level is external to the software system.
+
+\item \textbf{Physical environment:} Room acoustics, ambient noise levels,
+temperature, and other environmental factors that affect sound propagation
+and microphone performance.
+
+
 
 \section{Critical Assumptions}
 
