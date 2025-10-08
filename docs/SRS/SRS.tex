@@ -455,21 +455,27 @@ range (0Hz – 20kHz) \cite{Neuroscience2001}, and audio input levels below 90 d
   provides interfaces for high level applications to interact with
   hardware components.
 
-  \item \textbf{Signal Processing:} \label{comp:signal_processing}
+  \item \textbf{Audio Filtering:} \label{comp:signal_processing}
   Component responsible for processing raw audio signals in real-time sent
   by the microphones.
+
+  \item \textbf{Calibration Component:} \label{comp:signal_processing}
+  Component for calibrating on-board hardware, such as microphones.
   
-  \item \textbf{Program:} \label{comp:program}
-  Main component that run computational expensive tasks and acts as the
-  controller for the user interface.
+  \item \textbf{Audio360 Engine:} \label{comp:program}
+  Main component responsible for running Audio360 features. It serves as the
+  primary interface and controller for the Audio360 system. The component is
+  designed to be hardware agnostic, allowing seamless integration with any
+  firmware running on other hardware.
   
   \item \textbf{Frequency Analysis:} \label{comp:frequency_analysis}
-  Component responsible for analyzing frequency signals that was
-  extracted from the microcontroller.
+  Component responsible for analyzing properties of processed frequency signals.
+  Sub components of this includes audio classification and direction of arrival
+  estimation.
   
   \item \textbf{Visualization Controller:} \label{comp:viz_controller}
   Component reposonsible for creating and sending visualization output to the
-  glasses.
+  output display \href{comp:display}.
 \end{itemize}
 
 \subsubsection{Hardware Components}
@@ -482,11 +488,8 @@ range (0Hz – 20kHz) \cite{Neuroscience2001}, and audio input levels below 90 d
   displaying visuals to the user.
 
   \item \textbf{\href{def:microcontroller}{Microcontroller}:}
-  \label{comp:microcontroller} Component responsible for processing real time
-  data of sensor inputs.
-
-  \item \textbf{Connecting Device:} Component responsible for running software
-  program and interacting with the microcontroller.
+  \label{comp:microcontroller} Component responsible for executing the main
+  software and interfacing with input and output peripheral devices.
 \end{itemize}
 
 \subsection{S.2 Functionality}
