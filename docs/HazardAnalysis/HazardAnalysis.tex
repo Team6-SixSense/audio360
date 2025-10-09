@@ -9,6 +9,7 @@
 \usepackage{float}
 \usepackage{pdflscape}
 \usepackage{xr-hyper}
+\usepackage{cite}
 
 \hypersetup{
     colorlinks=true,       % false: boxed links; true: colored links
@@ -158,24 +159,31 @@ and microphone performance.
 \begin{enumerate}
     \item Microphone
     \begin{itemize}
-        \item All microphones are able to capture frequencies between at least 0 to 20kHz, which is the human sound detectable range (\ref{SRS-def:normal_operation_condition}).
-        \item Microphones operate correctly within normal operating temperatures of 0–35°C. 
+        \item All microphones are able to capture frequencies between at least
+        20 Hz to 20kHz, which is the human sound detectable range
+        \cite{Neuroscience2001}.
+        \item Microphones operate correctly within normal operating temperatures
+        of 0-35°C. 
     \end{itemize}
     
     \item Microcontroller
     \begin{itemize}
-        \item The 4 analog-to-digital converters (ADC) provides stable and synchronized sampling. 
-        \item Processor's clock frequency remains sable under normal operating temperatures 0–35°C. 
+        \item The analog-to-digital converters (ADC) that comes with the
+        hardware provides stable conversions in real-time.
+        \item Processor's clock frequency remains stable under normal
+        operating temperatures 0-35°C.
     \end{itemize}
 
     \item Output Display
     \begin{itemize}
-        \item Visual indicators on the smart glass remain visible in typical lighting conditions. 
+        \item Visual indicators on the smart glass remain visible in typical
+        lighting conditions. 
     \end{itemize}
 
     \item System Integration
     \begin{itemize}
-        \item Voltage and power is maintained by the controller firmware itself and we do not need to manage that ourselves. 
+        \item Voltage and power is maintained by the controller firmware itself
+        and we do not need to manage that ourselves. 
     \end{itemize}
     
 \end{enumerate}
@@ -402,6 +410,10 @@ project progress:
     \item \hyperref[SR8]{SR8}
     \item \hyperref[SR10]{SR10}
 \end{itemize}
+
+\newpage
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \newpage{}
 
