@@ -92,6 +92,7 @@ this potential failure mode.}
 \section{Failure Mode and Effect Analysis}
 
 \subsection{Severity Mapping Table}
+The severity, occurrence, and detection ratings used in the FMEA table are defined as follows:
 \begin{table}[H]
 \begin{tabular}{c|c|c|c}
 
@@ -109,7 +110,7 @@ this potential failure mode.}
 \subsection{Priority Mapping Table}
 
 The priority level is determined by the summation of the severity, occurrence,
-and detection ratings. The priority levels are defined as follows:
+and detection ratings:
 
 \begin{table}[H]
     \begin{tabular}{c|c}
@@ -123,7 +124,7 @@ and detection ratings. The priority levels are defined as follows:
 
 \newpage
 \pdfpagewidth=15in
-\pdfpageheight=13in
+\pdfpageheight=11.5in
 \newgeometry{left=1.5cm, right=1cm, top=1cm, bottom=1cm}
 
     
@@ -225,6 +226,18 @@ and detection ratings. The priority levels are defined as follows:
 
 \pdfpagewidth=8.5in
 \pdfpageheight=11in
+
+\subsection{Out of Scope Failure Modes}
+The project involves off the shelf hardware components with their own possible
+failure modes and possible mitigations. Since the hardware and electrical 
+components are not being designed as part of the project, 
+these failure modes are considered out of scope:
+\begin{itemize}
+    \item Battery failure / damage.
+    \item Physical display damage.
+    \item Power supply issues.
+    \item Physical damage to the glasses.
+\end{itemize}
 
 
 \section{Safety and Security Requirements}
