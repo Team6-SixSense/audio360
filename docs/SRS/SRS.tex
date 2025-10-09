@@ -404,11 +404,11 @@ requirements.
     microphones that are synchronized to capture audio from the 
     environment to create a single multi-channel audio signal.
 
-    \item \textbf{microcontroller:}\label{def:microcontroller} Compact embedded
-    hardware system with a CPU, memory, input/output peripherals, designed
+    \item \textbf{Microcontroller:}\label{def:microcontroller} Compact embedded
+    hardware system with a CPU, memory, input/output peripherals, designed to
     process real-time data directly on the device.
 
-    \item \textbf{microphone:}\label{def:microphone} Input sensor to a device
+    \item \textbf{Microphone:}\label{def:microphone} Input sensor to a device
     that converts audio soundwaves to digital bytestream.
 
     \item \textbf{Normal Operating Condition:}
@@ -418,6 +418,11 @@ requirements.
     rate, input audio signals are within the human audible range
     (20 Hz – 20 kHz) \cite{Neuroscience2001}, and audio input levels below
     90 dB.
+
+    \item \textbf{Spectral Leakage:} \label{def:spectral_leakage} 
+    The spreading of a signal's energy across multiple frequency bins in a
+    frequency spectrum due to finite time windowing. Essentially, noise that is
+    caused by sharp signal cutting when processing audio signals as windows.
 
 \end{itemize}
 
@@ -457,14 +462,14 @@ requirements.
   \item \textbf{Driver Layer:} \label{comp:driver_layer}
   Component responsible for providing drivers on the microcontroller. It
   provides interfaces for high level applications to interact with
-  hardware components.
+  hardware components external to the microcontroller
 
   \item \textbf{Audio Filtering:} \label{comp:audio_filtering}
   Component responsible for processing raw audio signals in real-time sent
   by the microphones.
 
   \item \textbf{Calibration Component:} \label{comp:calibration}
-  Component for calibrating on-board hardware, such as microphones.
+  Component for calibrating hardware including microphones and output display.
   
   \item \textbf{Audio360 Engine:} \label{comp:audio360Engine}
   Main component responsible for running Audio360 features. It serves as the
@@ -531,7 +536,7 @@ Non-Functional Requirements
 \subsubsection{\hyperref[comp:driver_layer]{Driver Layer}}
 Functional Requirements
 \begin{itemize}
-    \item \label{FR2_1}\textbf{FR2.1:} The driver layer shall provide an
+  \item \label{FR2_1}\textbf{FR2.1:} The driver layer shall provide an
   interface for higher level software to interact with the hardware on the
   microcontroller.
 
@@ -540,15 +545,14 @@ Functional Requirements
 
   \item \label{FR2_3}\textbf{FR2.3:} The driver layer shall return error codes 
   upon return to higher-level software to support error handling.
+
+  \item \label{FR2_4}\textbf{FR2.4:} The driver shall maintain data integrity
+  on memory slots that is actively being used.
 \end{itemize}
 
 Non-Functional Requirements
 \begin{itemize}
-  \item \label{NFR2_1}\textbf{NFR2.1:} The driver shall maintain data integrity
-  by locking memory slots that are still being used when another component
-  requests to write to it.
-
-  \item \label{NFR2_2}\textbf{NFR2.2:} The driver shall immediately propagate
+  \item \label{NFR2_1}\textbf{NFR2.1:} The driver shall immediately propagate
   any errors to the firmware layer for proper error handling.
 \end{itemize}
 
@@ -562,7 +566,8 @@ Functional Requirements
   normalize the amplitude of incoming and outgoing signals.
 
   \item \label{FR3_3}\textbf{FR3.3:} The audio filtering component shall
-  filter incoming audio signals to reduce frequency spectral leakage.
+  filter incoming audio signals to reduce frequency
+  \hyperref[def:spectral_leakage]{spectral leakage}.
 
   \item \label{FR3_4}\textbf{FR3.4:} The audio filtering component shall
   use available hardware acceleration method for efficient computations.
