@@ -156,7 +156,7 @@ and microphone performance.
 \begin{enumerate}
     \item Microphone
     \begin{itemize}
-        \item All microphones exihibit consistent sensitvity  once calibrated. 
+        \item All microphones are able to capture frequencies between at least 0 to 20kHz, which is the human sound detectable range.
         \item Microphones operate correctly within normal operating temperatures of 0–35°C. 
     \end{itemize}
     
@@ -173,21 +173,14 @@ and microphone performance.
 
     \item System Integration
     \begin{itemize}
-        \item Startup and shutdown sequences initialize and terminate all peripherals safely. 
+        \item Voltage and power is maintained by the controller firmware itself and we do not need to manage that ourselves. 
     \end{itemize}
 
     \item Driver Layer
     \begin{itemize}
-        \item ADC drivers sample microphone input signals correctly without loss. 
         \item Output display driver interfaces correctly with the processor. 
     \end{itemize}
 \end{enumerate}
-
-
-\wss{These assumptions that are made about the software or system.  You should
-minimize the number of assumptions that remove potential hazards.  For instance,
-you could assume a part will never fail, but it is generally better to include
-this potential failure mode.}
 
 \section{Failure Mode and Effect Analysis}
 
