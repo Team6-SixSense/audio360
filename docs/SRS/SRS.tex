@@ -19,6 +19,11 @@
 \usepackage{afterpage}
 \usepackage{cite}
 
+\usepackage[numbers]{natbib}
+
+
+%\usepackage{refcheck}
+
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
       colorlinks=true,       % false: boxed links; true: colored links
@@ -434,19 +439,20 @@ requirements.
   \item Physical Environment
   \begin{itemize}
     \item Ambient noise sources that the system needs to detect and classify (car going by, people talking, dog barking)
-    \item Weather conditions that may distort the microphone input (wind, rain)
+    \item Sounds that our classification module does not have knowledge about. 
+    \item Weather conditions that may distort the microphone input (wind, rain, damping from humidity)
     \item Room acoustics that will differ based on the space the user is in (inside a building vs outside)
   \end{itemize}
 
   \item User interaction
   \begin{itemize}
-    \item The system will be mounted on the user's head, so that will be affected by the system. 
+    \item The system will be mounted on the user's head, which is considered an external component affected by the system.
     \item The user's head movement will also affect the system, since it may affect the microphone orientation and sound localization. 
   \end{itemize}
 
   \item Legal Components
   \begin{itemize}
-    \item Privacy standards related to contunous audio capture in public spaces. 
+    \item Privacy standards related to continuous audio capture in public spaces. 
   \end{itemize}
 \end{enumerate}
 
@@ -455,24 +461,23 @@ requirements.
 \begin{enumerate}
   \item Legal constraints
   \begin{itemize}
-    \item Criminal Code - Private Communications (Section 184). Under this provision, it's an offense to listen, record or acquire a private communication without consent.
+    \item Criminal Code - Private Communications (Section 184) \cite{CriminalCode184}. Under this provision, it's an offense to listen, record or acquire a private communication without consent.
     Although audio retrieved from the environment won't be stored, this provision may limit where the user is able to use this device. Most likely, they 
     may only be able to use this device in public places.
-    \item Privacy \& Personal Information Laws (PIPEDA). Under this act, if data is stored, transmitted or analyzed, this act triggers obligations that must follow under the privacy law. 
-    These obligations include consent, secure handling and limited handling. These obligations may limit what can be done with the audio sources.
+    \item Privacy \& Personal Information Laws (PIPEDA) \cite{PIPEDA2000}. Under this act, if data is stored, transmitted or analyzed, this act triggers obligations that must follow under the privacy law. 
+    These obligations include consent, secure handling and limited handling. These obligations limit what can be done with the audio sources.
   \end{itemize}
 
   \item User interaction constraints
   \begin{itemize}
-    \item Since the device must fit on the user's head, the system is limited in size, which limits the robustness of the hardware being are using. As such,
-    the system will be constrained on what software algorithms it can run. For example, deep machine learning algorithms will not be feasible on this device. 
+    \item Since the device must fit on the user's head, the hardware is limited in size, resulting in chips with slower CPUs and less onboard memory which limits onboard processing. 
     \item Since the user will be using this system throughout the day, the system must operate on a portable power source.
   \end{itemize}
 
   \item Funding constraints
   \begin{itemize}
-    \item With a limited maximum budget of \$500, the system is very limited on what hardware can be bought. This restriction will limit the system's functionality 
-    since it means the system will have to be very selective of which algorithms it can use.
+    \item With a maximum budget of \$500, the hardware capabilities which includes CPU speed, memory space, etc. is limited. 
+    As a result, the system functionality will be impacted based on the limitations of the hardware. Because of this, the team is working on hardware acceleration techniques (\ref{FR3_4})
   \end{itemize}
 
   \item Physical environment constraints
@@ -1510,5 +1515,10 @@ stages of the requirements process.
 \input{../Reflection.tex}
 
 \input{../SRS_Reflection.tex}
+
+\newpage{}
+
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \end{document}
