@@ -399,23 +399,27 @@ requirements.
 
 \subsection{E.1 Glossary}
 
-\textbf{Microphone Array:}\label{def:microphone_array} A collection of 
-microphones that are synchronized to capture audio from the 
-environment to create a single multi-channel audio signal.
+\begin{itemize}
+    \item \textbf{Microphone Array:}\label{def:microphone_array} A collection of 
+    microphones that are synchronized to capture audio from the 
+    environment to create a single multi-channel audio signal.
 
+    \item \textbf{microcontroller:}\label{def:microcontroller} Compact embedded
+    hardware system with a CPU, memory, input/output peripherals, designed
+    process real-time data directly on the device.
 
-\textbf{microcontroller:}\label{def:microcontroller} Compact embedded hardware
-system with a CPU, memory, input/output peripherals, designed process real-time
-data directly on the device.
+    \item \textbf{microphone:}\label{def:microphone} Input sensor to a device
+    that converts audio soundwaves to digital bytestream.
 
-\textbf{microphone:}\label{def:microphone} Input sensor to a device that
-converts audio soundwaves to digital bytestream.
+    \item \textbf{Normal Operating Condition:}
+    \label{def:normal_operation_condition} The state in which the system,
+    including hardware and softwre, operate within expected environmental and
+    usage parameters. This includes audio input sampled at the correct sample
+    rate, input audio signals are within the human audible range
+    (20 Hz – 20 kHz) \cite{Neuroscience2001}, and audio input levels below
+    90 dB.
 
-\textbf{normal operating condition:}\label{def:normal_operation_condition} The
-state in which the system, including hardware and softwre, operate within
-expected environmental and usage parameters. This includes audio input sampled
-at the correct sample rate, input audio signals are within the human audible
-range (0Hz – 20kHz) \cite{Neuroscience2001}, and audio input levels below 90 dB.
+\end{itemize}
 
 \subsection{E.2 Components}
 \wss{List of elements of the environment that may affect or be affected by the system and project. Includes other systems to which the system must be interfaced.}
@@ -475,26 +479,26 @@ range (0Hz – 20kHz) \cite{Neuroscience2001}, and audio input levels below 90 d
   
   \item \textbf{Visualization Controller:} \label{comp:viz_controller}
   Component reposonsible for creating and sending visualization output to the
-  output display \href{comp:display}.
+  \hyperref[comp:display]{output display}.
 \end{itemize}
 
 \subsubsection{Hardware Components}
 
 \begin{itemize}
-  \item \textbf{\href{def:microphone}{Microphone}:}\label{comp:microphone}
+  \item \textbf{Microphone:}\label{comp:microphone}
   Component responsible for collecting audio signals from the environment.
 
   \item \textbf{Output display:}\label{comp:display} Component responsible for
   displaying visuals to the user.
 
-  \item \textbf{\href{def:microcontroller}{Microcontroller}:}
+  \item \textbf{Microcontroller:}
   \label{comp:microcontroller} Component responsible for executing the main
   software and interfacing with input and output peripheral devices.
 \end{itemize}
 
 \subsection{S.2 Functionality}
 
-\subsubsection{\href{comp:embedded_firmware}{Embedded Firmware}}
+\subsubsection{\hyperref[comp:embedded_firmware]{Embedded Firmware}}
 Functional Requirements
 \begin{itemize}
   \item \label{FR1_1}\textbf{FR1.1:} The firmware shall schedule tasks
@@ -504,8 +508,8 @@ Functional Requirements
   synchronize audio signals from all microphones connected to the
   microcontroller.
 
-  \item \label{FR1_3}\textbf{FR1.3:} The firmware shall handle memory and
-  feature functional errors to prevent the micrcontroller from crashing.
+  \item \label{FR1_3}\textbf{FR1.3:} The firmware shall handle memory errors to
+  prevent the micrcontroller from crashing.
 \end{itemize}
 
 Non-Functional Requirements
@@ -515,32 +519,35 @@ Non-Functional Requirements
   have higher priority.
   
   \item \label{NFR1_2}\textbf{NFR1.2:} The firmware shall operate
-  faster than the connected \href{NFR7_1}{microphone sample rate 44100Hz}.
+  faster than the connected microphone sample rate 44100 Hz, refering to
+  \hyperref[NFR7_1]{NFR7.1}.
 \end{itemize}
 
-\subsubsection{\href{comp:driver_layer}{Driver Layer}}
+\subsubsection{\hyperref[comp:driver_layer]{Driver Layer}}
 Functional Requirements
 \begin{itemize}
-  \item \label{FR2_1}\textbf{FR2.1:} The driver layer shall provide an
-  interface for higher level software to interact with hardware based on
-  system permissions.
+    \item \label{FR2_1}\textbf{FR2.1:} The driver layer shall provide an
+  interface for higher level software to interact with the hardware on the
+  microcontroller.
 
-  \item \label{FR2_2}\textbf{FR2.2:} The driver layer shall return error codes 
+  \item \label{FR2_2}\textbf{FR2.2:} The driver layer shall process 
+  hardware interface requests based on system permissions of the requester.
+
+  \item \label{FR2_3}\textbf{FR2.3:} The driver layer shall return error codes 
   upon return to higher-level software to support error handling.
 \end{itemize}
 
 Non-Functional Requirements
 \begin{itemize}
   \item \label{NFR2_1}\textbf{NFR2.1:} The driver shall maintain data integrity
-  by locking memory slots that is still being used when a process tries to
-  write to it.
+  by locking memory slots that are still being used when another component
+  requests to write to it.
 
-  \item \label{NFR2_2}\textbf{NFR2.2:} The driver shall have blocking calls to
-  ensure that harware errors are always propagated to the firmware layer for
-  proper error handling.
+  \item \label{NFR2_2}\textbf{NFR2.2:} The driver shall immediately propagate
+  any errors to the firmware layer for proper error handling.
 \end{itemize}
 
-\subsubsection{\href{comp:audio_filtering}{Audio Filtering}} 
+\subsubsection{\hyperref[comp:audio_filtering]{Audio Filtering}} 
 Functional Requirements
 \begin{itemize}
   \item \label{FR3_1}\textbf{FR3.1:} The audio filtering component shall
@@ -566,23 +573,26 @@ Non-Functional Requirements
   the true value.
   \item \label{NFR3_2}\textbf{NFR3.2:} The audio filtering component shall be
   scalable to handle different input signal sizes without missing timing
-  constraints defined in \href{NFR1_2}{NFR1.2} for input signal size up to
-  44100 frames.
+  constraints defined in \hyperref[NFR1_2]{NFR1.2} for input signal size up to
+  4096 frames.
 
   \item \label{NFR3_3}\textbf{NFR3.3:} The audio filtering component shall have
   an audio processing success rate end to end of atleast 90\% over 60 seconds.
 \end{itemize}
 
-\subsubsection{\href{comp:audio360Engine}{Audio360 Engine}} 
+\subsubsection{\hyperref[comp:audio360Engine]{Audio360 Engine}} 
 Functional Requirements
 \begin{itemize}
   \item \label{FR4_1}\textbf{FR4.1:} The Audio360 Engine shall retrieve data,
-  such as frequency domain and errors, from the microcontroller via UART for
-  further processing.
+  such as frequency domain and errors, from the microcontroller via the driver
+  layer for further processing.
 
   \item \label{FR4_2}\textbf{FR4.2:} The Audio360 Engine shall notify dependent
   components when new frequency data is available. The latest data shall always
   be used.
+
+  \item \label{FR4_3}\textbf{FR4.3:} The Audio360 Engine shall control the flow
+  of processed audio data from audio frequency analysis to visualization.
 \end{itemize}
 
 Non-Functional Requirements
@@ -593,10 +603,10 @@ Non-Functional Requirements
 
   \item \label{NFR4_2}\textbf{NFR4.2:} The Audio360 Engine shall retrieve
   frequency data within the timing constraints of the embedded firmware defined
-  in \href{NFR1_2}{NFR1.2} .
+  in \hyperref[NFR1_2]{NFR1.2}.
 \end{itemize}
 
-\subsubsection{\href{comp:frequency_analysis}{Frequency Analysis}} 
+\subsubsection{\hyperref[comp:frequency_analysis]{Frequency Analysis}} 
 Functional Requirements
 \begin{itemize}
   \item \label{FR5_1}\textbf{FR5.1:} The frequency analysis component shall
@@ -608,10 +618,9 @@ Functional Requirements
    representation of the audio input signal. 
    
    \item \label{FR5_3}\textbf{FR5.3:} The frequency analysis component shall 
-   represent the direction of arrival as polar coordinates ($r, \theta$). $r$
-   is the estimated distance in meters to the source, and $\theta$ is the angle
-   in radians to the source relative to the forward axis of the glasses frame,
-   Figure \ref{fig:coordinate_system}.
+   represent the direction of arrival as an angle ($\theta$) in radians.
+   $\theta$ is measured relative to the forward axis of the glasses frame
+   to the sound source, Figure \ref{fig:coordinate_system}.
 \end{itemize}
 
 \begin{figure}[H]     
@@ -628,14 +637,14 @@ Non-Functional Requirements
 
   \item \label{NFR5_2}\textbf{NFR5.2:} The frequency analysis component shall
   achieve a minimum classification accuracy of 90\% under
-  \href{def:normal_operation_condition}{normal operating conditions}.
+  \hyperref[def:normal_operation_condition]{normal operating conditions}.
 
   \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
-  direction of arrival of an audio source with a maximum error of 0.35 rad,
+  direction of arrival of an audio source with a maximum error of 0.78 rad,
   to avoid misleading users in safety-critical situations.
 \end{itemize}
 
-\subsubsection{\href{comp:viz_controller}{Visualization Controller}}
+\subsubsection{\hyperref[comp:viz_controller]{Visualization Controller}}
 Functional Requirements
 \begin{itemize}
   \item \label{FR6_1}\textbf{FR6.1:} The visualization controller component
@@ -649,34 +658,34 @@ Functional Requirements
 
 Non-Functional Requirements
 \begin{itemize}
-  \item \label{NFR6_1}\textbf{FR6.1:} The visualization controller component
+  \item \label{NFR6_1}\textbf{NFR6.1:} The visualization controller component
   shall prioritize to display the most safety-critical information at the
   time because display space is limited.
-  \item \label{NFR6_2}\textbf{FR6.2:} The visualization controller component
+  \item \label{NFR6_2}\textbf{NFR6.2:} The visualization controller component
   shall present information in a non-intrusive manner, minimizing visual
   obstruction so users can safely perform external activities.
 \end{itemize}
 
-\subsubsection{\href{comp:microphone}{Microphone}}
+\subsubsection{\hyperref[comp:microphone]{Microphone}}
 Functional Requirements
 \begin{itemize}
   \item \label{FR7_1}\textbf{FR7.1:} The microphone shall collect soundwaves
   from its environment and translate to digital representation.
 
   \item \label{FR7_2}\textbf{FR7.2:} The microphone shall collect soundwaves
-  with the human audiable range (0Hz - 20kHz) \cite{Neuroscience2001}.
+  with the human audiable range (20 Hz - 20 kHz) \cite{Neuroscience2001}.
 \end{itemize}
 
 Non-Functional Requirements
 \begin{itemize}
-  \item \label{NFR7_1}\textbf{FR7.1:} The microphone shall collect soundwaves
-  at 44100Hz. According to Nyquist's theorem, audio sampling should be greater
+  \item \label{NFR7_1}\textbf{NFR7.1:} The microphone shall collect soundwaves
+  at 44100 Hz. According to Nyquist's theorem, audio sampling should be greater
   than two times the highest frequency to avoid aliasing \cite{DataForth2025}.
-  The maximum frequecy audible to humans is approximately 20kHz
+  The maximum frequecy audible to humans is approximately 20 kHz.
   \cite{Neuroscience2001}.
 \end{itemize}
 
-\subsubsection{\href{comp:display}{Output Display}}
+\subsubsection{\hyperref[comp:display]{Output Display}}
 Functional Requirements
 \begin{itemize}
   \item \label{FR8_1}\textbf{FR8.1:} The output display shall notify users of 
@@ -688,41 +697,41 @@ Functional Requirements
 
 Non-Functional Requirements
 \begin{itemize}
-  \item \label{NFR8_1}\textbf{FR8.1:} The output display shall operate at a
-  minimum frame rate of 30 fps to ensure low latency and provide information to
-  the user without perceptible delay.
+  \item \label{NFR8_1}\textbf{NFR8.1:} The output display shall operate at a
+  minimum of 30 display updates per second to ensure low latency and provide
+  information to the user without perceptible delay.
 \end{itemize}
 
-\subsubsection{\href{comp:microcontroller}{Microcontroller}}
+\subsubsection{\hyperref[comp:microcontroller]{Microcontroller}}
 Functional Requirements
 \begin{itemize}
-  \item \label{FR9_1}\textbf{FR9.1:} The microcontroller shall run audio signal
-  processing and offload computational heavy algorithms to an external device. 
+  \item \label{FR9_1}\textbf{FR9.1:} The microcontroller shall run the main
+  \progname ~software in a closed environment. No external devices
+  other than the microphones and output display shall be able to connect to it.
 \end{itemize}
 
 Non-Functional Requirements
 \begin{itemize}
-  \item \label{NFR9_1}\textbf{FR9.1:} The microcontroller shall have a clock 
+  \item \label{NFR9_1}\textbf{NFR9.1:} The microcontroller shall have a clock 
   speed of atleast 100 MHz to support audio sampling at 44100 Hz, derived
-  from \href{NFR7_1}{NFR7.1}.
+  from \hyperref[NFR7_1]{NFR7.1}.
 
-  \item \label{FR9_1}\textbf{FR9.1:} The microcontroller shall provide atleast
+  \item \label{FR9_2}\textbf{NFR9.2:} The microcontroller shall provide atleast
   four microphone inputs to support directional analysis of audio.
 \end{itemize}
 
 
 \subsection{S.3 Interfaces}
 Audio360 is designed as a closed embedded system due to its safety-critical
-application domain. External access is intentionally restricted to ensure
-reliability, security, and user safety.  
-
-The only user interface is the integrated visual display. This display provides
-real-time feedback by notifying users of classification of detected sound source
-and direction of the sound source relative to the user.
-
-No programmatic interfaces (APIs) will be provided. This design decision ensures
-that system integrity is maintained and that no external software can interfere
-with the safety-critical operation of the device.
+application domain, refering to functional requirement \hyperref[FR9_1]{FR9.1}.
+External access is intentionally restricted to ensure reliability, security,
+and user safety.
+The only user interface is the integrated visual display. The display provides
+real-time information by notifying users of detected sounds and their
+corresponding direction.
+No external programmatic interfaces (APIs) will be provided. This design
+decision ensures that system integrity is maintained and that no external
+software can interfere with the safety-critical operation of the device.
 
 \subsection{S.4 Detailed usage scenarios}
 \wss{Examples of interaction between the environment (or human users) and the system: use cases, user stories.}
