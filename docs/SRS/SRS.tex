@@ -118,7 +118,7 @@ It refines \ref{goal:first}
 \subsection{G.4 Functionality overview}
 \wss{Overview of the functions (behavior) of the system. Principal properties only (details are in the System book).}
 
-\subsection{G.5 High-level usage scenarios}
+\subsection{G.5 High-level usage scenarios}\label{item:G.5}
 \wss{Fundamental usage paths through the system.}
 
 \subsection{G.6 Limitations and exclusions}
@@ -163,9 +163,9 @@ This chapter should not be empty!}
 \subsection{S.4 Detailed usage scenarios}
 \wss{Examples of interaction between the environment (or human users) and the system: use cases, user stories.}
 
-This section provides detailed versions of the high-level scenarios from G.5, with specific technical details and interaction flows.
+This section provides detailed versions of the high-level scenarios from \ref{item:G.5}, with specific technical details and interaction flows.
 
-\subsubsection{S.4.1 Pedestrian Crossing Detection (Detailed)}
+\subsubsection{S.4.1 Pedestrian Crossing Detection}
 \textbf{User Story:} As a deaf individual, I want to be alerted when vehicles are approaching so I can cross streets safely.
 
 \textbf{Scenario:} A user is walking in an urban environment and approaches a street intersection. As they prepare to cross, a car approaches from their left side.
@@ -175,11 +175,11 @@ This section provides detailed versions of the high-level scenarios from G.5, wi
     \item System detects engine sound pattern characteristic of a vehicle
     \item DoA algorithm estimates direction
     \item Audio classification identifies the sound as a vehicle
-    \item Smart glasses display visual indicator showing direction and "Vehicle detected"
+    \item Smart glasses display visual indicator showing direction and notifies the user of a vehicle approaching
     \item User recognizes the alert and waits for the vehicle to pass before crossing safely
 \end{enumerate}
 
-\subsubsection{S.4.2 Kitchen Safety Alert (Detailed)}
+\subsubsection{S.4.2 Kitchen Safety Alert}
 \textbf{User Story:} As a deaf individual, I want to be notified of household safety sounds so I can respond to potential hazards.
 
 \textbf{Scenario:} A user is cooking in their kitchen when a tea kettle on the stove begins to whistle.
@@ -190,11 +190,11 @@ This section provides detailed versions of the high-level scenarios from G.5, wi
     \item System processes the audio and identifies the characteristic pattern
     \item DoA algorithm estimates the direction
     \item Audio classification identifies it as a kettle or alarm sound (90\% accuracy target)
-    \item Smart glasses display directional indicator with "Kettle whistling" (≤1s latency)
+    \item Smart glasses display directional indicator notifying the user of a kettle whistling ($\leq 1$s latency)
     \item User turns toward the alert and removes the kettle from heat, preventing potential hazard
 \end{enumerate}
 
-\subsubsection{S.4.3 Social Interaction (Detailed)}
+\subsubsection{S.4.3 Social Interaction}
 \textbf{User Story:} As a deaf individual, I want to know when someone is trying to get my attention so I don't miss social interactions.
 
 \textbf{Scenario:} A user is in a crowded room when someone calls their name from across the space.
@@ -209,7 +209,7 @@ This section provides detailed versions of the high-level scenarios from G.5, wi
     \item User turns in the indicated direction to make eye contact and engage in conversation
 \end{enumerate}
 
-\subsubsection{S.4.4 Workplace Awareness (Detailed)}
+\subsubsection{S.4.4 Workplace Awareness}
 \textbf{User Story:} As a deaf worker, I want to be aware of industrial safety warnings so I can maintain workplace safety.
 
 \textbf{Scenario:} A user is working in an industrial setting when a forklift begins reversing nearby, emitting a warning beep.
@@ -219,7 +219,7 @@ This section provides detailed versions of the high-level scenarios from G.5, wi
     \item System detects the characteristic beeping pattern through microphone array
     \item DoA algorithm estimates the direction
     \item Audio classification identifies it as a warning signal or industrial alarm
-    \item Smart glasses display prominent visual indicator with "FORKLIFT BACKING UP" and directional arrow
+    \item Smart glasses display prominent visual indicator notifying the user of a forklift backing up and directional arrow
     \item User steps aside to maintain a safe distance from the moving equipment
 \end{enumerate}
 
