@@ -163,7 +163,7 @@ and detection ratings. The priority levels are defined as follows:
     \endhead
 
 
-    1 & Microphone Recording &  Unresponsive / Distorted Microphone. & Not able
+    1 & Microphone &  Unresponsive / Distorted Microphone. & Not able
     to effectively localize audio. \cellrule Unable to provide warnings to user. & 
     Microphone circuit failure. \cellrule Microphone damage. \cellrule Excessive ambient noise. &
     5 & 1  &
@@ -172,7 +172,7 @@ and detection ratings. The priority levels are defined as follows:
     using microphone audio (or lack thereof) and notify user. & FR1.4, FR2.3, FR3.5, FR7.2, NFR2.2  \\
 
     \midrule
-    2 & Display Connection & Disconnection from display. & Unable to provide 
+    2 & Visualization Controller & Disconnection from display. & Unable to provide 
     visual notifications to user. & Depending on connection type: cable, 
     wireless interference, dropped connection. & 3 & 2 &
     Loss of connection signal. \cellrule Failure to send data to display. & 1 & 6 &
@@ -181,7 +181,7 @@ and detection ratings. The priority levels are defined as follows:
     \midrule
 
 
-    3 & Firmware Crash & System crashes and freezes. & The system remains unusable
+    3 & Embedded Firmware & System crashes and freezes. & The system remains unusable
     until it is restarted. \cellrule Unable to provide notifications to user. &
     Software bugs. \cellrule Insufficient Error Handling \cellrule Insufficient
     Requirements. & 5 & 3 & System watchdog timer 
@@ -191,7 +191,7 @@ and detection ratings. The priority levels are defined as follows:
     error handling. & FR1.3, FR4.1, FR4.4 \\
     \midrule
 
-    4 & Sound Detection & Failure to detect important sounds. & Failure to notify
+    4 & Sound Detection (Audio360 Engine)& Failure to detect important sounds. & Failure to notify
     user of critical sounds. & Insufficient microphone quality. \cellrule Poor 
     classification algorithm. \cellrule Excessive ambient noise. & 4 & 3 &
     This is difficult to detect without extensive testing. \cellrule This is Impossible
@@ -201,7 +201,7 @@ and detection ratings. The priority levels are defined as follows:
 
     \midrule
 
-    5 & Sound Classifier & Misclassification of sounds. & Notify the user of the 
+    5 & Sound Classifier (Audio360 Engine) & Misclassification of sounds. & Notify the user of the 
     wrong sounds. & Insufficient classification algorithm \cellrule Insufficient
     microphone quality. & 3 & 2 & This is difficult to detect
     without extensive user testing.\cellrule Impossible to detect in production. & 5 & 10 & Extensive testing in real-world
@@ -211,12 +211,12 @@ and detection ratings. The priority levels are defined as follows:
 
     \midrule
 
-    6 & Sound Localizer & Inaccurate direction determination for sounds. & Misinform
+    6 & Sound Localizer (Audio360 Engine) & Inaccurate direction determination for sounds. & Misinform
     the user of the direction of important sounds. & Incorrect localization algorithm.
     \cellrule Insufficient microphone quality. & 4 & 2 & This is
     difficult to detect without extensive localization testing. \cellrule Impossible to detect
     in production. & 5 & 11 & Extensive localization testing in real-world environments and simulation.
-    & FR5.2, NFR5.3, \\
+    & FR5.2, NFR5.3 \\
     
     \bottomrule
     \end{longtable}
