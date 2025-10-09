@@ -8,6 +8,7 @@
 \usepackage{geometry}
 \usepackage{float}
 \usepackage{pdflscape}
+\usepackage{xr-hyper}
 
 \hypersetup{
     colorlinks=true,       % false: boxed links; true: colored links
@@ -31,6 +32,7 @@
 \let\endchangemargin=\endlist
 
 \newcommand{\cellrule}{\par\vspace{-0.3em}\noindent\rule{\linewidth}{0.2pt}\par}
+\externaldocument[SRS-]{../SRS/SRS}[../SRS/SRS.pdf]
 
 
 \begin{document}
@@ -156,7 +158,7 @@ and microphone performance.
 \begin{enumerate}
     \item Microphone
     \begin{itemize}
-        \item All microphones are able to capture frequencies between at least 0 to 20kHz, which is the human sound detectable range.
+        \item All microphones are able to capture frequencies between at least 0 to 20kHz, which is the human sound detectable range (\ref{SRS-def:normal_operation_condition}).
         \item Microphones operate correctly within normal operating temperatures of 0–35°C. 
     \end{itemize}
     
@@ -175,11 +177,7 @@ and microphone performance.
     \begin{itemize}
         \item Voltage and power is maintained by the controller firmware itself and we do not need to manage that ourselves. 
     \end{itemize}
-
-    \item Driver Layer
-    \begin{itemize}
-        \item Output display driver interfaces correctly with the processor. 
-    \end{itemize}
+    
 \end{enumerate}
 
 \section{Failure Mode and Effect Analysis}
