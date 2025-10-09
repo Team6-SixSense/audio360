@@ -1,0 +1,60 @@
+@startuml software_component_diagram
+title Software Component Diagram
+
+package "Microphone Software" {
+    component "Microphone" as Microphone
+
+    interface "Microphone API" as MicrophoneAPI
+
+    Microphone -left- MicrophoneAPI
+}
+
+package "Output Display Software" {
+    component "Output Display" as OutputDisplay
+
+    interface "Display API" as DisplayAPI
+
+    OutputDisplay -left- DisplayAPI
+}
+
+package "Microcontroller Software" {
+    component "Embedded Firmware" as Firmware
+    component "Driver Layer" as Drivers
+    component "Audio Filtering" as AudioFiltering
+    component "Calibration Component" as Calibration
+    component "Audio360 Engine" as Engine
+    component "Frequency Analysis" as FreqAnalysis
+    component "Visualization Controller" as VizController
+
+    interface "Hardware Interface" as HardwareInterface
+    interface "Audio Processing API" as AudioProcessAPI
+    interface "Update Data API" as UpdateData
+    interface "Frequency Analysis API" as RunAnalysis
+    interface "Update View API" as UpdateView
+    interface "Logging API" as Logging
+
+    Drivers -up- HardwareInterface
+    Firmware --|> HardwareInterface
+    AudioFiltering --|> HardwareInterface
+    Calibration --|> HardwareInterface
+
+    AudioFiltering -up- AudioProcessAPI
+    Firmware -down-|> AudioProcessAPI
+
+    Engine -down- UpdateData
+    Firmware -up-|> UpdateData
+
+    VizController -left- UpdateView
+    Engine -right-|> UpdateView
+
+    FreqAnalysis -right- RunAnalysis
+    Engine -left-|> RunAnalysis
+
+    Firmware --|> Logging
+
+    VizController -right-|> DisplayAPI
+
+    Drivers -down-|> MicrophoneAPI
+}
+
+@enduml
