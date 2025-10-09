@@ -510,6 +510,11 @@ Functional Requirements
 
   \item \label{FR1_3}\textbf{FR1.3:} The firmware shall handle memory errors to
   prevent the micrcontroller from crashing.
+
+  \item \label{FR1_4}\textbf{FR1.4:} The system shall perform continuous
+  diagnostics on all hardware components to monitor hardware errors in
+  real-time. This ensures the system can react to failures as soon as they 
+  occur.
 \end{itemize}
 
 Non-Functional Requirements
@@ -564,6 +569,7 @@ Functional Requirements
 
   \item \label{FR3_5}\textbf{FR3.5:} The audio filtering component shall
   detect and flag audio anomalies such as clipping, lost signal and silence.
+  This enables identification of microphone or signal path faults.
 \end{itemize}
 
 Non-Functional Requirements
@@ -593,6 +599,11 @@ Functional Requirements
 
   \item \label{FR4_3}\textbf{FR4.3:} The Audio360 Engine shall control the flow
   of processed audio data from audio frequency analysis to visualization.
+
+  \item \label{FR4_4}\textbf{FR4.4:} The Audio360 Engine shall disable audio
+  classification and directional analysis features until microphone faults
+  addressed in \hyperref[FR3_5]{FR3.5} are resolved. This prevents the
+  generation of unreliable or unsafe outputs.
 \end{itemize}
 
 Non-Functional Requirements
@@ -604,6 +615,9 @@ Non-Functional Requirements
   \item \label{NFR4_2}\textbf{NFR4.2:} The Audio360 Engine shall retrieve
   frequency data within the timing constraints of the embedded firmware defined
   in \hyperref[NFR1_2]{NFR1.2}.
+
+  \item \label{NFR4_3}\textbf{NFR4.3:} The Audio360 Engine shall permanently
+  discard microphone audio data immediately after completion of audio analysis.
 \end{itemize}
 
 \subsubsection{\hyperref[comp:frequency_analysis]{Frequency Analysis}} 
@@ -621,6 +635,10 @@ Functional Requirements
    represent the direction of arrival as an angle ($\theta$) in radians.
    $\theta$ is measured relative to the forward axis of the glasses frame
    to the sound source, Figure \ref{fig:coordinate_system}.
+
+   \item \label{FR5_4}\textbf{FR5.4:} The frequency analysis component shall
+   notify users when a sound classification result has low confidence or is
+   unrecognized to prevent misleading contextual feedback.
 \end{itemize}
 
 \begin{figure}[H]     
@@ -640,8 +658,8 @@ Non-Functional Requirements
   \hyperref[def:normal_operation_condition]{normal operating conditions}.
 
   \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
-  direction of arrival of an audio source with a maximum error of 0.78 rad,
-  to avoid misleading users in safety-critical situations.
+  direction of arrival of an audio source with a maximum error of 0.78 rad.
+  This ensures reliable directional awareness for the user.
 \end{itemize}
 
 \subsubsection{\hyperref[comp:viz_controller]{Visualization Controller}}
@@ -653,7 +671,8 @@ Functional Requirements
 
   \item \label{FR6_2}\textbf{FR6.2:} The visualization controller component
   shall alert users when the core safety features such as direction
-  determination or classification fail, to ensure user safety.
+  determination or classification fail. This ensures that users are aware of
+  degraded safety functions.
 \end{itemize}
 
 Non-Functional Requirements
@@ -708,6 +727,7 @@ Functional Requirements
   \item \label{FR9_1}\textbf{FR9.1:} The microcontroller shall run the main
   \progname ~software in a closed environment. No external devices
   other than the microphones and output display shall be able to connect to it.
+  This ensures protection against unauthorized access.
 \end{itemize}
 
 Non-Functional Requirements
