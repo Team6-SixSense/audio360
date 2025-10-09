@@ -19,11 +19,6 @@
 \usepackage{afterpage}
 \usepackage{cite}
 
-\usepackage[numbers]{natbib}
-
-
-%\usepackage{refcheck}
-
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
       colorlinks=true,       % false: boxed links; true: colored links
@@ -435,24 +430,32 @@ requirements.
 
 \subsection{E.2 Components}
 
+Below are the components that will affect the system.
+
 \begin{enumerate}
   \item Physical Environment
   \begin{itemize}
-    \item Ambient noise sources that the system needs to detect and classify (car going by, people talking, dog barking)
-    \item Sounds that our classification module does not have knowledge about. 
-    \item Weather conditions that may distort the microphone input (wind, rain, damping from humidity)
-    \item Room acoustics that will differ based on the space the user is in (inside a building vs outside)
+    \item Ambient noise sources that the system needs to detect and classify
+    (ex. car passing by, people talking, dog barking)
+    \item Sounds that the classification module does not have knowledge about. 
+    \item Weather conditions that may distort the microphone input
+    (ex. wind, rain, damping from humidity)
+    \item Room acoustics that will differ based on the space the user is in
+    (ex. inside a building vs. outside)
   \end{itemize}
 
   \item User interaction
   \begin{itemize}
-    \item The system will be mounted on the user's head, which is considered an external component affected by the system.
-    \item The user's head movement will also affect the system, since it may affect the microphone orientation and sound localization. 
+    \item The system will be mounted on the user's head, which is considered an
+    external component affected by the system.
+    \item The user's head movement will also affect the system, since it may
+    affect the microphone orientation and sound localization. 
   \end{itemize}
 
   \item Legal Components
   \begin{itemize}
-    \item Privacy standards related to continuous audio capture in public spaces. 
+    \item Privacy standards related to continuous audio capture in public
+    spaces. 
   \end{itemize}
 \end{enumerate}
 
@@ -461,28 +464,41 @@ requirements.
 \begin{enumerate}
   \item Legal constraints
   \begin{itemize}
-    \item Criminal Code - Private Communications (Section 184) \cite{CriminalCode184}. Under this provision, it's an offense to listen, record or acquire a private communication without consent.
-    Although audio retrieved from the environment won't be stored, this provision may limit where the user is able to use this device. Most likely, they 
-    may only be able to use this device in public places.
-    \item Privacy \& Personal Information Laws (PIPEDA) \cite{PIPEDA2000}. Under this act, if data is stored, transmitted or analyzed, this act triggers obligations that must follow under the privacy law. 
-    These obligations include consent, secure handling and limited handling. These obligations limit what can be done with the audio sources.
+    \item Criminal Code - Private Communications (Section 184)
+    \cite{CriminalCode184}. Under this provision, it's an offense to listen,
+    record or acquire a private communication without consent.
+    Although audio retrieved from the environment won't be stored, this
+    provision may limit where the user is able to use this device.
+    Most likely, they may only be able to use this device in public places.
+    \item Privacy \& Personal Information Laws (PIPEDA) \cite{PIPEDA2000}.
+    Under this act, if data is stored, transmitted or analyzed, this act
+    triggers obligations that must follow under the privacy law. 
+    These obligations include consent, secure handling and limited handling.
+    These obligations limit what can be done with the audio sources.
   \end{itemize}
 
   \item User interaction constraints
   \begin{itemize}
-    \item Since the device must fit on the user's head, the hardware is limited in size, resulting in chips with slower CPUs and less onboard memory which limits onboard processing. 
-    \item Since the user will be using this system throughout the day, the system must operate on a portable power source.
+    \item Since the device must fit on the user's head, the hardware is limited
+    in size, resulting in chips with slower CPUs and less onboard memory which
+    limits onboard processing power. 
+    \item Since the user will be using this system throughout the day, the
+    system must operate on a portable power source.
   \end{itemize}
 
   \item Funding constraints
   \begin{itemize}
-    \item With a maximum budget of \$500, the hardware capabilities which includes CPU speed, memory space, etc. is limited. 
-    As a result, the system functionality will be impacted based on the limitations of the hardware. Because of this, the team is working on hardware acceleration techniques (\ref{FR3_4})
+    \item With a maximum budget of \$500, the hardware capabilities are limites.
+    (ex. CPU speed, memory space)
+    As a result, the system functionality will be impacted based on the
+    limitations of the hardware. As a result, hardware acceleration techniques
+    shall be used (\hyperref[FR3_4]{FR3.4}).
   \end{itemize}
 
   \item Physical environment constraints
   \begin{itemize}
-    \item Since the system should be functional in all types of weathers when the user is outside, the system must be encapsulated and water proof. 
+    \item The system may be used in outdoor environment. Thus the system shall
+    be functional in all types of weather.
   \end{itemize}
 \end{enumerate}
 
@@ -492,30 +508,43 @@ requirements.
 \begin{enumerate}
   \item Physical environment assumptions
   \begin{itemize}
-    \item The environment will not exceed normal outdoor temperature ranges (0-35ºC). 
-    \item The device will be used in moderate environments, not in places with overwhelming amount of background noises (concerts, factories).
-    \item The environment will always be dry, no percipitation outside, eliminating the need for the system to be waterproof for now. 
+    \item The environment will not exceed normal outdoor temperature ranges
+    (0-35ºC). 
+    \item The device will be used in moderate environments, not in places with
+    overwhelming amount of background noises (ex. concerts, factories).
+    \item The environment will always be dry, eliminating the need for
+    the system to be waterproof. 
   \end{itemize}
 
   \item User interaction Assumptions
   \begin{itemize}
-    \item The user's head orientation remains stable (minimal rapid head motion) when the device detects sound direction. 
+    \item The user's head orientation remains stable, with minimal rapid
+    head motion, when the device is collecting audio data from the environment. 
   \end{itemize}
 
   \item Legal Assumptions
   \begin{itemize}
-    \item The user will always use the device in public, where there is no expectation of privacy. 
-    \item No audio data is permanently stored, transmitted or analyzed outside of the system. 
+    \item The user will always use the device in public, where there is no
+    expectation of privacy. 
+    \item No audio data is permanently stored, transmitted or analyzed outside
+    of the system. 
   \end{itemize}
 \end{enumerate}
 
 \subsection{E.5 Effects}
 
-Since the system is mainly just processing input from the environment, it won't largely affect many of the environmental components mentioned in E4 (\ref{item: E.4})
-The main environmental component that the system will affect are the user's interacting with the device. Listed below are two ways the system will affect users.
+Since the system is mainly just processing input from the environment, it won't
+largely affect many of the environmental components mentioned in
+\hyperref[item: E.4]{E.4}.
+The main environmental component that the system will affect are the user's
+interacting with the device. Listed below are two ways the system will affect
+users.
+
 \begin{itemize}
-  \item The system will generate a small amount of heat, which may make the user feel more hot than usual. 
-  \item The system will raise awareness of the user's surroudings, reducing the likelihood of accidents when in public. 
+  \item The system will generate a small amount of heat, which may make the user
+  feel more hot than usual. 
+  \item The system will raise awareness of the user's surroudings, reducing the
+  likelihood of accidents when in public. 
 \end{itemize}
 
 \subsection{E.6 Invariants}
@@ -524,12 +553,15 @@ The main environmental component that the system will affect are the user's inte
   \item User Safety \& Comfort
   \begin{itemize}
     \item The system must not significantly reduce the user's field of vision. 
-    \item The system must not emit heat at levels that cause discomfort or harm to the user. 
+    \item The system must not emit heat at levels that cause discomfort or harm
+    to the user. 
   \end{itemize}
 
   \item Legal Boundaries
   \begin{itemize}
-    \item The system must maintain the privacy integrity of sounds it collects. This means, it doesn't permanently store any sounds collected from the environment. 
+    \item The system must maintain the privacy integrity of sounds it collects.
+    This means, it doesn't permanently store any sounds collected from the
+    environment. 
   \end{itemize}
 \end{enumerate}
 
@@ -1515,10 +1547,5 @@ stages of the requirements process.
 \input{../Reflection.tex}
 
 \input{../SRS_Reflection.tex}
-
-\newpage{}
-
-\bibliographystyle{IEEEtran}
-\bibliography{../../refs/References}
 
 \end{document}
