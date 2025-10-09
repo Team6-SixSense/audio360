@@ -498,6 +498,138 @@ This section provides detailed versions of the high-level scenarios from \ref{it
 \subsection{S.5 Prioritization}
 \wss{Classification of the behaviors, interfaces and scenarios (S.2, S.3 and S.4) by their degree of criticality.}
 
+This section classifies all system behaviors, interfaces, and scenarios by their degree of criticality to ensure proper development prioritization and resource allocation. Requirements are organized into three criticality levels: Critical, Important, and Desirable, with corresponding development stages.
+
+\subsubsection{S.5.1 Critical Requirements (Stage 1 - Foundation)}
+
+Critical requirements form the essential foundation of the system and must be implemented first. These requirements are necessary for basic system operation and safety.
+
+\textbf{Core Hardware and Infrastructure:}
+\begin{itemize}
+    \item \hyperref[FR7_1]{FR7.1} - Microphone soundwave collection and digital conversion
+    \item \hyperref[FR7_2]{FR7.2} - Human audible range coverage (20 Hz - 20 kHz)
+    \item \hyperref[NFR7_1]{NFR7.1} - 44100 Hz sampling rate
+    \item \hyperref[FR9_1]{FR9.1} - Closed microcontroller environment
+    \item \hyperref[NFR9_1]{NFR9.1} - Minimum 100 MHz clock speed
+    \item \hyperref[FR9_2]{FR9.2} - Four microphone inputs for directional analysis
+\end{itemize}
+
+\textbf{Basic Audio Processing:}
+\begin{itemize}
+    \item \hyperref[FR1_2]{FR1.2} - Audio signal processing and synchronization
+    \item \hyperref[FR3_1]{FR3.1} - Digital to frequency domain conversion
+    \item \hyperref[FR3_2]{FR3.2} - Signal amplitude normalization
+    \item \hyperref[NFR3_1]{NFR3.1} - Frequency domain accuracy ($\le 10\%$ error)
+    \item \hyperref[NFR1_2]{NFR1.2} - Processing faster than 44100 Hz sample rate
+\end{itemize}
+
+\textbf{Error Handling and Reliability:}
+\begin{itemize}
+    \item \hyperref[FR1_3]{FR1.3} - Memory error handling
+    \item \hyperref[FR1_4]{FR1.4} - Continuous hardware diagnostics
+    \item \hyperref[FR2_3]{FR2.3} - Driver error code returns
+    \item \hyperref[NFR2_1]{NFR2.1} - Immediate error propagation
+\end{itemize}
+
+\textbf{Basic Display Functionality:}
+\begin{itemize}
+    \item \hyperref[FR8_1]{FR8.1} - Sound source classification display
+    \item \hyperref[FR8_2]{FR8.2} - Sound direction display
+    \item \hyperref[NFR8_1]{NFR8.1} - 30 FPS display updates
+\end{itemize}
+
+\subsubsection{S.5.2 Important Requirements (Stage 2 - Core Features)}
+
+Important requirements implement the primary functionality that delivers the system's main value proposition. These build upon the critical foundation.
+
+\textbf{Direction of Arrival (DoA) Analysis:}
+\begin{itemize}
+    \item \hyperref[FR5_2]{FR5.2} - Direction of arrival estimation
+    \item \hyperref[FR5_3]{FR5.3} - Angular representation in radians
+    \item \hyperref[NFR5_3]{NFR5.3} - Maximum 0.78 rad DoA error
+\end{itemize}
+
+\textbf{Sound Classification:}
+\begin{itemize}
+    \item \hyperref[FR5_1]{FR5.1} - Sound source classification
+    \item \hyperref[NFR5_1]{NFR5.1} - Classification of 3+ distinct sound sources
+    \item \hyperref[NFR5_2]{NFR5.2} - 90\% classification accuracy
+\end{itemize}
+
+\textbf{Advanced Audio Processing:}
+\begin{itemize}
+    \item \hyperref[FR3_3]{FR3.3} - Spectral leakage filtering
+    \item \hyperref[FR3_4]{FR3.4} - Hardware acceleration utilization
+    \item \hyperref[FR3_5]{FR3.5} - Audio anomaly detection
+    \item \hyperref[NFR3_2]{NFR3.2} - Scalability to 4096 frames
+    \item \hyperref[NFR3_3]{NFR3.3} - 90\% processing success rate
+\end{itemize}
+
+\textbf{System Integration:}
+\begin{itemize}
+    \item \hyperref[FR2_1]{FR2.1} - Driver layer hardware interface
+    \item \hyperref[FR2_2]{FR2.2} - Permission-based hardware access
+    \item \hyperref[FR2_4]{FR2.4} - Data integrity maintenance
+    \item \hyperref[FR4_1]{FR4.1} - Audio360 Engine data retrieval
+    \item \hyperref[FR4_2]{FR4.2} - Component notification system
+    \item \hyperref[FR4_3]{FR4.3} - Data flow control
+\end{itemize}
+
+\textbf{Visualization and User Interface:}
+\begin{itemize}
+    \item \hyperref[FR6_1]{FR6.1} - Direction notification display
+    \item \hyperref[FR6_2]{FR6.2} - Safety feature failure alerts
+    \item \hyperref[NFR6_1]{NFR6.1} - Safety-critical information prioritization
+    \item \hyperref[NFR6_2]{NFR6.2} - Non-intrusive display design
+\end{itemize}
+
+\subsubsection{S.5.3 Desirable Requirements (Stage 3 - Enhancement)}
+
+Desirable requirements enhance system performance and user experience but are not essential for basic operation.
+
+\textbf{Advanced System Features:}
+\begin{itemize}
+    \item \hyperref[FR1_1]{FR1.1} - Priority-based task scheduling
+    \item \hyperref[NFR1_1]{NFR1.1} - Monotonic frame sequence processing
+    \item \hyperref[FR4_4]{FR4.4} - Feature disabling during microphone faults
+    \item \hyperref[FR5_4]{FR5.4} - Low confidence classification notifications
+\end{itemize}
+
+\textbf{Performance Optimization:}
+\begin{itemize}
+    \item \hyperref[NFR4_1]{NFR4.1} - Conflict-free data polling
+    \item \hyperref[NFR4_2]{NFR4.2} - Timing constraint compliance
+    \item \hyperref[NFR4_3]{NFR4.3} - Immediate data disposal after analysis
+\end{itemize}
+
+\subsubsection{S.5.4 Scenario Prioritization}
+
+\textbf{Critical Scenarios (Stage 1):}
+\begin{itemize}
+    \item \hyperref[S.4.2]{S.4.2} - Kitchen Safety Alert (highest safety impact)
+    \item \hyperref[S.4.4]{S.4.4} - Workplace Awareness (industrial safety)
+\end{itemize}
+
+\textbf{Important Scenarios (Stage 2):}
+\begin{itemize}
+    \item \hyperref[S.4.1]{S.4.1} - Pedestrian Crossing Detection (public safety)
+    \item \hyperref[S.4.3]{S.4.3} - Social Interaction (quality of life)
+\end{itemize}
+
+\subsubsection{S.5.5 Development Priority Rationale}
+
+The prioritization follows a safety-first approach:
+
+\begin{enumerate}
+    \item \textbf{Stage 1 (Critical):} Establishes reliable hardware foundation and basic audio processing capabilities. Focuses on system stability and error handling to prevent failures that could compromise user safety.
+    
+    \item \textbf{Stage 2 (Important):} Implements core DoA and classification features that deliver the primary value proposition. Kitchen and workplace safety scenarios are prioritized due to their immediate safety implications.
+    
+    \item \textbf{Stage 3 (Desirable):} Adds performance optimizations and advanced features that enhance user experience but are not essential for basic safety functionality.
+\end{enumerate}
+
+This staged approach ensures that the most safety-critical features are implemented first, providing immediate value to users while building toward a complete system. The prioritization also considers technical dependencies, with lower-level components (hardware, drivers) being implemented before higher-level features (classification, visualization).
+
 \subsection{S.6 Verification and acceptance criteria}
 \wss{Specification of the conditions under which an implementation will be deemed satisfactory.}
 
