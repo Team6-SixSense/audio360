@@ -346,8 +346,9 @@ connectivity or cloud-based services for core functionality.
 end-users of the system, who will directly benefit from improved
 situational awareness and safety. This group is quite large in population,
 with approximately 4 million people who experience hearing loss 
-in Canada alone (1 in 10). The McMaster Sign Language club will represent
-our primary stakeholder. 
+in Canada alone (1 in 10). The McMaster Sign Language club is a group at
+McMaster University that falls in this stakeholder group.
+
 \end{itemize}
 
 \subsubsection{Secondary stakeholders}
@@ -600,10 +601,8 @@ Moreover, all project members share the following competencies as contributing
 members to the development of this project. 
 \begin{itemize}
   \item Embedded software development.
-  \item Strong software design for features being implemented on any 
-  microcontroller platform. 
-  \item Strong testing skills.
-  \item Strong debugging skills. 
+  \item Strong software design for novel features. 
+  \item Strong testing and debugging skills. 
 \end{itemize}
 
 In addition to responsibilities as developers on the team, each project member 
@@ -611,7 +610,7 @@ has been designated as an \textbf{expert} in a specific area of focus essential
 to the development of this system. 
 The designated focus areas are outlined below:
 
-\begin{itemize}\setlength\itemsep{4pt}\setlength{\leftmargini}{2em}
+\begin{itemize}
     \item Research in using hardware acceleration methods and other code 
     optimization methods for embedded development, since the system is
     deployed on microcontroller with limited CPU and memory space. 
@@ -622,7 +621,7 @@ The designated focus areas are outlined below:
      devices. Since the hardware requires an API integration
     for this, this focus area is needed. \textbf{(Omar Alam)}.
     \item Analysis of methods to extract directionality from a microphone array,
-     since we need to process input from 4 microphones
+     since multple microphones needs to be processed.
     and run some algorithm to determine which direction it is coming from. This
      algorithm needs to be researched. \textbf{(Kalp Shah)}.
     \item Exploration of techniques for separating multiple audio sources from 
@@ -630,29 +629,23 @@ The designated focus areas are outlined below:
     This focus area is required since the system's environment will contain a 
     mixture of sounds that need to analyzed and processed indepdently. 
     \textbf{(Jay Sharma)}.
-    \item Development of heuristic-based approaches for classifying different 
-    sounds through audio fingerprinting. This focus area is needed
-    to classify sounds without running a deep machine learning algorithm due to
-     limited processing power. \textbf{(Nirmal Chaudhari)}.
+    \item Development of audio-fingerprinting for classifying sound sources
+    based on the frequency domain representation of the audio signal. This
+    feature needs to comply with the processing and memory limits of the
+    compute unit.\textbf{(Nirmal Chaudhari)}.
 \end{itemize}
 
 \noindent
 All experts share the following responsibilities for their area of focus. 
 
-\begin{itemize}\setlength\itemsep{4pt}\setlength{\leftmargini}{2em}
+\begin{itemize}
   \item Look through research articles, and technical evaluations to come up 
   with feasibile approaches for proposed methods. 
   \item Collaborate with other team members to discuss findings. 
   \item Maintain clear and organized documentation of sources and proposed 
   methods. 
-  \item Ensure that all research and implementation choices align with project 
-  objectives, timeline and budgeting costs. 
-  \item Based on the confirmed approach, complete the full implementation of 
-  that focus in the system. 
-  \item After implementation, create test cases that cover's the main 
-  functionality of the feature in that focus area. 
-  \item Configure github pipeline to run those tests on every PR and merge into 
-  a feature branch. 
+  \item Complete implementation of the focus area in the system.
+  \item Testing to validate and verify the feature.
 \end{itemize}
 
 \subsection{P.2 Imposed technical choices}
@@ -660,7 +653,7 @@ All experts share the following responsibilities for their area of focus.
 
 \subsection{P.3 Schedule and milestones} \label{item: p3}   
 
-To better understand the needs of our stakeholders, there are various milestones
+To better understand the needs of the stakeholders, there are various milestones
  that need to be completed within the realm of the requirements process.
 These milestones can be generalized as a list of tasks, with their deadlines 
 outlined below.
@@ -684,7 +677,7 @@ outlined below.
 
 \begin{enumerate}
 
-  \item \textbf{Initial Supervisor Consultation (2025-09-15) ~\ref{item: p3-1}}  
+  \item \textbf{Initial Supervisor Consultation (2025-09-15)}  
 
   \textbf{Tasks:}
   \begin{itemize}
@@ -697,14 +690,13 @@ outlined below.
   \begin{itemize}
       \item Team has a shared understanding of project objectives and potential
        risks associated with the project scope and goals. 
-      \item Defined list of research priorities 
-      (outlined in section P.1\ref{item: p1}).
+      \item Defined list of research priorities outlined in section
+      \hyperref[item: p1]{P.1}.
   \end{itemize}
 
   \vspace{0.8em}
 
-  \item \textbf{Extraction of project soft and hard goals (2025-09-22) 
-  (~\ref{item: p3-2})}  
+  \item \textbf{Extraction of project soft and hard goals (2025-09-22)}  
 
   \textbf{Tasks:}
   \begin{itemize}
@@ -728,7 +720,7 @@ outlined below.
   \vspace{0.8em}
 
   \item \textbf{Technical analysis for feasibility of project goals 
-  (2025-09-29) ~\ref{item: p3-3}}  
+  (2025-09-29)}  
 
   \textbf{Tasks:}
   \begin{itemize}
@@ -749,7 +741,7 @@ outlined below.
   \vspace{0.8em}
 
   \item \textbf{Extraction of requirements from goals and technical assessment 
-  (2025-10-2)~\ref{item: p3-4}}
+  (2025-10-2)}
 
   \textbf{Tasks:}
   \begin{itemize}
@@ -769,12 +761,12 @@ outlined below.
 
   \vspace{0.8em}
 
-  \item \textbf{Requirements Documentation (2025-10-10)~\ref{item: p3-5}}  
+  \item \textbf{Requirements Documentation (2025-10-10)}  
 
   \textbf{Tasks:}
   \begin{itemize}
       \item Iteratively updating sections in SRS document based on the results 
-      of different tasks mentioned in P.3(\ref{item: p3}). 
+      of different tasks mentioned in \hyperref[item: p3]{P.3}. 
   \end{itemize}
 
   \textbf{Expected Outcomes:}
@@ -786,14 +778,14 @@ outlined below.
 
   \vspace{0.8em}
 
-  \item \textbf{Validation Plan (2025-10-27)~\ref{item: p3-6}}  
+  \item \textbf{Validation Plan (2025-10-27)}  
 
   \textbf{Tasks:}
   \begin{itemize}
       \item Come up with a plan for validating the system meets the requirement 
       specification.
-      This plan should be exhaustive enough to confirm that all our stakeholder 
-      goals have been met. 
+      This plan should be exhaustive enough to confirm that all of the
+      stakeholders' goals have been met. 
   \end{itemize}
 
   \textbf{Expected Outcomes:}
@@ -804,7 +796,7 @@ outlined below.
 
   \vspace{0.8em}
 
-  \item \textbf{System Design Plan (2025-10-27)~\ref{item: p3-7}}  
+  \item \textbf{System Design Plan (2025-10-27)}  
 
   \textbf{Tasks:}
   \begin{itemize}
@@ -819,13 +811,12 @@ outlined below.
   \begin{itemize}
       \item Each focus area has a fully completed design plan based on the 
       investigation completed by the expert. 
-      \item The plan has been written in the Revision 0 Design Document
+      \item The plan has been written in Rev 0 of the Design Document
   \end{itemize}
 
   \vspace{0.8em}
 
-  \item \textbf{Verification \& Validation of System 
-  (2026-02-02)~\ref{item: p3-8}}  
+  \item \textbf{Verification \& Validation of System (2026-02-02)}  
 
   \textbf{Tasks:}
   \begin{itemize}
@@ -848,13 +839,13 @@ outlined below.
 
   \vspace{0.8em}
   
-  \item \textbf{Consultation with primary stakeholder (TBD)~\ref{item: p3-9}}    
+  \item \textbf{Consultation with primary stakeholder (TBD)}    
 
   \textbf{Tasks:}
   \begin{itemize}
-      \item Set up a meeting with the McMaster Sign Language club to conduct a
-       semi-structured interview.
-      \item Document all findings from interview specific to the questions we 
+      \item Meet with the McMaster Sign Language club to conduct a
+      semi-structured interview.
+      \item Document all findings from interview specific to the questions
       asked. 
       \item Update stakeholder goals and requirements based on the results of 
       the interview. 
