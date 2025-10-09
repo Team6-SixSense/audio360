@@ -55,20 +55,93 @@ Date2 & Name(s) & Description of changes\\
 
 \section{Introduction}
 
-\wss{You can include your definition of what a hazard is here.}
+A hazard is anything that prevents the Audio360 system from notifying users with important sounds near them with high precision and accuracy. For deaf and hard-of-hearing individuals who rely on the system for situational awareness, any failure to detect, classify, or display audio information could result in missed safety cues, social interactions, or environmental awareness.
+
+This hazard analysis identifies potential failure modes in the Audio360 audio localization system and establishes safety requirements to ensure reliable operation in real-world scenarios.
 
 \section{Scope and Purpose of Hazard Analysis}
 
-\wss{You should say what \textbf{loss} could be incurred because of the
-hazards.}
+The scope of this document is to identify possible hazards within the Audio360 system components, the effects and causes of failures, mitigation steps, and resulting safety and security requirements.
+
+Potential losses that could be incurred due to system failures include physical injury from missed emergency vehicle warnings or approaching machinery, household accidents from undetected safety alerts, missed social interactions and communication opportunities, reduced independence and confidence in daily activities, and loss of user trust in the assistive technology system.
 
 \section{System Boundaries and Components}
 
-\wss{Dividing the system into components will help you brainstorm the hazards.
-You shouldn't do a full design of the components, just get a feel for the major
-ones.  For projects that involve hardware, the components will typically include
-each individual piece of hardware.  If your software will have a database, or an
-important library, these are also potential components.}
+This section is broken down into two subsections: one for components within the
+system boundary, and one for components outside the system boundary.
+
+\subsection{Inside the System Boundary}
+
+The following components are within the system's control and responsibility:
+
+\begin{itemize}
+\item \textbf{Embedded firmware:} Real-time operating system and all
+embedded software running on the processing unit.
+
+\item \textbf{Signal processing module:} Real-time digital signal processing
+algorithms including frequency domain transforms, filtering, and time-domain
+analysis.
+
+\item \textbf{Direction of arrival (DoA) estimation:} Algorithms for
+computing sound source direction on a 2D plane based on time difference of
+arrival and phase differences across microphones.
+
+\item \textbf{Audio classification engine:} Sound fingerprinting and
+classification logic to identify and categorize detected sounds (e.g.,
+speech, vehicles, alarms).
+
+\item \textbf{Visualization Controller:} \label{comp:viz_controller}
+Component reposonsible for creating and sending visualization output to the
+glasses.
+
+\item \textbf{Configuration and calibration:} Microphone array calibration
+routines and system configuration parameters.
+\end{itemize}
+
+\subsection{Outside the System Boundary}
+
+The following external entities interact with the system but are not under
+its direct control:
+
+\begin{itemize}
+\item \textbf{Users:} Individuals who are deaf or hard of hearing wearing
+the device. Their actions, responses to alerts, and interpretation of
+displayed information are outside the system's control.
+
+\item \textbf{Environmental sounds:} Acoustic signals in the physical
+environment, including speech, vehicle noises, alarms, and ambient sounds.
+The system detects and processes these but does not generate or control
+them.
+
+\item \textbf{Audio capture subsystem:} Synchronized sampling logic for the
+microphone array, including analog-to-digital conversion interfaces and
+buffer management. This component is included in the microcontroller and is not
+within our system's control.
+
+\item \textbf{Physical microphone hardware:} Microphone sensors that capture
+acoustic pressure waves. While the system controls their digital interface,
+the physical transduction mechanism is external.
+
+\item \textbf{Smart glasses hardware:} The physical display device,
+including its screen, optics, power management, and form factor. The system
+sends display commands but does not control the hardware's internal
+operation.
+
+\item \textbf{\href{def:microcontroller}{Microcontroller}:}
+\label{comp:microcontroller} Component responsible for processing real time
+data of sensor inputs. This hardware component's performance and reliability
+are outside our system's control.
+
+\item \textbf{Power supply:} Battery or external power source providing
+electrical power to system components. Power management at the hardware
+level is external to the software system.
+
+\item \textbf{Physical environment:} Room acoustics, ambient noise levels,
+temperature, and other environmental factors that affect sound propagation
+and microphone performance.
+\end{itemize}
+
+
 
 \section{Critical Assumptions}
 

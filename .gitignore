@@ -278,6 +278,9 @@ TSWLatexianTemp*
 # DS_Store file from Mac computers
 .DS_Store
 
+# Python cache
+**/__pycache__/
+
 # Compiled source code
 build/*
 cmake-build-debug-arm/
