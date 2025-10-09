@@ -496,11 +496,14 @@ This section provides detailed versions of the high-level scenarios from \ref{it
 \end{enumerate}
 
 \subsection{S.5 Prioritization}
-\wss{Classification of the behaviors, interfaces and scenarios (S.2, S.3 and S.4) by their degree of criticality.}
 
 This section classifies all system behaviors, interfaces, and scenarios by their degree of criticality to ensure proper development prioritization and resource allocation. Requirements are organized into three criticality levels: Critical, Important, and Desirable, with corresponding development stages.
 
 \subsubsection{S.5.1 Critical Requirements (Stage 1 - Foundation)}
+
+Estimated deadline: Decembe 9th, 2025
+
+\\
 
 Critical requirements form the essential foundation of the system and must be implemented first. These requirements are necessary for basic system operation and safety.
 
@@ -512,6 +515,13 @@ Critical requirements form the essential foundation of the system and must be im
     \item \hyperref[FR9_1]{FR9.1} - Closed microcontroller environment
     \item \hyperref[NFR9_1]{NFR9.1} - Minimum 100 MHz clock speed
     \item \hyperref[FR9_2]{FR9.2} - Four microphone inputs for directional analysis
+\end{itemize}
+
+\textbf{Sound Classification:}
+\begin{itemize}
+    \item \hyperref[FR5_1]{FR5.1} - Sound source classification
+    \item \hyperref[NFR5_1]{NFR5.1} - Classification of 3+ distinct sound sources
+    \item \hyperref[NFR5_2]{NFR5.2} - 90\% classification accuracy
 \end{itemize}
 
 \textbf{Basic Audio Processing:}
@@ -535,10 +545,14 @@ Critical requirements form the essential foundation of the system and must be im
 \begin{itemize}
     \item \hyperref[FR8_1]{FR8.1} - Sound source classification display
     \item \hyperref[FR8_2]{FR8.2} - Sound direction display
-    \item \hyperref[NFR8_1]{NFR8.1} - 30 FPS display updates
+    \item \hyperref[NFR8_1]{NFR8.1} - 30 display updates per second
 \end{itemize}
 
 \subsubsection{S.5.2 Important Requirements (Stage 2 - Core Features)}
+
+Estimated deadline: February 9th, 2026
+
+\\
 
 Important requirements implement the primary functionality that delivers the system's main value proposition. These build upon the critical foundation.
 
@@ -547,13 +561,6 @@ Important requirements implement the primary functionality that delivers the sys
     \item \hyperref[FR5_2]{FR5.2} - Direction of arrival estimation
     \item \hyperref[FR5_3]{FR5.3} - Angular representation in radians
     \item \hyperref[NFR5_3]{NFR5.3} - Maximum 0.78 rad DoA error
-\end{itemize}
-
-\textbf{Sound Classification:}
-\begin{itemize}
-    \item \hyperref[FR5_1]{FR5.1} - Sound source classification
-    \item \hyperref[NFR5_1]{NFR5.1} - Classification of 3+ distinct sound sources
-    \item \hyperref[NFR5_2]{NFR5.2} - 90\% classification accuracy
 \end{itemize}
 
 \textbf{Advanced Audio Processing:}
@@ -584,6 +591,10 @@ Important requirements implement the primary functionality that delivers the sys
 \end{itemize}
 
 \subsubsection{S.5.3 Desirable Requirements (Stage 3 - Enhancement)}
+
+Estimated deadline: April 9th, 2026
+
+\\
 
 Desirable requirements enhance system performance and user experience but are not essential for basic operation.
 
