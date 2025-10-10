@@ -8,6 +8,8 @@
 \usepackage{geometry}
 \usepackage{float}
 \usepackage{pdflscape}
+\usepackage{xr-hyper}
+\usepackage{cite}
 
 \hypersetup{
     colorlinks=true,       % false: boxed links; true: colored links
@@ -63,15 +65,27 @@
 
 \section{Introduction}
 
-A hazard is anything that prevents the Audio360 system from notifying users with important sounds near them with high precision and accuracy. For deaf and hard-of-hearing individuals who rely on the system for situational awareness, any failure to detect, classify, or display audio information could result in missed safety cues, social interactions, or environmental awareness.
+A hazard is anything that prevents the Audio360 system from notifying users with
+important sounds near them with high precision and accuracy. For deaf and
+hard-of-hearing individuals who rely on the system for situational awareness,
+any failure to detect, classify, or display audio information could result in
+missed safety cues, social interactions, or environmental awareness.
 
-This hazard analysis identifies potential failure modes in the Audio360 audio localization system and establishes safety requirements to ensure reliable operation in real-world scenarios.
+This hazard analysis identifies potential failure modes in the Audio360 audio 
+localization system and establishes safety requirements to ensure reliable
+operation in real-world scenarios.
 
 \section{Scope and Purpose of Hazard Analysis}
 
-The scope of this document is to identify possible hazards within the Audio360 system components, the effects and causes of failures, mitigation steps, and resulting safety and security requirements.
+The scope of this document is to identify possible hazards within the Audio360
+system components, the effects and causes of failures, mitigation steps, and
+resulting safety and security requirements.
 
-Potential losses that could be incurred due to system failures include physical injury from missed emergency vehicle warnings or approaching machinery, household accidents from undetected safety alerts, missed social interactions and communication opportunities, reduced independence and confidence in daily activities, and loss of user trust in the assistive technology system.
+Potential losses that could be incurred due to system failures include physical
+injury from missed emergency vehicle warnings or approaching machinery,
+household accidents from undetected safety alerts, missed social interactions
+and communication opportunities, reduced independence and confidence in daily
+activities, and loss of user trust in the assistive technology system.
 
 \section{System Boundaries and Components}
 
@@ -153,10 +167,37 @@ and microphone performance.
 
 \section{Critical Assumptions}
 
-\wss{These assumptions that are made about the software or system.  You should
-minimize the number of assumptions that remove potential hazards.  For instance,
-you could assume a part will never fail, but it is generally better to include
-this potential failure mode.}
+\begin{enumerate}
+    \item Microphone
+    \begin{itemize}
+        \item All microphones are able to capture frequencies between at least
+        20 Hz to 20kHz, which is the human sound detectable range
+        \cite{Neuroscience2001}.
+        \item Microphones operate correctly within normal operating temperatures
+        of 0-35°C. 
+    \end{itemize}
+    
+    \item Microcontroller
+    \begin{itemize}
+        \item The analog-to-digital converters (ADC) that comes with the
+        hardware provides stable conversions in real-time.
+        \item Processor's clock frequency remains stable under normal
+        operating temperatures 0-35°C.
+    \end{itemize}
+
+    \item Output Display
+    \begin{itemize}
+        \item Visual indicators on the smart glasses remain visible in typical
+        lighting conditions. 
+    \end{itemize}
+
+    \item System Integration
+    \begin{itemize}
+        \item Voltage and power is maintained by the controller firmware itself
+        and we do not need to manage that ourselves. 
+    \end{itemize}
+    
+\end{enumerate}
 
 \section{Failure Mode and Effect Analysis}
 
@@ -380,6 +421,10 @@ project progress:
     \item \hyperref[SR8]{SR8}
     \item \hyperref[SR10]{SR10}
 \end{itemize}
+
+\newpage
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \newpage{}
 
