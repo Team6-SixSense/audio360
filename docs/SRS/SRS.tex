@@ -1,5 +1,3 @@
-% THIS DOCUMENT IS TAILORED TO REQUIREMENTS FOR SCIENTIFIC COMPUTING.  IT SHOULDN'T
-% BE USED FOR NON-SCIENTIFIC COMPUTING PROJECTS
 \documentclass[12pt]{article}
 
 \usepackage{amsmath, mathtools}
@@ -20,8 +18,6 @@
 \usepackage{pdflscape}
 \usepackage{afterpage}
 \usepackage{cite}
-
-%\usepackage{refcheck}
 
 \hypersetup{
     bookmarks=true,         % show bookmarks bar?
@@ -60,10 +56,11 @@
 
 \usepackage{fullpage}
 
+\setlength{\parindent}{0pt} % Set no indent to entire document.
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: subtitle describing software} 
+\title{Software Requirements Specification for \progname} 
 \author{\authname}
 \date{\today}
 	
@@ -346,7 +343,9 @@ connectivity or cloud-based services for core functionality.
 end-users of the system, who will directly benefit from improved
 situational awareness and safety. This group is quite large in population,
 with approximately 4 million people who experience hearing loss 
-in Canada alone (1 in 10).
+in Canada alone (1 in 10). The McMaster Sign Language club is a group at
+McMaster University that falls in this stakeholder group.
+
 \end{itemize}
 
 \subsubsection{Secondary stakeholders}
@@ -402,41 +401,696 @@ requirements.
 
 \subsection{E.1 Glossary}
 
-\textbf{Microphone Array:}\label{def:microphone_array} A collection of 
-microphones that are synchronized to capture audio from the 
-environment to create a single multi-channel audio signal.
+\begin{itemize}
+    \item \textbf{Microphone Array:}\label{def:microphone_array} A collection of 
+    microphones that are synchronized to capture audio from the 
+    environment to create a single multi-channel audio signal.
+
+    \item \textbf{Microcontroller:}\label{def:microcontroller} Compact embedded
+    hardware system with a CPU, memory, input/output peripherals, designed to
+    process real-time data directly on the device.
+
+    \item \textbf{Microphone:}\label{def:microphone} Input sensor to a device
+    that converts audio soundwaves to digital bytestream.
+
+    \item \textbf{Normal Operating Condition:}
+    \label{def:normal_operation_condition} The state in which the system,
+    including hardware and softwre, operate within expected environmental and
+    usage parameters. This includes audio input sampled at the correct sample
+    rate, input audio signals are within the human audible range
+    (20 Hz – 20 kHz) \cite{Neuroscience2001}, and audio input levels below
+    90 dB.
+
+    \item \textbf{Spectral Leakage:} \label{def:spectral_leakage} 
+    The spreading of a signal's energy across multiple frequency bins in a
+    frequency spectrum due to finite time windowing. Essentially, noise that is
+    caused by sharp signal cutting when processing audio signals as windows.
+
+\end{itemize}
 
 \subsection{E.2 Components}
-\wss{List of elements of the environment that may affect or be affected by the system and project. Includes other systems to which the system must be interfaced.}
+
+Below are the components that will affect the system.
+
+\begin{enumerate}
+  \item Physical Environment
+  \begin{itemize}
+    \item Ambient noise sources that the system needs to detect and classify
+    (ex. car passing by, people talking, dog barking)
+    \item Sounds that the classification module does not have knowledge about. 
+    \item Weather conditions that may distort the microphone input
+    (ex. wind, rain, damping from humidity)
+    \item Room acoustics that will differ based on the space the user is in
+    (ex. inside a building vs. outside)
+  \end{itemize}
+
+  \item User interaction
+  \begin{itemize}
+    \item The system will be mounted on the user's head, which is considered an
+    external component affected by the system.
+    \item The user's head movement will also affect the system, since it may
+    affect the microphone orientation and sound localization. 
+  \end{itemize}
+
+  \item Legal Components
+  \begin{itemize}
+    \item Privacy standards related to continuous audio capture in public
+    spaces. 
+  \end{itemize}
+\end{enumerate}
 
 \subsection{E.3 Constraints}
-\wss{Obligations and limits imposed on the project and system by the environment.}
 
-\subsection{E.4 Assumptions}
-\wss{Properties of the environment that may be assumed, with the goal of facilitating the project and simplifying the system.}
+\begin{enumerate}
+  \item Legal constraints
+  \begin{itemize}
+    \item Criminal Code - Private Communications (Section 184)
+    \cite{CriminalCode184}. Under this provision, it's an offense to listen,
+    record or acquire a private communication without consent.
+    Although audio retrieved from the environment won't be stored, this
+    provision may limit where the user is able to use this device.
+    Most likely, they may only be able to use this device in public places.
+    \item Privacy \& Personal Information Laws (PIPEDA) \cite{PIPEDA2000}.
+    Under this act, if data is stored, transmitted or analyzed, this act
+    triggers obligations that must follow under the privacy law. 
+    These obligations include consent, secure handling and limited handling.
+    These obligations limit what can be done with the audio sources.
+  \end{itemize}
+
+  \item User interaction constraints
+  \begin{itemize}
+    \item Since the device must fit on the user's head, the hardware is limited
+    in size, resulting in chips with slower CPUs and less onboard memory which
+    limits onboard processing power. 
+    \item Since the user will be using this system throughout the day, the
+    system must operate on a portable power source.
+  \end{itemize}
+
+  \item Funding constraints
+  \begin{itemize}
+    \item With a maximum budget of \$500, the hardware capabilities are limites.
+    (ex. CPU speed, memory space)
+    As a result, the system functionality will be impacted based on the
+    limitations of the hardware. As a result, hardware acceleration techniques
+    shall be used (\hyperref[FR3_4]{FR3.4}).
+  \end{itemize}
+
+  \item Physical environment constraints
+  \begin{itemize}
+    \item The system may be used in outdoor environment. Thus the system shall
+    be functional in all types of weather.
+  \end{itemize}
+\end{enumerate}
+
+
+\subsection{E.4 Assumptions} \label{item: E.4}
+
+\begin{enumerate}
+  \item Physical environment assumptions
+  \begin{itemize}
+    \item The environment will not exceed normal outdoor temperature ranges
+    (0-35ºC). 
+    \item The device will be used in moderate environments, not in places with
+    overwhelming amount of background noises (ex. concerts, factories).
+    \item The environment will always be dry, eliminating the need for
+    the system to be waterproof. 
+  \end{itemize}
+
+  \item User interaction Assumptions
+  \begin{itemize}
+    \item The user's head orientation remains stable, with minimal rapid
+    head motion, when the device is collecting audio data from the environment. 
+  \end{itemize}
+
+  \item Legal Assumptions
+  \begin{itemize}
+    \item The user will always use the device in public, where there is no
+    expectation of privacy. 
+    \item No audio data is permanently stored, transmitted or analyzed outside
+    of the system. 
+  \end{itemize}
+\end{enumerate}
 
 \subsection{E.5 Effects}
-\wss{Elements and properties of the environment that the system will affect.}
+
+Since the system is mainly just processing input from the environment, it won't
+largely affect many of the environmental components mentioned in
+\hyperref[item: E.4]{E.4}.
+The main environmental component that the system will affect are the user's
+interacting with the device. Listed below are two ways the system will affect
+users.
+
+\begin{itemize}
+  \item The system will generate a small amount of heat, which may make the user
+  feel more hot than usual. 
+  \item The system will raise awareness of the user's surroudings, reducing the
+  likelihood of accidents when in public. 
+\end{itemize}
 
 \subsection{E.6 Invariants}
-\wss{Properties of the environment that the systemâ€™s operation must preserve.}
+
+\begin{enumerate}
+  \item User Safety \& Comfort
+  \begin{itemize}
+    \item The system must not significantly reduce the user's field of vision. 
+    \item The system must not emit heat at levels that cause discomfort or harm
+    to the user. 
+  \end{itemize}
+
+  \item Legal Boundaries
+  \begin{itemize}
+    \item The system must maintain the privacy integrity of sounds it collects.
+    This means, it doesn't permanently store any sounds collected from the
+    environment. 
+  \end{itemize}
+\end{enumerate}
 
 \section{System}
 
 \subsection{S.1 Components}
-\wss{Overall structure expressed by the list of major software and, if applicable, hardware parts.}
+
+\begin{figure}[H]     
+    \centering 
+    \includegraphics[width=0.9\textwidth]{diagrams/s1_component_diagram.png}
+    \caption{Software component diagram.}
+    \label{fig:software_component_diagram}
+\end{figure}
+
+\subsubsection{Software Components}
+
+\begin{itemize}
+  \item \textbf{Embedded Firmware:} \label{comp:embedded_firmware}
+  Main component responsible for managing all embedded software on the
+  Microcontroller.
+
+  \item \textbf{Driver Layer:} \label{comp:driver_layer}
+  Component responsible for providing drivers on the microcontroller. It
+  provides interfaces for high level applications to interact with
+  hardware components external to the microcontroller
+
+  \item \textbf{Audio Filtering:} \label{comp:audio_filtering}
+  Component responsible for processing raw audio signals in real-time sent
+  by the microphones.
+
+  \item \textbf{Calibration Component:} \label{comp:calibration}
+  Component for calibrating hardware including microphones and output display.
+  
+  \item \textbf{Audio360 Engine:} \label{comp:audio360Engine}
+  Main component responsible for running Audio360 features. It serves as the
+  primary interface and controller for the Audio360 system. The component is
+  designed to be hardware agnostic, allowing seamless integration with any
+  firmware running on other hardware.
+  
+  \item \textbf{Frequency Analysis:} \label{comp:frequency_analysis}
+  Component responsible for analyzing properties of processed frequency signals.
+  Sub components of this includes audio classification and direction of arrival
+  estimation.
+  
+  \item \textbf{Visualization Controller:} \label{comp:viz_controller}
+  Component reposonsible for creating and sending visualization output to the
+  \hyperref[comp:display]{output display}.
+\end{itemize}
+
+\subsubsection{Hardware Components}
+
+\begin{itemize}
+  \item \textbf{Microphone:}\label{comp:microphone}
+  Component responsible for collecting audio signals from the environment.
+
+  \item \textbf{Output display:}\label{comp:display} Component responsible for
+  displaying visuals to the user.
+
+  \item \textbf{Microcontroller:}
+  \label{comp:microcontroller} Component responsible for executing the main
+  software and interfacing with input and output peripheral devices.
+\end{itemize}
 
 \subsection{S.2 Functionality}
-\wss{One section, S.2.n, for each of the components identified in S.2, describing the corresponding behaviors (functional and non-functional properties).}
+
+\subsubsection{\hyperref[comp:embedded_firmware]{Embedded Firmware}}
+Functional Requirements
+\begin{itemize}
+  \item \label{FR1_1}\textbf{FR1.1:} The firmware shall schedule tasks
+  based on its priority.
+  
+  \item \label{FR1_2}\textbf{FR1.2:} The firmware shall process and
+  synchronize audio signals from all microphones connected to the
+  microcontroller.
+
+  \item \label{FR1_3}\textbf{FR1.3:} The firmware shall handle memory errors to
+  prevent the micrcontroller from crashing.
+
+  \item \label{FR1_4}\textbf{FR1.4:} The system shall perform continuous
+  diagnostics on all hardware components to monitor hardware errors in
+  real-time. This ensures the system can react to failures as soon as they 
+  occur.
+\end{itemize}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR1_1}\textbf{NFR1.1:} The firmware shall process audio
+  signals in real-time with monotonic frame sequences. Earliest frames shall
+  have higher priority.
+  
+  \item \label{NFR1_2}\textbf{NFR1.2:} The firmware shall operate
+  faster than the connected microphone sample rate 44100 Hz, refering to
+  \hyperref[NFR7_1]{NFR7.1}.
+\end{itemize}
+
+\subsubsection{\hyperref[comp:driver_layer]{Driver Layer}}
+Functional Requirements
+\begin{itemize}
+  \item \label{FR2_1}\textbf{FR2.1:} The driver layer shall provide an
+  interface for higher level software to interact with the hardware on the
+  microcontroller.
+
+  \item \label{FR2_2}\textbf{FR2.2:} The driver layer shall process 
+  hardware interface requests based on system permissions of the requester.
+
+  \item \label{FR2_3}\textbf{FR2.3:} The driver layer shall return error codes 
+  upon return to higher-level software to support error handling.
+
+  \item \label{FR2_4}\textbf{FR2.4:} The driver shall maintain data integrity
+  on memory slots that is actively being used.
+\end{itemize}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR2_1}\textbf{NFR2.1:} The driver shall immediately propagate
+  any errors to the firmware layer for proper error handling.
+\end{itemize}
+
+\subsubsection{\hyperref[comp:audio_filtering]{Audio Filtering}} 
+Functional Requirements
+\begin{itemize}
+  \item \label{FR3_1}\textbf{FR3.1:} The audio filtering component shall
+  convert digital audio waveform to frequency domain.
+
+  \item \label{FR3_2}\textbf{FR3.2:} The audio filtering component shall
+  normalize the amplitude of incoming and outgoing signals.
+
+  \item \label{FR3_3}\textbf{FR3.3:} The audio filtering component shall
+  filter incoming audio signals to reduce frequency
+  \hyperref[def:spectral_leakage]{spectral leakage}.
+
+  \item \label{FR3_4}\textbf{FR3.4:} The audio filtering component shall
+  use available hardware acceleration method for efficient computations.
+
+  \item \label{FR3_5}\textbf{FR3.5:} The audio filtering component shall
+  detect and flag audio anomalies such as clipping, lost signal and silence.
+  This enables identification of microphone or signal path faults.
+\end{itemize}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR3_1}\textbf{NFR3.1:} The audio filtering component shall 
+  represent audio signals in the frequency domain with less than 10\% error from
+  the true value.
+  \item \label{NFR3_2}\textbf{NFR3.2:} The audio filtering component shall be
+  scalable to handle different input signal sizes without missing timing
+  constraints defined in \hyperref[NFR1_2]{NFR1.2} for input signal size up to
+  4096 frames.
+
+  \item \label{NFR3_3}\textbf{NFR3.3:} The audio filtering component shall have
+  an audio processing success rate end to end of atleast 90\% over 60 seconds.
+\end{itemize}
+
+\subsubsection{\hyperref[comp:audio360Engine]{Audio360 Engine}} 
+Functional Requirements
+\begin{itemize}
+  \item \label{FR4_1}\textbf{FR4.1:} The Audio360 Engine shall retrieve data,
+  such as frequency domain and errors, from the microcontroller via the driver
+  layer for further processing.
+
+  \item \label{FR4_2}\textbf{FR4.2:} The Audio360 Engine shall notify dependent
+  components when new frequency data is available. The latest data shall always
+  be used.
+
+  \item \label{FR4_3}\textbf{FR4.3:} The Audio360 Engine shall control the flow
+  of processed audio data from audio frequency analysis to visualization.
+
+  \item \label{FR4_4}\textbf{FR4.4:} The Audio360 Engine shall disable audio
+  classification and directional analysis features until microphone faults
+  addressed in \hyperref[FR3_5]{FR3.5} are resolved. This prevents the
+  generation of unreliable or unsafe outputs.
+\end{itemize}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR4_1}\textbf{NFR4.1:} The Audio360 Engine shall poll data
+  without conflicting with ongoing microcontroller memory writes, ensuring no
+  data loss.
+
+  \item \label{NFR4_2}\textbf{NFR4.2:} The Audio360 Engine shall retrieve
+  frequency data within the timing constraints of the embedded firmware defined
+  in \hyperref[NFR1_2]{NFR1.2}.
+
+  \item \label{NFR4_3}\textbf{NFR4.3:} The Audio360 Engine shall permanently
+  discard microphone audio data immediately after completion of audio analysis.
+\end{itemize}
+
+\subsubsection{\hyperref[comp:frequency_analysis]{Frequency Analysis}} 
+Functional Requirements
+\begin{itemize}
+  \item \label{FR5_1}\textbf{FR5.1:} The frequency analysis component shall
+  classify sound sources based on features extracted from the frequency domain
+  representation of the audio input signal.
+
+   \item \label{FR5_2}\textbf{FR5.2:} The frequency analysis component shall
+   estimate the direction of arrival of the audio source using frequency domain
+   representation of the audio input signal. 
+   
+   \item \label{FR5_3}\textbf{FR5.3:} The frequency analysis component shall 
+   represent the direction of arrival as an angle ($\theta$) in radians.
+   $\theta$ is measured relative to the forward axis of the glasses frame
+   to the sound source, Figure \ref{fig:coordinate_system}.
+
+   \item \label{FR5_4}\textbf{FR5.4:} The frequency analysis component shall
+   notify users when a sound classification result has low confidence or is
+   unrecognized to prevent misleading contextual feedback.
+\end{itemize}
+
+\begin{figure}[H]     
+    \centering 
+    \includegraphics[width=0.75\textwidth]{diagrams/glasses_coordinate.png}
+    \caption{Coordinate System.}
+    \label{fig:coordinate_system}
+\end{figure}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR5_1}\textbf{NFR5.1:} The frequency analysis shall classify
+  atleast 3 distinct sound sources relevant to people who are hard of hearing.
+
+  \item \label{NFR5_2}\textbf{NFR5.2:} The frequency analysis component shall
+  achieve a minimum classification accuracy of 90\% under
+  \hyperref[def:normal_operation_condition]{normal operating conditions}.
+
+  \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
+  direction of arrival of an audio source with a maximum error of 0.78 rad.
+  This ensures reliable directional awareness for the user.
+\end{itemize}
+
+\subsubsection{\hyperref[comp:viz_controller]{Visualization Controller}}
+Functional Requirements
+\begin{itemize}
+  \item \label{FR6_1}\textbf{FR6.1:} The visualization controller component
+  shall notify users of the direction of an audio source whenever it is
+  detected by the system.
+
+  \item \label{FR6_2}\textbf{FR6.2:} The visualization controller component
+  shall alert users when the core safety features such as direction
+  determination or classification fail. This ensures that users are aware of
+  degraded safety functions.
+\end{itemize}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR6_1}\textbf{NFR6.1:} The visualization controller component
+  shall prioritize to display the most safety-critical information at the
+  time because display space is limited.
+  \item \label{NFR6_2}\textbf{NFR6.2:} The visualization controller component
+  shall present information in a non-intrusive manner, minimizing visual
+  obstruction so users can safely perform external activities.
+\end{itemize}
+
+\subsubsection{\hyperref[comp:microphone]{Microphone}}
+Functional Requirements
+\begin{itemize}
+  \item \label{FR7_1}\textbf{FR7.1:} The microphone shall collect soundwaves
+  from its environment and translate to digital representation.
+
+  \item \label{FR7_2}\textbf{FR7.2:} The microphone shall collect soundwaves
+  with the human audiable range (20 Hz - 20 kHz) \cite{Neuroscience2001}.
+\end{itemize}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR7_1}\textbf{NFR7.1:} The microphone shall collect soundwaves
+  at 44100 Hz. According to Nyquist's theorem, audio sampling should be greater
+  than two times the highest frequency to avoid aliasing \cite{DataForth2025}.
+  The maximum frequecy audible to humans is approximately 20 kHz.
+  \cite{Neuroscience2001}.
+\end{itemize}
+
+\subsubsection{\hyperref[comp:display]{Output Display}}
+Functional Requirements
+\begin{itemize}
+  \item \label{FR8_1}\textbf{FR8.1:} The output display shall notify users of 
+  the classified sound source.
+
+  \item \label{FR8_2}\textbf{FR8.2:} The output display shall notify users of 
+  the direction of the sound source.
+\end{itemize}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR8_1}\textbf{NFR8.1:} The output display shall operate at a
+  minimum of 30 display updates per second to ensure low latency and provide
+  information to the user without perceptible delay.
+\end{itemize}
+
+\subsubsection{\hyperref[comp:microcontroller]{Microcontroller}}
+Functional Requirements
+\begin{itemize}
+  \item \label{FR9_1}\textbf{FR9.1:} The microcontroller shall run the main
+  \progname ~software in a closed environment. No external devices
+  other than the microphones and output display shall be able to connect to it.
+  This ensures protection against unauthorized access.
+\end{itemize}
+
+Non-Functional Requirements
+\begin{itemize}
+  \item \label{NFR9_1}\textbf{NFR9.1:} The microcontroller shall have a clock 
+  speed of atleast 100 MHz to support audio sampling at 44100 Hz, derived
+  from \hyperref[NFR7_1]{NFR7.1}.
+
+  \item \label{FR9_2}\textbf{NFR9.2:} The microcontroller shall provide atleast
+  four microphone inputs to support directional analysis of audio.
+\end{itemize}
+
 
 \subsection{S.3 Interfaces}
-\wss{How the system makes the functionality of S.2 available to the rest of the world, particularly user interfaces and program interfaces (APIs).}
+Audio360 is designed as a closed embedded system due to its safety-critical
+application domain, refering to functional requirement \hyperref[FR9_1]{FR9.1}.
+External access is intentionally restricted to ensure reliability, security,
+and user safety.
+The only user interface is the integrated visual display. The display provides
+real-time information by notifying users of detected sounds and their
+corresponding direction.
+No external programmatic interfaces (APIs) will be provided. This design
+decision ensures that system integrity is maintained and that no external
+software can interfere with the safety-critical operation of the device.
 
 \subsection{S.4 Detailed usage scenarios}
 \wss{Examples of interaction between the environment (or human users) and the system: use cases, user stories.}
 
+This section provides detailed versions of the high-level scenarios from \ref{item:G.5}, with specific technical details and interaction flows.
+
+\subsubsection{S.4.1 Pedestrian Crossing Detection}
+\textbf{User Story:} As a deaf individual, I want to be alerted when vehicles are approaching so I can cross streets safely.
+
+\textbf{Scenario:} A user is walking in an urban environment and approaches a street intersection. As they prepare to cross, a car approaches from their left side.
+
+\textbf{Interaction Flow:}
+\begin{enumerate}
+    \item System detects engine sound pattern characteristic of a vehicle
+    \item DoA algorithm estimates direction
+    \item Audio classification identifies the sound as a vehicle
+    \item Smart glasses display visual indicator showing direction and notifies the user of a vehicle approaching
+    \item User recognizes the alert and waits for the vehicle to pass before crossing safely
+\end{enumerate}
+
+\subsubsection{S.4.2 Kitchen Safety Alert}
+\textbf{User Story:} As a deaf individual, I want to be notified of household safety sounds so I can respond to potential hazards.
+
+\textbf{Scenario:} A user is cooking in their kitchen when a tea kettle on the stove begins to whistle.
+
+\textbf{Interaction Flow:}
+\begin{enumerate}
+    \item Microphone array captures the high-pitched whistle sound
+    \item System processes the audio and identifies the characteristic pattern
+    \item DoA algorithm estimates the direction
+    \item Audio classification identifies it as a kettle or alarm sound (90\% accuracy target)
+    \item Smart glasses display directional indicator notifying the user of a kettle whistling ($\leq 1$s latency)
+    \item User turns toward the alert and removes the kettle from heat, preventing potential hazard
+\end{enumerate}
+
+\subsubsection{S.4.3 Social Interaction}
+\textbf{User Story:} As a deaf individual, I want to know when someone is trying to get my attention so I don't miss social interactions.
+
+\textbf{Scenario:} A user is in a crowded room when someone calls their name from across the space.
+
+\textbf{Interaction Flow:}
+\begin{enumerate}
+    \item System captures audio from all directions through the microphone array
+    \item Voice activity detection identifies human speech patterns
+    \item DoA algorithm estimates the direction
+    \item Audio classification identifies the sound as speech or human voice
+    \item Smart glasses display the information with directional arrow
+    \item User turns in the indicated direction to make eye contact and engage in conversation
+\end{enumerate}
+
+\subsubsection{S.4.4 Workplace Awareness}
+\textbf{User Story:} As a deaf worker, I want to be aware of industrial safety warnings so I can maintain workplace safety.
+
+\textbf{Scenario:} A user is working in an industrial setting when a forklift begins reversing nearby, emitting a warning beep.
+
+\textbf{Interaction Flow:}
+\begin{enumerate}
+    \item System detects the characteristic beeping pattern through microphone array
+    \item DoA algorithm estimates the direction
+    \item Audio classification identifies it as a warning signal or industrial alarm
+    \item Smart glasses display prominent visual indicator notifying the user of a forklift backing up and directional arrow
+    \item User steps aside to maintain a safe distance from the moving equipment
+\end{enumerate}
+
 \subsection{S.5 Prioritization}
-\wss{Classification of the behaviors, interfaces and scenarios (S.2, S.3 and S.4) by their degree of criticality.}
+
+This section classifies all system behaviors, interfaces, and scenarios by their degree of criticality to ensure proper development prioritization and resource allocation. Requirements are organized into three criticality levels: Critical, Important, and Desirable, with corresponding development stages.
+
+\subsubsection{S.5.1 Critical Requirements (Stage 1 - Foundation)}
+
+Critical requirements form the essential foundation of the system and must be
+implemented first. These requirements are necessary for basic system operation
+and safety. \\
+\newline
+Estimated deadline: December 9th, 2025 \\
+\newline
+
+\textbf{Core Hardware and Infrastructure:}
+\begin{itemize}
+    \item \hyperref[FR7_1]{FR7.1} - Microphone soundwave collection and digital conversion
+    \item \hyperref[FR7_2]{FR7.2} - Human audible range coverage (20 Hz - 20 kHz)
+    \item \hyperref[NFR7_1]{NFR7.1} - 44100 Hz sampling rate
+    \item \hyperref[FR9_1]{FR9.1} - Closed microcontroller environment
+    \item \hyperref[NFR9_1]{NFR9.1} - Minimum 100 MHz clock speed
+    \item \hyperref[FR9_2]{FR9.2} - Four microphone inputs for directional analysis
+\end{itemize}
+
+\textbf{Sound Classification:}
+\begin{itemize}
+    \item \hyperref[FR5_1]{FR5.1} - Sound source classification
+    \item \hyperref[NFR5_1]{NFR5.1} - Classification of 3+ distinct sound sources
+    \item \hyperref[NFR5_2]{NFR5.2} - 90\% classification accuracy
+\end{itemize}
+
+\textbf{Basic Audio Processing:}
+\begin{itemize}
+    \item \hyperref[FR1_2]{FR1.2} - Audio signal processing and synchronization
+    \item \hyperref[FR3_1]{FR3.1} - Digital to frequency domain conversion
+    \item \hyperref[FR3_2]{FR3.2} - Signal amplitude normalization
+    \item \hyperref[NFR3_1]{NFR3.1} - Frequency domain accuracy ($\le 10\%$ error)
+    \item \hyperref[NFR1_2]{NFR1.2} - Processing faster than 44100 Hz sample rate
+\end{itemize}
+
+\textbf{Error Handling and Reliability:}
+\begin{itemize}
+    \item \hyperref[FR1_3]{FR1.3} - Memory error handling
+    \item \hyperref[FR1_4]{FR1.4} - Continuous hardware diagnostics
+    \item \hyperref[FR2_3]{FR2.3} - Driver error code returns
+    \item \hyperref[NFR2_1]{NFR2.1} - Immediate error propagation
+\end{itemize}
+
+\textbf{Basic Display Functionality:}
+\begin{itemize}
+    \item \hyperref[FR8_1]{FR8.1} - Sound source classification display
+    \item \hyperref[FR8_2]{FR8.2} - Sound direction display
+    \item \hyperref[NFR8_1]{NFR8.1} - 30 display updates per second
+\end{itemize}
+
+\subsubsection{S.5.2 Important Requirements (Stage 2 - Core Features)}
+
+Important requirements implement the primary functionality that delivers the
+system's main value proposition. These build upon the critical foundation. \\
+\newline
+Estimated deadline: February 9th, 2026 \\
+\newline
+
+\textbf{Direction of Arrival (DoA) Analysis:}
+\begin{itemize}
+    \item \hyperref[FR5_2]{FR5.2} - Direction of arrival estimation
+    \item \hyperref[FR5_3]{FR5.3} - Angular representation in radians
+    \item \hyperref[NFR5_3]{NFR5.3} - Maximum 0.78 rad DoA error
+\end{itemize}
+
+\textbf{Advanced Audio Processing:}
+\begin{itemize}
+    \item \hyperref[FR3_3]{FR3.3} - Spectral leakage filtering
+    \item \hyperref[FR3_4]{FR3.4} - Hardware acceleration utilization
+    \item \hyperref[FR3_5]{FR3.5} - Audio anomaly detection
+    \item \hyperref[NFR3_2]{NFR3.2} - Scalability to 4096 frames
+    \item \hyperref[NFR3_3]{NFR3.3} - 90\% processing success rate
+\end{itemize}
+
+\textbf{System Integration:}
+\begin{itemize}
+    \item \hyperref[FR2_1]{FR2.1} - Driver layer hardware interface
+    \item \hyperref[FR2_2]{FR2.2} - Permission-based hardware access
+    \item \hyperref[FR2_4]{FR2.4} - Data integrity maintenance
+    \item \hyperref[FR4_1]{FR4.1} - Audio360 Engine data retrieval
+    \item \hyperref[FR4_2]{FR4.2} - Component notification system
+    \item \hyperref[FR4_3]{FR4.3} - Data flow control
+\end{itemize}
+
+\textbf{Visualization and User Interface:}
+\begin{itemize}
+    \item \hyperref[FR6_1]{FR6.1} - Direction notification display
+    \item \hyperref[FR6_2]{FR6.2} - Safety feature failure alerts
+    \item \hyperref[NFR6_1]{NFR6.1} - Safety-critical information prioritization
+    \item \hyperref[NFR6_2]{NFR6.2} - Non-intrusive display design
+\end{itemize}
+
+\subsubsection{S.5.3 Desirable Requirements (Stage 3 - Enhancement)}
+
+Desirable requirements enhance system performance and user experience but are
+not essential for basic operation. \\
+\newline
+Estimated deadline: April 9th, 2026 \\
+\newline
+
+\textbf{Advanced System Features:}
+\begin{itemize}
+    \item \hyperref[FR1_1]{FR1.1} - Priority-based task scheduling
+    \item \hyperref[NFR1_1]{NFR1.1} - Monotonic frame sequence processing
+    \item \hyperref[FR4_4]{FR4.4} - Feature disabling during microphone faults
+    \item \hyperref[FR5_4]{FR5.4} - Low confidence classification notifications
+\end{itemize}
+
+\textbf{Performance Optimization:}
+\begin{itemize}
+    \item \hyperref[NFR4_1]{NFR4.1} - Conflict-free data polling
+    \item \hyperref[NFR4_2]{NFR4.2} - Timing constraint compliance
+    \item \hyperref[NFR4_3]{NFR4.3} - Immediate data disposal after analysis
+\end{itemize}
+
+\subsubsection{S.5.4 Scenario Prioritization}
+
+\textbf{Critical Scenarios (Stage 1):}
+\begin{itemize}
+    \item \hyperref[S.4.2]{S.4.2} - Kitchen Safety Alert (highest safety impact)
+    \item \hyperref[S.4.4]{S.4.4} - Workplace Awareness (industrial safety)
+\end{itemize}
+
+\textbf{Important Scenarios (Stage 2):}
+\begin{itemize}
+    \item \hyperref[S.4.1]{S.4.1} - Pedestrian Crossing Detection (public safety)
+    \item \hyperref[S.4.3]{S.4.3} - Social Interaction (quality of life)
+\end{itemize}
+
+\subsubsection{S.5.5 Development Priority Rationale}
+
+The prioritization follows a safety-first approach:
+
+\begin{enumerate}
+    \item \textbf{Stage 1 (Critical):} Establishes reliable hardware foundation and basic audio processing capabilities. Focuses on system stability and error handling to prevent failures that could compromise user safety.
+    
+    \item \textbf{Stage 2 (Important):} Implements core DoA and classification features that deliver the primary value proposition. Kitchen and workplace safety scenarios are prioritized due to their immediate safety implications.
+    
+    \item \textbf{Stage 3 (Desirable):} Adds performance optimizations and advanced features that enhance user experience but are not essential for basic safety functionality.
+\end{enumerate}
+
+This staged approach ensures that the most safety-critical features are implemented first, providing immediate value to users while building toward a complete system. The prioritization also considers technical dependencies, with lower-level components (hardware, drivers) being implemented before higher-level features (classification, visualization).
 
 \subsection{S.6 Verification and acceptance criteria}
 
@@ -566,17 +1220,362 @@ attempts, verified through repeated startup testing (minimum 20 trials).
 
 \section{Project}
 
-\subsection{P.1 Roles and personnel}
-\wss{Main responsibilities in the project; required project staff and their needed qualifications.}
+\subsection{P.1 Roles and personnel}\label{item: p1}
+
+All project staff have responsibilities they must carry out in addition to the
+ individual work required for deliverables. 
+The roles, and qualifications for each assignment are outlined below. 
+
+\begin{itemize}
+  \item Leader (Sathurshan Arulmohan)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Point of contact for professor and TAs. 
+          \item Ensures that the team is on track to meet deadlines.
+          \item Project planning and scheduling.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Strong organizational and leadership skills. 
+          \item Has experience in coordinating group projects and managing 
+          timelines. 
+          \item Strong communication skills. 
+        \end{itemize}
+    \end{itemize}
+  \item Meeting Chair (Kalp Shah)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Creates the agenda for meetings.
+          \item Facilitates the meetings.
+          \item Ensures that the team sticks to the agenda.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Great time management and facilitation skills. 
+          \item Strong interpersonal, communication and organizational skills. 
+          \item Prior experience in leadering meetings. 
+        \end{itemize}
+    \end{itemize}
+  \item Reviewer (Jay Sharma)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Reviews all deliverables before deadline to ensure all sections
+           are completed.
+          \item Reach out to the reviewers of each section to ensure they 
+          approve it before the deadline.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Attention to detail and strong analytical skills.
+          \item Experience in document quality assurance, and proof reading. 
+          \item Understanding of project requirements and documentation 
+          standards. 
+        \end{itemize}
+    \end{itemize}
+  \item Note taker (Nirmal Chaudhari)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Takes notes during meetings.
+          \item Create meeting notes summary after the meeting ends to grasp 
+          meeting content.
+          \item Coordinates with project leader after meeting ends for action 
+          items. 
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Strong written communication, and summarization skills. 
+          \item Multi-tasking abilities, able to capture technical discussions 
+          while contributiing to meetings. 
+          \item Ability to type fast, with little error. 
+        \end{itemize}
+    \end{itemize}
+  \item System Specialist (Omar Alam)
+    \begin{itemize}
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Manages and validates system design at a high level. 
+          \item Responsible for hardware \& software interfaces.
+          \item Handles budgeting and expenses, ensures total budget remains 
+          under \$500.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Technical background in software and hardware system design. 
+          \item Experience with system architecture and prototyping.  
+          \item Basic knowledge of budgeting and resource allocation. 
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+Moreover, all project members share the following competencies as contributing 
+members to the development of this project. 
+\begin{itemize}
+  \item Embedded software development.
+  \item Strong software design for novel features. 
+  \item Strong testing and debugging skills. 
+\end{itemize}
+
+In addition to responsibilities as developers on the team, each project member 
+has been designated as an \textbf{expert} in a specific area of focus essential 
+to the development of this system. 
+The designated focus areas are outlined below:
+
+\begin{itemize}
+    \item Research in using hardware acceleration methods and other code 
+    optimization methods for embedded development, since the system is
+    deployed on microcontroller with limited CPU and memory space. 
+    \textbf{(Sathurshan Arulmohan)}.
+    \item Hardware integration, including implementation of low-level hardware
+     interface for high-level software. 
+    Features should be abstracted so that it can integrate with other hardware
+     devices. Since the hardware requires an API integration
+    for this, this focus area is needed. \textbf{(Omar Alam)}.
+    \item Analysis of methods to extract directionality from a microphone array,
+     since multple microphones needs to be processed.
+    and run some algorithm to determine which direction it is coming from. This
+     algorithm needs to be researched. \textbf{(Kalp Shah)}.
+    \item Exploration of techniques for separating multiple audio sources from 
+    a single microphone input using Independent Component Analysis (ICA).
+    This focus area is required since the system's environment will contain a 
+    mixture of sounds that need to analyzed and processed indepdently. 
+    \textbf{(Jay Sharma)}.
+    \item Development of audio-fingerprinting for classifying sound sources
+    based on the frequency domain representation of the audio signal. This
+    feature needs to comply with the processing and memory limits of the
+    compute unit.\textbf{(Nirmal Chaudhari)}.
+\end{itemize}
+
+\noindent
+All experts share the following responsibilities for their area of focus. 
+
+\begin{itemize}
+  \item Look through research articles, and technical evaluations to come up 
+  with feasibile approaches for proposed methods. 
+  \item Collaborate with other team members to discuss findings. 
+  \item Maintain clear and organized documentation of sources and proposed 
+  methods. 
+  \item Complete implementation of the focus area in the system.
+  \item Testing to validate and verify the feature.
+\end{itemize}
 
 \subsection{P.2 Imposed technical choices}
 \wss{Any a priori choices binding the project to specific tools, hardware, languages or other technical parameters.}
 
-\subsection{P.3 Schedule and milestones}
-\wss{List of tasks to be carried out and their scheduling.}
+\subsection{P.3 Schedule and milestones} \label{item: p3}   
+
+To better understand the needs of the stakeholders, there are various milestones
+ that need to be completed within the realm of the requirements process.
+These milestones can be generalized as a list of tasks, with their deadlines 
+outlined below.
+
+\begin{enumerate}
+  \item Initial Supervisor Consultation (2025-09-15) \label{item: p3-1}
+  \item Extraction of project soft and hard goals (2025-09-22) 
+  \label{item: p3-2}
+  \item Technical analysis for feasibility of project goals (2025-09-29) 
+  \label{item: p3-3}
+  \item Extraction of requirements from goals and technical assessment 
+  (2025-10-2) \label{item: p3-4}
+  \item Requirements Documentation (2025-10-10) \label{item: p3-5}
+  \item Validation Plan (2025-10-27) \label{item: p3-6}
+  \item System Design Plan (2025-10-27) \label{item: p3-7}
+  \item Verification \& Validation of system (2026-02-02) \label{item: p3-8}
+  \item Consultation with primary stakeholder (TBD) \label{item: p3-9}
+\end{enumerate}
 
 \subsection{P.4 Tasks and deliverables}
-\wss{Details of individual tasks listed under P.3 and their expected outcomes.}
+
+\begin{enumerate}
+
+  \item \textbf{Initial Supervisor Consultation (2025-09-15)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Meet with the supevisor to clarify the project vision. 
+      \item Discuss key goals, available resources and expected POC outcomes. 
+      \item Identify initial research domains. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item Team has a shared understanding of project objectives and potential
+       risks associated with the project scope and goals. 
+      \item Defined list of research priorities outlined in section
+      \hyperref[item: p1]{P.1}.
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Extraction of project soft and hard goals (2025-09-22)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Based on team elicitation, brainstorm and document list of soft 
+      goals. 
+      \item Deconstruct soft goals into a list of hard goals using definition,
+       contribution, decomposition techniques. 
+      \item Discuss trade-offs of defined hard goals. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item Comprehensive list of soft and hard goals, clearly defining the 
+      project direction. 
+      \item Consensus among team members and supervisor on achievable project
+       objectives. 
+      \item Prioritized list of goals for verification testing. 
+      \item Validated list of goals with primary stakeholders. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Technical analysis for feasibility of project goals 
+  (2025-09-29)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Review research articles relevant to goals extracted during the 
+      elicitation stage. 
+      \item Conduct feasibility assessments for key goals set in the project. 
+      \item Run small-scale prototype, or test to confirm technical viability. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item Confirmation of which project goals are technically achievable 
+      within the scope.
+      \item Revised goals based on hardware and software capabilities. 
+      \item Early identification of design constraints. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Extraction of requirements from goals and technical assessment 
+  (2025-10-2)}
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Translate validated soft and hard goals into specific system 
+      requirements. 
+      \item Identify dependencies and relationships between requirements. 
+      \item Ensure each requirement is unambiguous, measurable and achievable 
+      within the scope. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item Drafted list of functional and non-functional requirements derived 
+      from goals. 
+      \item Clear mapping between project goals and corresponding requirements. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Requirements Documentation (2025-10-10)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Iteratively updating sections in SRS document based on the results 
+      of different tasks mentioned in \hyperref[item: p3]{P.3}. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item Completed Rev 0 SRS document
+      \item Software architecture and design can commence with a clear path 
+      using SRS as a guidance. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Validation Plan (2025-10-27)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Come up with a plan for validating the system meets the requirement 
+      specification.
+      This plan should be exhaustive enough to confirm that all of the
+      stakeholders' goals have been met. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item The V\&V deliverable has been completed, and clearly outlines the 
+      plan for validation and verification. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{System Design Plan (2025-10-27)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Each focus area expert works on completing the design plan for the 
+      implementation of that feature. 
+      \item The design plan will be communicated to the rest of the team and the
+       project advisor for validation on the design
+      and any feedback will be addressed. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item Each focus area has a fully completed design plan based on the 
+      investigation completed by the expert. 
+      \item The plan has been written in Rev 0 of the Design Document
+  \end{itemize}
+
+  \vspace{0.8em}
+
+  \item \textbf{Verification \& Validation of System (2026-02-02)}  
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Using the Rev 0 V\&V report, team goes through plan for validation 
+      and verification of the system against
+      requirement specifications. 
+      \item For any unmet requirements based on the validation plan, the team 
+      re-assess the requirements to see it's priority 
+      in the given timeline. Previous requirement documents are updated 
+      accordingly. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item All documentation has been updated based on the current 
+      implementation of the system. 
+      \item Team has a clear list of unmet requirements that need to be 
+      addressed. 
+  \end{itemize}
+
+  \vspace{0.8em}
+  
+  \item \textbf{Consultation with primary stakeholder (TBD)}    
+
+  \textbf{Tasks:}
+  \begin{itemize}
+      \item Meet with the McMaster Sign Language club to conduct a
+      semi-structured interview.
+      \item Document all findings from interview specific to the questions
+      asked. 
+      \item Update stakeholder goals and requirements based on the results of 
+      the interview. 
+  \end{itemize}
+
+  \textbf{Expected Outcomes:}
+  \begin{itemize}
+      \item SRS document has been updated to be inline with McMaster Sign 
+      Language club needs. 
+  \end{itemize}
+
+  \vspace{0.8em}
+
+\end{enumerate}
+
 
 \subsection{P.5 Required technology elements}
 \wss{External systems, hardware and software, expected to be necessary for building the system.}
