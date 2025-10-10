@@ -787,7 +787,7 @@ Non-Functional Requirements
   \hyperref[def:normal_operation_condition]{normal operating conditions}.
 
   \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
-  direction of arrival of an audio source with a maximum error of 0.78 rad.
+  direction of arrival of an audio source with a maximum error of 45 degrees.
   This ensures reliable directional awareness for the user.
 \end{itemize}
 
@@ -1011,7 +1011,7 @@ Estimated deadline: February 9th, 2026 \\
 \begin{itemize}
     \item \hyperref[FR5_2]{FR5.2} - Direction of arrival estimation
     \item \hyperref[FR5_3]{FR5.3} - Angular representation in radians
-    \item \hyperref[NFR5_3]{NFR5.3} - Maximum 0.78 rad DoA error
+    \item \hyperref[NFR5_3]{NFR5.3} - Maximum 45 degrees DoA error
 \end{itemize}
 
 \textbf{Advanced Audio Processing:}
@@ -1097,11 +1097,13 @@ This staged approach ensures that the most safety-critical features are implemen
 This section specifies the conditions under which the implementation will be 
 deemed satisfactory. The verification criteria are organized by the major 
 functional areas of the system and are directly traceable to the goals 
-defined in Section 1.
+defined in Section 1 and the functional/non-functional requirements defined 
+in Section S.2.
 
 \subsubsection{S.6.1 Audio capture verification}
 
-Related to \hyperref[goal:audio_capture]{Goal 1}.
+Related to \hyperref[goal:audio_capture]{Goal 1}, \hyperref[FR1_2]{FR1.2}, 
+\hyperref[FR7_1]{FR7.1}, \hyperref[FR7_2]{FR7.2}, and \hyperref[NFR7_1]{NFR7.1}.
 
 \begin{itemize}
 \item \textbf{VC-1.1 Synchronized sampling:} The system shall demonstrate that 
@@ -1121,7 +1123,8 @@ log file analysis.
 
 \subsubsection{S.6.2 Direction of arrival (DoA) verification}
 
-Related to \hyperref[goal:audio_direction_analysis]{Goal 2}.
+Related to \hyperref[goal:audio_direction_analysis]{Goal 2}, \hyperref[FR5_2]{FR5.2}, 
+\hyperref[FR5_3]{FR5.3}, and \hyperref[NFR5_3]{NFR5.3}.
 
 \begin{itemize}
 \item \textbf{VC-2.1 Single source accuracy:} For a single sound source in 
@@ -1149,7 +1152,9 @@ verified through repeated testing.
 
 \subsubsection{S.6.3 Sound classification verification}
 
-Related to \hyperref[goal:audio_identification_analysis]{Goal 3}.
+Related to \hyperref[goal:audio_identification_analysis]{Goal 3}, 
+\hyperref[FR5_1]{FR5.1}, \hyperref[FR5_4]{FR5.4}, 
+\hyperref[NFR5_1]{NFR5.1}, and \hyperref[NFR5_2]{NFR5.2}.
 
 \begin{itemize}
 \item \textbf{VC-3.1 Classification accuracy:} The audio classification system 
@@ -1175,7 +1180,9 @@ verified through testing with sounds outside the training set.
 
 \subsubsection{S.6.4 Visual display verification}
 
-Related to \hyperref[goal:visual_display]{Goal 4}.
+Related to \hyperref[goal:visual_display]{Goal 4}, \hyperref[FR6_1]{FR6.1}, 
+\hyperref[FR8_1]{FR8.1}, \hyperref[FR8_2]{FR8.2}, \hyperref[NFR6_2]{NFR6.2}, 
+and \hyperref[NFR8_1]{NFR8.1}.
 
 \begin{itemize}
 \item \textbf{VC-4.1 Display latency:} The complete system pipeline from sound 
@@ -1195,7 +1202,8 @@ through measurement of display area relative to total viewable area.
 
 \subsubsection{S.6.5 User interaction verification}
 
-Related to \hyperref[goal:user_friendly_interaction]{Goal 5}.
+Related to \hyperref[goal:user_friendly_interaction]{Goal 5}, 
+\hyperref[FR6_2]{FR6.2}, and \hyperref[NFR6_1]{NFR6.1}.
 
 \begin{itemize}
 \item \textbf{VC-5.1 Setup simplicity:} A new user shall be able to power on 
@@ -1204,11 +1212,15 @@ external documentation, verified through timed user testing with participants
 unfamiliar with the system.
 
 \item \textbf{VC-5.2 Calibration process:} If calibration is required, the 
-process shall be completable within 2 minutes and require no more than 3 
-user actions, verified through user testing and documentation review.
+process shall be completable within 2 minutes and require no
+user actions, verified through testing.
 \end{itemize}
 
 \subsubsection{S.6.6 System reliability verification}
+
+Related to \hyperref[FR1_3]{FR1.3}, \hyperref[FR1_4]{FR1.4}, \hyperref[FR2_3]{FR2.3}, 
+\hyperref[FR3_5]{FR3.5}, \hyperref[FR4_4]{FR4.4}, \hyperref[NFR2_1]{NFR2.1}, 
+\hyperref[NFR3_3]{NFR3.3}, and \hyperref[NFR4_1]{NFR4.1}.
 
 \begin{itemize}
 \item \textbf{VC-6.1 Startup reliability:} The system shall successfully 
