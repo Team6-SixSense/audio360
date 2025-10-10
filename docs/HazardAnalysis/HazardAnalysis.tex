@@ -3,6 +3,11 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{pdflscape}
 
 \hypersetup{
     colorlinks=true,       % false: boxed links; true: colored links
@@ -20,6 +25,13 @@
 
 \input{../Comments}
 \input{../Common}
+
+
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+\newcommand{\cellrule}{\par\vspace{-0.3em}\noindent\rule{\linewidth}{0.2pt}\par}
+
 
 \begin{document}
 
@@ -152,14 +164,154 @@ this potential failure mode.}
 
 \section{Failure Mode and Effect Analysis}
 
-\wss{Include your FMEA table here. This is the most important part of this document.}
-\wss{The safety requirements in the table do not have to have the prefix SR.
-The most important thing is to show traceability to your SRS. You might trace to
-requirements you have already written, or you might need to add new
-requirements.}
-\wss{If no safety requirement can be devised, other mitigation strategies can be
-entered in the table, including strategies involving providing additional
-documentation, and/or test cases.}
+\subsection{Severity Mapping Table}
+The severity, occurrence, and detection ratings used in the FMEA table are defined as follows:
+\begin{table}[H]
+\begin{tabular}{c|c|c|c}
+
+    Rating & Severity & Occurrence & Detection \\\hline
+    1 & Negligible & Rare & Always detected \\\hline
+    2 & Minor & Uncommon & Easy to detect \\ \hline
+    3 & Major & Occasional & Moderately difficult to detect \\\hline
+    4 & Critical & Frequent & Difficult to detect \\\hline
+    5 & Catastrophic & Very frequent & Impossible to detect \\
+
+
+\end{tabular}
+\end{table}
+
+\subsection{Priority Mapping Table}
+
+The priority level is determined by the summation of the severity, occurrence,
+and detection ratings:
+
+\begin{table}[H]
+    \begin{tabular}{c|c}
+        Product of severities & Priority Level \\\hline
+        1 - 4 & Low Priority \\\hline
+        5 - 10 & Medium Priority \\\hline
+        10 - 15 & High Priority \\
+
+    \end{tabular}
+\end{table}
+
+\newpage
+\pdfpagewidth=15in
+\pdfpageheight=11.5in
+\newgeometry{left=1.5cm, right=1cm, top=1cm, bottom=1cm}
+
+    
+    \begin{longtable}{
+        >{\raggedright\arraybackslash}p{0.5cm}%     (\#)
+        >{\raggedright\arraybackslash}p{3.0cm}%   (Component)
+        >{\raggedright\arraybackslash}p{3.0cm}%   (Potential Failure)
+        >{\raggedright\arraybackslash}p{3.0cm}%   (Effect on User)
+        >{\raggedright\arraybackslash}p{3.0cm}%   (Likely Cause)
+        >{\centering\arraybackslash}p{1.5cm}%   (Severity)
+        >{\centering\arraybackslash}p{2.4cm}%     (Occurence Frequency)
+        >{\raggedright\arraybackslash}p{3.0cm}%     (Detection Method)
+        >{\centering\arraybackslash}p{2.0cm}%     (Detection Likelihood)
+        >{\centering\arraybackslash}p{2.4cm}%   (Priority)
+        >{\raggedright\arraybackslash}p{3.0cm}%     (Recommended Mitigation)
+        >{\raggedright\arraybackslash}p{3.0cm}%
+      }
+
+    \toprule
+    \textbf{\#} & 
+    \textbf{Component / Function} & 
+    \textbf{Potential Failure Mode} &
+    \textbf{Effect on User / System}&
+    \textbf{Likely Cause(s)} & 
+    \textbf{Severity} &
+    \textbf{Occurrence Frequency} &
+    \textbf{Detection Method} &
+    \textbf{Detection Likelihood} &
+    \textbf{Priority \hspace{15pt}(S + O + D)} &
+    \textbf{Recommended Action} &
+    \textbf{Relevant Requirement(s)}\\
+    \midrule
+    \endfirsthead
+    \toprule
+    
+    \midrule
+    \endhead
+
+
+    1 & Microphone &  Unresponsive / Distorted Microphone. & Not able
+    to effectively localize audio. \cellrule Unable to provide warnings to user. & 
+    Microphone circuit failure. \cellrule Microphone damage. \cellrule Excessive ambient noise. &
+    5 & 1  &
+    Multiple corrupted microphone data frames. \cellrule Excessive white noise detection.
+    \cellrule Short circuit detection for microphones. & 3 & 9 & Detect failure
+    using microphone audio (or lack thereof) and notify user. & FR1.4, FR2.3, FR3.5, FR7.2, NFR2.1  \\
+
+    \midrule
+    2 & Visualization Controller & Disconnection from display. & Unable to provide 
+    visual notifications to user. & Depending on connection type: cable, 
+    wireless interference, dropped connection. & 3 & 2 &
+    Loss of connection signal. \cellrule Failure to send data to display. & 1 & 6 &
+    There are no safety requirements that can mitigate this hazard. & NFR2.1\\
+
+    \midrule
+
+
+    3 & Embedded Firmware & System crashes and freezes. & The system remains unusable
+    until it is restarted. \cellrule Unable to provide notifications to user. &
+    Software bugs. \cellrule Insufficient Error Handling \cellrule Insufficient
+    Requirements. & 5 & 3 & System watchdog timer 
+    \cellrule Halt Interrupt. & 1 & 9 & Implement a watchdog timer to reset the
+    system in the event of a crash. \cellrule Implement adequate logging to
+    diagnose the cause of firmware failure during post-mortem. \cellrule Robust testing and 
+    error handling. & FR1.3, FR4.1, FR4.4 \\
+    \midrule
+
+    4 & Sound Detection (Audio360 Engine)& Failure to detect important sounds. & Failure to notify
+    user of critical sounds. & Insufficient microphone quality. \cellrule Poor 
+    classification algorithm. \cellrule Excessive ambient noise. & 4 & 3 &
+    This is difficult to detect without extensive testing. \cellrule Impossible
+    to detect in production. & 5 & 12 & Have a thorough
+    library of sounds to detect and test against. \cellrule Measure microphone 
+    performance on sound library. & FR3.5, FR4.4, FR5.1, FR6.1  \\
+
+    \midrule
+
+    5 & Sound Classifier (Audio360 Engine) & Misclassification of sounds. & Notify the user of the 
+    wrong sounds. & Insufficient classification algorithm \cellrule Insufficient
+    microphone quality. & 3 & 2 & This is difficult to detect
+    without extensive user testing.\cellrule Impossible to detect in production. & 5 & 10 & Extensive testing in real-world
+    environments and simulation. \cellrule Verify microphone quality during operation.
+    & FR4.4, FR5.1, FR5.4, NFR5.1, NFR5.2 \\
+
+
+    \midrule
+
+    6 & Sound Localizer (Audio360 Engine) & Inaccurate direction determination for sounds. & Misinform
+    the user of the direction of important sounds. & Incorrect localization algorithm.
+    \cellrule Insufficient microphone quality. & 4 & 2 & This is
+    difficult to detect without extensive localization testing. \cellrule Impossible to detect
+    in production. & 5 & 11 & Extensive localization testing in real-world environments and simulation.
+    & FR5.2, NFR5.3 \\
+    
+    \bottomrule
+    \end{longtable}
+
+\restoregeometry
+
+\pdfpagewidth=8.5in
+\pdfpageheight=11in
+
+\subsection{Out of Scope Failure Modes}
+The project involves off the shelf hardware components with their own possible
+failure modes and possible mitigations. Since the hardware and electrical 
+components are not being designed as part of the project, 
+these failure modes are considered out of scope:
+\begin{itemize}
+    \item Battery failure / damage.
+    \item Physical display damage.
+    \item Power supply issues.
+    \item Physical damage to the glasses.
+\end{itemize}
+
 
 \section{Safety and Security Requirements}
 
