@@ -1,6 +1,7 @@
 \documentclass[12pt, titlepage]{article}
 
 \usepackage{booktabs}
+\usepackage{float}
 \usepackage{tabularx}
 \usepackage{hyperref}
 \usepackage{xr}
@@ -35,8 +36,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2025-10-27 & 1.0 & Initial write-up\\
 \bottomrule
 \end{tabularx}
 
@@ -152,9 +152,66 @@ how they relate to your VnV efforts.}
 
 \subsection{Verification and Validation Team}
 
-\wss{Your teammates.  Maybe your supervisor.
-  You should do more than list names.  You should say what each person's role is
-  for the project's verification.  A table is a good way to summarize this information.}
+Figure \ref{table:vnv_team} outlines the roles and responsibilities of each
+team member involved in the verification and validation process. Roles were
+intentionally assigned to individuals not directly responsible for the
+corresponding implementation components, ensuring an unbiased evaluation of 
+system functionality. The supervisor also contributes by providing technical
+oversight and expert validation for signal processing.
+
+\begin{table}[H]
+  \centering
+    
+  \begin{tabularx}{\textwidth}{|X|X|c|}
+    \toprule
+    \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
+    \midrule
+    Firmware Verification &
+    Develops and executes tests to confirm that the firmware implementation
+    conforms to the requirements outlined in the software specification. &
+    Jay \\
+    \hline
+
+    Visualization Verification + Validation &
+    Develops and executes tests to confirm that the visualization implementation
+    conforms to the requirements outlined in the software specification.
+    Also responsible for engaging with users to validate the usability of the
+    product specific to the visualization. &
+    Nirmal \\
+    \hline
+
+    Audio Classification Verification &
+    Develops and executes tests to confirm that the audio classification module
+    conforms to the requirements outlined in the software specification.
+    &
+    Sathurshan \\
+    \hline
+    
+    Directional Analysis Verification &
+    Develops and executes tests to confirm that the directional analysis
+    component conforms to the requirements outlined in the software
+    specification. &
+    Omar \\
+    \hline
+
+    Product Validation &
+    Responsible for engaging with individuals who are hard of hearing to
+    validate that the system effectively addresses their pain points related to
+    situational awareness. &
+    Kalp \\
+    \hline
+
+    Audio Processing Verification &
+    Reviews and assesses the audio processing methodologies implemented. The
+    team will demonstrate and explain these techniques in a supervisor meetiing
+    and receive verbal or written feedback. &
+    MVM (Supervisor) \\
+
+    \bottomrule
+  \end{tabularx}
+  \caption{Verification and validation team breakdown.}
+  \label{table:vnv_team}
+\end{table}
 
 \subsection{SRS Verification}
 
