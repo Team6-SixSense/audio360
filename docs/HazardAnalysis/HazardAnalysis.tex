@@ -11,13 +11,14 @@
 \usepackage{xr-hyper}
 \usepackage{cite}
 
-\hypersetup{
-    colorlinks=true,       % false: boxed links; true: colored links
-    linkcolor=red,          % color of internal links (change box color with linkbordercolor)
+\hypersetup{ colorlinks=true,       % false: boxed links; true: colored links
+    linkcolor=red,          % color of internal links (change box color with
+                             %linkbordercolor)
     citecolor=green,        % color of links to bibliography
     filecolor=magenta,      % color of file links
     urlcolor=cyan           % color of external links
 }
+
 
 \title{Hazard Analysis\\\progname}
 
@@ -72,7 +73,7 @@ hard-of-hearing individuals who rely on the system for situational awareness,
 any failure to detect, classify, or display audio information could result in
 missed safety cues, social interactions, or degraded environmental awareness.
 
-This hazard analysis identifies potential failure modes in the Audio360 audio 
+This hazard analysis identifies potential failure modes in the Audio360 audio
 localization system and establishes safety requirements to ensure reliable
 operation in real-world scenarios.
 
@@ -98,24 +99,23 @@ system boundary, and one for components outside the system boundary.
 The following components are within the system's control and responsibility:
 
 \begin{itemize}
-\item \textbf{Embedded firmware:} Real-time operating system and all
-embedded software running on the processing unit.
+\item \textbf{Embedded firmware:} Real-time operating system and all embedded
+software running on the processing unit.
 
 \item \textbf{Signal processing module:} Real-time digital signal processing
 algorithms including frequency domain transforms, filtering, and time-domain
 analysis.
 
-\item \textbf{Direction of arrival (DoA) estimation:} Algorithms for
-computing sound source direction on a 2D plane based on time difference of
-arrival and phase differences across microphones.
+\item \textbf{Direction of arrival (DoA) estimation:} Algorithms for computing
+sound source direction on a 2D plane based on time difference of arrival and
+phase differences across microphones.
 
 \item \textbf{Audio classification engine:} Sound fingerprinting and
-classification logic to identify and categorize detected sounds (e.g.,
-speech, vehicles, alarms).
+classification logic to identify and categorize detected sounds (e.g., speech,
+vehicles, alarms).
 
-\item \textbf{Visualization Controller:} \label{comp:viz_controller}
-Component responsible for creating and sending visualization output to the
-glasses.
+\item \textbf{Visualization Controller:} \label{comp:viz_controller} Component
+responsible for creating and sending visualization output to the glasses.
 
 \item \textbf{Configuration and calibration:} Microphone array calibration
 routines and system configuration parameters.
@@ -123,45 +123,42 @@ routines and system configuration parameters.
 
 \subsection{Outside the System Boundary}
 
-The following external entities interact with the system but are not under
-its direct control:
+The following external entities interact with the system but are not under its
+direct control:
 
 \begin{itemize}
-\item \textbf{Users:} Individuals who are deaf or hard of hearing wearing
-the device. Their actions, responses to alerts, and interpretation of
-displayed information are outside the system's control.
+\item \textbf{Users:} Individuals who are deaf or hard of hearing wearing the
+device. Their actions, responses to alerts, and interpretation of displayed
+information are outside the system's control.
 
 \item \textbf{Environmental sounds:} Acoustic signals in the physical
-environment, including speech, vehicle noises, alarms, and ambient sounds.
-The system detects and processes these but does not generate or control
-them.
+environment, including speech, vehicle noises, alarms, and ambient sounds. The
+system detects and processes these but does not generate or control them.
 
 \item \textbf{Audio capture subsystem:} Synchronized sampling logic for the
-microphone array, including analog-to-digital conversion interfaces and
-buffer management. This component is included in the microcontroller and is not
-within our system's control.
+microphone array, including analog-to-digital conversion interfaces and buffer
+management. This component is included in the microcontroller and is not within
+our system's control.
 
 \item \textbf{Physical microphone hardware:} Microphone sensors that capture
-acoustic pressure waves. While the system controls their digital interface,
-the physical transduction mechanism is external.
+acoustic pressure waves. While the system controls their digital interface, the
+physical transduction mechanism is external.
 
-\item \textbf{Smart glasses hardware:} The physical display device,
-including its screen, optics, power management, and form factor. The system
-sends display commands but does not control the hardware's internal
-operation.
+\item \textbf{Smart glasses hardware:} The physical display device, including
+its screen, optics, power management, and form factor. The system sends display
+commands but does not control the hardware's internal operation.
 
-\item \textbf{Microcontroller:}
-\label{comp:microcontroller} Component responsible for processing real time
-data of sensor inputs. This hardware component's performance and reliability
-are outside our system's control.
+\item \textbf{Microcontroller:} \label{comp:microcontroller} Component
+responsible for processing real time data of sensor inputs. This hardware
+component's performance and reliability are outside our system's control.
 
 \item \textbf{Power supply:} Battery or external power source providing
-electrical power to system components. Power management at the hardware
-level is external to the software system.
+electrical power to system components. Power management at the hardware level is
+external to the software system.
 
 \item \textbf{Physical environment:} Room acoustics, ambient noise levels,
-temperature, and other environmental factors that affect sound propagation
-and microphone performance.
+temperature, and other environmental factors that affect sound propagation and
+microphone performance.
 \end{itemize}
 
 
@@ -182,8 +179,8 @@ and microphone performance.
     \begin{itemize}
         \item The analog-to-digital converters (ADC) that comes with the
         hardware provides stable conversions in real-time.
-        \item Processor's clock frequency remains stable under normal
-        operating temperatures 0-35°C.
+        \item Processor's clock frequency remains stable under normal operating
+        temperatures 0-35°C.
     \end{itemize}
 
     \item Output Display
@@ -203,7 +200,8 @@ and microphone performance.
 \section{Failure Mode and Effect Analysis}
 
 \subsection{Severity Mapping Table}
-The severity, occurrence, and detection ratings used in the FMEA table are defined as follows:
+The severity, occurrence, and detection ratings used in the FMEA table are
+defined as follows:
 \begin{table}[H]
 \begin{tabular}{c|c|c|c}
 
@@ -234,13 +232,11 @@ and detection ratings:
 \end{table}
 
 \newpage
-\pdfpagewidth=15in
-\pdfpageheight=11.5in
+\pdfpagewidth=15in \pdfpageheight=11.5in
 \newgeometry{left=1.5cm, right=1cm, top=1cm, bottom=1cm}
 
     
-    \begin{longtable}{
-        >{\raggedright\arraybackslash}p{0.5cm}%     (\#)
+    \begin{longtable}{ >{\raggedright\arraybackslash}p{0.5cm}%     (\#)
         >{\raggedright\arraybackslash}p{3.0cm}%   (Component)
         >{\raggedright\arraybackslash}p{3.0cm}%   (Potential Failure)
         >{\raggedright\arraybackslash}p{3.0cm}%   (Effect on User)
@@ -255,18 +251,11 @@ and detection ratings:
       }
 
     \toprule
-    \textbf{\#} & 
-    \textbf{Component / Function} & 
-    \textbf{Potential Failure Mode} &
-    \textbf{Effect on User / System}&
-    \textbf{Likely Cause(s)} & 
-    \textbf{Severity} &
-    \textbf{Occurrence Frequency} &
-    \textbf{Detection Method} &
-    \textbf{Detection Likelihood} &
-    \textbf{Priority \hspace{15pt}(S + O + D)} &
-    \textbf{Recommended Action} &
-    \textbf{Relevant Requirement(s)}\\
+    \textbf{\#} & \textbf{Component / Function} & \textbf{Potential Failure
+    Mode} & \textbf{Effect on User / System}& \textbf{Likely Cause(s)} &
+    \textbf{Severity} & \textbf{Occurrence Frequency} & \textbf{Detection
+    Method} & \textbf{Detection Likelihood} & \textbf{Priority \hspace{15pt}(S +
+    O + D)} & \textbf{Recommended Action} & \textbf{Relevant Requirement(s)}\\
     \midrule
     \endfirsthead
     \toprule
@@ -275,74 +264,75 @@ and detection ratings:
     \endhead
 
 
-    1 & Microphone &  Unresponsive / Distorted Microphone. & Not able
-    to effectively localize audio. \cellrule Unable to provide warnings to user. & 
-    Microphone circuit failure. \cellrule Microphone damage. \cellrule Excessive ambient noise. &
-    5 & 1  &
-    Multiple corrupted microphone data frames. \cellrule Excessive white noise detection.
-    \cellrule Short circuit detection for microphones. & 3 & 9 & Detect failure
-    using microphone audio (or lack thereof) and notify user. & FR1.4, FR2.3, FR3.5, FR7.2, NFR2.1  \\
+    1 & Microphone &  Unresponsive / Distorted Microphone. & Not able to
+    effectively localize audio. \cellrule Unable to provide warnings to user. &
+    Microphone circuit failure. \cellrule Microphone damage. \cellrule Excessive
+    ambient noise. & 5 & 1  & Multiple corrupted microphone data frames.
+    \cellrule Excessive white noise detection. \cellrule Short circuit detection
+    for microphones. & 3 & 9 & Detect failure using microphone audio (or lack
+    thereof) and notify user. & FR1.4, FR2.3, FR3.5, FR7.2, NFR2.1  \\
 
     \midrule
-    2 & Visualization Controller & Disconnection from display. & Unable to provide 
-    visual notifications to user. & Depending on connection type: cable, 
-    wireless interference, dropped connection. & 3 & 2 &
-    Loss of connection signal. \cellrule Failure to send data to display. & 1 & 6 &
-    There are no safety requirements that can mitigate this hazard. & NFR2.1\\
-
-    \midrule
-
-
-    3 & Embedded Firmware & System crashes and freezes. & The system remains unusable
-    until it is restarted. \cellrule Unable to provide notifications to user. &
-    Software bugs. \cellrule Insufficient Error Handling \cellrule Insufficient
-    Requirements. & 5 & 3 & System watchdog timer 
-    \cellrule Halt Interrupt. & 1 & 9 & Implement a watchdog timer to reset the
-    system in the event of a crash. \cellrule Implement adequate logging to
-    diagnose the cause of firmware failure during post-mortem. \cellrule Robust testing and 
-    error handling. & FR1.3, FR4.1, FR4.4 \\
-    \midrule
-
-    4 & Sound Detection (Audio360 Engine)& Failure to detect important sounds. & Failure to notify
-    user of critical sounds. & Insufficient microphone quality. \cellrule Poor 
-    classification algorithm. \cellrule Excessive ambient noise. & 4 & 3 &
-    This is difficult to detect without extensive testing. \cellrule Impossible
-    to detect in production. & 5 & 12 & Have a thorough
-    library of sounds to detect and test against. \cellrule Measure microphone 
-    performance on sound library. & FR3.5, FR4.4, FR5.1, FR6.1  \\
+    2 & Visualization Controller & Disconnection from display. & Unable to
+    provide visual notifications to user. & Depending on connection type: cable,
+    wireless interference, dropped connection. & 3 & 2 & Loss of connection
+    signal. \cellrule Failure to send data to display. & 1 & 6 & There are no
+    safety requirements that can mitigate this hazard. & NFR2.1\\
 
     \midrule
 
-    5 & Sound Classifier (Audio360 Engine) & Misclassification of sounds. & Notify the user of the 
-    wrong sounds. & Insufficient classification algorithm \cellrule Insufficient
-    microphone quality. & 3 & 2 & This is difficult to detect
-    without extensive user testing.\cellrule Impossible to detect in production. & 5 & 10 & Extensive testing in real-world
-    environments and simulation. \cellrule Verify microphone quality during operation.
-    & FR4.4, FR5.1, FR5.4, NFR5.1, NFR5.2 \\
+
+    3 & Embedded Firmware & System crashes and freezes. & The system remains
+    unusable until it is restarted. \cellrule Unable to provide notifications to
+    user. & Software bugs. \cellrule Insufficient Error Handling \cellrule
+    Insufficient Requirements. & 5 & 3 & System watchdog timer \cellrule Halt
+    Interrupt. & 1 & 9 & Implement a watchdog timer to reset the system in the
+    event of a crash. \cellrule Implement adequate logging to diagnose the cause
+    of firmware failure during post-mortem. \cellrule Robust testing and error
+    handling. & FR1.3, FR4.1, FR4.4 \\
+    \midrule
+
+    4 & Sound Detection (Audio360 Engine)& Failure to detect important sounds. &
+    Failure to notify user of critical sounds. & Insufficient microphone
+    quality. \cellrule Poor classification algorithm. \cellrule Excessive
+    ambient noise. & 4 & 3 & This is difficult to detect without extensive
+    testing. \cellrule Impossible to detect in production. & 5 & 12 & Have a
+    thorough library of sounds to detect and test against. \cellrule Measure
+    microphone performance on sound library. & FR3.5, FR4.4, FR5.1, FR6.1  \\
+
+    \midrule
+
+    5 & Sound Classifier (Audio360 Engine) & Misclassification of sounds. &
+    Notify the user of the wrong sounds. & Insufficient classification algorithm
+    \cellrule Insufficient microphone quality. & 3 & 2 & This is difficult to
+    detect without extensive user testing.\cellrule Impossible to detect in
+    production. & 5 & 10 & Extensive testing in real-world environments and
+    simulation. \cellrule Verify microphone quality during operation. & FR4.4,
+    FR5.1, FR5.4, NFR5.1, NFR5.2 \\
 
 
     \midrule
 
-    6 & Sound Localizer (Audio360 Engine) & Inaccurate direction determination for sounds. & Misinform
-    the user of the direction of important sounds. & Incorrect localization algorithm.
-    \cellrule Insufficient microphone quality. & 4 & 2 & This is
-    difficult to detect without extensive localization testing. \cellrule Impossible to detect
-    in production. & 5 & 11 & Extensive localization testing in real-world environments and simulation.
-    & FR5.2, NFR5.3 \\
+    6 & Sound Localizer (Audio360 Engine) & Inaccurate direction determination
+    for sounds. & Misinform the user of the direction of important sounds. &
+    Incorrect localization algorithm. \cellrule Insufficient microphone quality.
+    & 4 & 2 & This is difficult to detect without extensive localization
+    testing. \cellrule Impossible to detect in production. & 5 & 11 & Extensive
+    localization testing in real-world environments and simulation. & FR5.2,
+    NFR5.3 \\
     
     \bottomrule
     \end{longtable}
 
 \restoregeometry
 
-\pdfpagewidth=8.5in
-\pdfpageheight=11in
+\pdfpagewidth=8.5in \pdfpageheight=11in
 
 \subsection{Out of Scope Failure Modes}
 The project involves off the shelf hardware components with their own possible
-failure modes and possible mitigations. Since the hardware and electrical 
-components are not being designed as part of the project, 
-these failure modes are considered out of scope:
+failure modes and possible mitigations. Since the hardware and electrical
+components are not being designed as part of the project, these failure modes
+are considered out of scope:
 \begin{itemize}
     \item Battery failure / damage.
     \item Physical display damage.
@@ -355,44 +345,44 @@ these failure modes are considered out of scope:
 
 \begin{itemize}
     \item \label{SR1}\textbf{SR1:} The microcontroller shall run the main
-    \progname ~software in a closed environment. Only the approved
-    microphones and output display shall interface to it. This ensures
-    protection against unauthorized access.
+    \progname ~software in a closed environment. Only the approved microphones
+    and output display shall interface to it. This ensures protection against
+    unauthorized access.
 
     \item \label{SR2}\textbf{SR2:} The system shall permanently discard
-    microphone audio data immediately after completion of audio analysis.
-    This requirement ensures data privacy and prevents unauthorized reuse of
-    raw audio.
+    microphone audio data immediately after completion of audio analysis. This
+    requirement ensures data privacy and prevents unauthorized reuse of raw
+    audio.
 
-    \item \label{SR3}\textbf{SR3:} The system shall
-    detect and flag audio anomalies such as clipping, lost signal and silence.
-    This enables identification of microphone or signal path faults.
+    \item \label{SR3}\textbf{SR3:} The system shall detect and flag audio
+    anomalies such as clipping, lost signal and silence. This enables
+    identification of microphone or signal path faults.
 
     \item \label{SR4}\textbf{SR4:} The system shall disable audio classification
     and directional analysis features until microphone faults addressed in
-    \hyperref[SR3]{SR3} are resolved. This prevents the generation of
-    unreliable or unsafe outputs.
+    \hyperref[SR3]{SR3} are resolved. This prevents the generation of unreliable
+    or unsafe outputs.
 
-    \item \label{SR5}\textbf{SR5:} The visualization controller 
-    shall present information in a non-intrusive manner, minimizing visual
-    obstruction so users can safely perform external activities.
+    \item \label{SR5}\textbf{SR5:} The visualization controller shall present
+    information in a non-intrusive manner, minimizing visual obstruction so
+    users can safely perform external activities.
 
-    \item \label{SR6}\textbf{SR6:} The visualization controller component
-    shall alert users when critical features such as sound classification or
-    direction determination fail. This ensures that users are aware of degraded
-    safety functions.
+    \item \label{SR6}\textbf{SR6:} The visualization controller component shall
+    alert users when critical features such as sound classification or direction
+    determination fail. This ensures that users are aware of degraded safety
+    functions.
 
-    \item \label{SR7}\textbf{SR7:} The system shall have
-    an audio processing success rate end to end of at least 90\% over 60 seconds.
-    This mitigates classification related hazards identified in the FMEA.
+    \item \label{SR7}\textbf{SR7:} The system shall have an audio processing
+    success rate end to end of at least 90\% over 60 seconds. This mitigates
+    classification related hazards identified in the FMEA.
 
-    \item \label{SR8}\textbf{SR8:} The system shall notify users when a sound 
-    classification result has low confidence or is unrecognized to prevent 
+    \item \label{SR8}\textbf{SR8:} The system shall notify users when a sound
+    classification result has low confidence or is unrecognized to prevent
     misleading contextual feedback.
 
-    \item \label{SR9}\textbf{SR9:} The system shall estimate the
-    direction of arrival of an audio source with a maximum error of 45 degrees.
-    This ensures reliable directional awareness for the user.
+    \item \label{SR9}\textbf{SR9:} The system shall estimate the direction of
+    arrival of an audio source with a maximum error of 45 degrees. This ensures
+    reliable directional awareness for the user.
 
     \item \label{SR10}\textbf{SR10:} The system shall perform continuous
     diagnostics on all hardware components to monitor hardware errors in
@@ -403,7 +393,7 @@ these failure modes are considered out of scope:
 
 \section{Roadmap}
 
-The following safety and security requirements are planned for implementation 
+The following safety and security requirements are planned for implementation
 within the scope of the capstone project timeline:
 \begin{itemize}
     \item \hyperref[SR2]{SR2}
@@ -413,8 +403,8 @@ within the scope of the capstone project timeline:
     \item \hyperref[SR9]{SR9}
 \end{itemize}
 
-The following safety and security requirements are identified as stretch goals. 
-Their implementation will depend on the available development bandwidth and 
+The following safety and security requirements are identified as stretch goals.
+Their implementation will depend on the available development bandwidth and
 project progress:
 \begin{itemize}
     \item \hyperref[SR4]{SR4}
@@ -444,29 +434,29 @@ project progress:
     \textbf{Kalp:} I think having written the SRS document before this one made
     the hazard analysis more straightforward, as we had a clear understanding of
     the system and the risks associated with it. We had many discussions during
-    the SRS document that really clarified the requirements and the expected 
-    software states of the system, really helping us quickly go through this 
+    the SRS document that really clarified the requirements and the expected
+    software states of the system, really helping us quickly go through this
     document without much difficulty.
     
     \textbf{Nirmal Chaudhari:} For this deliverable, I focused on the critical
-    assumptions section. What worked well while writing this deliverable was 
-    having a clear enough picture of constraints that exist with this project 
-    from the environment section of the SRS doc. From these constraints, it 
-    became clear what is out of our hands, and needs assumptions for our project 
+    assumptions section. What worked well while writing this deliverable was
+    having a clear enough picture of constraints that exist with this project
+    from the environment section of the SRS doc. From these constraints, it
+    became clear what is out of our hands, and needs assumptions for our project
     to validate the requirements we have set. 
 
     
-    \textbf{Omar:} I think what went well when writing this document was the 
-    cross collaboration between myself and Sathurshan. We were able to have
-    in depth discussions about the potential hazards and risks from different 
+    \textbf{Omar:} I think what went well when writing this document was the
+    cross collaboration between myself and Sathurshan. We were able to have in
+    depth discussions about the potential hazards and risks from different
     components since he was responsible for most of the technical requirements.
     This was instrumental in ensuring a detailed and accurate FMEA table.
 
-    \textbf{Jay:} The FMEA structure provided a clear framework for thinking 
-    through potential failures systematically. Breaking down each component and 
-    considering what could go wrong helped us identify risks we might have 
-    otherwise missed. The team's collaborative approach also meant we could 
-    challenge each other's assumptions and ensure we weren't overlooking 
+    \textbf{Jay:} The FMEA structure provided a clear framework for thinking
+    through potential failures systematically. Breaking down each component and
+    considering what could go wrong helped us identify risks we might have
+    otherwise missed. The team's collaborative approach also meant we could
+    challenge each other's assumptions and ensure we weren't overlooking
     critical failure modes.
 
     \item What pain points did you experience during this deliverable, and how
@@ -479,33 +469,33 @@ project progress:
     improved collaboration and allowed us to exchange constructive feedback to
     ensure consistency across the document.
 
-    \textbf{Kalp:} I think the main pain point was that there was high 
+    \textbf{Kalp:} I think the main pain point was that there was high
     dependence between the sections of the document. This lead to us assigning
-    the tasks to each person in large chunks (to avoid the issues we ran into 
+    the tasks to each person in large chunks (to avoid the issues we ran into
     during the SRS document), but then that left us with people not having much
     to contribute to on the document. We ended up having to reshuffle the tasks
     around to help mitigate this issue. 
     
-    \textbf{Nirmal Chaudhari:} While working on this deliverable, it sometimes 
-    became unclear what should be listed as an assumption vs constraint. As we 
-    continued brainstorming however, we started to look at it from another angle 
-    where the assumptions are technically just listed as boundaries that our 
-    system has, and requires assumptions. Moreover, referencing between the 
-    sections other people are working on for consistency was a difficult task 
-    to do, especially within a small time frame.  
+    \textbf{Nirmal Chaudhari:} While working on this deliverable, it sometimes
+    became unclear what should be listed as an assumption vs constraint. As we
+    continued brainstorming however, we started to look at it from another angle
+    where the assumptions are technically just listed as boundaries that our
+    system has, and requires assumptions. Moreover, referencing between the
+    sections other people are working on for consistency was a difficult task to
+    do, especially within a small time frame.  
 
     \textbf{Omar:} One pain point I experienced was ensuring that the FMEA table
-    was well formatted and readable. Adjusting the latex code to ensure that
-    the table fit within the page margins while still being legible was a
-    challenge. I resolved this by experimenting with different table types
-    and packages, even adjusting page sizes till it worked. 
+    was well formatted and readable. Adjusting the latex code to ensure that the
+    table fit within the page margins while still being legible was a challenge.
+    I resolved this by experimenting with different table types and packages,
+    even adjusting page sizes till it worked. 
 
-    \textbf{Jay:} Initially, it was difficult to assess the severity and 
-    likelihood of different failure modes objectively. We had to balance 
-    being thorough without being overly pessimistic about every possible 
-    edge case. I resolved this by focusing on realistic operating conditions 
-    and consulting with teammates who have more hardware experience to ground 
-    my estimates in practical constraints.
+    \textbf{Jay:} Initially, it was difficult to assess the severity and
+    likelihood of different failure modes objectively. We had to balance being
+    thorough without being overly pessimistic about every possible edge case. I
+    resolved this by focusing on realistic operating conditions and consulting
+    with teammates who have more hardware experience to ground my estimates in
+    practical constraints.
 
     \item Which of your listed risks had your team thought of before this
     deliverable, and which did you think of while doing this deliverable? For
@@ -520,38 +510,38 @@ project progress:
     non-physical hazards, which the following questions allude to.
 
     \textbf{Kalp:} A big risk that I think the team was was already considering
-    before the deliverable was risk of hardware failure (microphone, 
-    smart glasses, microcontroller, etc.). This was mainly due to us just 
-    thinking mainly about the high level system, with the hardware being major
-    components of that mental model. During the document is when I would say we
-    started to think more about security and privacy risks, specifically with 
-    data access breach and unauthorized access to the system.
+    before the deliverable was risk of hardware failure (microphone, smart
+    glasses, microcontroller, etc.). This was mainly due to us just thinking
+    mainly about the high level system, with the hardware being major components
+    of that mental model. During the document is when I would say we started to
+    think more about security and privacy risks, specifically with data access
+    breach and unauthorized access to the system.
     
-    \textbf{Nirmal Chaudhari:} One of the listed risks we thought of before 
-    the deliverable was not being able to find a microcontroller with 4 ADCs 
-    with the limited budget we had. This risk was highlighted to us by our 
-    supervisor from our initial meeting. One risk we though about while doing 
-    this deliverable was risks associated with the environment, which we have 
-    no control over. During our team brainstorming section, we realized that 
-    weather conditions like rain, humidity, wind are things our system will 
-    have to be robust enough to handle given the limited budget we have. 
-    To address these risks, we added in our critical assumption that for the 
-    scope of this project we will have perfect weather conditions. 
+    \textbf{Nirmal Chaudhari:} One of the listed risks we thought of before the
+    deliverable was not being able to find a microcontroller with 4 ADCs with
+    the limited budget we had. This risk was highlighted to us by our supervisor
+    from our initial meeting. One risk we though about while doing this
+    deliverable was risks associated with the environment, which we have no
+    control over. During our team brainstorming section, we realized that
+    weather conditions like rain, humidity, wind are things our system will have
+    to be robust enough to handle given the limited budget we have. To address
+    these risks, we added in our critical assumption that for the scope of this
+    project we will have perfect weather conditions. 
 
     \textbf{Omar:} Prior to this deliverable, I had already considered the risk
     of system crashes and freezes due to my experience with embedded systems.
-    During the hazard analysis, we had to delve further into the specific 
-    connection mechanism that the smart glasses provide. This led to the 
+    During the hazard analysis, we had to delve further into the specific
+    connection mechanism that the smart glasses provide. This led to the
     identification of the risk of disconnection from the display, which I had
     not previously considered.
 
-    \textbf{Jay:} We had already considered the risk of classification errors 
-    and inaccurate direction estimation since those are core to the system's 
-    value proposition. What emerged during the hazard analysis was thinking 
-    about failures, where one component's malfunction could propagate 
-    through the system and cause misleading outputs rather than obvious failures. 
-    This came from systematically working through the FMEA table and considering 
-    how each failure mode affects downstream components.
+    \textbf{Jay:} We had already considered the risk of classification errors
+    and inaccurate direction estimation since those are core to the system's
+    value proposition. What emerged during the hazard analysis was thinking
+    about failures, where one component's malfunction could propagate through
+    the system and cause misleading outputs rather than obvious failures. This
+    came from systematically working through the FMEA table and considering how
+    each failure mode affects downstream components.
 
     \item Other than the risk of physical harm (some projects may not have any
     appreciable risks of this form), list at least 2 other types of risk in
@@ -562,39 +552,39 @@ project progress:
     access without user consent. These are critical to consider because they can
     user data can be used against them, resulting in ethical consequences.
 
-    \textbf{Kalp:} I think two forms of software-related risks that are 
+    \textbf{Kalp:} I think two forms of software-related risks that are
     important to consider are data privacy violations and reliability issues.
     With many software systems dealing with data from the user, or providing
-    important data to the user, it's important to consider the risks of data 
-    being leaked / breached (make private information public or inform the 
-    user something wrong potentially misguiding their actions).
+    important data to the user, it's important to consider the risks of data
+    being leaked / breached (make private information public or inform the user
+    something wrong potentially misguiding their actions).
 
-    \textbf{Nirmal Chaudhari:} One other type of risk that exists with software 
-    projects is security and privacy risks. While working on the environment 
+    \textbf{Nirmal Chaudhari:} One other type of risk that exists with software
+    projects is security and privacy risks. While working on the environment
     section of the SRS document, I realized there are a lot of legal constraints
-     around collecting and analyzing sounds in a given environment. This is 
-     important to consider, since if its left unaddressed moving the system into
-      a production environment would be impossible. Another type of risk that 
-      exists is environmental risks. If the battery we choose is inefficient or 
-      is harmful to the environment when being disposed of, this would 
-      negatively impact the environment around us. 
+    around collecting and analyzing sounds in a given environment. This is
+    important to consider, since if its left unaddressed moving the system into
+    a production environment would be impossible. Another type of risk that
+    exists is environmental risks. If the battery we choose is inefficient or is
+    harmful to the environment when being disposed of, this would negatively
+    impact the environment around us. 
 
-    \textbf{Omar:} Two other types of software-related risks include
-    performance degradation over time. This is an important issues with
-    emerging technologies that rely on machine learning models, as they may
-    become less effective as the environment and sensors change overtime, even
-    on the same hardware. Another risk is bad UI/UX design, which can lead to 
-    user frustration and abandonment of the product. This is especially
-    important to consider for assistive technologies, as they need to be
-    intuitive and easy to use for individuals with varying levels of ability.
+    \textbf{Omar:} Two other types of software-related risks include performance
+    degradation over time. This is an important issues with emerging
+    technologies that rely on machine learning models, as they may become less
+    effective as the environment and sensors change overtime, even on the same
+    hardware. Another risk is bad UI/UX design, which can lead to user
+    frustration and abandonment of the product. This is especially important to
+    consider for assistive technologies, as they need to be intuitive and easy
+    to use for individuals with varying levels of ability.
 
-    \textbf{Jay:} Two important risks are loss of user confidence and poor code 
-    maintainability. If the system gives false alarms or inconsistent results, 
-    users will stop trusting it and won't rely on it when they actually need it. 
-    Maintainability is also critical because if the code is messy or poorly 
-    organized, fixing bugs later becomes risky and time-consuming, which is 
-    especially problematic for a safety device that needs to stay reliable 
-    over time.
+    \textbf{Jay:} Two important risks are loss of user confidence and poor code
+    maintainability. If the system gives false alarms or inconsistent results,
+    users will stop trusting it and won't rely on it when they actually need it.
+    Maintainability is also critical because if the code is messy or poorly
+    organized, fixing bugs later becomes risky and time-consuming, which is
+    especially problematic for a safety device that needs to stay reliable over
+    time.
 \end{enumerate}
 
 \end{document}
