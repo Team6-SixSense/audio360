@@ -188,26 +188,19 @@ documentation, and/or test cases.}
     direction determination fail. This ensures that users are aware of degraded
     safety functions.
 
-    \item \label{SR7}\textbf{SR7:} The system shall continuously monitor the
-    thermal temperature of all hardware components.
-
-    \item \label{SR8}\textbf{SR8:} The system shall initiate thermal mitigation
-    measures when thermal temperatures exceed user safe and hardward safe
-    thresholds.
-
-    \item \label{SR9}\textbf{SR9:} The system shall have
+    \item \label{SR7}\textbf{SR7:} The system shall have
     an audio processing success rate end to end of atleast 90\% over 60 seconds.
     This mitigates classification related hazards identified in the FMEA.
 
-    \item \label{SR10}\textbf{SR10:} The system shall notify users when a sound 
+    \item \label{SR8}\textbf{SR8:} The system shall notify users when a sound 
     classification result has low confidence or is unrecognized to prevent 
     misleading contextual feedback.
 
-    \item \label{SR11}\textbf{SR11:} The system shall estimate the
-    direction of arrival of an audio source with a maximum error of 0.78 rad.
+    \item \label{SR9}\textbf{SR9:} The system shall estimate the
+    direction of arrival of an audio source with a maximum error of 45 degrees.
     This ensures reliable directional awareness for the user.
 
-    \item \label{SR12}\textbf{SR12:} The system shall perform continuous
+    \item \label{SR10}\textbf{SR10:} The system shall perform continuous
     diagnostics on all hardware components to monitor hardware errors in
     real-time. This ensures the system can react to failures as soon as they
     occur.
@@ -222,8 +215,8 @@ within the scope of the capstone project timeline:
     \item \hyperref[SR2]{SR2}
     \item \hyperref[SR3]{SR3}
     \item \hyperref[SR5]{SR5}
+    \item \hyperref[SR7]{SR7}
     \item \hyperref[SR9]{SR9}
-    \item \hyperref[SR11]{SR11}
 \end{itemize}
 
 The following safety and security requirements are identified as stretch goals. 
@@ -232,16 +225,8 @@ project progress:
 \begin{itemize}
     \item \hyperref[SR4]{SR4}
     \item \hyperref[SR6]{SR6}
-    \item \hyperref[SR10]{SR10}
-    \item \hyperref[SR12]{SR12}
-\end{itemize}
-
-The following safety and security requirements are considered out of scope 
-for this capstone project due to hardware limitations and the current technical 
-expertise of the team:
-\begin{itemize}
-    \item \hyperref[SR7]{SR7}
     \item \hyperref[SR8]{SR8}
+    \item \hyperref[SR10]{SR10}
 \end{itemize}
 
 \newpage{}
