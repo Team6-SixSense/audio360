@@ -429,6 +429,9 @@ requirements.
     frequency spectrum due to finite time windowing. Essentially, noise that is
     caused by sharp signal cutting when processing audio signals as windows.
 
+    \item \textbf{ASL}: American Sign Language used by deaf and hard of hearing
+    individuals to communicate using hand gestures and facial expressions.
+
 \end{itemize}
 
 \subsection{E.2 Components}
@@ -1595,6 +1598,7 @@ outlined below.
 
   \vspace{0.8em}
 
+
   \item \textbf{Verification \& Validation of System (2026-02-02)}  
 
   \textbf{Tasks:}
@@ -1663,7 +1667,55 @@ A visual display module to show audio classification and detection to
 \hyperref[stakeholder:hardHearing]{users who are hard of hearing}.
 
 \subsection{P.6 Risks and mitigation analysis}
-\wss{Potential obstacles to meeting the schedule of P.4, and measures for adapting the plan if they do arise.}
+
+The project has several risks to meeting the schedule outlined in section P.4.
+The following table summarizes the identified risks, their potential impact,
+and possible adaption measures:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4cm}|p{6cm}|p{6cm}|}
+  \hline
+  \textbf{Risk} & \textbf{Impact} & \textbf{Adaptation Measures} \\
+  \hline
+  Unable to create feasible design plan for focus area. & Delays in design phase 
+  and deliverable submission. & Consult with project advisor for guidance. 
+  Reassess and narrow scope of focus area. \\
+  \hline
+  Unable to engage with primary stakeholder: McMaster ASL. & Misalignment of project goals & 
+  Try to find another stakeholder that can provide similar feedback. Seek advice
+  from project supervisor. \\
+  \hline
+  System is unable to meet SRS requirements. & Unable to validate and verify system
+  functionality as per plan. & Reassess requirements and project scope. Prioritize
+  critical requirements. Seek advice from project supervisor\\
+  \hline
+  Team members unable to meet deadlines due to personal reasons. & Delays in deliverable
+  completion. Additional workload on other team members. & Reallocate tasks amongst
+  other team members. Refer to the team charter. \\
+  \hline
+  Hardware components are damaged during development. & Delays in development and testing
+  of system. & Order spare components in advance. Budget for potential replacements. \\
+  \hline
+  Excessive hardship in integrating hardware with software. & Delays in testing 
+  system integration. & Write modular code to isolate hardware-software interface.
+  Rigorously defined module interfaces.\\
+  \hline
+  Insufficient audio algorithm performance. & System fails to meet accuracy and latency
+  requirements. & Explore alternative algorithms. Simplify problem scope. Seek advice
+  from project supervisor. \\
+  \hline
+  Team conflicts and communication breakdowns. & Reduced productivity and morale. &
+  Address conflicts early through open communication. Regular check-ins as described 
+  in team charter. If necessary, involve course instructor. \\
+  \hline
+
+
+\end{tabular}
+\caption{Risk and mitigation analysis.}
+\label{tab:risk-mitigation}
+\end{table}
+
 
 \subsection{P.7 Requirements process and report}
 The development of this project requires iterating over various stages of the
