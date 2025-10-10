@@ -97,11 +97,11 @@ The severity, occurrence, and detection ratings used in the FMEA table are defin
 \begin{tabular}{c|c|c|c}
 
     Rating & Severity & Occurrence & Detection \\\hline
-    1 & Negligible & Rare & Easily Detected \\\hline
-    2 & Minor & Uncommon & Easily Detected \\ \hline
-    3 & Major & Occasional & Moderately Difficult to Detect \\\hline
-    4 & Critical & Frequent & Difficult to Detect \\\hline
-    5 & Catastrophic & Very Frequent & Almost Impossible to Detect \\
+    1 & Negligible & Rare & Always detected \\\hline
+    2 & Minor & Uncommon & Easy to detect \\ \hline
+    3 & Major & Occasional & Moderately difficult to detect \\\hline
+    4 & Critical & Frequent & Difficult to detect \\\hline
+    5 & Catastrophic & Very frequent & Impossible to detect \\
 
 
 \end{tabular}
@@ -170,14 +170,14 @@ and detection ratings:
     5 & 1  &
     Multiple corrupted microphone data frames. \cellrule Excessive white noise detection.
     \cellrule Short circuit detection for microphones. & 3 & 9 & Detect failure
-    using microphone audio (or lack thereof) and notify user. & FR1.4, FR2.3, FR3.5, FR7.2, NFR2.2  \\
+    using microphone audio (or lack thereof) and notify user. & FR1.4, FR2.3, FR3.5, FR7.2, NFR2.1  \\
 
     \midrule
     2 & Visualization Controller & Disconnection from display. & Unable to provide 
     visual notifications to user. & Depending on connection type: cable, 
     wireless interference, dropped connection. & 3 & 2 &
     Loss of connection signal. \cellrule Failure to send data to display. & 1 & 6 &
-    There are no safety requirements that can mitigate this hazard. & NFR2.2\\
+    There are no safety requirements that can mitigate this hazard. & NFR2.1\\
 
     \midrule
 
@@ -195,7 +195,7 @@ and detection ratings:
     4 & Sound Detection (Audio360 Engine)& Failure to detect important sounds. & Failure to notify
     user of critical sounds. & Insufficient microphone quality. \cellrule Poor 
     classification algorithm. \cellrule Excessive ambient noise. & 4 & 3 &
-    This is difficult to detect without extensive testing. \cellrule This is Impossible
+    This is difficult to detect without extensive testing. \cellrule Impossible
     to detect in production. & 5 & 12 & Have a thorough
     library of sounds to detect and test against. \cellrule Measure microphone 
     performance on sound library. & FR3.5, FR4.4, FR5.1, FR6.1  \\
