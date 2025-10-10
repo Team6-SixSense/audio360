@@ -461,6 +461,12 @@ project progress:
     components since he was responsible for most of the technical requirements.
     This was instrumental in ensuring a detailed and accurate FMEA table.
 
+    \textbf{Jay:} The FMEA structure provided a clear framework for thinking 
+    through potential failures systematically. Breaking down each component and 
+    considering what could go wrong helped us identify risks we might have 
+    otherwise missed. The team's collaborative approach also meant we could 
+    challenge each other's assumptions and ensure we weren't overlooking 
+    critical failure modes.
 
     \item What pain points did you experience during this deliverable, and how
     did you resolve them?
@@ -492,6 +498,13 @@ project progress:
     the table fit within the page margins while still being legible was a
     challenge. I resolved this by experimenting with different table types
     and packages, even adjusting page sizes till it worked. 
+
+    \textbf{Jay:} Initially, it was difficult to assess the severity and 
+    likelihood of different failure modes objectively. We had to balance 
+    being thorough without being overly pessimistic about every possible 
+    edge case. I resolved this by focusing on realistic operating conditions 
+    and consulting with teammates who have more hardware experience to ground 
+    my estimates in practical constraints.
 
     \item Which of your listed risks had your team thought of before this
     deliverable, and which did you think of while doing this deliverable? For
@@ -531,6 +544,14 @@ project progress:
     identification of the risk of disconnection from the display, which I had
     not previously considered.
 
+    \textbf{Jay:} We had already considered the risk of classification errors 
+    and inaccurate direction estimation since those are core to the system's 
+    value proposition. What emerged during the hazard analysis was thinking 
+    about failures, where one component's malfunction could propagate 
+    through the system and cause misleading outputs rather than obvious failures. 
+    This came from systematically working through the FMEA table and considering 
+    how each failure mode affects downstream components.
+
     \item Other than the risk of physical harm (some projects may not have any
     appreciable risks of this form), list at least 2 other types of risk in
     software products. Why are they important to consider?
@@ -565,6 +586,14 @@ project progress:
     user frustration and abandonment of the product. This is especially
     important to consider for assistive technologies, as they need to be
     intuitive and easy to use for individuals with varying levels of ability.
+
+    \textbf{Jay:} Two important risks are loss of user confidence and poor code 
+    maintainability. If the system gives false alarms or inconsistent results, 
+    users will stop trusting it and won't rely on it when they actually need it. 
+    Maintainability is also critical because if the code is messy or poorly 
+    organized, fixing bugs later becomes risky and time-consuming, which is 
+    especially problematic for a safety device that needs to stay reliable 
+    over time.
 \end{enumerate}
 
 \end{document}
