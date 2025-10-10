@@ -34,6 +34,7 @@
 
 \newcommand{\cellrule}{\par\vspace{-0.3em}\noindent\rule{\linewidth}{0.2pt}\par}
 
+\setlength{\parindent}{0pt}
 
 \begin{document}
 
@@ -69,7 +70,7 @@ A hazard is anything that prevents the Audio360 system from notifying users with
 important sounds near them with high precision and accuracy. For deaf and
 hard-of-hearing individuals who rely on the system for situational awareness,
 any failure to detect, classify, or display audio information could result in
-missed safety cues, social interactions, or environmental awareness.
+missed safety cues, social interactions, or degraded environmental awareness.
 
 This hazard analysis identifies potential failure modes in the Audio360 audio 
 localization system and establishes safety requirements to ensure reliable
@@ -113,7 +114,7 @@ classification logic to identify and categorize detected sounds (e.g.,
 speech, vehicles, alarms).
 
 \item \textbf{Visualization Controller:} \label{comp:viz_controller}
-Component reposonsible for creating and sending visualization output to the
+Component responsible for creating and sending visualization output to the
 glasses.
 
 \item \textbf{Configuration and calibration:} Microphone array calibration
@@ -171,7 +172,7 @@ and microphone performance.
     \item Microphone
     \begin{itemize}
         \item All microphones are able to capture frequencies between at least
-        20 Hz to 20kHz, which is the human sound detectable range
+        20 Hz to 20kHz, which is the human audio frequency range.
         \cite{Neuroscience2001}.
         \item Microphones operate correctly within normal operating temperatures
         of 0-35°C. 
@@ -194,7 +195,7 @@ and microphone performance.
     \item System Integration
     \begin{itemize}
         \item Voltage and power is maintained by the controller firmware itself
-        and we do not need to manage that ourselves. 
+        and we do not need to manage that in software. 
     \end{itemize}
     
 \end{enumerate}
@@ -382,7 +383,7 @@ these failure modes are considered out of scope:
     safety functions.
 
     \item \label{SR7}\textbf{SR7:} The system shall have
-    an audio processing success rate end to end of atleast 90\% over 60 seconds.
+    an audio processing success rate end to end of at least 90\% over 60 seconds.
     This mitigates classification related hazards identified in the FMEA.
 
     \item \label{SR8}\textbf{SR8:} The system shall notify users when a sound 
@@ -532,7 +533,7 @@ project progress:
     supervisor from our initial meeting. One risk we though about while doing 
     this deliverable was risks associated with the environment, which we have 
     no control over. During our team brainstorming section, we realized that 
-    weather conditions like rain, humidty, wind are things our system will 
+    weather conditions like rain, humidity, wind are things our system will 
     have to be robust enough to handle given the limited budget we have. 
     To address these risks, we added in our critical assumption that for the 
     scope of this project we will have perfect weather conditions. 
@@ -563,7 +564,7 @@ project progress:
 
     \textbf{Kalp:} I think two forms of software-related risks that are 
     important to consider are data privacy violations and reliability issues.
-    With many software systems dealing with data from the user, or prividing
+    With many software systems dealing with data from the user, or providing
     important data to the user, it's important to consider the risks of data 
     being leaked / breached (make private information public or inform the 
     user something wrong potentially misguiding their actions).
