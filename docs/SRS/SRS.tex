@@ -439,7 +439,130 @@ environment to create a single multi-channel audio signal.
 \wss{Classification of the behaviors, interfaces and scenarios (S.2, S.3 and S.4) by their degree of criticality.}
 
 \subsection{S.6 Verification and acceptance criteria}
-\wss{Specification of the conditions under which an implementation will be deemed satisfactory.}
+
+This section specifies the conditions under which the implementation will be 
+deemed satisfactory. The verification criteria are organized by the major 
+functional areas of the system and are directly traceable to the goals 
+defined in Section 1.
+
+\subsubsection{S.6.1 Audio capture verification}
+
+Related to \hyperref[goal:audio_capture]{Goal 1}.
+
+\begin{itemize}
+\item \textbf{VC-1.1 Synchronized sampling:} The system shall demonstrate that 
+all four microphones in the array capture audio samples with temporal alignment 
+within ±10 microseconds, verified through oscilloscope measurements or 
+timestamp analysis of captured data.
+
+\item \textbf{VC-1.2 Sampling rate:} The system shall maintain a minimum 
+sampling rate of 44.1 kHz across all microphone channels, verified through 
+analysis of captured audio buffer timestamps.
+
+\item \textbf{VC-1.3 Continuous operation:} The system shall demonstrate 
+continuous audio capture for at least 1 hour without buffer overruns, 
+dropped samples, or system crashes, verified through stress testing and 
+log file analysis.
+\end{itemize}
+
+\subsubsection{S.6.2 Direction of arrival (DoA) verification}
+
+Related to \hyperref[goal:audio_direction_analysis]{Goal 2}.
+
+\begin{itemize}
+\item \textbf{VC-2.1 Single source accuracy:} For a single sound source in 
+a controlled environment, the system shall estimate the direction of arrival 
+with an angular error of less than or equal to 45° in at least 90\% of 
+test cases, verified 
+through testing with known sound source positions at various angles (0°, 45°, 
+90°, 135°, 180°, 225°, 270°, 315°) around the user.
+
+\item \textbf{VC-2.2 Processing latency:} The DoA estimation algorithm shall 
+complete processing and output a direction estimate within 500 milliseconds 
+of sound detection, verified through timestamp logging of detection and 
+output events.
+
+\item \textbf{VC-2.4 Range coverage:} The system shall detect and provide 
+directional estimates for sounds originating from any direction in the full 
+360° horizontal plane around the user, verified through systematic testing 
+at multiple angles.
+
+\item \textbf{VC-2.5 Consistency:} For a stationary sound source, the system 
+shall provide consistent direction estimates with a standard deviation of 
+less than or equal to 45° over 10 consecutive measurements, 
+verified through repeated testing.
+\end{itemize}
+
+\subsubsection{S.6.3 Sound classification verification}
+
+Related to \hyperref[goal:audio_identification_analysis]{Goal 3}.
+
+\begin{itemize}
+\item \textbf{VC-3.1 Classification accuracy:} The audio classification system 
+shall achieve at least 90\% accuracy in identifying sound categories from a 
+predefined set (including at minimum: speech, vehicle sounds, alarms, and 
+household appliances), verified through testing with a labeled dataset of at 
+least 100 sound samples across all categories.
+
+\item \textbf{VC-3.2 Processing latency:} The classification algorithm shall 
+complete processing and output a classification label within 1 second of 
+sound detection, verified through timestamp logging.
+
+\item \textbf{VC-3.3 Category coverage:} The system shall support 
+classification of at least 5 distinct sound categories relevant to safety 
+and daily life, verified through documentation of the classification model 
+and testing with representative samples from each category.
+
+\item \textbf{VC-3.4 Handling unknown sounds:} The system shall gracefully 
+handle sounds that do not match any trained category by either assigning a 
+low-confidence score or providing a generic label (e.g., ``unknown sound''), 
+verified through testing with sounds outside the training set.
+\end{itemize}
+
+\subsubsection{S.6.4 Visual display verification}
+
+Related to \hyperref[goal:visual_display]{Goal 4}.
+
+\begin{itemize}
+\item \textbf{VC-4.1 Display latency:} The complete system pipeline from sound 
+detection to visual display on the smart glasses shall complete within 1 
+second (less than or equal to 1s end-to-end latency), verified through 
+synchronized video recording of sound source activation and display appearance.
+
+\item \textbf{VC-4.2 Display visibility:} Visual indicators on the smart 
+glasses shall be clearly visible and distinguishable under typical indoor 
+and outdoor lighting conditions, verified through user testing and subjective 
+evaluation by at least 3 test participants.
+
+\item \textbf{VC-4.3 Non-obstruction:} Visual indicators shall not obstruct 
+more than 20\% of the user's field of view at any given time, verified 
+through measurement of display area relative to total viewable area.
+\end{itemize}
+
+\subsubsection{S.6.5 User interaction verification}
+
+Related to \hyperref[goal:user_friendly_interaction]{Goal 5}.
+
+\begin{itemize}
+\item \textbf{VC-5.1 Setup simplicity:} A new user shall be able to power on 
+the device and begin receiving audio alerts within 5 minutes without requiring 
+external documentation, verified through timed user testing with participants 
+unfamiliar with the system.
+
+\item \textbf{VC-5.2 Calibration process:} If calibration is required, the 
+process shall be completable within 2 minutes and require no more than 3 
+user actions, verified through user testing and documentation review.
+\end{itemize}
+
+\subsubsection{S.6.6 System reliability verification}
+
+\begin{itemize}
+\item \textbf{VC-6.1 Startup reliability:} The system shall successfully 
+complete initialization and enter operational mode in at least 95\% of power-on 
+attempts, verified through repeated startup testing (minimum 20 trials).
+\end{itemize}
+
+
 
 \section{Project}
 
