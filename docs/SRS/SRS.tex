@@ -341,7 +341,8 @@ connectivity or cloud-based services for core functionality.
 \subsubsection{Primary stakeholders}
 
 \begin{itemize}
-\item \textbf{Individuals who are deaf or hard of hearing:} The primary
+\item \textbf{Individuals who are deaf or hard of hearing:}
+\label{stakeholder:hardHearing} The primary
 end-users of the system, who will directly benefit from improved
 situational awareness and safety. This group is quite large in population,
 with approximately 4 million people who experience hearing loss 
@@ -1378,7 +1379,25 @@ All experts share the following responsibilities for their area of focus.
 \end{itemize}
 
 \subsection{P.2 Imposed technical choices}
-\wss{Any a priori choices binding the project to specific tools, hardware, languages or other technical parameters.}
+
+\textbf{Microcontroller:}  
+The system shall use a dedicated microcontroller with a minimum clock speed of
+100 MHz. This constraint is imposed to ensure that the audio processing tasks
+defined in functional requirement \hyperref[NFR1_3]{NFR1.3} can be
+completed within timing constraints. A microcontroller is also chosen
+because it can be physically embedded within the glasses, ensuring
+low power consumption, compact integration, and user comfort.
+
+\textbf{Microphones:}  
+The system shall use between two and four omnidirectional microphones to collect
+audio data from the environment. This range of microphones enables directional
+detection while minimizing hardware complexity, cost, and power consumption.
+
+\textbf{Programming Languages:}  
+The embedded firmware shall be implemented in C/C++. This choice is imposed
+because compiled C/C++ binaries can be directly executed on any microcontroller,
+and the language provides low level access to system resources, memory, and
+hardware acceleration functions necessary for efficient audio processing.
 
 \subsection{P.3 Schedule and milestones} \label{item: p3}   
 
@@ -1592,7 +1611,25 @@ outlined below.
 
 
 \subsection{P.5 Required technology elements}
-\wss{External systems, hardware and software, expected to be necessary for building the system.}
+
+\textbf{Microphones:}
+Capable of sampling audio at 44100 Hz in order to capture the full audible
+spectrum without aliasing. This complies with non function requirement 
+\hyperref[NFR7_1]{NFR7.1}.
+  
+\textbf{Analog to Digital Converter:}
+An analog to digital converter is required between each of the microphone and
+the microcontroller to convert analog signals into digital form suitable
+for processing.
+  
+\textbf{Microcontroller:} 
+The microcontroller shall have sufficient processing speed and I/O bandwidth to
+synchronously acquire data from multiple microphones without delays or sampling
+misalignment.
+
+\textbf{Output Display:}
+A visual display module to show audio classification and detection to
+\hyperref[stakeholder:hardHearing]{users who are hard of hearing}.
 
 \subsection{P.6 Risks and mitigation analysis}
 \wss{Potential obstacles to meeting the schedule of P.4, and measures for adapting the plan if they do arise.}
