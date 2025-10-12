@@ -9,6 +9,7 @@
 \usepackage{quoting}
 \usepackage{hyperref}
 \usepackage{xr}
+\usepackage{cite}
 \hypersetup{
     colorlinks,
     citecolor=blue,
@@ -16,11 +17,11 @@
     linkcolor=red,
     urlcolor=blue
 }
-\usepackage[round]{natbib}
+\usepackage[numbers]{natbib}
 \usepackage{amsmath}
 \usepackage{float}
 
-\colorlet{shadecolor}{gray!15} 
+\colorlet{shadecolor}{gray!15}
 
 % Environment for quotes
 \newenvironment{shadedquotation}
@@ -55,27 +56,11 @@
 \bottomrule
 \end{tabularx}
 
-~\\
-\wss{The intention of the VnV plan is to increase confidence in the software.
-However, this does not mean listing every verification and validation technique
-that has ever been devised.  The VnV plan should also be a \textbf{feasible}
-plan. Execution of the plan should be possible with the time and team available.
-If the full plan cannot be completed during the time available, it can either be
-modified to ``fake it'', or a better solution is to add a section describing
-what work has been completed and what work is still planned for the future.}
-
-\wss{The VnV plan is typically started after the requirements stage, but before
-the design stage.  This means that the sections related to unit testing cannot
-initially be completed.  The sections will be filled in after the design stage
-is complete.  the final version of the VnV plan should have all sections filled
-in.}
-
 \newpage
 
 \tableofcontents
 
 \listoftables
-\wss{Remove this section if it isn't needed}
 
 \listoffigures
 \wss{Remove this section if it isn't needed}
@@ -94,7 +79,7 @@ in.}
 \end{tabular}\\
 
 \wss{symbols, abbreviations, or acronyms --- you can simply reference the SRS
-  \citep{SRS} tables, if appropriate}
+  SRS tables, if appropriate}
 
 \wss{Remove this section if it isn't needed}
 
@@ -155,7 +140,7 @@ Repos.csv) if your plan changes as a result of the VnV planning exercise.}
   is done, they will be written.  You can create BibTeX entries for your
   documents and within those entries include a hyperlink to the documents.}
 
-\citet{SRS}
+% \citet{SRS}
 
 \wss{Don't just list the other documents.  You should explain why they are relevant and 
 how they relate to your VnV efforts.}
@@ -316,25 +301,32 @@ feedback using the project's issue tracker.
 
 \subsection{Verification and Validation Plan Verification}
 
-\wss{The verification and validation plan is an artifact that should also be
-verified.  Techniques for this include review and mutation testing.}
-
-\wss{The review will include reviews by your classmates}
-
-\wss{Create a checklists?}
+The verification and validation plan verification process will include
+structured peer reviews conducted by the Teaching Assistant and Team 13.
+They will use the checklist from \texttt{Checklists/VnV-Checklist.pdf}.
 
 \subsection{Implementation Verification}
 
-\wss{You should at least point to the tests listed in this document and the unit
-  testing plan.}
+As outlined in the development plan, the primary source code implementation
+will be developed in C/C++. The compiler used to build the source code
+will provide warnings of potential bugs. The team will resolve all
+warnings that is under the team's control, this excludes warnings from
+imported libraries. \newline
 
-\wss{In this section you would also give any details of any plans for static
-  verification of the implementation.  Potential techniques include code
-  walkthroughs, code inspection, static analyzers, etc.}
+The team will also employ Clang Static Analyzer \cite{clangStaticAnalyzer} as
+a static analyzer tool. The static analyzer will be employed to detect bugs
+without running the source code on the hardware, and will be ran prior to
+merging PRs. A note has been added to the PR template to looks similar as below.
 
-\wss{The final class presentation in CAS 741 could be used as a code
-walkthrough.  There is also a possibility of using the final presentation (in
-CAS741) for a partial usability survey.}
+\begin{shadedquotation}
+Reviewer's Note
+
+- Ensure Clang Static Analyzer shows no errors or warnings for source code
+changes
+\end{shadedquotation}
+
+The team will also develop test that verify requirements. These tests are
+outline in the \hyperref[sec:system_tests][System Tests section].
 
 \subsection{Automated Testing and Verification Tools}
 
@@ -373,7 +365,7 @@ as a Rev 0 demo for the supervisor.}
 
 \wss{This section might reference back to the SRS verification section.}
 
-\section{System Tests}
+\section{System Tests} \label{sec:system_tests}
 
 This section outlines the tests for verifying and validating the functional and 
 nonfunctional requirements outlined in the SRS \citep{SRS}. When done correctly 
@@ -995,9 +987,6 @@ How test will be performed:
 
 \wss{Provide evidence that all of the modules have been considered.}
 				
-\bibliographystyle{plainnat}
-
-\bibliography{../../refs/References}
 
 \newpage
 
@@ -1013,6 +1002,10 @@ Their values are defined in this section for easy maintenance.
 \subsection{Usability Survey Questions?}
 
 \wss{This is a section that would be appropriate for some projects.}
+
+\newpage
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \newpage{}
 \section*{Appendix --- Reflection}

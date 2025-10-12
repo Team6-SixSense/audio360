@@ -17,6 +17,8 @@
 
 \maketitle
 
+\newpage{}
+
 \begin{table}[hp]
 \caption{Revision History} \label{TblRevisionHistory}
 \begin{tabularx}{\textwidth}{llX}
@@ -24,6 +26,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 2025-09-22 & Nirmal, Sathurshan, Omar, Kalp, Jay & Initial Write-up\\
+2025-10-11 & Sathurshan & Defining static analyzer tool\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -307,11 +310,14 @@ for plotting data. \\ \hline
 \caption{Python libraries that will be used.}
 \end{table}
 
-\subsection{Linter and Formatting Tools}
+\subsection{Linter, Static Analyzer and Formatting Tools}
 
 \href{https://clang.llvm.org/docs/ClangFormat.html}{ClangFormat} will be used
 for autoformatting C/C++ code, ensuring compliance with the
-\nameref{sec:coding_standards}. Additionally, Microsoft’s
+\nameref{sec:coding_standards}.
+\href{https://clang-analyzer.llvm.org/}{Clang Static Analyzer} will be used as
+the static analyzer tool for C/C++ source code.
+Additionally, Microsoft’s
 \href{https://code.visualstudio.com/docs/languages/cpp}{C/C++ extension} in
 Visual Studio Code will be used as the C/C++ linter.
 \href{https://pypi.org/project/pylint/}{pylint} will be used as the Python
