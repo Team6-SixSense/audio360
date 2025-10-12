@@ -3,6 +3,10 @@
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage[x11names]{xcolor}
+\usepackage{framed}
+\usepackage{quoting}
 \usepackage{hyperref}
 \usepackage{xr}
 \hypersetup{
@@ -16,8 +20,19 @@
 \usepackage{amsmath}
 \usepackage{float}
 
+\colorlet{shadecolor}{gray!15} 
+
+% Environment for quotes
+\newenvironment{shadedquotation}
+    {\begin{shaded*}
+     \quoting[leftmargin=0pt, vskip=0pt]}
+    {\endquoting
+     \end{shaded*}}
+
 \input{../Comments}
 \input{../Common}
+
+\setlength{\parindent}{0pt} % Set no indent to entire document.
 
 \begin{document}
 
@@ -159,73 +174,122 @@ corresponding implementation components, ensuring an unbiased evaluation of
 system functionality. The supervisor also contributes by providing technical
 oversight and expert validation for signal processing.
 
-\begin{table}[H]
-  \centering
-    
-  \begin{tabularx}{\textwidth}{|X|X|c|}
-    \toprule
-    \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
-    \midrule
-    Firmware Verification &
-    Develops and executes tests to confirm that the firmware implementation
-    conforms to the requirements outlined in the software specification. &
-    Jay \\
-    \hline
+\begin{xltabular}{\textwidth}{|X|X|c|}
 
-    Visualization Verification + Validation &
-    Develops and executes tests to confirm that the visualization implementation
-    conforms to the requirements outlined in the software specification.
-    Also responsible for engaging with users to validate the usability of the
-    product specific to the visualization. &
-    Nirmal \\
-    \hline
-
-    Audio Classification Verification &
-    Develops and executes tests to confirm that the audio classification module
-    conforms to the requirements outlined in the software specification.
-    &
-    Sathurshan \\
-    \hline
-    
-    Directional Analysis Verification &
-    Develops and executes tests to confirm that the directional analysis
-    component conforms to the requirements outlined in the software
-    specification. &
-    Omar \\
-    \hline
-
-    Product Validation &
-    Responsible for engaging with individuals who are hard of hearing to
-    validate that the system effectively addresses their pain points related to
-    situational awareness. &
-    Kalp \\
-    \hline
-
-    Audio Processing Verification &
-    Reviews and assesses the audio processing methodologies implemented. The
-    team will demonstrate and explain these techniques in a supervisor meetiing
-    and receive verbal or written feedback. &
-    MVM (Supervisor) \\
-
-    \bottomrule
-  \end{tabularx}
   \caption{Verification and validation team breakdown.}
-  \label{table:vnv_team}
-\end{table}
+  \label{table:vnv_team} \\
+  \toprule
+  \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
+  \midrule
+  \endfirsthead
+
+  \toprule
+  \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
+  \midrule
+  \endhead
+
+  \bottomrule
+  \multicolumn{3}{r}{\textit{Continued on next page}} \\
+  \endfoot
+
+  \bottomrule
+  \endlastfoot
+
+
+  Firmware Verification \label{role:firmware_verfication} &
+  Develops and executes tests to confirm that the firmware implementation
+  conforms to the requirements outlined in the software specification. &
+  Jay \\
+  \hline
+
+  Visualization Verification + Validation \label{role:visual_vnv}&
+  Develops and executes tests to confirm that the visualization implementation
+  conforms to the requirements outlined in the software specification.
+  Also responsible for engaging with users to validate the usability of the
+  product specific to the visualization. &
+  Nirmal \\
+  \hline
+
+  Audio Classification Verification \label{role:classification_verfication} &
+  Develops and executes tests to confirm that the audio classification module
+  conforms to the requirements outlined in the software specification.
+  &
+  Sathurshan \\
+  \hline
+  
+  Directional Analysis Verification \label{role:directional_verfication}&
+  Develops and executes tests to confirm that the directional analysis
+  component conforms to the requirements outlined in the software
+  specification. &
+  Omar \\
+  \hline
+
+  Product Validation \label{role:product_validation} &
+  Responsible for engaging with individuals who are hard of hearing to
+  validate that the system effectively addresses their pain points related to
+  situational awareness. &
+  Kalp \\
+  \hline
+
+  Audio Processing Verification \label{role:audio_processing_verification}  &
+  Reviews and assesses the audio processing methodologies implemented. The
+  team will demonstrate and explain these techniques in a supervisor meetiing
+  and receive verbal or written feedback. &
+  MVM (Supervisor) \\
+
+\end{xltabular}
 
 \subsection{SRS Verification}
 
-\wss{List any approaches you intend to use for SRS verification.  This may
-  include ad hoc feedback from reviewers, like your classmates (like your
-  primary reviewer), or you may plan for something more rigorous/systematic.}
+The verification of the SRS will follow a structured and systematic process.
+Each software requirement will be associated with at least one corresponding
+test case, which will verify whether the
+implementation satisfies the intended specification. Both unit and integration
+testing will be conducted to confirm functionality at the component and system
+levels. To avoid bias, test cases will be developed and executed by a team
+member who was not directly involved in the implementation of the component.
+These fall under the
+\hyperref[role:firmware_verfication]{firmware verification},
+\hyperref[role:visual_vnv]{visual verification},
+\hyperref[role:classification_verfication]{audio classification verification},
+\hyperref[role:directional_verfication]{directional analysis verification}
+roles. \newline
 
-\wss{If you have a supervisor for the project, you shouldn't just say they will
-read over the SRS.  You should explain your structured approach to the review.
-Will you have a meeting?  What will you present?  What questions will you ask?
-Will you give them instructions for a task-based inspection?  Will you use your
-issue tracker?}
+The team will adopt a new GitHub peer review process to SRS verification. A 
+note will be added to the PR template reminding reviewers to confirm that the
+software implementation and/or written test cases comply with the requirements
+defined in the SRS. If a requirement cannot be met, the reviewer will be
+instructed to request an update in a separate PR linked with a rationale for the
+change. Below is the text that is included in the PR template addressing this
+topic. \newline
 
-\wss{Maybe create an SRS checklist?}
+\begin{shadedquotation}
+Reviewer's Note
+
+- Ensure that all implemented features and/or test cases comply with the SRS.
+If any requirement cannot be met, link a separate PR updating the SRS and
+explaining the rationale for the change.
+\end{shadedquotation}
+
+The 
+\hyperref[role:audio_processing_verification]{supervisor verification process}
+will follow a formal meeting based review approach. During these meetings,
+the team will present core system elements, mainly audio processing
+methodologies, using mathematical descriptions,prototype demonstrations,
+and graphed data. The supervisor will be provided with targeted review
+questions and asked to identify potential weaknesses or missing test cases.
+Feedback will be documented, and resulting action items will be tracked
+and resolved through the project's issue tracker. \newline
+
+
+For validation, the team will engage users who are hard of hearing in structured
+sessions. These sessions will include observation of product use and
+semi-structured interviews. The observation aspect aims to allow the team
+understand the usability of the product while the interview serves as a method 
+to identify validation issues in addressing user's needs related to situational
+awareness. This will fall under the 
+\hyperref[role:visual_vnv]{visual validation} and
+\hyperref[role:product_validation]{product validation} roles.
 
 \subsection{Design Verification}
 
