@@ -147,10 +147,17 @@ how they relate to your VnV efforts.}
 
 \section{Plan}
 
-\wss{Introduce this section.  You can provide a roadmap of the sections to
-  come.}
+This section will go over the \hyperref[sec:vnv_team]{verification and
+validation team}. It will then be followed by the plan to verify the
+\hyperref[sec:srs_verification]{SRS},
+\hyperref[sec:design_verification]{design}, 
+\hyperref[sec:vnv_plan_verification]{verification and validation plan}, and
+\hyperref[sec:implementation_verification]{implementation}. Finally the section
+will end off with 
+\hyperref[sec:testing_tools]{automated testing and verification tools} and
+\hyperref[sec:software_validation]{software validation}.
 
-\subsection{Verification and Validation Team}
+\subsection{Verification and Validation Team}\label{sec:vnv_team}
 
 Figure \ref{table:vnv_team} outlines the roles and responsibilities of each
 team member involved in the verification and validation process. Roles were
@@ -224,7 +231,7 @@ oversight and expert validation for signal processing.
 
 \end{xltabular}
 
-\subsection{SRS Verification}
+\subsection{SRS Verification}\label{sec:srs_verification}
 
 The verification of the SRS will follow a structured and systematic process.
 Each software requirement will be associated with at least one corresponding
@@ -276,7 +283,7 @@ awareness. This will fall under the
 \hyperref[role:visual_vnv]{visual validation} and
 \hyperref[role:product_validation]{product validation} roles.
 
-\subsection{Design Verification}
+\subsection{Design Verification}\label{sec:design_verification}
 
 The design verification process will include structured peer reviews conducted
 by Team 13. They will be provided with the checklist below to verify the desin.
@@ -300,12 +307,13 @@ satisfied and provide recommendations for improvement. The team will track all
 feedback using the project's issue tracker.
 
 \subsection{Verification and Validation Plan Verification}
+\label{sec:vnv_plan_verification}
 
 The verification and validation plan verification process will include
 structured peer reviews conducted by the Teaching Assistant and Team 13.
 They will use the checklist from \texttt{Checklists/VnV-Checklist.pdf}.
 
-\subsection{Implementation Verification}
+\subsection{Implementation Verification}\label{sec:implementation_verification}
 
 As outlined in the development plan, the primary source code implementation
 will be developed in C/C++. The compiler used to build the source code
@@ -329,23 +337,18 @@ The team will also develop test that verify requirements. These tests are
 outline in the \hyperref[sec:system_tests][System Tests section].
 
 \subsection{Automated Testing and Verification Tools}
+\label{sec:testing_tools}
 
-\wss{What tools are you using for automated testing.  Likely a unit testing
-  framework and maybe a profiling tool, like ValGrind.  Other possible tools
-  include a static analyzer, make, continuous integration tools, test coverage
-  tools, etc.  Explain your plans for summarizing code coverage metrics.
-  Linters are another important class of tools.  For the programming language
-  you select, you should look at the available linters.  There may also be tools
-  that verify that coding standards have been respected, like flake9 for
-  Python.}
+Automated testing and verification tools are defined in the following sections
+from the Development Plan document.
 
-\wss{If you have already done this in the development plan, you can point to
-that document.}
+\begin{itemize}
+  \item 10.3: Linter, Static Analyzer and Formatting Tools
+  \item 10.4: Testing Frameworks (section also includes code coverage)
+  \item 10.5: CI/CD (contains automated testing plan in CI)
+\end{itemize}
 
-\wss{The details of this section will likely evolve as you get closer to the
-  implementation.}
-
-\subsection{Software Validation}
+\subsection{Software Validation}\label{sec:software_validation}
 
 \wss{If there is any external data that can be used for validation, you should
   point to it here.  If there are no plans for validation, you should state that
