@@ -30,6 +30,8 @@ if(DEFINED EXTRA_DEFS)
     target_compile_definitions(${SourceExecutable} PRIVATE ${EXTRA_DEFS})
     target_compile_definitions(${SourceLib} PRIVATE ${EXTRA_DEFS})
 endif()
+target_compile_definitions(${SourceExecutable} PRIVATE LOGGING_ENABLED=$<BOOL:${LOGGING_ENABLED}>)
+target_compile_definitions(${SourceLib} PRIVATE LOGGING_ENABLED=$<BOOL:${LOGGING_ENABLED}>)
 
 # Attach include dirs to the target.
 set(INCLUDE_DIRS

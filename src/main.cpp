@@ -6,6 +6,7 @@
  */
 
 #ifdef STM_BUILD
+#include "hardware_interface/logging/logging.hpp"
 #include "hardware_interface/system/peripheral.h"
 #else
 #include "features/signal_processing/fft.h"
@@ -16,17 +17,17 @@
 int main() {
 
 #ifdef STM_BUILD
+  // Set-up pheripherals. Must call before any hardware function calls.
   setupPeripherals();
 #else
   std::vector<double> test_vec;
   FFT fft_test(static_cast<uint16_t>(test_vec.size()));
 #endif
-  int i = 0;
 
   while (1) {
-    printf("Hello SixSense\n\r");
-    HAL_Delay(1000);
-    i++;
+    INFO("Hello SixSense!");
+
+    DEBUG("Audio360 is running.");
   }
 
   return 0;
