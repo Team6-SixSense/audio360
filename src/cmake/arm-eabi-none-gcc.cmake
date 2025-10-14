@@ -13,7 +13,7 @@ set(BUILD_TESTS OFF CACHE BOOL "ON to build tests" FORCE)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 set(STARTUP ${CMAKE_CURRENT_LIST_DIR}/../configs/startup_stm32f767zitx.s)
-set(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/stm_startup/system_stm32f767.c)
+set(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../configs/system_stm32f7xx.c)
 # implements SystemInit(), clocks, caches
 
 # --- Where to find the GNU ARM toolchain ---

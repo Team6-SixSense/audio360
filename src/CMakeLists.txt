@@ -8,10 +8,10 @@ set(SourceLib "Audio360Lib")
 file(GLOB_RECURSE SRC_FILES
     helper/*.cpp
     features/*.cpp
-    hardware_interface/*.cpp
+    hardware_interface/*.*
 )
 set(LIB_SRC_FILES ${SRC_FILES})
-list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp|hardware_interface/system/syscall.c")
+list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp")
 
 # Create a library from source code.
 add_library(${SourceLib} STATIC ${LIB_SRC_FILES} )
@@ -20,7 +20,6 @@ target_sources(${SourceLib} PUBLIC ${LIB_SRC_FILES})
 # Define executable.
 add_executable(${SourceExecutable}
     main.cpp
-    hardware_interface/system/syscall.c
     ${EXTRA_SOURCES}
 )
 
