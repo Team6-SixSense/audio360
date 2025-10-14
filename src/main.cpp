@@ -6,12 +6,12 @@
  */
 
 #ifdef STM_BUILD
-#include "hardware_interface/logging/logging.hpp"
 #include "hardware_interface/system/peripheral.h"
 #else
 #include "features/signal_processing/fft.h"
 #endif
 
+#include "hardware_interface/logging/logging.hpp"
 #include <stdio.h>
 
 int main() {

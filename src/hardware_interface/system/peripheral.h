@@ -7,6 +7,8 @@
 
 #pragma once
 
+#ifdef STM_BUILD
+
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx_nucleo_144.h"
 #include <stdio.h>
@@ -23,3 +25,5 @@ void setupPeripherals();
  * must be called before calling this function
  */
 void errorHandler();
+
+#endif

@@ -15,6 +15,7 @@
  *
  ******************************************************************************
  */
+#ifdef STM_BUILD
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
@@ -81,3 +82,5 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
     HAL_GPIO_DeInit(GPIOD, GPIO_PIN_8 | GPIO_PIN_9);
   }
 }
+
+#endif

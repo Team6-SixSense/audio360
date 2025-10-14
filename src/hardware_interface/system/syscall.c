@@ -8,6 +8,8 @@
  ******************************************************************************
  */
 
+#ifdef STM_BUILD
+
 /* Includes */
 #include <errno.h>
 #include <signal.h>
@@ -17,7 +19,6 @@
 #include <sys/time.h>
 #include <sys/times.h>
 #include <time.h>
-
 
 #include "hardware_interface/system/peripheral.h"
 
@@ -144,3 +145,5 @@ int _execve(char *name, char **argv, char **env) {
   errno = ENOMEM;
   return -1;
 }
+
+#endif

@@ -4,7 +4,7 @@
  * @brief   Peripheral functions.
  ******************************************************************************
  */
-
+#ifdef STM_BUILD
 #include "hardware_interface/system/peripheral.h"
 
 static void SystemClock_Config();
@@ -89,3 +89,5 @@ void errorHandler() {
   while (1) {
   }
 }
+
+#endif

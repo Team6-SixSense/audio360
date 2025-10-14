@@ -20,6 +20,8 @@
  ******************************************************************************
  */
 
+#ifdef STM_BUILD
+
 /* Includes */
 #include <errno.h>
 #include <stdint.h>
@@ -74,3 +76,5 @@ void *_sbrk(ptrdiff_t incr) {
 
   return (void *)prev_heap_end;
 }
+
+#endif

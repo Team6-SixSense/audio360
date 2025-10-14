@@ -14,6 +14,7 @@
  *
  ******************************************************************************
  */
+#ifdef STM_BUILD
 
 /* Includes ------------------------------------------------------------------*/
 #include "hardware_interface/system/stm32f7xx_it.h"
@@ -81,3 +82,5 @@ void PendSV_Handler(void) {}
  * @brief This function handles System tick timer.
  */
 void SysTick_Handler(void) { HAL_IncTick(); }
+
+#endif

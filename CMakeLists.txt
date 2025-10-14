@@ -14,7 +14,6 @@ option(CI_RUN "ON when running CI job." OFF)
 add_subdirectory(src)
 
 
-
 if(BUILD_TESTS)
     add_subdirectory(test)
 endif()

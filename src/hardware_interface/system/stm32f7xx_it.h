@@ -14,6 +14,7 @@
  *
  ******************************************************************************
  */
+#ifdef STM_BUILD
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F7xx_IT_H
@@ -39,3 +40,5 @@ void SysTick_Handler(void);
 #endif
 
 #endif /* __STM32F7xx_IT_H */
+
+#endif
