@@ -95,7 +95,7 @@ set(LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/../configs/STM32F767ZITX_FLASH.ld)
 # Linker flags
 add_link_options(-Wl,--print-memory-usage,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map)
 add_link_options(-mcpu=cortex-m7 -mthumb -mthumb-interwork)
-add_link_options(--specs=nano.specs --specs=nosys.specs)
+add_link_options(--specs=nosys.specs)
 add_link_options(-T ${LINKER_SCRIPT})
 
 add_compile_definitions(__FPU_PRESENT=1 __FPU_USED=1)
@@ -104,24 +104,24 @@ set(HARDWARE_SRC_FILE
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144/stm32f7xx_nucleo_144.c
 
         # Peripherals functions.
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_cortex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_dma_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_dma.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_exti.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_flash_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_flash.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_gpio.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_i2c_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_pcd_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_pcd.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_pwr_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_pwr.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_rcc.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_rcc_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_uart_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_uart.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_ll_usb.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_exti.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_flash.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi_ex.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.c
@@ -148,7 +148,7 @@ set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
 
         # Peripherals functions.
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 
