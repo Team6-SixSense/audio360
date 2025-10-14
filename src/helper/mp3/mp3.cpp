@@ -1,8 +1,13 @@
+/**
+ ******************************************************************************
+ * @file    mp3.cpp
+ * @brief   MP3 processing functions.
+ ******************************************************************************
+ */
 
 #define MINIMP3_IMPLEMENTATION
 
 #include "helper/mp3/mp3.h"
-// #include "helper/plot/plot.hpp"
 #include <algorithm>
 #include <fstream>
 #include <stdio.h>

@@ -1,0 +1,25 @@
+/**
+ ******************************************************************************
+ * @file    peripheral.h
+ * @brief   This file contains the headers of the peripherals.
+ ******************************************************************************
+ */
+
+#pragma once
+
+#include "stm32f7xx_hal.h"
+#include "stm32f7xx_nucleo_144.h"
+#include <stdio.h>
+
+/**
+ * @brief Sets up required peripherals on the hardware with proper clock
+ * configurations. This function must be called before using any hardware
+ * related code.
+ */
+void setupPeripherals();
+
+/**
+ * @brief Output for when errors occurs. Will output LED3. @ref setupPeripherals
+ * must be called before calling this function
+ */
+void errorHandler();
