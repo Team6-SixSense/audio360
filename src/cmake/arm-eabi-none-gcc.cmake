@@ -12,7 +12,7 @@ set(BUILD_TESTS OFF CACHE BOOL "ON to build tests" FORCE)
 # Critical: don't try to link a host exe during compiler checks.
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-set(STARTUP ${CMAKE_CURRENT_LIST_DIR}/stm_startup/stm32f767_startup.s)
+set(STARTUP ${CMAKE_CURRENT_LIST_DIR}/../configs/startup_stm32f767zitx.s)
 set(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/stm_startup/system_stm32f767.c)
 # implements SystemInit(), clocks, caches
 
@@ -90,13 +90,16 @@ set(CMAKE_CXX_FLAGS_INIT "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -
 set(CMAKE_ASM_FLAGS_INIT "${ARM_MCU_FLAGS}")
 
 # Linker script (adjust path if needed)
-set(LINKER_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/../cmake/stm32-f7.ld")
+set(LINKER_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/../configs/STM32F767ZITX_FLASH.ld")
 
 # Linker flags
-set(CMAKE_EXE_LINKER_FLAGS_INIT
-        "${ARM_MCU_FLAGS} --specs=nano.specs --specs=nosys.specs \
-    -T${LINKER_SCRIPT} -Wl,-Map=Audio360.map -Wl,--gc-sections"
-)
+# set(CMAKE_EXE_LINKER_FLAGS_INIT
+#         "${ARM_MCU_FLAGS} --specs=nano.specs --specs=nosys.specs \
+#     -T${LINKER_SCRIPT} -Wl,-Map=Audio360.map -Wl,--gc-sections"
+# )
+add_link_options(-Wl,-gc-sections,--print-memory-usage,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map)
+add_link_options(-mcpu=cortex-m7 -mthumb -mthumb-interwork)
+add_link_options(-T ${LINKER_SCRIPT})
 
 
 
@@ -108,6 +111,7 @@ set(UART_PRINTF_FILES
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_gpio.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_pwr_ex.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Src/stm32f7xx_hal_rcc_ex.c
 
         CACHE FILEPATH "UART printf source files"
 )
@@ -122,8 +126,11 @@ set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Core/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_driver/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy
         CACHE INTERNAL ""
 )
+
+add_definitions(-DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx)
 
 # Keep find_path/find_library from searching host locations by default.
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)

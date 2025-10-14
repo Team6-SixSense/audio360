@@ -25,7 +25,10 @@ add_executable(${SourceExecutable}
 )
 
 # Attach include dirs to the target.
-set(INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
+set(INCLUDE_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/configs
+    )
 
 target_include_directories(${SourceExecutable} PUBLIC ${INCLUDE_DIRS} )
 target_include_directories(${SourceLib} PUBLIC ${INCLUDE_DIRS} )

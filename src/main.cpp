@@ -15,17 +15,19 @@ int main() {
   FFT fft_test(static_cast<uint16_t>(test_vec.size()));
 #endif
   int i = 0;
+
   while (1) {
     printf("Hello SixSense\n");
+    HAL_Delay(1000);
     i++;
-    printf("Hello data\n");
-    i++;
-    printf("Hello data1\n");
-    i++;
-    printf("Hello data2\n");
-    i++;
-    printf("Hello data3\n");
-    i++;
+    // printf("Hello data\n");
+    // i++;
+    // printf("Hello data1\n");
+    // i++;
+    // printf("Hello data2\n");
+    // i++;
+    // printf("Hello data3\n");
+    // i++;
   }
 
   return 0;
