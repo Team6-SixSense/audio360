@@ -14,8 +14,6 @@ file(GLOB_RECURSE SRC_FILES
 set(LIB_SRC_FILES ${SRC_FILES})
 list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp")
 
-add_definitions(-DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx)
-
 # Create a library from source code.
 add_library(${SourceLib} STATIC ${LIB_SRC_FILES} )
 target_sources(${SourceLib} PUBLIC ${LIB_SRC_FILES})

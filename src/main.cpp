@@ -11,7 +11,7 @@
 #include "features/signal_processing/fft.h"
 #endif
 
-#include "hardware_interface/logging/logging.hpp"
+#include "helper/logging/logging.hpp"
 #include <stdio.h>
 
 int main() {
