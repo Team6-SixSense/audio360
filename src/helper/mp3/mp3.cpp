@@ -1,8 +1,13 @@
+/**
+ ******************************************************************************
+ * @file    mp3.cpp
+ * @brief   MP3 processing functions.
+ ******************************************************************************
+ */
 
 #define MINIMP3_IMPLEMENTATION
 
 #include "helper/mp3/mp3.h"
-// #include "helper/plot/plot.hpp"
 #include <algorithm>
 #include <fstream>
 #include <stdio.h>
@@ -77,7 +82,6 @@ MP3Data handleMonoChannel(mp3dec_file_info_t &info) {
   std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
 
   std::vector<double> normalizedPcm(info.samples);
-  double timestep = 1.0 / info.hz;
 
   // Normalize and store MP3 data into a vector.
   for (size_t i = 0; i < info.samples; i++) {
@@ -96,7 +100,6 @@ MP3Data handleStereoChannel(mp3dec_file_info_t &info) {
   size_t numSamples = info.samples / 2;
   std::vector<double> normalizedLeftPcm(numSamples);
   std::vector<double> normalizedRightPcm(numSamples);
-  double timestep = 1.0 / info.hz;
 
   // Processing intertwining channel sample, normalizing, and store MP3 data
   // into vector.

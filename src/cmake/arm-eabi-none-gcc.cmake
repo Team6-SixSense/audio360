@@ -12,8 +12,8 @@ set(BUILD_TESTS OFF CACHE BOOL "ON to build tests" FORCE)
 # Critical: don't try to link a host exe during compiler checks.
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-set(STARTUP ${CMAKE_CURRENT_LIST_DIR}/stm_startup/stm32f767_startup.s)
-set(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/stm_startup/system_stm32f767.c)
+set(STARTUP ${CMAKE_CURRENT_LIST_DIR}/../configs/startup_stm32f767zitx.s)
+set(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../configs/system_stm32f7xx.c)
 # implements SystemInit(), clocks, caches
 
 # --- Where to find the GNU ARM toolchain ---
@@ -85,29 +85,69 @@ set(ARM_FLOAT_ABI  "hard"             CACHE STRING "ARM float ABI (hard|softfp|s
 set(ARM_MCU_FLAGS "-mcpu=${ARM_CPU} -mthumb -mfpu=${ARM_FPU} -mfloat-abi=${ARM_FLOAT_ABI}"
     CACHE STRING "Common per-target MCU flags")
 
-set(CMAKE_C_FLAGS_INIT   "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -Wall -Wextra")
-set(CMAKE_CXX_FLAGS_INIT "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -Wall -Wextra -fno-exceptions -fno-rtti")
-set(CMAKE_ASM_FLAGS_INIT "${ARM_MCU_FLAGS}")
+set(CMAKE_C_FLAGS_INIT   "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -ffunction-sections -fdata-sections -fno-common -fmessage-length=0 -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_INIT "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -fno-common -fmessage-length=0 -Wall -Wextra -fno-exceptions -fno-rtti")
+set(CMAKE_ASM_FLAGS_INIT "${ARM_MCU_FLAGS} -x assembler-with-cpp")
 
 # Linker script (adjust path if needed)
-set(LINKER_SCRIPT "${CMAKE_CURRENT_LIST_DIR}/../cmake/stm32-f7.ld")
+set(LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/../configs/STM32F767ZITX_FLASH.ld)
 
 # Linker flags
-set(CMAKE_EXE_LINKER_FLAGS_INIT
-        "${ARM_MCU_FLAGS} --specs=nano.specs --specs=nosys.specs \
-    -T${LINKER_SCRIPT} -Wl,-Map=Audio360.map -Wl,--gc-sections"
+add_link_options(-Wl,--print-memory-usage,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map)
+add_link_options(-mcpu=cortex-m7 -mthumb -mthumb-interwork)
+add_link_options(--specs=nosys.specs)
+add_link_options(-T ${LINKER_SCRIPT})
+
+add_compile_definitions(__FPU_PRESENT=1 __FPU_USED=1)
+
+set(HARDWARE_SRC_FILE
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144/stm32f7xx_nucleo_144.c
+
+        # Peripherals functions.
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c
+
+        # FFT functions.
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_init_f32.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_init_q15.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_init_q31.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/DSP_Lib_TestSuite/RefLibs/src/TransformFunctions/bitreversal.c
+
+        CACHE FILEPATH "UART printf source files"
 )
 
-
-
 # Export to parent CMakeLists.txt
-set(EXTRA_SOURCES ${STARTUP} ${SYSTEM} CACHE INTERNAL "")
-set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD CACHE INTERNAL "")
+set(EXTRA_SOURCES ${STARTUP} ${SYSTEM} ${HARDWARE_SRC_FILE} CACHE INTERNAL "")
+set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD USE_HAL_DRIVER CACHE INTERNAL "")
 set(EXTRA_INCLUDES
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
+
+        # Peripherals functions.
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Include
+
+        # FFT functions.
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Core/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Include
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/DSP_Lib_TestSuite/RefLibs/inc
+
         CACHE INTERNAL ""
 )
 

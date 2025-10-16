@@ -1,3 +1,9 @@
+/**
+ ******************************************************************************
+ * @file    fft.cpp
+ * @brief   Fast Fourier Transform (FFT) class
+ ******************************************************************************
+ */
 
 #include "features/signal_processing/fft.h"
 #include "helper/constants.h"

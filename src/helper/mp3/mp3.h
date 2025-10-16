@@ -1,9 +1,17 @@
+/**
+ ******************************************************************************
+ * @file    MP3.h
+ * @brief   MP3 processing header.
+ ******************************************************************************
+ */
+
 #pragma once
 
 #include "helper/mp3/minimp3.h"
 #include "helper/mp3/minimp3_ex.h"
-#include <vector>
 #include <string>
+#include <vector>
+
 
 /** @brief Classification of MP3 channels. */
 enum class Channel {

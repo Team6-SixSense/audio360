@@ -10,5 +10,12 @@
         "editor.rulers": [
             100
         ]
+    },
+    "[c]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.formatOnSave": true,
+        "editor.rulers": [
+            100
+        ]
     }
 }

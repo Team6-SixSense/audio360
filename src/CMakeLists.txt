@@ -8,7 +8,9 @@ set(SourceLib "Audio360Lib")
 file(GLOB_RECURSE SRC_FILES
     helper/*.cpp
     features/*.cpp
+    hardware_interface/*.*
 )
+
 set(LIB_SRC_FILES ${SRC_FILES})
 list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp")
 
@@ -17,19 +19,27 @@ add_library(${SourceLib} STATIC ${LIB_SRC_FILES} )
 target_sources(${SourceLib} PUBLIC ${LIB_SRC_FILES})
 
 # Define executable.
-add_executable(${SourceExecutable} main.cpp ${EXTRA_SOURCES})
-
-# Attach include dirs to the target.
-set(INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
-
-target_include_directories(${SourceExecutable} PUBLIC ${INCLUDE_DIRS} )
-target_include_directories(${SourceLib} PUBLIC ${INCLUDE_DIRS} )
+add_executable(${SourceExecutable}
+    main.cpp
+    ${EXTRA_SOURCES}
+)
 
 # Add definitions/includes if cross-compiling (toolchain sets them)
 if(DEFINED EXTRA_DEFS)
     target_compile_definitions(${SourceExecutable} PRIVATE ${EXTRA_DEFS})
     target_compile_definitions(${SourceLib} PRIVATE ${EXTRA_DEFS})
 endif()
+target_compile_definitions(${SourceExecutable} PRIVATE LOGGING_ENABLED=$<BOOL:${LOGGING_ENABLED}>)
+target_compile_definitions(${SourceLib} PRIVATE LOGGING_ENABLED=$<BOOL:${LOGGING_ENABLED}>)
+
+# Attach include dirs to the target.
+set(INCLUDE_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/configs
+    )
+
+target_include_directories(${SourceExecutable} PUBLIC ${INCLUDE_DIRS} )
+target_include_directories(${SourceLib} PUBLIC ${INCLUDE_DIRS} )
 
 if(DEFINED EXTRA_INCLUDES)
     target_include_directories(${SourceExecutable} PRIVATE ${EXTRA_INCLUDES})
