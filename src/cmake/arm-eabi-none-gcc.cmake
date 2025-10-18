@@ -118,6 +118,7 @@ set(HARDWARE_SRC_FILE
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c
 
         # FFT functions.
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.S
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_init_f32.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.c
@@ -126,7 +127,6 @@ set(HARDWARE_SRC_FILE
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_init_q31.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/DSP_Lib_TestSuite/RefLibs/src/TransformFunctions/bitreversal.c
 
         CACHE FILEPATH "UART printf source files"
 )
