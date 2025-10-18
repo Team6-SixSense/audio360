@@ -105,10 +105,10 @@ private:
   uint16_t outputSize;
 
   /** @brief input signal. This memory is shared with fttw_plan plan. */
-  float *in;
+  float32_t *in;
 
   /** @brief output signal. This memory is shared with fttw_plan plan. */
-  float *out;
+  float32_t *out;
 
 #ifdef STM_BUILD
   /** @brief Real FFT instance for using CMSIS DSP library */
