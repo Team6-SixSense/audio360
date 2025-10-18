@@ -5,15 +5,25 @@
  ******************************************************************************
  */
 #ifdef STM_BUILD
+#include "fatfs.h"
 #include "hardware_interface/system/peripheral.h"
 
 static void SystemClock_Config();
 static void MX_USART3_UART_Init();
 static void MX_SAI_1_Init();
+static void MX_SPI1_Init();
+
+static void MX_GPIO_Init();
 
 UART_HandleTypeDef huart3;
+SPI_HandleTypeDef SD_SPI_HANDLE;
+
+#define SD_CS_Pin GPIO_PIN_4
+#define SD_CS_GPIO_Port GPIOA
 
 static SAI_HandleTypeDef hsai_BlockA1;
+
+
 
 void setupPeripherals() {
 
@@ -35,6 +45,12 @@ void setupPeripherals() {
 
   // Set up SAI_1
   MX_SAI_1_Init();
+
+  // Set up logging sd card and FATFS
+  MX_GPIO_Init();
+  MX_SPI1_Init();
+  MX_FATFS_Init();
+
 }
 
 static void SystemClock_Config() {
@@ -86,6 +102,67 @@ static void SystemClock_Config() {
   {
     Error_Handler();
   }
+}
+
+static void MX_GPIO_Init() {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOE_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : SD_CS_Pin */
+  GPIO_InitStruct.Pin = SD_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(SD_CS_GPIO_Port, &GPIO_InitStruct);
+}
+
+static void MX_SPI1_Init()
+{
+
+  /* USER CODE BEGIN SPI1_Init 0 */
+
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  SD_SPI_HANDLE.Instance = SPI1;
+  SD_SPI_HANDLE.Init.Mode = SPI_MODE_MASTER;
+  SD_SPI_HANDLE.Init.Direction = SPI_DIRECTION_2LINES;
+  SD_SPI_HANDLE.Init.DataSize = SPI_DATASIZE_8BIT;
+  SD_SPI_HANDLE.Init.CLKPolarity = SPI_POLARITY_LOW;
+  SD_SPI_HANDLE.Init.CLKPhase = SPI_PHASE_1EDGE;
+  SD_SPI_HANDLE.Init.NSS = SPI_NSS_SOFT;
+  SD_SPI_HANDLE.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+  SD_SPI_HANDLE.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  SD_SPI_HANDLE.Init.TIMode = SPI_TIMODE_DISABLE;
+  SD_SPI_HANDLE.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  SD_SPI_HANDLE.Init.CRCPolynomial = 7;
+  SD_SPI_HANDLE.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+  SD_SPI_HANDLE.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  if (HAL_SPI_Init(&SD_SPI_HANDLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI1_Init 2 */
+
+  /* USER CODE END SPI1_Init 2 */
+
 }
 
 static void MX_SAI_1_Init()
