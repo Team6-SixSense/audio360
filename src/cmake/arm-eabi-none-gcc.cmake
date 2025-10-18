@@ -117,6 +117,9 @@ set(HARDWARE_SRC_FILE
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c
 
+        # SAI peripheral
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sai.c
+
         # FFT functions.
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_init_f32.c
@@ -133,7 +136,7 @@ set(HARDWARE_SRC_FILE
 
 # Export to parent CMakeLists.txt
 set(EXTRA_SOURCES ${STARTUP} ${SYSTEM} ${HARDWARE_SRC_FILE} CACHE INTERNAL "")
-set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD USE_HAL_DRIVER CACHE INTERNAL "")
+set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD USE_HAL_DRIVER HAL_SAI_MODULE_ENABLED CACHE INTERNAL "")
 set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
 

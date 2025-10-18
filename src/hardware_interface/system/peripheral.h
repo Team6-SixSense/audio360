@@ -24,6 +24,12 @@ void setupPeripherals();
  * @brief Output for when errors occurs. Will output LED3. @ref setupPeripherals
  * must be called before calling this function
  */
-void errorHandler();
+void Error_Handler();
+
+/**
+ *@brief Get handle to SAI module block
+ */
+
+SAI_HandleTypeDef* getSAI_Handle();
 
 #endif
