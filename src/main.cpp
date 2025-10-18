@@ -7,6 +7,7 @@
 
 #ifdef STM_BUILD
 #include "hardware_interface/system/peripheral.h"
+#include "hardware_interface/sd_logger/FatFs/App/fatfs.h"
 #else
 #include "features/signal_processing/fft.h"
 #endif
@@ -15,6 +16,7 @@
 
 #include "helper/logging/logging.hpp"
 #include <stdio.h>
+#include "string.h"
 
 // Define the number of samples you want to capture for one waveform snapshot
 #define WAVEFORM_SAMPLES 256
@@ -28,6 +30,40 @@ int main() {
   std::vector<double> test_vec;
   FFT fft_test(static_cast<uint16_t>(test_vec.size()));
 #endif
+  //some variables for FatFs
+  FATFS FatFs; 	//Fatfs handle
+  FIL fil; 		//File handle
+  FRESULT fres; //Result after operations
+
+  //Open the file system
+  fres = f_mount(&FatFs, "", 1); //1=mount now
+  if (fres != FR_OK) {
+    ERROR("f_mount error (%i)\r\n", fres);
+    while(1);
+  }
+
+  fres = f_open(&fil, "write.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
+  if(fres == FR_OK) {
+    INFO("I was able to open 'write.txt' for writing\r\n");
+  } else {
+    ERROR("f_open error (%i)\r\n", fres);
+  }
+
+  BYTE readBuf[30];
+  strncpy((char*)readBuf, "a new file is made!", 19);
+  UINT bytesWrote;
+  fres = f_write(&fil, readBuf, 19, &bytesWrote);
+  if(fres == FR_OK) {
+    INFO("Wrote %i bytes to 'write.txt'!\r\n", bytesWrote);
+  } else {
+    ERROR("f_write error (%i)\r\n");
+  }
+
+  //Be a tidy kiwi - don't forget to close your file!
+  f_close(&fil);
+
+  //We're done, so de-mount the drive
+  f_mount(NULL, "", 0);
 
   while (1) {
 
