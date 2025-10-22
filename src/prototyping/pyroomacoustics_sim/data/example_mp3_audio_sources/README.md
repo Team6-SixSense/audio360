@@ -21,15 +21,10 @@ This is a test case for the pyroomacoustics_prototype module with audio sources 
 
 ## Sound Sources
 
-Number of sources: 2
+Number of sources: 1
 
 ### Source 1
 - Position: (9.00, 9.00, 1.00)
-- Signal length: 8424 samples (1.053 seconds)
-- Delay: 0 seconds
-
-### Source 2
-- Position: (1.00, 7.00, 2.50)
-- Signal length: 8424 samples (1.053 seconds)
+- Signal length: 419840 samples (52.480 seconds)
 - Delay: 0 seconds
 
