@@ -33,7 +33,7 @@ def main():
     add_microphone(room, [5.05, 5.00, 1.75]) # Back-right
 
     print("Generating car sound from audio file")
-    signal1 = generate_signal_from_audio_file("example_audio", "car_horn.mp3")
+    signal1 = generate_signal_from_audio_file("example_audio", "car_horn_8k.mp3")
 
     print("Adding sources with signal")
     add_source_with_signal(room, [9, 9, 1], signal1)
