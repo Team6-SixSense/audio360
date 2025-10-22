@@ -82,6 +82,8 @@
 & {\bf Notes}\\
 \midrule
 2025-10-06 & 1.0 & Initial Write-up\\
+2025-10-22 & 2.0 & Technical terms to glossary\\
+2025-10-22 & 2.1 & Context diagram included\\
 \bottomrule
 \end{tabularx}
 
@@ -103,8 +105,8 @@ missed, leading to increased risk of injury and miscommunication.
 Many existing solutions focus on speech transcription, but lack the ability to
 provide directional information about sound sources or classify non-speech
 sounds. This project aims to address this gap by developing an assistive device
-that provides real-time visual indications of sound source locations and
-classifications.
+that provides \hyperref[def:real_time]{real-time} visual indications of sound
+source locations and classifications.
 
 The objective of this project is to develop an assistive device that aids
 individuals who are deaf or hard of hearing by providing real-time visual
@@ -394,10 +396,6 @@ laboratory testing to validate technical approaches and refine requirements.
   \item \textbf{ASL}: American Sign Language used by deaf and hard of hearing
   individuals to communicate using hand gestures and facial expressions.
 
-  \item \textbf{Microphone Array:}\label{def:microphone_array} A collection of
-  microphones that are synchronized to capture audio from the environment to
-  create a single multi-channel audio signal.
-
   \item \textbf{Microcontroller:}\label{def:microcontroller} Compact embedded
   hardware system with a CPU, memory, input/output peripherals, designed to
   process real-time data directly on the device.
@@ -405,12 +403,20 @@ laboratory testing to validate technical approaches and refine requirements.
   \item \textbf{Microphone:}\label{def:microphone} Input sensor to a device that
   converts audio soundwaves to digital bytestream.
 
+  \item \textbf{Microphone Array:}\label{def:microphone_array} A collection of
+  microphones that are synchronized to capture audio from the environment to
+  create a single multi-channel audio signal.
+
   \item \textbf{Normal Operating Condition:}
   \label{def:normal_operation_condition} The state in which the system,
   including hardware and softwre, operate within expected environmental and
   usage parameters. This includes audio input sampled at the correct sample
   rate, input audio signals are within the human audible range (20 Hz – 20 kHz)
   \cite{Neuroscience2001}, and audio input levels below 90 dB.
+
+  \item \textbf{Real Time:} \label{def:real_time} Computational processing of
+  the tasks within the system that adhere to specific timing constraints.
+  All processing is guranteed to complete before its deadline.
 
   \item \textbf{Spectral Leakage:} \label{def:spectral_leakage} The spreading of
   a signal's energy across multiple frequency bins in a frequency spectrum due
@@ -553,6 +559,21 @@ affect users.
     environment. 
   \end{itemize}
 \end{enumerate}
+
+\subsection{E.7 Context}
+
+Figure \ref{fig:system_context_diagram} is a context diagram that provides a
+high-level overview of the Audio360 system and its interactions with external
+entities. Audio360 receives audio input from a microphone array, processes the
+data to analysis the user's environment, and outputs visualizations to a
+display.
+
+\begin{figure}[H]     
+    \centering 
+    \includegraphics[width=0.9\textwidth]{diagrams/context_diagram.png}
+    \caption{Context diagram on how the system interacts with the environment.}
+    \label{fig:system_context_diagram}
+\end{figure}
 
 \section{System}
 
