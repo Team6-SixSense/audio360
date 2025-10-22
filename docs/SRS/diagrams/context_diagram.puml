@@ -1,0 +1,15 @@
+@startuml context_diagram
+title Context Diagram
+
+actor "User" as User
+rectangle "Microphone Array" as MicArray
+rectangle "Display" as OutputDisplay
+
+' usecase outputs a circle
+usecase "Audio360 System" as System
+
+User -down-> System : Interact
+MicArray -right-> System : Environment sound
+System -right-> OutputDisplay : Visualize 
+
+@enduml
