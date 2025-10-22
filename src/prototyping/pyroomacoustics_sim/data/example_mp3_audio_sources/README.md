@@ -25,6 +25,6 @@ Number of sources: 1
 
 ### Source 1
 - Position: (9.00, 9.00, 1.00)
-- Signal length: 419840 samples (52.480 seconds)
+- Signal length: 38081 samples (4.760 seconds)
 - Delay: 0 seconds
 
