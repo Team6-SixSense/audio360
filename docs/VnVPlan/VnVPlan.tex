@@ -504,26 +504,62 @@ Their values are defined in this section for easy maintenance.
 \newpage{}
 \section*{Appendix --- Reflection}
 
-\wss{This section is not required for CAS 741}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Lifelong Learning.
-
-\input{../Reflection.tex}
-
 \begin{enumerate}
-  \item What went well while writing this deliverable? 
+  \item What went well while writing this deliverable?
+
+  \textbf{Sathurshan:} The team had a good understanding of the system as in
+  the areas of the system that have the most critical risk to the project and
+  functionality to the product. As a result, it helped the team know whats tests
+  should be prioritized.
+
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
+
+  \textbf{Sathurshan:} The team has packed with midterms and assignments from
+  other courses which made working on this deliverable and capstone difficult.
+  There wasn't a good resolution other than getting the team to work on sections
+  of the deliverable when possible.
+
   \item What knowledge and skills will the team collectively need to acquire to
   successfully complete the verification and validation of your project?
   Examples of possible knowledge and skills include dynamic testing knowledge,
-  static testing knowledge, specific tool usage, Valgrind etc.  You should look to
-  identify at least one item for each team member.
+  static testing knowledge, specific tool usage, Valgrind etc.  You should look
+  to identify at least one item for each team member.
+  
+  \textbf{Team respose:} The following are the knowledge and skills to perform
+  verification and validation of the project:
+
+  \begin{enumerate}
+    \item gtest: the main testing tool for writing unit test for source code.
+    \item Hardware debugging: There aren't many methods to debug on a
+    microcontroller. Thus we need someone to investigate on how to debug our
+    software on a microcontroller. If not possible, what other ways we can debug
+    our software without the hardware.
+    \item Integration testing: Testing the integration of the software on the
+    hardware to verify it has been done correctly.
+    \item Validating the product with the user. It is not intuitive at the
+    moment on how we will know that the product addresses the user's problem
+    effectively.
+    \item Design verification requires an expert to ensure that the team's
+    initial design is correct to minimize technical debt since there is not
+    a lot of time left in this project.
+  \end{enumerate}
+
   \item For each of the knowledge areas and skills identified in the previous
   question, what are at least two approaches to acquiring the knowledge or
   mastering the skill?  Of the identified approaches, which will each team
   member pursue, and why did they make this choice?
+
+  \begin{enumerate}
+    \item gtest:
+    \item Hardware debugging: 
+    \item Integration testing: Sathurshan will be pursuing this as he has
+    experience of integration testing. He has already acquired partial skills
+    from industry and will acquire more by looking at how public GitHub projects
+    that uses hardware performed integration testing.
+    \item Validating the product with the user:
+    \item Design verification:
+  \end{enumerate}
 \end{enumerate}
 
 \end{document}
