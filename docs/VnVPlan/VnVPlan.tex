@@ -1,5 +1,6 @@
 \documentclass[12pt, titlepage]{article}
 
+\usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{tabularx}
@@ -140,8 +141,6 @@ Repos.csv) if your plan changes as a result of the VnV planning exercise.}
   is done, they will be written.  You can create BibTeX entries for your
   documents and within those entries include a hyperlink to the documents.}
 
-% \citet{SRS}
-
 \wss{Don't just list the other documents.  You should explain why they are relevant and 
 how they relate to your VnV efforts.}
 
@@ -225,7 +224,7 @@ oversight and expert validation for signal processing.
 
   Audio Processing Verification \label{role:audio_processing_verification}  &
   Reviews and assesses the audio processing methodologies implemented. The
-  team will demonstrate and explain these techniques in a supervisor meetiing
+  team will demonstrate and explain these techniques in a supervisor meeting
   and receive verbal or written feedback. &
   MVM (Supervisor) \\
 
@@ -248,11 +247,12 @@ These fall under the
 roles. \newline
 
 The team will adopt a new GitHub peer review process to SRS verification. A 
-note will be added to the PR template reminding reviewers to confirm that the
+comment will be added by bot to the PR. The comment will contain a list of
+reminders for the reviewers to confirm that the
 software implementation and/or written test cases comply with the requirements
 defined in the SRS. If a requirement cannot be met, the reviewer will be
 instructed to request an update in a separate PR linked with a rationale for the
-change. Below is the text that is included in the PR template addressing this
+change. Below is the text that is included in the bot's comment addressing this
 topic. \newline
 
 \begin{shadedquotation}
@@ -267,7 +267,7 @@ The
 \hyperref[role:audio_processing_verification]{supervisor verification process}
 will follow a formal meeting based review approach. During these meetings,
 the team will present core system elements, mainly audio processing
-methodologies, using mathematical descriptions,prototype demonstrations,
+methodologies, using mathematical descriptions, prototype demonstrations,
 and graphed data. The supervisor will be provided with targeted review
 questions and asked to identify potential weaknesses or missing test cases.
 Feedback will be documented, and resulting action items will be tracked
@@ -286,24 +286,29 @@ awareness. This will fall under the
 \subsection{Design Verification}\label{sec:design_verification}
 
 The design verification process will include structured peer reviews conducted
-by the team. Below is the checklist to verify the design.
-
-\begin{itemize}
-  \item Is the system decomposed into small, modular components that can be
-  individually tested?
-
-  \item Are encapsulation principles followed, ensuring that data and functions
-  that should be private are private?
-
-  \item Are design assumptions, dependencies, and interfaces clearly defined
-  and documented?
-
-  \item Does the selected software architecture appropriately support the
-  system's requirements and intended functionality?
-
-  \item Is the software design portable, allowing the software to be easily
-  integrated with different hardware or simulation layer.
-\end{itemize}
+by the team. Below is the checklist to verify the design.\\
+\newline
+\textbf{Software Core Architecture} \\
+$\square$ Does the selected software architecture appropriately support the
+system's requirements and intended functionality? \\
+$\square$ Is the software design portable, allowing the software to be easily
+integrated with different hardware or simulation layer. \\
+\newline
+\newline
+\textbf{Software Design} \\
+$\square$ Is the system decomposed into small, modular components that can be
+individually tested? \\
+$\square$ Are encapsulation principles followed, ensuring that data and
+functions that should be private are private? \\
+$\square$ Are design assumptions, dependencies, and interfaces clearly defined
+and documented? \\
+$\square$ Are software design principles being followed. Check box should fail
+if there is an another design principle that will be better fitted.
+\newline
+\newline
+\textbf{General} \\
+$\square$ Is there a corresponding UML diagram of the design being tracked on
+git. \\
 
 Reviewers will document feedback on any checklist criteria that are not
 satisfied and provide recommendations for improvement. The team will track all 
@@ -327,17 +332,11 @@ imported libraries. \newline
 The team will also employ Clang Static Analyzer \cite{clangStaticAnalyzer} as
 a static analyzer tool. The static analyzer will be employed to detect bugs
 without running the source code on the hardware, and will be ran prior to
-merging PRs. A note has been added to the PR template to looks similar as below.
-
-\begin{shadedquotation}
-Reviewer's Note
-
-- Ensure Clang Static Analyzer shows no errors or warnings for source code
-changes
-\end{shadedquotation}
+merging PRs. It will block the PR from merging until all issues identified by
+the static analyzer has been resolved.
 
 The team will also develop test that verify requirements. These tests are
-outline in the \hyperref[sec:system_tests][System Tests section].
+outline in the \hyperref[sec:system_tests]{System Tests section}.
 
 \subsection{Automated Testing and Verification Tools}
 \label{sec:testing_tools}
