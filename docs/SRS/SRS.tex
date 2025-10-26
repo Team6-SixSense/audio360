@@ -635,7 +635,7 @@ display.
   output peripheral devices.
 \end{itemize}
 
-\subsection{S.2 Functionality}
+\subsection{S.2 Functionality} \label{sec:S.2}
 
 \subsubsection{\hyperref[comp:embedded_firmware]{Embedded Firmware}} Functional
 Requirements
@@ -690,7 +690,7 @@ Non-Functional Requirements
 \end{itemize}
 
 \subsubsection{\hyperref[comp:audio_filtering]{Audio Filtering}} Functional
-Requirements
+Requirements \label{sec:FR3}
 \begin{itemize}
   \item \label{FR3_1}\textbf{FR3.1:} The audio filtering component shall convert
   digital audio waveform to frequency domain.
@@ -801,7 +801,7 @@ Non-Functional Requirements
 \end{itemize}
 
 \subsubsection{\hyperref[comp:viz_controller]{Visualization Controller}}
-Functional Requirements
+Functional Requirements\label{sec:FR6}
 \begin{itemize}
   \item \label{FR6_1}\textbf{FR6.1:} The visualization controller component
   shall notify users of the direction of an audio source whenever it is detected
@@ -1207,9 +1207,9 @@ predefined set (including at minimum: speech, vehicle sounds, alarms, and
 household appliances), verified through testing with a labeled dataset of at
 least 100 sound samples across all categories.
 
-\item \textbf{VC-3.2 Processing latency:} The classification algorithm shall
-complete processing and output a classification label within 1 second of sound
-detection, verified through timestamp logging.
+\item \textbf{VC-3.2 Processing latency:}\label{sec:VC-3.2} The classification 
+algorithm shall complete processing and output a classification label within 1 
+second of sound detection, verified through timestamp logging.
 
 \item \textbf{VC-3.3 Category coverage:} The system shall support classification
 of at least 5 distinct sound categories relevant to safety and daily life,
