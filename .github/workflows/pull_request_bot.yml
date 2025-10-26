@@ -1,0 +1,44 @@
+name: Pull Request Bot
+
+on:
+  pull_request:
+    types: [opened]
+    paths: 
+      - 'src/**'
+      - 'test/**'
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Add PR comment (only once)
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const { owner, repo, number } = context.issue;
+            const commentBody = fs.readFileSync('.github/pull_request_comment.md', 'utf8');
+
+            // Check if this workflow already commented before
+            const { data: comments } = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number: number,
+            });
+
+            const alreadyCommented = comments.some(
+              (c) =>
+                c.user.type === "Bot" &&
+                c.body.includes("Thanks for opening this PR")
+            );
+
+            if (!alreadyCommented) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: number,
+                body: commentBody,
+              });
+            }
