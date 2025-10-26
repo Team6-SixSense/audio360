@@ -248,7 +248,9 @@ this ensures the system meets the user expectations and performs reliably.
 The sections below outline the tests that will be used to verify the functional 
 requirements in section \hyperref[SRS-sec:S.2]{S.2} of the SRS. Each subsection 
 will focus on how the functional requirements for a specific component will be 
-verified through testing. 
+verified through testing. These components include the Embedded Firmware, 
+Driver Layer, Audio Filtering, Audio360 Engine, Frequency Analysis, 
+Visualization Controller, Microphone, Output Display and Microcontroller. 
 
 \subsubsection{Audio Filtering Tests}
 
@@ -267,13 +269,13 @@ frequency-domain \\}
 					
 \textbf{Initial State:} 
 The audio filtering module is initialized and ready to process audio input 
-retrieved from a waveform (.wav) file. 
+retrieved from an audio file. 
 					
 \textbf{Input:}
-A 3 second audio clip represented in a .wav file containing pre-recorded audio 
+A 3 second audio clip represented in an audio file containing pre-recorded audio 
 data in the time domain sampled at 16 kHz. The audio clip contains 3 sine waves 
 at low (100 Hz), mid (1 kHz), and high (8 kHz) frequency ranges. No filtering 
-or frequency transofmration have been applied to the audio data initially.
+or frequency transformation have been applied to the audio data initially.
 					
 \textbf{Output:}
 The audio filtering module accepts the file with no errors. The resulting 
@@ -292,7 +294,7 @@ should display peaks at those frequencies.
 The test file will be uploaded as an artifact in the automated testing 
 framework. This test will trigger when a commit is made to any branch in the 
 repository. The audio filtering module will return the frequency domain 
-representation automatically on the input of the waveform file. The 
+representation automatically on the input of the audio file. The 
 frequency-domain output will be inspected to verify the presence of peaks at 
 100 Hz, 1 kHz and 8 kHz. The test passes if all 3 peaks are present with no 
 unexpected frequencies showing up.  
@@ -303,33 +305,33 @@ unexpected frequencies showing up.
 					
 \textbf{Initial State:} 
 The audio filtering module is initialized and ready to process audio input 
-retrieved from a waveform (.wav) file. 
+retrieved from a audio file. 
 					
 \textbf{Input:}
-A 2 second digital audio waveform sampled at 16 kHz that alternates between a 
+A 2 second digital audio signal sampled at 16 kHz that alternates between a 
 low-amplitude sine wave and a high-amplitude sine wave with the same frequency. 
 These sine waves will be decimal multiples of a defined max amplitude value. 
 Where the low-sine wave will be 0.2 * max amplitude, and the high sine wave will
  be 0.8 * max amplitude. 
 					
 \textbf{Output:}
-A normalized output waveform that still has both the low amplitude and high 
+A normalized output signal that still has both the low amplitude and high 
 amplitude sine waves, but both waves have been scaled to a consistent target 
 amplitude, having a maximum absolute value of 1.0. Note, the frequency of the 
 sine wave should remain unchanged. 
 
 \textbf{Test Case Derivation:} 
 Amplitude normalization scales the amplitude of a signal so its maximum 
-ampltiude matches a target amplitude. If one section is quiet (0.2 * max), and 
+ampltiude is between 0 and 1. If one section is quiet (0.2 * max), and 
 another section is louder (0.8 * max), normalization should scale both sections 
-so their peak amplitudes become equal. 
+so their peak amplitudes are between the range 0 and 1. 
 					
 \textbf{How test will be performed:}
 
 The test file will be uploaded as an artifact in the automated testing 
 framework. This test will trigger when a commit is made to any branch in the 
 repository. The audio filtering module will return normalized time-domain 
-signal automatically on the input of the waveform file. The normalized time 
+signal automatically on the input of the audio file. The normalized time 
 domain output will be inspected to verify the amplitude across both sections of 
 the file are the same now.
 
@@ -339,7 +341,7 @@ the file are the same now.
 					
 \textbf{Initial State:} 
 The audio filtering module is initialized and ready to process audio input 
-retrieved from a waveform (.wav) file. 
+retrieved from an audio file. 
 					
 \textbf{Input:}
 A 1 second sine wave at an arbitary frequency sampled at 16 kHz, whose duration 
@@ -350,7 +352,7 @@ In one case, a window function will be passed in, in the other no function
 will be passed in.
 					
 \textbf{Output:}
-The windowed output waveform should have reduced spectral leakage. This is 
+The windowed output audio should have reduced spectral leakage. This is 
 represented by a sharper and more defined peak at the sine wave's frequency,
 with reduced side-lobes in the frequency spectrum compared to the output of the 
 non-windowed case. 
@@ -362,7 +364,14 @@ function tapers the edges of the signal, reducing the discontinuities, and
 confining the energy to the main frequency band, preventing leakage into other 
 frequencies from occuring. As such, in the windowed case, the frequency 
 spectrum should show a sharper peak at the sine wave's frequency, with redcued 
-side-lobes compared to the non-windowed case.
+side-lobes compared to the non-windowed case. The leakage will be measured by 
+first computing the peak amplitude $K_{\text{peak}}$, then applying the 
+leakage function. Where M represents the mainlobe half-width in bins, based on 
+the windowing function used.  
+
+\[
+\text{Leakage} = 1 - \frac{\displaystyle\sum_{k = k_{\text{peak}} - M}^{k_{\text{peak}} + M} |X[k]|^2}{\displaystyle\sum_{k} |X[k]|^2}
+\]
 
 \textbf{How test will be performed:}
 The test file will be uploaded as an artifact in the automated testing 
@@ -379,15 +388,15 @@ indicates reduced spectral leakage.
 \textbf{Control:} Manual
 					
 \textbf{Initial State:} 
-The audio filtering module is deployed on the microcontroller. Both hardware 
-accelerated and non-accelerated computation modes are available for audio 
-filtering components.
+The audio filtering module is deployed on the microcontroller. A local computer 
+without hardware acceleration is available to the team to test the audio 
+filtering component on.
 					
 \textbf{Input:}
-A 10 second digital audio waveform sampled at 16 kHz containing waves with 
+A 10 second digital audio signal sampled at 16 kHz containing waves with 
 mixed frequencies and amplitudes. The same input will be processed once with 
-hardware acceleration enabled, and one without hardware acceleration. Each 
-mode will be timed to measure the processing speed. 
+the microcontroller, and once on a local development machine without hardware 
+acceleration. Each test will be timed to measure the processing speed. 
 					
 \textbf{Output:}
 Both processing modes should produce equivalent spectrograms for the given 
@@ -403,11 +412,12 @@ Verifying the reduced runtime and equivalent outputs confirms the module
 deployed on the hardware is functioning correctly. 
 
 \textbf{How test will be performed:}
-Manually running both confirgurations on the microcontroller. Execution time 
-will be measured with performance logs. Test function will be written to 
-measure the numerical equivalence of both outputs after processing is 
-completed. Logs will be manully inspected to verify the response time of the 
-hardware accelerated mode is less than the non-accelerated mode.
+Manually running one confirguration on the microcontroller, and another on the 
+local computer. Execution time will be measured with performance logs. Test 
+function will be written to measure the numerical equivalence of both outputs 
+after processing is completed. Logs will be manully inspected to verify the 
+response time of the hardware accelerated mode is less than the non-accelerated 
+mode.
 
 \item{\textbf{test-FR-3.5} Flagging anomalies\\}
 
@@ -415,20 +425,20 @@ hardware accelerated mode is less than the non-accelerated mode.
 					
 \textbf{Initial State:} 
 The audio filtering module is initialized and ready to process audio input 
-retrieved from a waveform (.wav) file. 
+retrieved from an audio file. 
 					
 \textbf{Input:}
-Three separate audio clips represented in .wav files. One will have a 1 second 
+Three separate audio clips represented in audio files. One will have a 1 second 
 sine wave with an amplitude that exceeds 1.0. Since amplitudes above 1.0 will 
 become clipped. Another clip will have a 1 second sine wave, that is replaced 
 by zeros halfway. This will test the lost signal case. The last clip will just 
 have 2 secnds of zero amplitude, measuring the silence case. 
 					
 \textbf{Output:}
-For each case, the component should output the correct anomaly flag. In this 
-case, for the first audio clip, it should output a clipping flag. For the 
-second clip, it should output a lost signal flag. For the last clip, it should
- output a silence flag.
+For each test case, the component should output the correct anomaly flag. 
+In this case, for the first audio clip, it should output a clipping flag. 
+For the second clip, it should output a lost signal flag. For the last clip, 
+it should output a silence flag.
 
 \textbf{Test Case Derivation:} 
 Clipping occurs when the amplitude of a signal exceeds the maximum 
@@ -439,11 +449,12 @@ case in the second clip. Silence is detected when the entire audio clip has
 zero amplitude, which is the case in the last clip.
 
 \textbf{How test will be performed:}
-The test file will be uploaded as an artifact in the automated testing 
-framework. This test will trigger when a commit is made to any branch in the 
-repository. The audio filtering module will return 3 outputs, one for each test 
-input .wav file. Test will be verified by asserting whether the correct anomly 
-is displayed for each .wav file. 
+Each test file will be uploaded as an artifact in the automated testing 
+framework. There will be a test case for each test file, measuring each of the 
+anomalies mentioned above. THe test cases will trigger when a commit is made to 
+any branch in the repository. The audio filtering module will return 1 output 
+for each test case. Test will be verified by asserting whether the correct 
+anomly is displayed for each audio file in each test case. 
 
 \end{enumerate}
 
@@ -551,7 +562,7 @@ testing.
 					
 \textbf{Initial State:} 
 The audio filtering module is initialized and ready to process audio input 
-retrieved from a waveform (.wav) file. Reference implementation for true 
+retrieved from an audio file. Reference implementation for true 
 frequency-domain representation is available for comparison. 
 					
 \textbf{Input/Condition:} 
@@ -563,16 +574,17 @@ The computed frequnecy-domain representation from the component should differ
 from the true spectrum by less than 10\% error across all frequency bins. 
 					
 \textbf{How test will be performed:} 
-Upload the .wav file and high-precision FFT reference file to the automated 
+Upload the audio file and high-precision FFT reference file to the automated 
 testing framework. Confgiure the test to run every time a commit is made to 
-Git. When a commit is made, the test suite will feed the .wav file into the 
+Git. When a commit is made, the test suite will feed the audio file into the 
 audio filtering component. After retrieving the frequency-domain output, 
 calculate the mean relative error between component's output and the reference 
 spectrum using the following formula across all bins. If the mean is less than 
 10\%, the test passes. 
 
 \[
-\text{Error} = \frac{\left|A_{\text{component}} - A_{\text{true}}\right|}{A_{\text{true}}} \times 100\%
+\text{Error} = \frac{\left|A_{\text{component}} - A_{\text{true}}\right|}{A_{\text{true}}} \times 100\%, 
+\quad \forall A \in \text{Spectrum}
 \]
 					
 \item{\textbf{test-NFR3.2} Handle different input signal sizes\\}
@@ -581,7 +593,7 @@ spectrum using the following formula across all bins. If the mean is less than
 					
 \textbf{Initial State:} 
 The audio filtering component is deployed on the microcontroller, and ready to 
-process audio input retrieved from a waveform (.wav) file. Logging has been 
+process audio input retrieved from an audio file. Logging has been 
 implemented on the microcontroller to capture time taken for processing.
 					
 \textbf{Input/Condition:} 
@@ -594,7 +606,7 @@ For each input size, the Audio Filtering component should process all frames
 without exceeding time constraints defined in \hyperref[SRS-NFR1_2]{NFR1.2}. 
 					
 \textbf{How test will be performed:} 
-Manually upload each .wav file to the microcontroller and trigger processing. 
+Manually upload each audio file to the microcontroller and trigger processing. 
 Execution time will be measured using microcontroller logs. After processing
  is complete, logs will be manually inspected to verify the processing time
  for each input size meets the time constraints defined in the SRS.
@@ -622,7 +634,8 @@ frequency bins. The following formula can be used to calculate the relative
 error is shown below. 
 
 \[
-\text{Error} = \frac{\left|A_{\text{component}} - A_{\text{true}}\right|}{A_{\text{true}}} \times 100\%
+\text{Error} = \frac{\left|A_{\text{component}} - A_{\text{true}}\right|}{A_{\text{true}}} \times 100\%, 
+\quad \forall A \in \text{Spectrum}
 \]
 
 \textbf{How test will be performed:} 
