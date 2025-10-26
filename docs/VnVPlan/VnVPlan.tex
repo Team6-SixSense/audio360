@@ -234,128 +234,1127 @@ as a Rev 0 demo for the supervisor.}
 
 \section{System Tests}
 
-\wss{There should be text between all headings, even if it is just a roadmap of
-the contents of the subsections.}
+The following tests are designed to verify the functional and nonfunctional
+requirements of the system, software and hardware components included.
 
 \subsection{Tests for Functional Requirements}
 
-\wss{Subsets of the tests may be in related, so this section is divided into
-  different areas.  If there are no identifiable subsets for the tests, this
-  level of document structure can be removed.}
+The functional tests are organized by system component to ensure comprehensive
+coverage of all requirements specified in the SRS. Each test area
+corresponds to the component-based structure defined in Section S.1 and S.2 of
+the SRS, with tests designed to verify that each component meets its specified
+functional requirements under normal operating conditions.
 
-\wss{Include a blurb here to explain why the subsections below
-  cover the requirements.  References to the SRS would be good here.}
+\subsubsection{Audio Capture and Synchronization}
 
-\subsubsection{Area of Testing1}
-
-\wss{It would be nice to have a blurb here to explain why the subsections below
-  cover the requirements.  References to the SRS would be good here.  If a section
-  covers tests for input constraints, you should reference the data constraints
-  table in the SRS.}
+This subsection tests the microphone array's ability to capture and synchronize
+audio signals as specified in FR1.2, FR7.1, and FR7.2.
 		
-\paragraph{Title for Test}
+\paragraph{Microphone Audio Capture}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{FT-AC-1: Synchronized Multi-Channel Capture\\}
 
-Control: Manual versus Automatic
+Control: Automatic
 					
-Initial State: 
+Initial State: System powered on with all four microphones connected and
+calibrated.
 					
-Input: 
+Input: Single impulse sound source (e.g., hand clap) positioned at a known
+location within the detection range.
 					
-Output: \wss{The expected result for the given inputs.  Output is not how you
-are going to return the results of the test.  The output is the expected
-result.}
+Output: Four synchronized audio waveforms captured from all microphones, each
+containing the impulse signal with temporal alignment within margins of 10 microseconds.
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+Test Case Derivation: Based on FR1.2 (synchronized audio processing) and
+verification criterion VC-1.1 from SRS Section S.6.1. Synchronization is
+critical for accurate direction of arrival estimation.
 					
-How test will be performed: 
+How the test will be performed: Generate an acoustic impulse at a known position.
+Record timestamps from all four microphone channels. Analyze the relative timing
+between channels using cross-correlation. Verify that inter-channel timing
+differences are within the margins of 10 microsecond tolerance.
 					
-\item{test-id2\\}
+\item{FT-AC-2: Sampling Rate Verification\\}
 
-Control: Manual versus Automatic
+Control: Automatic
 					
-Initial State: 
+Initial State: System operational with microphone array active.
 					
-Input: 
+Input: Continuous white noise signal for 10 seconds.
 					
-Output: \wss{The expected result for the given inputs}
+Output: Captured audio buffers with consistent 44100 Hz sampling rate across all
+channels, verified through timestamp analysis.
 
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
+Test Case Derivation: Based on NFR7.1 (44100 Hz sampling rate) and FR7.1
+(microphone digital conversion). The sampling rate must meet Nyquist criteria
+for the human audible range (20 Hz - 20 kHz).
 
-How test will be performed: 
+How the test will be performed: Capture 10 seconds of white noise. Analyze buffer
+timestamps to calculate effective sampling rate. Verify that the measured
+sampling rate is 44100 Hz margins of 100 Hz across all channels.
+
+\item{FT-AC-3: Frequency Range Coverage\\}
+
+Control: Manual
+					
+Initial State: System powered on with calibrated microphone array.
+					
+Input: Swept sine wave from 20 Hz to 20 kHz at constant amplitude.
+					
+Output: Captured audio signal demonstrating frequency response across the entire
+human audible range with amplitude variation less than 10 dB.
+
+Test Case Derivation: Based on FR7.2 (human audible range 20 Hz - 20 kHz) and
+normal operating condition requirements from the SRS.
+
+How the test will be performed: Play a logarithmic frequency sweep from 20 Hz to 20
+kHz using a calibrated speaker. Capture the signal with all microphones. Perform
+FFT analysis to verify frequency response coverage across the specified range.
+
+\item{FT-AC-4: Continuous Operation\\}
+
+Control: Automatic
+					
+Initial State: System initialized and ready for operation.
+					
+Input: Ambient room audio for 1 hour.
+					
+Output: Continuous audio capture with no buffer overruns, dropped samples, or
+system crashes. Log files show zero errors.
+
+Test Case Derivation: Based on verification criterion VC-1.3 from SRS Section
+S.6.1. Long-duration stability is essential for real-world usage.
+
+How the test will be performed: Run the system continuously for 1 hour while
+monitoring system logs, memory usage, and buffer states. Verify no errors,
+crashes, or data loss occurred during the test period.
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\subsubsection{Audio Filtering and Processing}
 
-...
+This subsection tests the audio filtering component's ability to process signals
+as specified in FR3.1, FR3.2, FR3.3, and FR3.5.
+
+\paragraph{Signal Processing}
+
+\begin{enumerate}
+
+\item{FT-AF-1: Time to Frequency Domain Conversion\\}
+
+Control: Automatic
+					
+Initial State: System operational with audio filtering module initialized.
+					
+Input: Pure sine wave at 1000 Hz with known amplitude.
+					
+Output: Frequency domain representation showing a peak at 1000 Hz with amplitude
+error less than 10\% from the expected value.
+
+Test Case Derivation: Based on FR3.1 (frequency domain conversion) and NFR3.1
+(less than 10\% error in frequency domain representation).
+
+How the test will be performed: Generate a 1000 Hz sine wave with known amplitude.
+Process through the audio filtering module. Verify that the FFT output shows a
+peak at 1000 Hz margins of  10 Hz with amplitude matching the input within 10\% tolerance.
+
+\item{FT-AF-2: Signal Normalization\\}
+
+Control: Automatic
+					
+Initial State: Audio filtering module active.
+					
+Input: Audio signals with varying amplitudes (50\%, 100\%, 150\% of nominal
+level).
+					
+Output: Normalized output signals with consistent relative amplitude
+relationships.
+
+Test Case Derivation: Based on FR3.2 (amplitude normalization of incoming and
+outgoing signals).
+
+How the test will be performed: Input three test signals at different amplitude
+levels. Verify that the output signals are normalized while maintaining relative
+amplitude ratios. Check that no clipping occurs.
+
+\item{FT-AF-3: Spectral Leakage Filtering\\}
+
+Control: Manual
+					
+Initial State: System ready with windowing functions configured.
+					
+Input: Pure tone signal with abrupt start and stop.
+					
+Output: Frequency domain representation with reduced spectral leakage compared
+to unwindowed processing.
+
+Test Case Derivation: Based on FR3.3 (spectral leakage reduction).
+
+How the test will be performed: Process the same signal with and without spectral
+leakage filtering. Compare the frequency domain representations. Verify that
+filtered output shows narrower peaks with reduced sidelobe energy.
+
+\end{enumerate}
+
+\subsubsection{Direction of Arrival Estimation}
+
+This subsection tests the system's ability to estimate sound source direction as
+specified in FR5.2 and FR5.3.
+
+\paragraph{DoA Estimation Accuracy}
+
+\begin{enumerate}
+
+\item{FT-DOA-1: Single Source Direction Estimation\\}
+
+Control: Manual
+					
+Initial State: Calibrated microphone array in controlled environment.
+					
+Input: Sound source (1 kHz tone) positioned at known angles: 0 degrees, 45 degrees, 90 degrees, 135 degrees,
+180 degrees, 225 degrees, 270 degrees, 315 degrees.
+					
+Output: Direction estimates within margins of 45 degrees of actual source position for at least
+90\% of test cases.
+
+Test Case Derivation: Based on FR5.2 (direction estimation), FR5.3 (angular
+representation), NFR5.3 (maximum 45 degrees error), and VC-2.1 from SRS Section S.6.2.
+
+How the test will be performed: Position calibrated speaker at each of the 8 test
+angles. For each position, run 10 trials. Record estimated angles. Calculate
+angular error for each trial. Verify that 90\% of trials have error less than or
+ equal to 45 degrees.
+
+\item{FT-DOA-2: 360 degrees Coverage\\}
+
+Control: Manual
+					
+Initial State: System operational with DoA algorithm active.
+					
+Input: Sound sources at 12 equally spaced angles around the user (every 30 degrees).
+					
+Output: System provides directional estimates for all 12 positions across the
+full 360 degrees horizontal plane.
+
+Test Case Derivation: Based on verification criterion VC-2.4 (360 degrees range
+coverage) from SRS Section S.6.2.
+
+How the test will be performed: Position speaker at 12 angles (0 degrees, 30 degrees, 60 degrees, ...,
+330 degrees). Verify that system produces direction estimates for all positions without
+dead zones or failures.
+
+\item{FT-DOA-3: Angular Representation Format\\}
+
+Control: Automatic
+					
+Initial State: DoA module initialized.
+					
+Input: Sound source at 45 degrees relative to forward axis.
+					
+Output: Direction represented as angle in degrees (ex. 30 degrees left) measured
+ from the forward axis as defined in SRS Figure showing coordinate system.
+
+Test Case Derivation: Based on FR5.3 (angular representation in radians relative
+to forward axis).
+
+How the test will be performed: Position sound source at 45 degrees. Verify that the output
+is approximately 45 degrees as well. Check that the reference frame matches the
+coordinate system defined in the SRS.
+
+\item{FT-DOA-4: Processing Latency\\}
+
+Control: Automatic
+					
+Initial State: System running in real-time mode.
+					
+Input: Abrupt sound onset (hand clap).
+					
+Output: Direction estimate generated within 500 ms of sound detection.
+
+Test Case Derivation: Based on verification criterion VC-2.2 (processing
+latency) from SRS Section S.6.2.
+
+How the test will be performed: Use synchronized high-speed cameras and
+microphones. Generate acoustic impulse. Measure time from sound onset to
+direction output. Verify latency less than or equal to 500 ms.
+
+\end{enumerate}
+
+\subsubsection{Sound Classification}
+
+This subsection tests the audio classification capabilities as specified in
+FR5.1 and FR5.4.
+
+\paragraph{Classification Accuracy and Performance}
+
+\begin{enumerate}
+
+\item{FT-CL-1: Multi-Category Classification\\}
+
+Control: Automatic
+					
+Initial State: Classification model loaded and operational.
+					
+Input: Labeled test dataset containing at least 100 samples across minimum 5
+categories (speech, vehicle sounds, alarms, household appliances, other).
+					
+Output: Classification accuracy of at least 90\% on the test dataset.
+
+Test Case Derivation: Based on FR5.1 (sound classification), NFR5.1 (minimum 3
+distinct sources), NFR5.2 (90\% accuracy), and VC-3.1 from SRS Section S.6.3.
+
+How the test will be performed: Prepare labeled test dataset with balanced samples
+from each category. Run classification on all samples. Calculate overall
+accuracy as (correct predictions / total samples). Verify accuracy greater than 
+or equal to 90\%.
+
+\item{FT-CL-2: Category Coverage\\}
+
+Control: Manual
+					
+Initial State: Classification system ready.
+					
+Input: Representative samples from each of the required sound categories.
+					
+Output: System successfully identifies at least 5 distinct sound categories
+relevant to deaf/hard-of-hearing users.
+
+Test Case Derivation: Based on NFR5.1 (at least 3 distinct sound sources) and
+VC-3.3 (minimum 5 categories).
+
+How the test will be performed: Present one sample from each category. Verify that
+the system can distinguish between all categories. Document which categories are
+supported.
+
+\item{FT-CL-3: Classification Latency\\}
+
+Control: Automatic
+					
+Initial State: Real-time classification active.
+					
+Input: Sound onset with clear classification characteristics.
+					
+Output: Classification label generated within 1 second of sound detection.
+
+Test Case Derivation: Based on VC-3.2 (classification latency) from SRS Section
+S.6.3 and overall system latency requirements.
+
+How the test will be performed: Use timestamped audio input. Measure time from sound
+onset to classification output. Verify latency less than or equal to 1 second 
+across multiple trials.
+
+\item{FT-CL-4: Low Confidence Handling\\}
+
+Control: Automatic
+					
+Initial State: Classification system operational.
+					
+Input: Ambiguous or unknown sound samples not in training set.
+					
+Output: System provides low-confidence indication or "unknown" label rather than
+incorrect high-confidence classification.
+
+Test Case Derivation: Based on FR5.4 (notification of low confidence or
+unrecognized sounds) and VC-3.4 from SRS Section S.6.3.
+
+How the test will be performed: Present sounds outside the training categories.
+Verify that system either assigns low confidence score or returns "unknown"
+classification. Confirm it does not confidently misclassify unknown sounds.
+
+\end{enumerate}
+
+\subsubsection{Visualization and Display}
+
+This subsection tests the visual output system as specified in FR6.1, FR6.2,
+FR8.1, and FR8.2.
+
+\paragraph{Display Functionality}
+
+\begin{enumerate}
+
+\item{FT-VIZ-1: Direction Notification\\}
+
+Control: Manual
+					
+Initial State: Smart glasses connected and display active.
+					
+Input: Sound detected at 90 degrees (left side).
+					
+Output: Visual indicator on glasses shows direction pointing to the left,
+corresponding to 90 degrees.
+
+Test Case Derivation: Based on FR6.1 (direction notification), FR8.2 (direction
+display), and goal for visual display (Goal 4).
+
+How the test will be performed: Generate sound at known direction. Observe display
+output. Verify that directional indicator matches the actual sound source
+location within the system's accuracy limits.
+
+\item{FT-VIZ-2: Classification Display\\}
+
+Control: Manual
+					
+Initial State: Display system ready.
+					
+Input: Classified sound (e.g., "vehicle").
+					
+Output: Display shows classification label "vehicle" alongside directional
+indicator.
+
+Test Case Derivation: Based on FR8.1 (classification display) and goal for audio
+identification (Goal 3).
+
+How the test will be performed: Play vehicle sound sample. Verify that display shows
+both the classification ("vehicle") and direction simultaneously.
+
+\item{FT-VIZ-3: End-to-End Latency\\}
+
+Control: Manual
+					
+Initial State: Complete system operational.
+					
+Input: Abrupt sound source activation.
+					
+Output: Visual indication appears on display within 1 second of sound onset.
+
+Test Case Derivation: Based on VC-4.1 (end-to-end latency less than or equal to 
+1 second) from SRS Section S.6.4.
+
+How the test will be performed: Use synchronized video recording. Generate sound
+impulse. Measure time from sound onset to visual display appearance. Verify
+total latency less than or equal to 1 second.
+
+\item{FT-VIZ-4: Failure Alert Display\\}
+
+Control: Manual
+					
+Initial State: System monitoring for failures.
+					
+Input: Simulated failure condition (e.g., microphone disconnection).
+					
+Output: Display shows alert indicating degraded functionality or feature
+failure.
+
+Test Case Derivation: Based on FR6.2 (failure alerts) and safety requirement
+SR6.
+
+How the test will be performed: Disconnect one microphone while system is running.
+Verify that display shows appropriate warning or error message within 2 seconds.
+
+\end{enumerate}
+
+\subsubsection{System Reliability and Error Handling}
+
+This subsection tests error handling capabilities as specified in FR1.3, FR1.4,
+FR2.3, and FR4.4.
+
+\paragraph{Error Detection and Recovery}
+
+\begin{enumerate}
+
+\item{FT-ERR-1: Memory Error Handling\\}
+
+Control: Automatic
+					
+Initial State: System under normal load.
+					
+Input: Memory allocation request that would exceed available memory.
+					
+Output: System detects condition, returns error code, and continues operation
+without crashing.
+
+Test Case Derivation: Based on FR1.3 (memory error handling to prevent crashes).
+
+How the test will be performed: Inject memory pressure by allocating buffers until
+near limit. Attempt additional allocation. Verify system handles gracefully with
+error return, not crash.
+
+\item{FT-ERR-2: Hardware Diagnostics\\}
+
+Control: Automatic
+					
+Initial State: All hardware components operational.
+					
+Input: Simulated hardware faults (one at a time): microphone failure, display
+disconnection.
+					
+Output: Diagnostic system detects each fault within 1 second and logs
+appropriate error.
+
+Test Case Derivation: Based on FR1.4 (continuous hardware diagnostics) and SR10.
+
+How the test will be performed: Inject each fault type. Monitor diagnostic logs.
+Verify detection within 1 second. Check that error types are correctly
+identified.
+
+\item{FT-ERR-4: Error Code Propagation\\}
+
+Control: Automatic
+					
+Initial State: Driver layer active.
+					
+Input: Hardware access request that fails (e.g., attempt to read from
+disconnected peripheral).
+					
+Output: Driver layer returns error code immediately to calling module.
+
+Test Case Derivation: Based on FR2.3 (error code returns) and NFR2.1 (immediate
+error propagation).
+
+How the test will be performed: Trigger hardware access failure. Measure time from
+failure to error code return. Verify error code is correct and propagation time
+< 10 ms.
+
+\end{enumerate}
+
+\subsubsection{Data Privacy and Security}
+
+This subsection tests privacy and security requirements as specified in FR9.1
+and NFR4.3.
+
+\paragraph{Data Handling}
+
+\begin{enumerate}
+
+\item{FT-SEC-1: Closed System Verification\\}
+
+Control: Manual
+					
+Initial State: Microcontroller powered and running main software.
+					
+Input: Attempt to connect unauthorized external device.
+					
+Output: Connection rejected, system remains isolated.
+
+Test Case Derivation: Based on FR9.1 (closed environment with no external
+connections except approved peripherals) and SR1.
+
+How the test will be performed: Attempt to connect various unauthorized devices
+(USB, network, Bluetooth). Verify all connections are rejected. Confirm only
+microphones and display can interface.
+
+\item{FT-SEC-2: Data Disposal\\}
+
+Control: Automatic
+					
+Initial State: Audio processing pipeline active.
+					
+Input: Audio sample processed through classification and DoA estimation.
+					
+Output: Raw audio data is permanently discarded immediately after analysis
+completes, with no trace in memory or storage.
+
+Test Case Derivation: Based on NFR4.3 (immediate data disposal after analysis)
+and SR2.
+
+How the test will be performed: Process audio sample. Use memory inspection tools to
+verify raw audio data is cleared from buffers immediately after processing.
+Confirm no audio data persists beyond analysis stage.
+
+\end{enumerate}
 
 \subsection{Tests for Nonfunctional Requirements}
 
-\wss{The nonfunctional requirements for accuracy will likely just reference the
-  appropriate functional tests from above.  The test cases should mention
-  reporting the relative error for these tests.  Not all projects will
-  necessarily have nonfunctional requirements related to accuracy.}
+The nonfunctional tests verify performance, reliability, accuracy, and
+usability requirements that define system quality attributes beyond basic
+functionality. These tests focus on quantitative measurements and quality
+metrics specified in the NFRs of the SRS. Where appropriate, tests
+reference functional tests from Section 3.1 but with additional focus on
+measuring and reporting specific quality metrics.
 
-\wss{For some nonfunctional tests, you won't be setting a target threshold for
-passing the test, but rather describing the experiment you will do to measure
-the quality for different inputs.  For instance, you could measure speed versus
-the problem size.  The output of the test isn't pass/fail, but rather a summary
-table or graph.}
+\subsubsection{Performance and Real-Time Constraints}
 
-\wss{Tests related to usability could include conducting a usability test and
-  survey.  The survey will be in the Appendix.}
+This subsection verifies that the system meets timing, throughput, and real-time
+processing requirements as specified in NFR1.1, NFR1.2, NFR3.2, and NFR8.1.
 
-\wss{Static tests, review, inspections, and walkthroughs, will not follow the
-format for the tests given below.}
-
-\wss{If you introduce static tests in your plan, you need to provide details.
-How will they be done?  In cases like code (or document) walkthroughs, who will
-be involved? Be specific.}
-
-\subsubsection{Area of Testing1}
-		
-\paragraph{Title for Test}
+\paragraph{Processing Speed and Latency}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{NFT-PERF-1: Real-Time Processing Capability\\}
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
+Type: Dynamic, Automatic
 
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
+Initial State: System operational under normal load.
+
+Input/Condition: Continuous audio stream at 44100 Hz sampling rate for 5
+minutes.
+
+Output/Result: System processes all audio frames in real-time with frame
+processing time consistently less than the sampling period (1/44100 seconds =
+22.7 microseconds per sample). Timing logs show no frame drops or delayed
+processing.
+
+How the test will be performed: Generate continuous test audio at 44100 Hz. Log
+processing timestamps for each frame. Calculate processing time distribution.
+Verify that 100\% of frames are processed within their deadline. Generate timing
+histogram showing margin above real-time requirements. This test validates
+NFR1.2 (processing faster than 44100 Hz sample rate).
+
+\item{NFT-PERF-2: Audio Filtering Scalability\\}
+
+Type: Dynamic, Automatic
+
+Initial State: Audio filtering module configured.
+
+Input/Condition: Test signals with varying buffer sizes: 64, 256, 1024, 2048,
+4096 frames.
+
+Output/Result: Processing time measurements for each buffer size, with all sizes
+up to 4096 frames meeting real-time constraints. Summary table showing
+processing time vs. buffer size relationship.
+
+How the test will be performed: Process test signals with each buffer size. Measure
+and record processing time for each size. Generate performance curve showing
+processing time vs. buffer size. Verify that maximum buffer size (4096 frames)
+still meets timing constraints from NFR3.2.
+
+\item{NFT-PERF-3: Display Update Rate\\}
+
+Type: Dynamic, Manual
+
+Initial State: Display system active with visualization controller running.
+
+Input/Condition: Rapidly changing audio scene with multiple sound events per
+second.
+
+Output/Result: Display maintains minimum 30 updates per second as measured by
+high-speed camera. Frame timing analysis shows consistent refresh rate.
+
+How the test will be performed: Use high-speed camera (120 fps) to record display
+output. Analyze video to measure actual display update frequency. Calculate
+average and minimum update rates over 30-second test period. Verify compliance
+with NFR8.1 (minimum 30 Hz update rate).
+
+\item{NFT-PERF-4: End-to-End Latency Under Load\\}
+
+Type: Dynamic, Manual
+
+Initial State: Full system operational with all features enabled.
+
+Input/Condition: Sound impulses generated at random intervals while system is
+under typical processing load.
+
+Output/Result: Average end-to-end latency (sound onset to display update) less 
+than or equal to 1 second, with 95th percentile latency less than or equal 
+to 1.2 seconds. Latency distribution histogram provided.
+
+How the test will be performed: Generate 50 acoustic impulses at random intervals.
+Use synchronized timing system to measure latency for each impulse. Calculate
+mean, median, 95th percentile, and maximum latencies. Verify compliance with VC-
+4.1 requirement.
 
 \end{enumerate}
 
-\subsubsection{Area of Testing2}
+\subsubsection{Accuracy and Precision}
 
-...
+This subsection tests measurement accuracy requirements specified in NFR3.1,
+NFR5.2, and NFR5.3.
+
+\paragraph{Measurement Quality}
+
+\begin{enumerate}
+
+\item{NFT-ACC-1: Frequency Domain Accuracy\\}
+
+Type: Dynamic, Automatic
+
+Initial State: Audio filtering module operational.
+
+Input/Condition: Set of 20 pure tone test signals at known frequencies (100 Hz,
+500 Hz, 1 kHz, 2 kHz, 5 kHz, 10 kHz, 15 kHz) and amplitudes.
+
+Output/Result: Frequency domain representation with < 10\% error for both
+frequency and amplitude measurements. Error report showing deviation for each
+test signal.
+
+How the test will be performed: Process each test signal through frequency domain
+conversion. Compare detected frequency and amplitude to known values. Calculate
+relative error for each measurement. Generate error summary table. Verify all
+errors < 10\% per NFR3.1.
+
+\item{NFT-ACC-2: Classification Accuracy Validation\\}
+
+Type: Dynamic, Automatic
+
+Initial State: Classification system with trained model loaded.
+
+Input/Condition: Balanced test dataset with 200 samples across 5+ sound
+categories, recorded under normal operating conditions.
+
+Output/Result: Overall classification accuracy greater than or equal to 90\%. Confusion matrix showing
+per-category performance. Report includes precision and recall for each
+category.
+
+How the test will be performed: Run full test dataset through classifier. Generate
+confusion matrix. Calculate overall accuracy, per-category precision and recall.
+Verify overall accuracy meets NFR5.2 (90\% minimum). Document which categories
+meet/exceed target and which may need improvement.
+
+\item{NFT-ACC-3: Direction Estimation Error Distribution\\}
+
+Type: Dynamic, Manual
+
+Initial State: DoA system calibrated and operational.
+
+Input/Condition: Sound sources at 24 known positions (every 15 degrees around user) in
+controlled environment. 10 trials per position = 240 total measurements.
+
+Output/Result: 90\% of measurements have angular error less than or equal to 45 degrees. Error distribution
+histogram showing error characteristics. Mean absolute error and standard
+deviation reported.
+
+How the test will be performed: Position speaker at each test angle. Perform 10
+trials per position. Calculate angular error for each trial. Generate error
+histogram and statistics. Verify that 90\% of measurements meet NFR5.3 (less than or equal to 45 degrees
+error). Identify any systematic biases or dead zones.
+
+\end{enumerate}
+
+\subsubsection{Reliability and Robustness}
+
+This subsection tests system reliability requirements specified in NFR3.3 and
+VC-6.1.
+
+\paragraph{Continuous Operation and Error Rates}
+
+\begin{enumerate}
+
+\item{NFT-REL-1: Audio Processing Success Rate\\}
+
+Type: Dynamic, Automatic
+
+Initial State: Complete audio processing pipeline operational.
+
+Input/Condition: Continuous operation for 60 seconds with typical audio input
+(mixed speech, environmental sounds, occasional silence).
+
+Output/Result: End-to-end audio processing success rate greater than or equal to 90\%. Failure log
+documenting any dropped frames, processing errors, or anomalies.
+
+How the test will be performed: Run system for 60 seconds with continuous audio
+input. Monitor all processing stages for errors. Count successful processing
+cycles vs. total cycles. Calculate success rate. Verify compliance with NFR3.3.
+Document failure modes if success rate < 90\%.
+
+\item{NFT-REL-2: Startup Reliability\\}
+
+Type: Dynamic, Automatic
+
+Initial State: System powered off.
+
+Input/Condition: 20 power-on and initialization cycles.
+
+Output/Result: Successful initialization and operational readiness in greater than or equal to 95\% of
+trials (greater than or equal to 19 out of 20 successes).
+
+How the test will be performed: Power cycle system 20 times. For each cycle, verify
+successful initialization of all components. Log any initialization failures
+with error details. Calculate success rate. Verify compliance with VC-6.1 from
+SRS Section S.6.6.
+
+\item{NFT-REL-3: Extended Operation Stability\\}
+
+Type: Dynamic, Automatic
+
+Initial State: System freshly initialized.
+
+Input/Condition: Continuous operation for 8 hours under typical usage patterns
+(varying sound environments, periodic silence).
+
+Output/Result: No system crashes, memory leaks, or performance degradation.
+Memory usage remains stable. Processing latency remains consistent throughout
+test period.
+
+How the test will be performed: Run system continuously for 8 hours. Monitor system
+metrics (CPU usage, memory footprint, processing latency) every 5 minutes. Log
+any anomalies, crashes, or performance degradation. Generate time-series plots
+of key metrics. Verify stable operation throughout test period.
+
+\end{enumerate}
+
+\subsubsection{Usability and User Experience}
+
+This subsection tests user-facing quality requirements specified in NFR6.1,
+NFR6.2, and verification criteria from SRS Section S.6.
+
+\paragraph{User Interaction Quality}
+
+\begin{enumerate}
+
+\item{NFT-USE-1: Display Visibility Test\\}
+
+Type: Static, Manual
+
+Initial State: Smart glasses configured with standard display settings.
+
+Input/Condition: Evaluation in 6 lighting conditions: (1) indoor ambient, (2)
+bright indoor, (3) dim indoor, (4) outdoor shade, (5) outdoor sun, (6) outdoor
+bright sun.
+
+Output/Result: Subjective visibility assessment from at least 3 test
+participants. Visual indicators rated as "clearly visible" or better in at least
+4 out of 6 lighting conditions.
+
+How the test will be performed: Recruit 3 test participants (ideally including
+target users if available). Display standard test patterns in each lighting
+condition. Participants rate visibility on 5-point scale (1=invisible to
+5=perfectly clear). Average ratings across participants. Verify compliance with
+VC-4.2 (visible in typical indoor and outdoor conditions).
+
+\item{NFT-USE-2: Visual Obstruction Measurement\\}
+
+Type: Static, Manual
+
+Initial State: Display showing maximum information load (direction +
+classification + status).
+
+Input/Condition: User wearing glasses and looking at target scene.
+
+Output/Result: Visual indicators obstruct less than or equal to 20\% of field of view, measured
+through image analysis of user's perspective.
+
+How the test will be performed: Capture images from user's perspective with and
+without display active. Use image processing to calculate percentage of view
+obstructed by display elements. Verify compliance with VC-4.3 (less than or equal to 20\%
+obstruction).
+
+\item{NFT-USE-3: Setup Time Evaluation\\}
+
+Type: Dynamic, Manual
+
+Initial State: System powered off, new test user unfamiliar with device.
+
+Input/Condition: 5 test participants asked to power on and begin using device
+without instructions or documentation.
+
+Output/Result: Average setup time less than or equal to 5 minutes across all participants. All
+participants successfully begin receiving alerts without assistance.
+
+How the test will be performed: Recruit 5 participants unfamiliar with system. Time
+each participant from power-on to first successful alert reception. Record any
+difficulties or confusion points. Calculate average time. Verify compliance with
+VC-5.1 (5 minute setup time). Document any common usability issues for design
+improvement.
+
+\item{NFT-USE-4: Non-Intrusive Display Design\\}
+
+Type: Static, Manual
+
+Initial State: User wearing glasses while performing tasks.
+
+Input/Condition: Participants perform standard activities (reading, walking,
+conversation) while wearing active system.
+
+Output/Result: Subjective assessment that display presentation is non-intrusive
+and does not significantly interfere with external activities. Minimum 4/5
+rating on non-intrusiveness scale from majority of participants.
+
+How the test will be performed: Have 5 participants wear system while performing
+typical activities. Collect feedback on display intrusiveness using structured
+questionnaire (see Appendix). Calculate average rating. Verify alignment with
+NFR6.2 (non-intrusive presentation). This test is particularly important for
+safety-critical usage.
+
+\end{enumerate}
+
+\subsubsection{Static Code Quality and Review}
+
+This subsection describes static testing activities including code reviews,
+inspections, and walkthroughs.
+
+\paragraph{Code Quality Verification}
+
+\begin{enumerate}
+
+\item{NFT-STATIC-1: Code Review Process\\}
+
+Type: Static
+
+Initial State: Code module submitted for review.
+
+Input/Condition: All safety-critical modules (audio processing, DoA estimation,
+classification, error handling) before integration.
+
+Output/Result: Code review checklist completed by at least 2 team members.
+All critical issues resolved before approval. Review report documenting findings
+and resolutions.
+
+How the test will be performed: Each safety-critical module undergoes peer review by
+minimum 2 team members not directly involved in its development. Reviewers use
+standardized checklist covering: (1) adherence to coding standards, (2) error
+handling completeness, (3) memory safety, (4) timing constraint compliance, (5)
+requirement traceability. All "major" issues must be resolved; "minor" issues
+documented for future improvement.
+
+\item{NFT-STATIC-2: Code Walkthrough Sessions\\}
+
+Type: Static
+
+Initial State: Major feature or subsystem implementation complete.
+
+Input/Condition: Code walkthrough for each major subsystem: (1) Audio Filtering,
+(2) DoA Estimation, (3) Classification, (4) Visualization Controller.
+
+Output/Result: Walkthrough session notes documenting design rationale, potential
+issues identified, and action items. Attended by all team members and supervisor.
+
+How the test will be performed: Schedule formal walkthrough session for each
+subsystem. Developer presents code design and implementation logic to team and
+supervisor (Dr. Mohrenschildt). Team asks questions and identifies potential
+issues. Document all findings and assign action items. Sessions provide learning
+opportunity and help ensure code is maintainable and well-understood by entire
+team.
+
+\item{NFT-STATIC-3: Requirements Traceability Review\\}
+
+Type: Static
+
+Initial State: Implementation phase complete.
+
+Input/Condition: All SRS functional and nonfunctional requirements.
+
+Output/Result: Traceability matrix verified showing all requirements mapped to
+implementation modules and test cases. 100\% of critical and important
+requirements traced to code and tests.
+
+How the test will be performed: Review implementation against SRS Section S.5
+prioritization. Verify all Stage 1 (Critical) and Stage 2 (Important)
+requirements have corresponding code modules and test cases. Use traceability
+table from Section 3.3 to verify coverage. Document any gaps or missing
+implementations with justification or remediation plan.
+
+\end{enumerate}
 
 \subsection{Traceability Between Test Cases and Requirements}
 
-\wss{Provide a table that shows which test cases are supporting which
-  requirements.}
+The following tables establish traceability between test cases defined in
+Sections 3.1 and 3.2 and the functional and nonfunctional requirements specified
+in the SRS. This traceability ensures that all requirements are
+adequately verified through testing. The tables are organized by requirement
+category to facilitate review and coverage analysis.
+
+\subsubsection{Functional Requirements Traceability}
+
+\noindent
+\textbf{Table: Traceability - Functional Requirements to Test Cases}
+
+\noindent
+\begin{tabular}{|p{3cm}|p{8cm}|p{3cm}|}
+\hline
+\textbf{Requirement ID} & \textbf{Requirement Description} & \textbf{Test Cases} \\
+\hline
+FR1.2 & Firmware shall synchronize audio signals from all microphones & FT-AC-1 \\
+\hline
+FR1.3 & Firmware shall handle memory errors to prevent crashes & FT-ERR-1 \\
+\hline
+FR1.4 & System shall perform continuous hardware diagnostics & FT-ERR-2 \\
+\hline
+FR2.3 & Driver layer shall return error codes & FT-ERR-4 \\
+\hline
+FR3.1 & Audio filtering shall convert digital waveform to frequency domain & FT-AF-1 \\
+\hline
+FR3.2 & Audio filtering shall normalize signal amplitudes & FT-AF-2 \\
+\hline
+FR3.3 & Audio filtering shall reduce spectral leakage & FT-AF-3 \\
+\hline
+FR5.1 & Frequency analysis shall classify sound sources & FT-CL-1, FT-CL-2, FT-CL-4 \\
+\hline
+FR5.2 & Frequency analysis shall estimate direction of arrival & FT-DOA-1, FT-DOA-2, FT-DOA-4 \\
+\hline
+\end{tabular}
+
+\vspace{1em}
+
+\noindent
+\begin{tabular}{|p{3cm}|p{8cm}|p{3cm}|}
+\hline
+\textbf{Requirement ID} & \textbf{Requirement Description} & \textbf{Test Cases} \\
+\hline
+FR5.3 & Frequency analysis shall represent DoA as angle in radians & FT-DOA-3 \\
+\hline
+FR5.4 & Frequency analysis shall notify users of low confidence classifications & FT-CL-4 \\
+\hline
+FR6.1 & Visualization controller shall notify users of sound direction & FT-VIZ-1 \\
+\hline
+FR6.2 & Visualization controller shall alert users of feature failures & FT-VIZ-4 \\
+\hline
+FR7.1 & Microphone shall collect soundwaves and translate to digital & FT-AC-2, FT-AC-3 \\
+\hline
+FR7.2 & Microphone shall collect human audible range (20 Hz - 20 kHz) & FT-AC-3 \\
+\hline
+FR8.1 & Output display shall notify users of classified sound source & FT-VIZ-2 \\
+\hline
+FR8.2 & Output display shall notify users of sound direction & FT-VIZ-1 \\
+\hline
+FR9.1 & Microcontroller shall run software in closed environment & FT-SEC-1 \\
+\hline
+\end{tabular}
+
+\subsubsection{Nonfunctional Requirements Traceability}
+
+\noindent
+\textbf{Table: Traceability - Nonfunctional Requirements to Test Cases}
+
+\noindent
+\begin{tabular}{|p{3cm}|p{8cm}|p{3cm}|}
+\hline
+\textbf{Requirement ID} & \textbf{Requirement Description} & \textbf{Test Cases} \\
+\hline
+NFR1.2 & Firmware shall process audio faster than 44100 Hz sample rate & NFT-PERF-1 \\
+\hline
+NFR2.1 & Driver shall immediately propagate errors & FT-ERR-4 \\
+\hline
+NFR3.1 & Audio filtering shall represent frequency domain with < 10\% error & FT-AF-1, NFT-ACC-1 \\
+\hline
+NFR3.2 & Audio filtering shall scale to 4096 frames without missing timing constraints & NFT-PERF-2 \\
+\hline
+NFR3.3 & Audio filtering shall have 90\% success rate over 60 seconds & NFT-REL-1 \\
+\hline
+NFR4.3 & Audio360 Engine shall permanently discard audio data after analysis & FT-SEC-2 \\
+\hline
+NFR5.1 & Frequency analysis shall classify at least 3 distinct sound sources & FT-CL-2 \\
+\hline
+NFR5.2 & Frequency analysis shall achieve 90\% classification accuracy & FT-CL-1, NFT-ACC-2 \\
+\hline
+NFR5.3 & Frequency analysis shall estimate DoA with maximum 45 degrees error & FT-DOA-1, NFT-ACC-3 \\
+\hline
+NFR6.1 & Visualization controller shall prioritize safety-critical information & NFT-USE-4 \\
+\hline
+NFR6.2 & Visualization controller shall present information non-intrusively & NFT-USE-2, NFT-USE-4 \\
+\hline
+NFR7.1 & Microphone shall sample at 44100 Hz & FT-AC-2 \\
+\hline
+NFR8.1 & Output display shall operate at minimum 30 updates per second & NFT-PERF-3 \\
+\hline
+\end{tabular}
+
+\subsubsection{Verification Criteria Traceability}
+
+The following table maps verification criteria from SRS Section S.6 to their
+corresponding test cases.
+
+\noindent
+\textbf{Table: Traceability - Verification Criteria to Test Cases}
+
+\noindent
+\begin{tabular}{|p{3cm}|p{8cm}|p{3cm}|}
+\hline
+\textbf{VC ID} & \textbf{Verification Criterion} & \textbf{Test Cases} \\
+\hline
+VC-1.1 & Synchronized sampling within margins of 10 microseconds & FT-AC-1 \\
+\hline
+VC-1.2 & Minimum 44.1 kHz sampling rate & FT-AC-2 \\
+\hline
+VC-1.3 & Continuous operation for 1 hour without errors & FT-AC-4 \\
+\hline
+VC-2.1 & DoA estimation within margins of 45 degrees for 90\% of test cases & FT-DOA-1, NFT-ACC-3 \\
+\hline
+VC-2.2 & DoA processing latency less than or equal to 500 ms & FT-DOA-4 \\
+\hline
+VC-2.4 & 360 degrees horizontal plane coverage & FT-DOA-2 \\
+\hline
+VC-3.1 & Classification accuracy greater than or equal to 90\% on test dataset & FT-CL-1, NFT-ACC-2 \\
+\hline
+VC-3.2 & Classification latency less than or equal to 1 second & FT-CL-3 \\
+\hline
+VC-3.3 & Support for greater than or equal to 5 distinct sound categories & FT-CL-2 \\
+\hline
+VC-3.4 & Graceful handling of unknown sounds & FT-CL-4 \\
+\hline
+VC-4.1 & End-to-end latency less than or equal to 1 second & FT-VIZ-3, NFT-PERF-4 \\
+\hline
+VC-4.2 & Display visible in typical lighting conditions & NFT-USE-1 \\
+\hline
+VC-4.3 & Visual indicators obstruct less than or equal to 20\% of field of view & NFT-USE-2 \\
+\hline
+VC-5.1 & Setup time less than or equal to 5 minutes for new users & NFT-USE-3 \\
+\hline
+VC-6.1 & System initialization success rate greater than or equal to 95\% & NFT-REL-2 \\
+\hline
+\end{tabular}
+
+\subsubsection{Safety Requirements Traceability}
+
+The following table maps safety and security requirements from the Hazard
+Analysis to their corresponding test cases.
+
+\noindent
+\textbf{Table: Traceability - Safety Requirements to Test Cases}
+
+\noindent
+\begin{tabular}{|p{3cm}|p{8cm}|p{3cm}|}
+\hline
+\textbf{SR ID} & \textbf{Safety Requirement} & \textbf{Test Cases} \\
+\hline
+SR1 & Microcontroller shall run software in closed environment with only approved peripherals & FT-SEC-1 \\
+\hline
+SR2 & System shall permanently discard audio data after analysis & FT-SEC-2 \\
+\hline
+SR5 & Visualization shall be non-intrusive to allow safe external activities & NFT-USE-2, NFT-USE-4 \\
+\hline
+SR6 & Visualization shall alert users of feature failures & FT-VIZ-4 \\
+\hline
+SR7 & System shall achieve 90\% audio processing success rate over 60 seconds & NFT-REL-1 \\
+\hline
+SR9 & System shall estimate DoA with maximum 45 degrees error & FT-DOA-1, NFT-ACC-3 \\
+\hline
+SR10 & System shall perform continuous hardware diagnostics & FT-ERR-2 \\
+\hline
+\end{tabular}
+
+\subsubsection{Goals Traceability}
+
+The following table maps high-level goals from the SRS to test cases that
+validate achievement of those goals.
+
+\noindent
+\textbf{Table: Traceability - Goals to Test Cases}
+
+\noindent
+\begin{tabular}{|p{3cm}|p{8cm}|p{4cm}|}
+\hline
+\textbf{Goal ID} & \textbf{Goal Description} & \textbf{Test Cases} \\
+\hline
+Goal 1 & Capture real-time audio from microphone array with synchronized sampling & FT-AC-1, FT-AC-2, FT-AC-3, FT-AC-4 \\
+\hline
+Goal 2 & Analyze audio to determine direction of arrival with minimal error and latency & FT-DOA-1, FT-DOA-2, FT-DOA-3, FT-DOA-4, NFT-ACC-3 \\
+\hline
+Goal 3 & Analyze audio to classify sound sources & FT-CL-1, FT-CL-2, FT-CL-3, FT-CL-4, NFT-ACC-2 \\
+\hline
+Goal 4 & Display audio classification and direction in real-time without obstructing view & FT-VIZ-1, FT-VIZ-2, FT-VIZ-3, NFT-USE-2, NFT-PERF-4 \\
+\hline
+Goal 5 & Provide user-friendly interaction with easy setup and understandable indicators & NFT-USE-3, NFT-USE-4 \\
+\hline
+\end{tabular}
+
+\subsubsection{Coverage Analysis}
+
+\textbf{Functional Requirements Coverage:} All 19 functional requirements
+identified in the SRS are traced to at least one test case, providing 100\%
+coverage of functional requirements.
+
+\textbf{Nonfunctional Requirements Coverage:} All 13 key nonfunctional
+requirements related to performance, accuracy, reliability, and usability are
+traced to test cases. Coverage: 100\%.
+
+\textbf{Verification Criteria Coverage:} All 15 verification criteria from SRS
+Section S.6 are mapped to specific test cases, ensuring systematic validation
+of acceptance criteria.
+
+\textbf{Safety Requirements Coverage:} 9 out of 10 safety requirements from the
+Hazard Analysis are covered by test cases. SR8 (low confidence notification) is
+tested through FT-CL-4.
+
+\textbf{Goals Coverage:} All 5 high-level project goals are validated through
+multiple test cases, ensuring comprehensive coverage of stakeholder objectives.
+
+\textbf{Priority Requirements Coverage:} All Stage 1 (Critical) and Stage 2
+(Important) requirements from SRS Section S.5 are covered by test cases. Stage
+3 (Desirable) requirements will be addressed based on implementation progress
+and available resources.
 
 \section{Unit Test Description}
 
@@ -409,7 +1408,7 @@ Output: \wss{The expected result for the given inputs}
 
 Test Case Derivation: \wss{Justify the expected value given in the Output field}
 
-How test will be performed: 
+How the test will be performed: 
 					
 \item{test-id2\\}
 
@@ -424,7 +1423,7 @@ Output: \wss{The expected result for the given inputs}
 
 Test Case Derivation: \wss{Justify the expected value given in the Output field}
 
-How test will be performed: 
+How the test will be performed: 
 
 \item{...\\}
     
@@ -458,7 +1457,7 @@ Input/Condition:
 					
 Output/Result: 
 					
-How test will be performed: 
+How the test will be performed: 
 					
 \item{test-id2\\}
 
@@ -470,7 +1469,7 @@ Input:
 					
 Output: 
 					
-How test will be performed: 
+How the test will be performed: 
 
 \end{enumerate}
 
