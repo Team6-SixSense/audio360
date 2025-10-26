@@ -3,9 +3,6 @@ name: Pull Request Bot
 on:
   pull_request:
     types: [opened]
-    paths: 
-      - 'src/**'
-      - 'test/**'
 
 jobs:
   comment:
