@@ -27,6 +27,7 @@
 \midrule
 2025-09-22 & Nirmal, Sathurshan, Omar, Kalp, Jay & Initial Write-up\\
 2025-10-11 & Sathurshan & Defining static analyzer tool\\
+2025-10-26 & Sathurshan & Updating Proof of Concept scope\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -252,21 +253,23 @@ boards for. Note, the dates listed in each milestone are subject to change.
 The biggest risk for the success of the project is the risk of not having a
 synchronized microphone array that can recognize the directionality of an audio
 source. This is the fundamental technology that the rest of the project and
-stretch goals are build upon (excluding the audio classification pipeline).
+stretch goals are build upon (excluding the audio classification component).
+Consequently, additional time will be required to set up and verify the hardware
+requirements. As a result, the proof of concept will be de-scoped to run
+on local development devices.
 
-The goal of the proof of concept demonstration is to showcase the functionality
-of a microphone array on a controlled environment - a table top lab surface. The
-microphone array should be synchronized and capable of recognizing the
-directionality of a single audio source (sine frequency sound) with a maximum
-error of 45 degrees on the 2D plane of the table. Though this demonstration
-doesn't showcase the ability of recognizing multiple audio sources with the
-directional microphone array on a smart glasses frame (which is the final goal),
-it showcases the feasibility of recognizing the directionality of an audio
-source anywhere on a 2D plane with adequate accuracy. If successful, this would
-give us confidence to extend the project with the
-\hyperlink{audio_classification_pipeline}{audio classification pipeline},
-development of recognizing more than one audio source, extending the audio
-analysis pipeline onto the smart glasses, and audio filtering on direction. 
+The goal of the proof of concept demonstration is to showcase the system's
+ability to determine the direction of a sound source within a margin of error of
+45 degrees in a 2D plane. The demonstration will be conducted using 
+\href{https://pypi.org/project/pyroomacoustics/}{pyroomaudio}'s
+simulation environment, where both the sound sources and their acoustic
+properties will be simulated. Additionally, the PoC will demonstrate the.
+\hyperlink{audio_classification_component}{audio classification component},
+which classifies at least three distinct sound sources relevant to stakeholder
+needs.
+
+Subsequent revisions will focus on migrating the software functionality to the
+hardware platform intended for stakeholder release. 
 
 \section{Expected Technology}
 
@@ -559,9 +562,9 @@ Python & \href{https://peps.python.org/pep-0008/}{PEP8} \\ \hline
 \section*{Appendix --- Glossary}
 
 
-\hypertarget{audio_classification_pipeline}{\underline{Audio Classification
-Pipeline}}: Software pipeline aiming to classify the sound sources. For example,
-the audio can be recognized as a car, person speaking, alarm, etc.
+\hypertarget{audio_classification_component}{\underline{Audio Classification
+Component}}: Software component aiming to classify the sound sources. For
+example, the audio can be recognized as a car, person speaking, alarm, etc.
 
 \newpage{}
 
