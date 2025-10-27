@@ -183,7 +183,7 @@ will end off with
 
 \subsection{Verification and Validation Team}\label{sec:vnv_team}
 
-Figure \ref{table:vnv_team} outlines the roles and responsibilities of each
+Table \ref{table:vnv_team} outlines the roles and responsibilities of each
 team member involved in the verification and validation process. Roles were
 intentionally assigned to individuals not directly responsible for the
 corresponding implementation components, ensuring an unbiased evaluation of 
@@ -408,6 +408,7 @@ verified through testing. These components include the Embedded Firmware,
 Driver Layer, Audio Filtering, Audio360 Engine, Frequency Analysis, 
 Visualization Controller, Microphone, Output Display and Microcontroller. 
 
+
 \subsubsection{Audio Filtering Tests}
 
 This section covers the tests for ensuring the system processes audio into a 
@@ -418,7 +419,7 @@ associated with a functional requirement defined under section
 
 \begin{enumerate}
 
-\item{\textbf{test-FR-3.1} Converting time-domain audio signals to 
+\item{\textbf{Test-FR-3.1} Converting time-domain audio signals to 
 frequency-domain \\}
 
 \textbf{Control:} Automatic
@@ -455,7 +456,7 @@ frequency-domain output will be inspected to verify the presence of peaks at
 100 Hz, 1 kHz and 8 kHz. The test passes if all 3 peaks are present with no 
 unexpected frequencies showing up.  
 					
-\item{\textbf{test-FR-3.2} Normalize amplitude of signals\\}
+\item{\textbf{Test-FR-3.2} Normalize amplitude of signals\\}
 
 \textbf{Control:} Automatic
 					
@@ -491,7 +492,7 @@ signal automatically on the input of the audio file. The normalized time
 domain output will be inspected to verify the amplitude across both sections of 
 the file are the same now.
 
-\item{\textbf{test-FR-3.3} Reduced spectral leakage\\}
+\item{\textbf{Test-FR-3.3} Reduced spectral leakage\\}
 
 \textbf{Control:} Automatic
 					
@@ -539,7 +540,7 @@ will be compared with the largest side-lobe amplitude. The test passes if the
 side-lobe in the filtered case is lower than the unfiltered case, which 
 indicates reduced spectral leakage. 
 
-\item{\textbf{test-FR-3.4} Hardware acceleration\\}
+\item{\textbf{Test-FR-3.4} Hardware acceleration\\}
 
 \textbf{Control:} Manual
 					
@@ -568,14 +569,15 @@ Verifying the reduced runtime and equivalent outputs confirms the module
 deployed on the hardware is functioning correctly. 
 
 \textbf{How test will be performed:}
-Manually running one confirguration on the microcontroller, and another on the 
-local computer. Execution time will be measured with performance logs. Test 
+Manually running one configuration on the microcontroller, and another on the 
+local computer. Execution time will be measured with a profiler. A test 
 function will be written to measure the numerical equivalence of both outputs 
-after processing is completed. Logs will be manully inspected to verify the 
+after processing is completed. Profiler measurements will be manully inspected 
+to verify that the 
 response time of the hardware accelerated mode is less than the non-accelerated 
 mode.
 
-\item{\textbf{test-FR-3.5} Flagging anomalies\\}
+\item{\textbf{Test-FR-3.5} Flagging anomalies\\}
 
 \textbf{Control:} Automatic
 					
@@ -624,7 +626,7 @@ associated with a functional requirement defined under section
 
 \begin{enumerate}
 
-\item{\textbf{test-FR-6.1} Notify direction of audio source \\}
+\item{\textbf{Test-FR-6.1} Notify direction of audio source \\}
 
 \textbf{Control:} Manual
 					
@@ -660,7 +662,7 @@ output by visually seeing if the correct direction is visualized. The test
 passes if all simulated directions match the expected visual outputs and 
 response time thresholds (read using microcontroller logs) are met. 
 					
-\item{\textbf{test-FR-6.2} Notify direction or classification failure\\}
+\item{\textbf{Test-FR-6.2} Notify direction or classification failure\\}
 
 \textbf{Control:} Manual
 					
@@ -699,6 +701,321 @@ passes if all simulated failure events match the expected visual outputs.
 
 \end{enumerate}
 
+\subsubsection{Audio360 Engine Tests}
+
+This section covers the tests for determining the accuracy of the Audio360 
+Engine in estimating the direction of incoming audio sources and their 
+classification. Error handling of the Audio360 Engine will also 
+be evaluated. Each test is 
+associated with a functional requirement defined under section 
+\hyperref[SRS-sec:FR4]{3.2.4} of the SRS. 
+
+\begin{enumerate}
+\item{\textbf{Test-FR-4.1} Frequency and Error input capability testing.\\}
+
+\textbf{Control:} Automatic
+
+\textbf{Initial State:}
+The Audio360 Engine module and its submodules have successfully initialized and
+are ready to process audio from the audio filtering module or microphone array.
+There are no errors flagged to the Audio360 Engine module.
+
+\subsubsection*{Subtest 1: Frequency Input Capability}
+\textbf{Input:}
+A data stream of frequency-domain audio data sampled at 16 kHz by an array of 
+4 microphones. The audio data contains sine waves at low (100 Hz), mid (1 kHz),
+and high (8 kHz) frequency ranges. No error flags are set in the input data.
+
+\textbf{Output:}
+The Audio360 Engine module accepts the input data with no errors. There should
+be no error flags set in the output of the Audio360 Engine module. There should
+also be a direction and classification output based on the input audio 
+frequency domain data.
+
+\subsubsection*{Subtest 2: Error Input Capability}
+
+\textbf{Control:} Automatic
+
+\textbf{Input:}
+A stream of random frequency-domain audio data sampled with a 16 kHz sample
+rate. The input data will have error flags set, indicating either 
+clipping, lost signal, or silence.
+
+\textbf{Output:}
+The Audio360 Engine module accepts the input data with error flags. The output
+does not contain a valid direction or classification. The output error flags
+should reflect the input error flags.
+
+\textbf{Test Case Derivation:}
+The Audio360 Engine module must be able to handle both valid frequency-domain
+audio data and audio data with error flags. Upon receiving error flags, the 
+module is expected to fail gracefully without crashing, and propagate the error
+if necessary. The outputs in both subtests define the expected behavior of the
+module under different input conditions.
+
+\textbf{How test will be performed:}
+Saved audio recordings from the microphone array will be used as artifacts in 
+the automated testing framework. Random audio data with error flags will be
+generated at runtime. These tests will trigger when a pull request is made to 
+any branch. Inputs will be passed to the Audio360 Engine module, and outputs
+will be checked against the expected outputs. 
+
+\item{\textbf{Test-FR-4.2} Dependent component notification\\}
+
+\textbf{Control:} Automatic
+
+\textbf{Initial State:}
+The Audio360 Engine module is deployed on the microcontroller and initialized 
+and has received new audio data from the audio filtering module without error
+flags.
+
+\textbf{Input:}
+Mock audio data from the audio filtering module with no error flags.
+
+\textbf{Output:}
+All components in the system are expected to log important events for debugging
+purposes. The Audio360 Engine module starts the processing pipeline by 
+notifying the dependent components to begin processing the new audio data. The
+sent notification and received acknowledgment from dependent components should
+be logged in the debugging logs for verification of pipeline integrity. 
+
+\textbf{Test Case Derivation:}
+The Audio360 Engine module must notify its dependent components to start
+processing new audio data once it has received the data from the audio filtering
+module. This forms the basis of a streaming audio processing pipeline.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by simulating the input of new audio data
+from the audio filtering module. The dependent components will be monitored
+through debugging logs to verify that they receive the notification and start
+processing the new audio data in the correct order. 
+
+\item{\textbf{Test-FR-4.3} Pipeline flow management.\\}
+
+\textbf{Control:} Automatic
+
+\textbf{Initial State:}
+The Audio360 Engine module has received new audio data from the audio filtering
+module without error flags and has notified its dependent components to start
+processing the new audio data.
+
+\textbf{Input:}
+Mock audio data from the audio filtering module with no error flags.
+
+\textbf{Output:}
+The Audio360 Engine module manages the flow of data through the processing
+pipeline. It ensures that each component processes the data in the correct order
+and that the output of one component is correctly passed as input to the next
+component. The flow of data through the pipeline should be logged for 
+verification. Every dependent component in the pipeline is executed correctly 
+and in order.
+
+\textbf{Test Case Derivation:}
+The Audio360 Engine module must manage the flow of data through the processing
+pipeline. Since individual dependent components are not expected to be aware of
+other components in the pipeline, the Audio360 Engine module must ensure that
+data is passed correctly between components, ensuring data integrity. 
+The module also needs to consider
+error states of each module to ensure that the pipeline can handle 
+errors gracefully.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by simulating the input of new audio
+data from the audio filtering module. The flow of data through the pipeline
+will be monitored through debugging logs to verify that each component processes
+the data in the correct order and that the output of one component is correctly
+passed as input to the next component.
+
+\item{\textbf{Test-FR-4.4} Error based pipeline suppression.\\}
+
+\textbf{Control:} Automatic
+
+\textbf{Initial State:}
+The Audio360 Engine module has received new audio data from the audio filtering
+module with error flags set.
+
+\textbf{Input:}
+Mock audio data from the audio filtering module with error flags set,
+indicating either clipping, lost signal, or silence.
+
+\textbf{Output:}
+The Audio360 Engine module detects the error flags in the input data and
+suppresses the processing pipeline. The module should log the error and
+propagate the error flags to dependent components without attempting to process
+the audio data. 
+
+\textbf{Test Case Derivation:}
+The Audio360 Engine module must be able to handle error flags in the input
+data. Upon receiving error flags, the module is expected to fail gracefully
+without crashing, and propagate the error if necessary. The processing pipeline
+should be suppressed to prevent unnecessary processing of invalid data.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by simulating the input of new audio
+data from the audio filtering module with error flags set. The processing
+pipeline will be monitored through debugging logs to verify that the pipeline
+is suppressed and that error flags are handled appropriately. Once the error
+has been resolved by clearing the error flags, 
+the pipeline should resume normal operation.
+
+\end{enumerate}
+
+\subsubsection{Frequency Analysis Tests}
+
+This section covers the tests for ensuring the Frequency Analysis component
+which is responsible for analyzing frequency-domain audio data to estimate the
+direction of incoming audio sources and their classification. Each test is
+associated with a functional requirement defined under section
+\hyperref[SRS-sec:FR5]{3.2.5} of the SRS.
+\begin{enumerate}
+
+\label{sec:freq-analysis-tests}
+\item{\textbf{Test-FR-5.1} Audio Classification\\}
+
+\textbf{Control:} Automatic
+
+\textbf{Initial State:}
+The Frequency Analysis module is initialized and ready to process frequency-
+domain audio data retrieved from the Audio360 Engine module. 
+
+\textbf{Input:}
+A set of frequency-domain audio data samples representing different audio
+classes. The classification of each 
+sample is known beforehand for verification purposes.
+
+\textbf{Output:}
+The Frequency Analysis module processes each input sample and outputs the
+predicted audio class. The predicted class should match the known class for
+each sample with a class level accuracy of at least 90\%.
+
+\textbf{Test Case Derivation:}
+The Frequency Analysis module is responsible for classifying audio sources
+based on their frequency-domain characteristics. By providing known samples,
+the module's classification accuracy can be evaluated.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by feeding the frequency
+domain data of the known audio samples to the Frequency Analysis module. The
+predicted classes will be compared against the known classes to calculate
+the classification accuracy. The test passes if the accuracy meets or exceeds
+the 90\% threshold per class.
+
+Accuracy is calculated as follows:
+\[
+\text{Accuracy}_{\text{class}} = \frac{\text{Number of Correct Predictions For Class}}{\text{Total Number of Samples for Class}} \times 100\%
+\]
+
+The overall accuracy across all classes is calculated as follows:
+
+\[
+\text{Overall Accuracy} = \frac{\Sigma_{\text{class } \in \text{  tests}} 
+\text{      Accuracy}_{\text{class}}}{Number of Classes}
+\]
+
+\item{\textbf{Test-FR-5.2} Direction Estimation\\}
+
+\textbf{Control:} Automatic
+
+\textbf{Initial State:}
+The Frequency Analysis module is initialized and ready to process frequency-
+domain audio data retrieved from the Audio360 Engine module for a four
+microphone array.
+
+\textbf{Input:}
+A set of frequency-domain audio data samples representing audio sources
+originating from known directions relative to the
+microphone array.
+
+\textbf{Output:}
+The Frequency Analysis module processes input samples from the four microphone
+array and outputs the estimated direction of each audio source. The estimated
+direction should be within +/- 45 degrees of the known direction for each sample.
+
+\textbf{Test Case Derivation:}
+The Frequency Analysis module is responsible for estimating the direction
+of audio sources based on the frequency-domain characteristics captured by
+the microphone array. By providing samples from known directions, the module's
+direction estimation accuracy can be evaluated.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by feeding the frequency
+domain data of the known direction samples to the Frequency Analysis module.
+The estimated directions will be compared against the known directions to
+calculate the estimation accuracy. All estimated directions
+must be within the +/- 45 degree threshold of the known directions. In addition,
+the Mean Absolute Error (MAE) will be calculated to quantify the average
+direction estimation error across all samples. The MAE will need to be below
+22.5 degrees for the test to pass using the formula:
+
+\[
+\text{MAE} = \frac{1}{N} \sum_{i=1}^{N} | \text{Estimated Direction}_i - \text{Known Direction}_i |
+\]
+where \(N\) is the total number of samples.
+
+\item{\textbf{Test-FR-5.3} Radian Units.\\}
+
+\textbf{Control:} Automatic
+
+\textbf{Initial State:}
+The Frequency Analysis module is initialized and ready to process frequency-
+domain audio data retrieved from the Audio360 Engine module.
+
+\textbf{Input:}
+A set of random frequency-domain audio data samples.
+
+\textbf{Output:}
+The Frequency Analysis module processes input samples from the four microphone
+array and outputs the estimated direction of each audio source in radians.
+
+\textbf{Test Case Derivation:}
+As per functional requirement FR5.3, the Frequency Analysis module must
+output direction estimates in radians. This test verifies that the module
+adheres to this requirement.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by feeding the frequency
+domain data of the known direction samples to the Frequency Analysis module.
+The output directions will be checked to ensure they are expressed in radians.
+This will be done by verifying that the output values fall within the range
+[0, \(2\pi\)] radians.
+
+\item{\textbf{Test-FR-5.4} Low confidence notification.\\}
+
+\textbf{Control:} Automatic
+
+\textbf{Initial State:}
+The Frequency Analysis module is initialized and ready to process frequency-
+domain audio data retrieved from the Audio360 Engine module.
+
+\textbf{Input:}
+A set of frequency-domain audio data samples that are randomly generated,
+making it difficult to accurately classify the audio source. Known sample
+data will also be included for control purposes to determine if the module
+can differentiate between low and high confidence samples.
+
+\textbf{Output:}
+The Frequency Analysis module processes each input sample and outputs
+the predicted classification along with a confidence score. For ambiguous
+samples, the confidence score should be below a predefined threshold and 
+the module should flag the output as low confidence.
+
+\textbf{Test Case Derivation:}
+The Frequency Analysis module must be able to handle ambiguous or noisy
+audio data and indicate when its predictions are uncertain. This test
+verifies that the module correctly flags low-confidence outputs. The low
+confidence output should be logged for verification and visible to the user
+through the visualization controller.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by feeding random frequency-domain 
+audio data samples \textbf{and} known samples to the Frequency Analysis module.
+The predicted classifications and confidence scores will be evaluated
+to verify that low-confidence outputs are correctly flagged. The test passes
+if all ambiguous samples are flagged as low confidence and the known samples
+are classified with high confidence. The confidence threshold will be calibrated
+based on real world testing. 
+
+\end{enumerate}
 
 \subsection{Tests for Nonfunctional Requirements}
 
@@ -707,12 +1024,172 @@ listed under section \hyperref[SRS-sec:S.2]{S.2} of the SRS. Each subsection
 will be focused on the NFR for a specific component will be verified through 
 testing.
 
-\subsubsection{Audio Filtering}
-		
+\subsubsection{Audio360 Engine Tests}
+
+\begin{enumerate}
+\item{\textbf{Test-NFR4.1} No memory race conditions\\}
+
+\textbf{Type:} Non-Functional, Static, Automatic
+
+\textbf{Initial State:}
+The Audio360 Engine module is deployed on the microcontroller and initialized.
+
+\textbf{Input/Condition:}
+The Audio360 Engine module receives simulated audio data from the audio
+filtering module.
+
+\textbf{Output/Result:}
+The Audio360 Engine module processes the incoming audio data without modifying
+the data in the original buffer used by the audio filtering module. 
+
+\textbf{How test will be performed:}
+The test will be performed automatically using the Clang toolchain
+to analyze the function calls and memory accesses (read/write) within the Audio360
+Engine module. The tool will check for any instances where the Audio360
+Engine module writes to memory locations that are passed as read-only inputs. 
+If no such instances are found, the test passes, confirming that there are
+are no memory race conditions. This is important to ensure since the buffers
+used by the audio filtering module are most likely serviced by interrupts. 
+
+\item{\textbf{Test-NFR4.2} Real-time processing\\}
+
+\textbf{Type:} Non-Functional, Automatic
+
+\textbf{Initial State:}
+The Audio360 Engine module is deployed on the microcontroller and initialized.
+
+\textbf{Input/Condition:}
+A continuous stream of frequency-domain audio data sampled at 16 kHz from
+the audio filtering module.
+
+\textbf{Output/Result:}
+The Audio360 Engine module processes each incoming audio data frame
+before the next frame arrives, maintaining real-time processing.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by simulating a continuous stream
+of frequency-domain audio data from the audio filtering module. The
+Audio360 Engine module will log the processing time for each frame. The
+logs will be analyzed to verify that the processing time for each frame
+does not exceed the time interval between frames (1/16,000 seconds). If
+all frames are processed within this time constraint, the test passes real-time
+processing constraints. This test will have to be performed on the 
+microcontroller to ensure accurate timing measurements.
+
+\item{\textbf{Test-NFR4.3} Microphone audio data and all derivative data is discarded
+ after processing.\\}
+
+\textbf{Type:} Non-Functional, Static, Manual
+
+\textbf{Initial State:}
+The Audio360 Engine module is initialized and ready to process frequency-domain
+audio data retrieved from the audio filtering module.
+
+\textbf{Input/Condition:}
+A set of random frequency-domain audio data samples.
+
+\textbf{Output/Result:}
+After processing each input sample, the Audio360 Engine module or any of its
+dependent components do not retain any copies of the original microphone data
+or any derivative data in memory.
+
+\textbf{How test will be performed:}
+The test will be performed manually by inspecting the source code of the
+Audio360 Engine module and its dependent components. The code will be reviewed
+to ensure that there are no persistent data structures or variables that
+retain copies of the original microphone data or any derivative data.
+
+\end{enumerate}
+
+\subsubsection{Frequency Analysis Tests}
 
 \begin{enumerate}
 
-\item{\textbf{test-NFR3.1} Accurate frequency-domain translation\\}
+\item{\textbf{Test-NFR5.1} Simultaneous classification and direction estimation.\\}
+
+\textbf{Type:} Non-Functional, Automatic
+
+\textbf{Initial State:}
+The Frequency Analysis module is initialized and ready to process frequency-
+domain audio data when notified by the Audio360 Engine module.
+
+\textbf{Input/Condition:}
+A frequency-domain audio data sample containing different audio
+classes originating from known directions relative to the microphone array.
+Different classes and directions of audio sources will be embedded in the same
+input sample.
+
+\textbf{Output/Result:}
+The Frequency Analysis module processes each input sample and outputs
+the predicted audio class and estimated direction for up to 3 simultaneous audio
+sources. The predicted classes and estimated directions should match the known
+classes and directions for each source within the defined accuracy thresholds
+defined in \hyperref[sec:freq-analysis-tests]{Frequency Analysis Tests}.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by feeding the frequency
+domain data of the known audio sample with multiple sources to the Frequency
+Analysis module. The predicted classes and estimated directions will be
+compared against the known classes and directions to calculate the accuracy.
+
+\item{\textbf{Test-NFR5.2} Single source classification accuracy.\\}
+ 
+\textbf{Type:} Non-Functional, Automatic
+
+\textbf{Initial State:}
+The Frequency Analysis module is initialized and ready to process frequency-
+domain audio data retrieved from the Audio360 Engine module.
+
+\textbf{Input/Condition:}
+A set of frequency-domain audio data samples representing different known audio
+classes. Each sample contains a single isolated audio source.
+
+\textbf{Output/Result:}
+The Frequency Analysis module processes each input sample and outputs the
+predicted audio class. The predicted class should match the known class for
+each sample with a class level accuracy defined in 
+\hyperref[sec:freq-analysis-tests]{Frequency Analysis Tests}.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by feeding the frequency
+domain data of the known audio samples to the Frequency Analysis module. The
+predicted classes will be compared against the known classes to calculate
+the classification accuracy.
+
+\item{\textbf{Test-NFR5.3} Single source direction estimation accuracy.\\}
+
+\textbf{Type:} Non-Functional, Automatic
+
+\textbf{Initial State:}
+The Frequency Analysis module is initialized and ready to process frequency-
+domain audio data retrieved from the Audio360 Engine module.
+
+\textbf{Input/Condition:}
+A set of frequency-domain audio data samples representing audio sources
+originating from known directions relative to the microphone array. Each
+sample contains a single isolated audio source.
+
+\textbf{Output/Result:}
+The Frequency Analysis module processes input samples from the four microphone
+array and outputs the estimated direction of each audio source. The estimated
+direction should be within the threshold defined in 
+\hyperref[sec:freq-analysis-tests]{Frequency Analysis Tests}.
+
+\textbf{How test will be performed:}
+The test will be performed automatically by feeding the frequency
+domain data of the known direction samples to the Frequency Analysis module.
+The estimated directions will be compared against the known directions to
+calculate the directional estimation accuracy.
+
+
+\end{enumerate}
+
+\subsubsection{Audio Filtering}
+
+
+\begin{enumerate}
+
+\item{\textbf{Test-NFR3.1} Accurate frequency-domain translation\\}
 
 \textbf{Type:} Non-Functional, Dynamic, Automatic
 					
@@ -743,7 +1220,7 @@ spectrum using the following formula across all bins. If the mean is less than
 \quad \forall A \in \text{Spectrum}
 \]
 					
-\item{\textbf{test-NFR3.2} Handle different input signal sizes\\}
+\item{\textbf{Test-NFR3.2} Handle different input signal sizes\\}
 
 \textbf{Type:} Non-Functional, Dynamic, Manual
 					
@@ -767,7 +1244,7 @@ Execution time will be measured using microcontroller logs. After processing
  is complete, logs will be manually inspected to verify the processing time
  for each input size meets the time constraints defined in the SRS.
 
-\item{\textbf{test-NFR3.3} Accuracy of FFT calculation exceeds 90\%\\}
+\item{\textbf{Test-NFR3.3} Accuracy of FFT calculation exceeds 90\%\\}
 
 \textbf{Type:} Non-Functional, Dynamic, Manual
 					
@@ -809,7 +1286,7 @@ using the formula above. If the mean error is less than 10\%, the test passes
 
 \begin{enumerate}
 
-\item{\textbf{test-NFR6.1} Display safety critical information first\\}
+\item{\textbf{Test-NFR6.1} Display safety critical information first\\}
 
 \textbf{Type:} Non-Functional, Dynamic, Manual
 					
@@ -838,7 +1315,7 @@ output display. The test passes if the highest priority direction is the only
  one visualized.
 
 					
-\item{\textbf{test-NFR6.2} Present information in a non-intrusive manner\\}
+\item{\textbf{Test-NFR6.2} Present information in a non-intrusive manner\\}
 
 \textbf{Type:} Non-Functional, Dynamic, Manual
 					
@@ -929,7 +1406,7 @@ needs to be well-documented, with meaningful names for all of the tests.}
 
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{Test-id1\\}
 
 Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
   be automatic}
@@ -944,7 +1421,7 @@ Test Case Derivation: \wss{Justify the expected value given in the Output field}
 
 How test will be performed: 
 					
-\item{test-id2\\}
+\item{Test-id2\\}
 
 Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
   be automatic}
@@ -980,7 +1457,7 @@ How test will be performed:
 		
 \begin{enumerate}
 
-\item{test-id1\\}
+\item{Test-id1\\}
 
 Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
   be automatic}
@@ -993,7 +1470,7 @@ Output/Result:
 					
 How test will be performed: 
 					
-\item{test-id2\\}
+\item{Test-id2\\}
 
 Type: Functional, Dynamic, Manual, Static etc.
 					
