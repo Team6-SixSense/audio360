@@ -1,13 +1,9 @@
 \documentclass[12pt, titlepage]{article}
 
 \usepackage{amssymb}
-\usepackage{booktabs}
 \usepackage{float}
 \usepackage{tabularx}
-\usepackage{xltabular}
 \usepackage[x11names]{xcolor}
-\usepackage{framed}
-\usepackage{quoting}
 \usepackage{hyperref}
 \usepackage{xr}
 \usepackage{cite}
@@ -22,14 +18,10 @@
 \usepackage{amsmath}
 \usepackage{float}
 
-\colorlet{shadecolor}{gray!15}
-
-% Environment for quotes
+% Environment for quotes - simple replacement without framed/quoting
 \newenvironment{shadedquotation}
-    {\begin{shaded*}
-     \quoting[leftmargin=0pt, vskip=0pt]}
-    {\endquoting
-     \end{shaded*}}
+    {\begin{quote}\itshape}
+    {\end{quote}}
 
 \input{../Comments}
 \input{../Common}
@@ -50,11 +42,12 @@
 
 \section*{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
-\midrule
+\begin{tabularx}{\textwidth}{|p{3cm}|p{2cm}|X|}
+\hline
+{\bf Date} & {\bf Version} & {\bf Notes}\\
+\hline
 2025-10-27 & 1.0 & Initial write-up\\
-\bottomrule
+\hline
 \end{tabularx}
 
 \newpage
@@ -71,12 +64,12 @@
 \section{Symbols, Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
-  \toprule		
+\begin{tabular}{|l|l|} 
+  \hline	
   \textbf{symbol} & \textbf{description}\\
-  \midrule 
+  \hline
   T & Test\\
-  \bottomrule
+  \hline
 \end{tabular}\\
 
 \wss{symbols, abbreviations, or acronyms --- you can simply reference the SRS
@@ -183,77 +176,64 @@ will end off with
 
 \subsection{Verification and Validation Team}\label{sec:vnv_team}
 
-Table \ref{table:vnv_team} outlines the roles and responsibilities of each
+The table below outlines the roles and responsibilities of each
 team member involved in the verification and validation process. Roles were
 intentionally assigned to individuals not directly responsible for the
 corresponding implementation components, ensuring an unbiased evaluation of 
 system functionality. The supervisor also contributes by providing technical
 oversight and expert validation for signal processing.
 
-\begin{xltabular}{\textwidth}{|X|X|c|}
+\noindent
+\textbf{Table: Verification and validation team breakdown}
+\label{table:vnv_team}
 
-  \caption{Verification and validation team breakdown.}
-  \label{table:vnv_team} \\
-  \toprule
-  \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
-  \midrule
-  \endfirsthead
+\noindent
+\begin{tabularx}{\textwidth}{|p{4cm}|X|p{3cm}|}
+\hline
+\textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
+\hline
+Firmware Verification \label{role:firmware_verfication} &
+Develops and executes tests to confirm that the firmware implementation
+conforms to the requirements outlined in the software specification. &
+Jay \\
+\hline
 
-  \toprule
-  \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
-  \midrule
-  \endhead
+Visualization Verification + Validation \label{role:visual_vnv}&
+Develops and executes tests to confirm that the visualization implementation
+conforms to the requirements outlined in the software specification.
+Also responsible for engaging with users to validate the usability of the
+product specific to the visualization. &
+Nirmal \\
+\hline
 
-  \bottomrule
-  \multicolumn{3}{r}{\textit{Continued on next page}} \\
-  \endfoot
+Audio Classification Verification \label{role:classification_verfication} &
+Develops and executes tests to confirm that the audio classification module
+conforms to the requirements outlined in the software specification.
+&
+Sathurshan \\
+\hline
 
-  \bottomrule
-  \endlastfoot
+Directional Analysis Verification \label{role:directional_verfication}&
+Develops and executes tests to confirm that the directional analysis
+component conforms to the requirements outlined in the software
+specification. &
+Omar \\
+\hline
 
+Product Validation \label{role:product_validation} &
+Responsible for engaging with individuals who are hard of hearing to
+validate that the system effectively addresses their pain points related to
+situational awareness. &
+Kalp \\
+\hline
 
-  Firmware Verification \label{role:firmware_verfication} &
-  Develops and executes tests to confirm that the firmware implementation
-  conforms to the requirements outlined in the software specification. &
-  Jay \\
-  \hline
-
-  Visualization Verification + Validation \label{role:visual_vnv}&
-  Develops and executes tests to confirm that the visualization implementation
-  conforms to the requirements outlined in the software specification.
-  Also responsible for engaging with users to validate the usability of the
-  product specific to the visualization. &
-  Nirmal \\
-  \hline
-
-  Audio Classification Verification \label{role:classification_verfication} &
-  Develops and executes tests to confirm that the audio classification module
-  conforms to the requirements outlined in the software specification.
-  &
-  Sathurshan \\
-  \hline
-  
-  Directional Analysis Verification \label{role:directional_verfication}&
-  Develops and executes tests to confirm that the directional analysis
-  component conforms to the requirements outlined in the software
-  specification. &
-  Omar \\
-  \hline
-
-  Product Validation \label{role:product_validation} &
-  Responsible for engaging with individuals who are hard of hearing to
-  validate that the system effectively addresses their pain points related to
-  situational awareness. &
-  Kalp \\
-  \hline
-
-  Audio Processing Verification \label{role:audio_processing_verification}  &
-  Reviews and assesses the audio processing methodologies implemented. The
-  team will demonstrate and explain these techniques in a supervisor meeting
-  and receive verbal or written feedback. &
-  MVM (Supervisor) \\
-
-\end{xltabular}
+Audio Processing Verification \label{role:audio_processing_verification}  &
+Reviews and assesses the audio processing methodologies implemented. The
+team will demonstrate and explain these techniques in a supervisor meeting
+and receive verbal or written feedback. &
+MVM (Supervisor) \\
+\hline
+\end{tabularx}
 
 \subsection{SRS Verification}\label{sec:srs_verification}
 
@@ -1744,9 +1724,10 @@ passes if the average rating across all stakeholders is at least 4.
 
 \subsection{Traceability Between Test Cases and Requirements}
 
-\begin{table}[H]
-\centering
-\caption{Functional Requirements and Corresponding Test Sections}
+\noindent
+\textbf{Table: Functional Requirements and Corresponding Test Sections}
+
+\noindent
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Test Section} & \textbf{Supported Requirement(s)} \\ \hline
@@ -1755,11 +1736,13 @@ Driver Layer & \hyperref[SRS-FR2_1]{FR-2.1}, \hyperref[SRS-FR2_2]{FR-2.2}, \hype
 Audio Filtering & \hyperref[SRS-FR3_1]{FR-3.1}, \hyperref[SRS-FR3_2]{FR-3.2}, \hyperref[SRS-FR3_3]{FR-3.3}, \hyperref[SRS-FR3_4]{FR-3.4}, \hyperref[SRS-FR3_5]{FR-3.5} \\ \hline
 Visualization Controller & \hyperref[SRS-FR6_1]{FR-6.1}, \hyperref[SRS-FR6_2]{FR-6.2} \\ \hline
 \end{tabular}
-\end{table}
 
-\begin{table}[H]
-\centering
-\caption{Non-Functional Requirements and Corresponding Test Sections}
+\vspace{0.5cm}
+
+\noindent
+\textbf{Table: Non-Functional Requirements and Corresponding Test Sections}
+
+\noindent
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Test Section} & \textbf{Supported Requirement(s)} \\ \hline
@@ -1768,7 +1751,6 @@ Driver Layer & \hyperref[SRS-NFR2_1]{NFR-2.1} \\ \hline
 Audio Filtering & \hyperref[SRS-NFR3_1]{NFR-3.1}, \hyperref[SRS-NFR3_2]{NFR-3.2}, \hyperref[SRS-NFR3_3]{NFR-3.3} \\ \hline
 Visualization Controller & \hyperref[SRS-NFR6_1]{NFR-6.1}, \hyperref[SRS-NFR6_2]{NFR-6.2} \\ \hline
 \end{tabular}
-\end{table}
 
 \section{Unit Test Description}
 
