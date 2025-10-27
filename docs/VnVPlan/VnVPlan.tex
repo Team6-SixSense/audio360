@@ -1009,23 +1009,43 @@ The following 10 essential survey questions will be used during user validation 
 \begin{enumerate}
     \item \textbf{Background:} What is your level of hearing loss? (Complete deafness / Severe / Moderate / Mild)
     
+    \textbf{Rationale:} This question directly relates to \hyperref[goal:user_friendly_interaction]{Goal G.1.5} (user-friendly interaction) by ensuring the system is tested across a range of hearing loss levels. Understanding the user's specific hearing profile helps validate that the system meets the needs of the primary stakeholder group (individuals who are deaf or hard of hearing) as defined in the SRS.
+    
     \item \textbf{Visual Clarity:} How would you rate the clarity of the directional indicators? (1-5 scale: 1 = Very unclear, 5 = Very clear)
+    
+    \textbf{Rationale:} This question directly validates \hyperref[goal:visual_display]{Goal G.1.4} (visual display) and \hyperref[goal:audio_direction_analysis]{Goal G.2} (direction of arrival analysis). Clear directional indicators are essential for users to understand where sounds are coming from, which is a core requirement for maintaining situational awareness and safety.
     
     \item \textbf{Response Time:} Does the system respond quickly enough when sounds are detected? (Yes / No / Sometimes)
     
+    \textbf{Rationale:} This question validates the real-time performance requirements from \hyperref[goal:audio_direction_analysis]{Goal G.1.2} and \hyperref[goal:audio_identification_analysis]{Goal G.3}. The system must provide near real-time feedback to be effective for safety-critical applications, as delayed responses could lead to missed safety cues.
+    
     \item \textbf{Distraction Level:} Are the visual alerts distracting from your normal activities? (1-5 scale: 1 = Very distracting, 5 = Not distracting at all)
+    
+    \textbf{Rationale:} This question relates to \hyperref[goal:visual_display]{Goal G.4} (non-obstructive display) and \hyperref[goal:user_comfort]{Goal G.1.6} (user comfort). The system must enhance situational awareness without interfering with normal activities, ensuring it integrates seamlessly into daily life rather than creating additional barriers.
     
     \item \textbf{Sound Understanding:} Can you easily understand what type of sound the system is detecting? (Yes / No / Sometimes)
     
+    \textbf{Rationale:} This question directly validates \hyperref[goal:audio_identification_analysis]{Goal G.1.3} (sound classification) and \hyperref[goal:user_friendly_interaction]{Goal G.1.5} (user-friendly interaction). Clear sound classification is essential for users to understand their environment and respond appropriately to different types of audio cues.
+    
     \item \textbf{Confidence:} How confident do you feel about your situational awareness while using this system? (1-5 scale: 1 = Not confident, 5 = Very confident)
+    
+    \textbf{Rationale:} This question measures the overall effectiveness of the system in achieving its primary objective of improving situational awareness for individuals who are deaf or hard of hearing. It validates that the combination of all system goals (G.1.1-G.1.6) successfully addresses the core problem of missed audio cues and safety risks.
     
     \item \textbf{Safety:} Would you feel safer using this system in real-world scenarios? (Yes / No / Unsure)
     
+    \textbf{Rationale:} This question directly addresses the safety-critical nature of the application mentioned in the SRS context. It validates that the system successfully mitigates the safety risks associated with missed audio cues (car approaching, alarms, etc.) that were identified as the primary motivation for the project.
+    
     \item \textbf{Comfort:} How comfortable is the smart glasses for extended wear? (1-5 scale: 1 = Very uncomfortable, 5 = Very comfortable)
+    
+    \textbf{Rationale:} This question directly validates \hyperref[goal:user_comfort]{Goal G.1.6} (user comfort for extended wear). Comfort is essential for daily use and adoption of the assistive technology, ensuring users can wear the system for extended periods without discomfort or fatigue.
     
     \item \textbf{Recommendation:} Would you recommend this system to other individuals who are deaf or hard of hearing? (Yes / No / Maybe)
     
+    \textbf{Rationale:} This question provides an overall assessment of user satisfaction and perceived value, indicating whether the system successfully meets the needs of the primary stakeholder group. A positive recommendation suggests the system effectively addresses the identified gaps in existing assistive technologies.
+    
     \item \textbf{Overall Feedback:} What was the most helpful aspect of using this system, and what improvements would you suggest?
+    
+    \textbf{Rationale:} This open-ended question allows users to provide qualitative feedback that can inform future iterations and improvements. It helps validate that the system's features align with user needs and identifies areas for enhancement to better achieve the project goals.
 \end{enumerate}
 
 These questions will be administered through semi-structured interviews and observation sessions, providing both quantitative assessment and qualitative feedback to evaluate the system's effectiveness for the target user community.
