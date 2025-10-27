@@ -88,61 +88,86 @@
 
 \pagenumbering{arabic}
 
-This document ... \wss{provide an introductory blurb and roadmap of the
-  Verification and Validation plan}
+This document outlines the comprehensive verification and validation plan for \progname{}, an assistive device designed to aid individuals who are deaf or hard of hearing by providing real-time visual indications of sound source locations and classifications through smart glasses. The plan ensures that the system meets all specified requirements and delivers reliable, safe functionality for its intended users.
+
+The verification and validation process is structured around three main phases: verification of the Software Requirements Specification (SRS), design verification, and implementation verification. This plan addresses both functional and non-functional requirements through systematic testing approaches, including unit testing, integration testing, and user validation sessions. The roadmap prioritizes safety-critical features first, ensuring that the most important functionality is thoroughly validated before moving to enhanced features.
 
 \section{General Information}
 
 \subsection{Summary}
 
-\wss{Say what software is being tested.  Give its name and a brief overview of
-  its general functions.}
+\progname{} is an embedded assistive device that processes real-time audio signals from a microphone array mounted on smart glasses to provide visual feedback about sound source locations and classifications. The system consists of several key components: embedded firmware for real-time audio processing, audio filtering for frequency domain conversion, direction of arrival (DoA) analysis for spatial awareness, sound classification for identifying audio sources, and a visualization controller for displaying information to users.
+
+The software being tested includes the complete embedded system running on a microcontroller, with components for audio capture, signal processing, classification, directional analysis algorithms, and visual output generation. The system operates as a closed embedded environment with no external connectivity, ensuring reliability and security for its safety-critical application domain.
 
 \subsection{Objectives}
 
-\wss{State what is intended to be accomplished.  The objective will be around
-  the qualities that are most important for your project.  You might have
-  something like: ``build confidence in the software correctness,''
-  ``demonstrate adequate usability.'' etc.  You won't list all of the qualities,
-  just those that are most important.}
+The primary objectives of this verification and validation plan are:
 
-\wss{You should also list the objectives that are out of scope.  You don't have 
-the resources to do everything, so what will you be leaving out.  For instance, 
-if you are not going to verify the quality of usability, state this.  It is also 
-worthwhile to justify why the objectives are left out.}
+\textbf{Primary Objectives:}
+\begin{itemize}
+    \item \textbf{Software Correctness:} Build confidence that the system correctly implements all functional requirements, particularly safety-critical features such as direction of arrival estimation and sound classification with 90\% accuracy.
+    
+    \item \textbf{Real-time Performance:} Demonstrate that the system meets all timing constraints, including processing audio at 16 kHz sampling rate and providing visual feedback within 1 second latency.
+    
+    \item \textbf{User Safety and Usability:} Validate that the system effectively addresses the needs of individuals who are deaf or hard of hearing through structured user testing sessions with the McMaster Sign Language Club.
+    
+    \item \textbf{System Reliability:} Ensure robust error handling and fault tolerance, particularly for memory management and hardware component failures.
+\end{itemize}
 
-\wss{The objectives are important because they highlight that you are aware of 
-limitations in your resources for verification and validation.  You can't do everything, 
-so what are you going to prioritize?  As an example, if your system depends on an 
-external library, you can explicitly state that you will assume that external library 
-has already been verified by its implementation team.}
+\textbf{Objectives Out of Scope:}
+\begin{itemize}
+    \item \textbf{External Library Verification:} Third-party libraries (such as FFT implementations and machine learning frameworks) are assumed to be verified by their respective development teams. We will focus on testing our integration and usage of these libraries.
+    
+    \item \textbf{Long-term Durability Testing:} Extended wear testing and long-term hardware reliability assessment are beyond the scope of this academic project due to time constraints.
+        
+    \item \textbf{3D Spatial Localization:} Testing of elevation angle determination is out of scope as the system is designed for 2D horizontal plane analysis only.
+\end{itemize}
+
+This prioritization ensures that critical safety and functionality requirements are thoroughly validated while acknowledging resource limitations and project scope constraints.
 
 \subsection{Challenge Level and Extras}
 
-\wss{State the challenge level (advanced, general, basic) for your project.
-Your challenge level should exactly match what is included in your problem
-statement.  This should be the challenge level agreed on between you and the
-course instructor.  You can use a pull request to update your challenge level
-(in TeamComposition.csv or Repos.csv) if your plan changes as a result of the
-VnV planning exercise.}
+\textbf{Challenge Level:} Advanced
 
-\wss{Summarize the extras (if any) that were tackled by this project.  Extras
-can include usability testing, code walkthroughs, user documentation, formal
-proof, GenderMag personas, Design Thinking, etc.  Extras should have already
-been approved by the course instructor as included in your problem statement.
-You can use a pull request to update your extras (in TeamComposition.csv or
-Repos.csv) if your plan changes as a result of the VnV planning exercise.}
+This project operates at an advanced challenge level due to the complex integration of real-time signal processing, embedded systems development, and safety-critical applications. The system requires sophisticated audio processing techniques including FFT analysis, direction of arrival estimation, and real-time classification algorithms running on resource-constrained hardware. 
+A particularly challenging aspect is achieving precise microphone synchronization, as any timing discrepancies between microphones will render direction of arrival estimation impossible, effectively making the system's primary feature unachievable.
+
+\textbf{Extras:}
+\begin{itemize}
+    \item \textbf{Usability Testing:} Comprehensive user validation sessions with members of the McMaster Sign Language Club to ensure the system effectively addresses the needs of individuals who are deaf or hard of hearing. This includes structured interviews and observation sessions to validate both functionality and user experience.
+    
+    \item \textbf{Code Walkthroughs:} Systematic peer review processes for critical system components, particularly audio processing algorithms and safety-critical code paths. This ensures code quality and helps identify potential issues early in the development process.
+    
+    \item \textbf{User Documentation:} Development of comprehensive user guides and instructional materials to help end-users effectively utilize the system. This includes setup instructions, usage scenarios, and troubleshooting guides.
+\end{itemize}
+
+These extras enhance the project's value by ensuring both technical excellence and practical usability for the target user community.
 
 \subsection{Relevant Documentation}
 
-\wss{Reference relevant documentation.  This will definitely include your SRS
-  and your other project documents (design documents, like MG, MIS, etc).  You
-  can include these even before they are written, since by the time the project
-  is done, they will be written.  You can create BibTeX entries for your
-  documents and within those entries include a hyperlink to the documents.}
+The following documentation serves as the foundation for the verification and validation activities:
 
-\wss{Don't just list the other documents.  You should explain why they are relevant and 
-how they relate to your VnV efforts.}
+\textbf{Primary Requirements Documentation:}
+\begin{itemize}
+    \item \textbf{Software Requirements Specification (SRS):} \cite{SRS} - The primary source of functional and non-functional requirements that drive all testing activities. Each test case is directly traceable to specific requirements in this document, ensuring comprehensive coverage of all specified functionality.
+    
+    \item \textbf{Problem Statement and Goals:} \cite{ProblemStatement} - Provides the high-level objectives and constraints that inform the prioritization of testing activities, particularly the safety-critical nature of the application.
+\end{itemize}
+
+\textbf{Development Documentation:}
+\begin{itemize}
+    \item \textbf{Development Plan:} \cite{DevelopmentPlan} - Outlines the development methodology and testing tools, providing context for the verification and validation approach and timeline.
+    
+    \item \textbf{Hazard Analysis:} \cite{HazardAnalysis} - Identifies potential safety risks and failure modes that must be addressed through specific testing scenarios, particularly for safety-critical components.
+\end{itemize}
+
+\textbf{User-Focused Documentation:}
+\begin{itemize}
+    \item \textbf{Verification and Validation Report:} \cite{VnVReport} - Documents the results of testing activities and provides a record of system validation for future reference and continuous improvement.
+\end{itemize}
+
+These documents collectively provide the complete context needed for effective verification and validation, from high-level requirements through detailed implementation specifications to user-focused validation criteria.
 
 \section{Plan}
 
