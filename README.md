@@ -1,6 +1,8 @@
 # Audio360
 
-![Audio360Logo](docs\Images\audio360_logo.png)
+<p align="center">
+    <img src="docs/Images/audio360_logo.png" alt="Audio360Logo" width="200"/>
+</p>
 
 Audio360 is a software system for smart glasses to improve the spatial and environmental awareness of individuals with auditory impairment. The main feature of the smart glasses will bring users more awareness to their surroundings by alerting them of hazardous audio sources in their environment.
 
