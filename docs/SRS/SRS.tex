@@ -97,8 +97,8 @@
 
 \subsection{G.1 Context and overall objective}
 
-With around 4 million Canadians affected by hearing loss \cite{Healthing2025},
-there is a significant need for assistive technologies that can improve
+With around 4 million Canadians affected by hearing loss \cite{Healthing2025}, 
+there is a significant need for assistive technologies that can improve 
 situational awareness and safety. Many safety cues and general sound alerts such
 as the sound of a car approaching, a kettle whistling, or a phone ringing may be
 missed, leading to increased risk of injury and miscommunication.
@@ -111,7 +111,7 @@ source locations and classifications.
 
 The objective of this project is to develop an assistive device that aids
 individuals who are deaf or hard of hearing by providing real-time visual
-indications of sound source locations and classifications (ex. 'car on your
+indications of sound source locations and classifications (ex. 'car on your 
 left').
 
 Some of the high-level goals of the project are:
@@ -265,7 +265,7 @@ detects the engine sound, estimates its direction (e.g., 90° to the left),
 classifies it as a vehicle, and displays a visual indicator on the smart glasses
 showing the direction and classification. The user recognizes the alert and
 waits for the vehicle to pass before crossing safely.
- 
+
 \subsubsection{Scenario 2: Kitchen safety alert}
 A user is cooking in their kitchen when a tea kettle on the stove begins to
 whistle. The system captures the high-pitched sound through the microphone
@@ -639,7 +639,7 @@ display.
 \subsection{S.2 Functionality} \label{sec:S.2}
 
 \subsubsection{\hyperref[comp:embedded_firmware]{Embedded Firmware}} Functional
-Requirements
+Requirements \label{sec:FR1}
 \begin{itemize}
   \item \label{FR1_1}\textbf{FR1.1:} The firmware shall schedule tasks based on
   its priority.
@@ -668,7 +668,7 @@ Non-Functional Requirements
 \end{itemize}
 
 \subsubsection{\hyperref[comp:driver_layer]{Driver Layer}} Functional
-Requirements
+Requirements \label{sec:FR2}
 \begin{itemize}
   \item \label{FR2_1}\textbf{FR2.1:} The driver layer shall provide an interface
   for higher level software to interact with the hardware on the
