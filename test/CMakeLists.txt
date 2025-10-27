@@ -19,7 +19,7 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Collect test source files
-file(GLOB TEST_SOURCES *.cpp)
+file(GLOB_RECURSE TEST_SOURCES *.cpp)
 
 # Create test executable
 add_executable(${TestExecutable} ${TEST_SOURCES})
