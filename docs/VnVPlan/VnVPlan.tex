@@ -1,13 +1,9 @@
 \documentclass[12pt, titlepage]{article}
 
 \usepackage{amssymb}
-\usepackage{booktabs}
 \usepackage{float}
 \usepackage{tabularx}
-\usepackage{xltabular}
 \usepackage[x11names]{xcolor}
-\usepackage{framed}
-\usepackage{quoting}
 \usepackage{hyperref}
 \usepackage{xr}
 \usepackage{cite}
@@ -22,14 +18,10 @@
 \usepackage{amsmath}
 \usepackage{float}
 
-\colorlet{shadecolor}{gray!15}
-
-% Environment for quotes
+% Environment for quotes - simple replacement without framed/quoting
 \newenvironment{shadedquotation}
-    {\begin{shaded*}
-     \quoting[leftmargin=0pt, vskip=0pt]}
-    {\endquoting
-     \end{shaded*}}
+    {\begin{quote}\itshape}
+    {\end{quote}}
 
 \input{../Comments}
 \input{../Common}
@@ -50,11 +42,12 @@
 
 \section*{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
-\midrule
+\begin{tabularx}{\textwidth}{|p{3cm}|p{2cm}|X|}
+\hline
+{\bf Date} & {\bf Version} & {\bf Notes}\\
+\hline
 2025-10-27 & 1.0 & Initial write-up\\
-\bottomrule
+\hline
 \end{tabularx}
 
 \newpage
@@ -71,12 +64,12 @@
 \section{Symbols, Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
-  \toprule		
+\begin{tabular}{|l|l|} 
+  \hline	
   \textbf{symbol} & \textbf{description}\\
-  \midrule 
+  \hline
   T & Test\\
-  \bottomrule
+  \hline
 \end{tabular}\\
 
 \wss{symbols, abbreviations, or acronyms --- you can simply reference the SRS
@@ -183,77 +176,64 @@ will end off with
 
 \subsection{Verification and Validation Team}\label{sec:vnv_team}
 
-Table \ref{table:vnv_team} outlines the roles and responsibilities of each
+The table below outlines the roles and responsibilities of each
 team member involved in the verification and validation process. Roles were
 intentionally assigned to individuals not directly responsible for the
 corresponding implementation components, ensuring an unbiased evaluation of 
 system functionality. The supervisor also contributes by providing technical
 oversight and expert validation for signal processing.
 
-\begin{xltabular}{\textwidth}{|X|X|c|}
+\noindent
+\textbf{Table: Verification and validation team breakdown}
+\label{table:vnv_team}
 
-  \caption{Verification and validation team breakdown.}
-  \label{table:vnv_team} \\
-  \toprule
-  \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
-  \midrule
-  \endfirsthead
+\noindent
+\begin{tabularx}{\textwidth}{|p{4cm}|X|p{3cm}|}
+\hline
+\textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
+\hline
+Firmware Verification \label{role:firmware_verfication} &
+Develops and executes tests to confirm that the firmware implementation
+conforms to the requirements outlined in the software specification. &
+Jay \\
+\hline
 
-  \toprule
-  \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
-  \midrule
-  \endhead
+Visualization Verification + Validation \label{role:visual_vnv}&
+Develops and executes tests to confirm that the visualization implementation
+conforms to the requirements outlined in the software specification.
+Also responsible for engaging with users to validate the usability of the
+product specific to the visualization. &
+Nirmal \\
+\hline
 
-  \bottomrule
-  \multicolumn{3}{r}{\textit{Continued on next page}} \\
-  \endfoot
+Audio Classification Verification \label{role:classification_verfication} &
+Develops and executes tests to confirm that the audio classification module
+conforms to the requirements outlined in the software specification.
+&
+Sathurshan \\
+\hline
 
-  \bottomrule
-  \endlastfoot
+Directional Analysis Verification \label{role:directional_verfication}&
+Develops and executes tests to confirm that the directional analysis
+component conforms to the requirements outlined in the software
+specification. &
+Omar \\
+\hline
 
+Product Validation \label{role:product_validation} &
+Responsible for engaging with individuals who are hard of hearing to
+validate that the system effectively addresses their pain points related to
+situational awareness. &
+Kalp \\
+\hline
 
-  Firmware Verification \label{role:firmware_verfication} &
-  Develops and executes tests to confirm that the firmware implementation
-  conforms to the requirements outlined in the software specification. &
-  Jay \\
-  \hline
-
-  Visualization Verification + Validation \label{role:visual_vnv}&
-  Develops and executes tests to confirm that the visualization implementation
-  conforms to the requirements outlined in the software specification.
-  Also responsible for engaging with users to validate the usability of the
-  product specific to the visualization. &
-  Nirmal \\
-  \hline
-
-  Audio Classification Verification \label{role:classification_verfication} &
-  Develops and executes tests to confirm that the audio classification module
-  conforms to the requirements outlined in the software specification.
-  &
-  Sathurshan \\
-  \hline
-  
-  Directional Analysis Verification \label{role:directional_verfication}&
-  Develops and executes tests to confirm that the directional analysis
-  component conforms to the requirements outlined in the software
-  specification. &
-  Omar \\
-  \hline
-
-  Product Validation \label{role:product_validation} &
-  Responsible for engaging with individuals who are hard of hearing to
-  validate that the system effectively addresses their pain points related to
-  situational awareness. &
-  Kalp \\
-  \hline
-
-  Audio Processing Verification \label{role:audio_processing_verification}  &
-  Reviews and assesses the audio processing methodologies implemented. The
-  team will demonstrate and explain these techniques in a supervisor meeting
-  and receive verbal or written feedback. &
-  MVM (Supervisor) \\
-
-\end{xltabular}
+Audio Processing Verification \label{role:audio_processing_verification}  &
+Reviews and assesses the audio processing methodologies implemented. The
+team will demonstrate and explain these techniques in a supervisor meeting
+and receive verbal or written feedback. &
+MVM (Supervisor) \\
+\hline
+\end{tabularx}
 
 \subsection{SRS Verification}\label{sec:srs_verification}
 
@@ -408,6 +388,303 @@ verified through testing. These components include the Embedded Firmware,
 Driver Layer, Audio Filtering, Audio360 Engine, Frequency Analysis, 
 Visualization Controller, Microphone, Output Display and Microcontroller. 
 
+\subsubsection{Embedded Firmware Tests}
+
+This section covers the tests for ensuring the embedded firmware correctly 
+manages system tasks, audio synchronization, error handling, and hardware 
+diagnostics. Each test is associated with a functional requirement defined 
+under section \hyperref[SRS-sec:FR1]{3.2.1} of the SRS. As such, each test 
+will verify whether the system meets the associated functional requirement.
+
+\begin{enumerate}
+
+\item{\textbf{test-FR-1.1} Priority-based task scheduling \\}
+
+\textbf{Control:} Automatic
+					
+\textbf{Initial State:} 
+The firmware is deployed on the microcontroller with a task scheduler initialized. 
+Multiple tasks with different priority levels are registered in the system.
+					
+\textbf{Input:}
+Three concurrent tasks submitted to the firmware scheduler: Task A with high 
+priority (priority level 1), Task B with medium priority (priority level 5), 
+and Task C with low priority (priority level 10). Each task logs its execution 
+start time with microsecond precision when it begins execution.
+					
+\textbf{Output:}
+Execution logs show that tasks execute in priority order: Task A starts first, 
+followed by Task B, then Task C. The logged timestamps confirm this execution 
+sequence regardless of submission order.
+
+\textbf{Test Case Derivation:} 
+Priority-based scheduling ensures that critical tasks (audio processing, safety 
+diagnostics) execute before less critical tasks. The scheduler must respect 
+priority assignments to meet real-time constraints. Higher priority tasks 
+(lower numerical values) must preempt or execute before lower priority tasks.
+					
+\textbf{How test will be performed:}
+Deploy test firmware with three mock tasks to the microcontroller. Submit all 
+three tasks simultaneously. Collect execution logs from the microcontroller. 
+Analyze timestamps to verify execution order matches priority order. The test 
+passes if Task A executes before Task B, and Task B executes before Task C 
+in all test runs.
+
+\item{\textbf{test-FR-1.2} Audio signal synchronization\\}
+
+\textbf{Control:} Manual
+					
+\textbf{Initial State:} 
+The firmware is deployed on the microcontroller with all four microphones 
+connected and initialized. Audio capture subsystem is ready to receive data.
+					
+\textbf{Input:}
+An impulse sound (hand clap or tone burst) played in the environment, captured 
+simultaneously by all four microphones. The same acoustic event should be 
+detected by all microphones with known time delays based on geometry.
+					
+\textbf{Output:}
+Four synchronized audio buffers, each containing the impulse signal. 
+Cross-correlation analysis between channels shows time alignment within 
+margins of 10 microseconds, accounting for physical microphone spacing. 
+All channels have matching sample rates and frame timestamps.
+
+\textbf{Test Case Derivation:} 
+Accurate direction of arrival estimation requires precise temporal alignment 
+across microphone channels. Misalignment exceeding 10 
+microseconds will degrade localization accuracy per the system's spatial 
+resolution requirements.
+					
+\textbf{How test will be performed:}
+Generate acoustic impulse at known location. Capture audio on all four channels 
+for 1 second. Export captured buffers to analysis software. Compute cross-correlation 
+between all channel pairs. Calculate maximum time delay between channels. The 
+test passes if all channel pairs show time alignment within 10 microseconds after 
+compensating for physical propagation delays.
+
+\item{\textbf{test-FR-1.3} Memory error handling\\}
+
+\textbf{Control:} Automatic
+					
+\textbf{Initial State:} 
+The firmware is running on the microcontroller with memory monitoring enabled. 
+Available heap and stack memory are known and logged.
+					
+\textbf{Input:}
+A test sequence that attempts to allocate memory buffers of increasing size 
+until allocation would exceed available heap memory. The sequence includes: 
+(1) valid allocation within limits, (2) allocation at memory limit, (3) 
+allocation exceeding memory limit.
+					
+\textbf{Output:}
+For valid allocations, memory is allocated successfully and functions return 
+success codes. For allocation exceeding limits, the firmware detects the 
+condition, denies the allocation, returns an appropriate error code, and 
+continues operation without crashing. System remains stable and responsive 
+after handling the error.
+
+\textbf{Test Case Derivation:} 
+Memory exhaustion on embedded systems causes system crashes if not handled 
+properly. The firmware must detect out-of-memory conditions before they cause 
+undefined behavior. Graceful error handling prevents system failures that would 
+leave users without situational awareness.
+					
+\textbf{How test will be performed:}
+Execute automated test suite that progressively allocates memory buffers. Monitor 
+system logs for allocation attempts and results. Verify that memory allocations 
+within limits succeed. Verify that allocations exceeding limits return error 
+codes without system crash. Confirm system continues responding to commands 
+after error conditions. The test passes if all error conditions are caught and 
+the system remains operational.
+
+\item{\textbf{test-FR-1.4} Hardware diagnostics\\}
+
+\textbf{Control:} Manual
+					
+\textbf{Initial State:} 
+The firmware is deployed with all hardware components (microphones, display, 
+etc.) connected and operational. Diagnostic subsystem is initialized and logging 
+is enabled.
+					
+\textbf{Input:}
+A sequence of hardware fault conditions introduced systematically: (1) disconnect 
+one microphone, (2) disconnect display interface, (3) restore all connections. 
+Normal operation continues between fault injections.
+					
+\textbf{Output:}
+For each fault condition, the diagnostic system detects the hardware error 
+within 1 second and logs appropriate error codes identifying the failed 
+component. When connections are restored, the diagnostic system detects recovery 
+and clears error flags. All detections and recoveries are timestamped in logs.
+
+\textbf{Test Case Derivation:} 
+Continuous hardware monitoring enables the system to detect failures in real-time 
+and inform users about degraded functionality. Quick detection (within 1 second) 
+ensures users are aware of system limitations. Component identification in error 
+logs aids in troubleshooting and repair.
+					
+\textbf{How test will be performed:}
+Deploy firmware to microcontroller with all peripherals connected. Start diagnostic 
+logging. Systematically introduce each fault condition while monitoring logs. 
+Verify each fault is detected within 1 second by examining log timestamps. 
+Verify correct error codes are generated for each fault type. Restore connections 
+and verify recovery detection. The test passes if all faults are detected within 
+timing constraints with correct error identification.
+
+\end{enumerate}
+
+\subsubsection{Driver Layer Tests}
+
+This section covers the tests for ensuring the driver layer provides correct 
+hardware abstraction, permission handling, error propagation, and data integrity. 
+Each test is associated with a functional requirement defined under section 
+\hyperref[SRS-sec:FR2]{3.2.2} of the SRS. As such, each test will verify whether 
+the system meets the associated functional requirement.
+
+\begin{enumerate}
+
+\item{\textbf{test-FR-2.1} Hardware interface abstraction \\}
+
+\textbf{Control:} Automatic
+					
+\textbf{Initial State:} 
+The driver layer is compiled and running on the microcontroller. Hardware 
+peripherals (GPIO for display, timers, etc.) are connected and initialized. 
+Test application with driver API access is ready to execute.
+					
+\textbf{Input:}
+A test sequence that invokes driver API functions for different hardware 
+operations: (1) read from ADC channel, (2) write to GPIO pin, (3) configure 
+timer, (4) read system clock. Each operation uses the driver's abstracted 
+interface rather than direct hardware register access.
+					
+\textbf{Output:}
+All driver API calls complete successfully and return expected data. ADC reads 
+return valid voltage samples. GPIO writes toggle pin states visible on 
+oscilloscope. Timer configuration produces expected timing behavior. System 
+clock reads return monotonically increasing timestamps. No direct hardware 
+register access is required by the test application.
+
+\textbf{Test Case Derivation:} 
+Hardware abstraction through the driver layer enables higher-level software 
+to interact with peripherals without hardware-specific knowledge. This abstraction 
+makes the software portable and maintainable. The driver must provide complete 
+functionality for all hardware operations required by application components.
+					
+\textbf{How test will be performed:}
+Compile test application that uses only driver API calls (no direct register 
+access). Deploy to microcontroller. Execute test sequence exercising each driver 
+function. Verify all operations complete successfully through return codes. 
+Use oscilloscope to verify GPIO toggles. Use serial logging to verify ADC 
+readings are within expected ranges. The test passes if all driver operations 
+execute correctly and provide expected functionality.
+
+\item{\textbf{test-FR-2.2} Permission-based hardware access\\}
+
+\textbf{Control:} Automatic
+					
+\textbf{Initial State:} 
+The driver layer is running with a permission system configured. Two software 
+modules are registered: Module A with high privilege (full hardware access), 
+Module B with restricted privilege (limited hardware access).
+					
+\textbf{Input:}
+Test requests from both modules attempting to access hardware resources:
+(1) Module A requests ADC access (allowed by permissions),
+(2) Module B requests ADC access (denied by permissions),
+(3) Module A requests GPIO write (allowed),
+(4) Module B requests GPIO write (denied).
+					
+\textbf{Output:}
+Module A's requests complete successfully with hardware operations executed. 
+Module B's requests are rejected by the driver layer, returning permission 
+denied error codes without executing hardware operations. System logs show 
+permission checks for all requests.
+
+\textbf{Test Case Derivation:} 
+Permission-based access control prevents unauthorized or unintended hardware 
+operations that could compromise system safety or stability. The driver must 
+enforce access policies to maintain system integrity. Only authorized components 
+should control critical hardware like ADCs and display interfaces.
+					
+\textbf{How test will be performed:}
+Configure driver with permission rules for test modules. Execute test requests 
+from both modules in sequence. Verify Module A's requests succeed by checking 
+return codes. Verify Module B's requests are denied by checking for error codes. 
+Examine system logs to confirm permission checks occurred. The test passes if 
+all access decisions match configured permissions.
+
+\item{\textbf{test-FR-2.3} Error code propagation\\}
+
+\textbf{Control:} Automatic
+					
+\textbf{Initial State:} 
+The driver layer is running on the microcontroller. Hardware is in a state 
+where specific error conditions can be triggered (e.g., ADC not initialized, 
+invalid GPIO pin specified).
+					
+\textbf{Input:}
+A sequence of driver API calls designed to trigger various error conditions:
+(1) read from uninitialized ADC channel,
+(2) write to invalid GPIO pin number,
+(3) configure timer with out-of-range parameters,
+(4) read from disconnected peripheral.
+					
+\textbf{Output:}
+For each error condition, the driver returns a specific error code identifying 
+the failure type (e.g., ERROR\_NOT\_INITIALIZED, ERROR\_INVALID\_PIN, 
+ERROR\_INVALID\_PARAMETER, ERROR\_HARDWARE\_DISCONNECTED). Error codes are 
+returned immediately without hanging or crashing. Higher-level software receives 
+these codes and can take appropriate action.
+
+\textbf{Test Case Derivation:} 
+Proper error reporting enables higher-level software to detect and handle 
+hardware failures gracefully. Error codes must be specific enough to identify 
+the failure cause. Immediate return of error codes (without blocking) maintains 
+real-time system responsiveness.
+					
+\textbf{How test will be performed:}
+Execute test sequence that triggers each error condition. Capture return codes 
+from driver API calls. Verify each return code matches the expected error type. 
+Measure time from API call to return to confirm immediate propagation (less than 
+10 milliseconds). The test passes if all error conditions return correct, specific 
+error codes within timing constraints.
+
+\item{\textbf{test-FR-2.4} Data integrity maintenance\\}
+
+\textbf{Control:} Automatic
+					
+\textbf{Initial State:} 
+The driver layer is managing multiple memory regions for audio buffers, each 
+actively being written by ADC DMA (Direct Memory Access) and read by audio 
+processing software. System is configured for continuous audio capture.
+					
+\textbf{Input:}
+Continuous audio input for 30 seconds, captured into circular buffers managed 
+by the driver layer. Test includes concurrent read and write operations to 
+simulate real-time processing conditions.
+					
+\textbf{Output:}
+Audio data in buffers maintains integrity throughout the test period. No buffer 
+corruption occurs (verified by checksum or known test pattern). No data races 
+between writers (DMA) and readers (audio processing) cause invalid data. Buffer 
+state transitions are atomic and consistent.
+
+\textbf{Test Case Derivation:} 
+Data integrity is critical in audio processing systems where corrupted samples 
+lead to incorrect analysis results. The driver must protect shared memory regions 
+from concurrent access issues. Proper buffer management prevents overruns and 
+data races that would degrade system reliability.
+					
+\textbf{How test will be performed:}
+Configure driver to manage audio buffers with continuous DMA writes. Start audio 
+capture with simultaneous reading by test application. Inject known test patterns 
+into audio stream at marked intervals. Verify test patterns are correctly received 
+without corruption. Monitor for buffer overflow or underflow conditions. The test 
+passes if all test patterns are received intact and no memory corruption is detected 
+over the 30-second duration.
+
+\end{enumerate}
 
 \subsubsection{Audio Filtering Tests}
 
@@ -1101,6 +1378,110 @@ retain copies of the original microphone data or any derivative data.
 
 \end{enumerate}
 
+\subsubsection{Embedded Firmware}
+
+This section covers the tests for the non-functional requirements related to the 
+embedded firmware as defined in section \hyperref[SRS-sec:FR1]{3.2.1} of the SRS.
+
+\begin{enumerate}
+
+\item{\textbf{test-NFR1.1} Monotonic frame sequence processing\\}
+
+\textbf{Type:} Non-Functional, Dynamic, Automatic
+					
+\textbf{Initial State:} 
+The firmware is deployed on the microcontroller with audio capture active. 
+Multiple audio frames are being generated continuously from microphone input. 
+Frame timestamps and sequence numbers are logged.
+					
+\textbf{Input/Condition:} 
+Continuous audio input for 60 seconds with audio frames arriving at the firmware 
+scheduler. Each frame has a timestamp indicating its capture time. Frames may 
+arrive with slight jitter but maintain chronological order based on capture time.
+					
+\textbf{Output/Result:} 
+Processing logs show that frames are processed in strict chronological order 
+based on their capture timestamps. No newer frame is processed before an older 
+frame. Earliest frames consistently receive highest priority in the task queue. 
+All 60 seconds of audio are processed without frame reordering.
+					
+\textbf{How test will be performed:} 
+Deploy firmware to microcontroller with frame logging enabled. Capture 60 seconds 
+of continuous audio. Export frame processing logs. Analyze log sequence to verify 
+timestamps are monotonically increasing (each processed frame has a timestamp 
+greater than or equal to the previous frame). The test passes if no out-of-order 
+processing is detected across the entire 60-second capture period.
+					
+\item{\textbf{test-NFR1.2} Real-time processing speed\\}
+
+\textbf{Type:} Non-Functional, Dynamic, Manual
+					
+\textbf{Initial State:} 
+The firmware is deployed on the microcontroller with all audio processing 
+components active. Microphones are configured to sample at 16 kHz. Performance 
+monitoring is enabled to track processing frame rates.
+					
+\textbf{Input/Condition:} 
+Continuous audio input captured at 16 kHz for 5 minutes. This generates 
+approximately 13,230,000 samples (44100 samples/second × 300 seconds) that must 
+be processed in real-time. Processing includes audio capture, synchronization, 
+and preparation for downstream components.
+					
+\textbf{Output/Result:} 
+Performance logs show that the firmware processes all audio frames without falling 
+behind the input rate. Processing rate consistently exceeds 16 kHz (e.g., 
+processes 44100 samples in less than 1 second). No buffer overflows occur. No 
+frames are dropped due to processing delays.
+					
+\textbf{How test will be performed:} 
+Deploy firmware to microcontroller and start continuous audio capture. Monitor 
+processing rate through performance counters and logs over 5-minute duration. 
+Calculate effective processing rate (samples processed per second). Check for 
+buffer overflow indicators in logs. The test passes if processing rate remains 
+above 16 kHz throughout the test and no overflows occur.
+
+\end{enumerate}
+
+\subsubsection{Driver Layer}
+
+This section covers the tests for the non-functional requirements related to the 
+driver layer as defined in section \hyperref[SRS-sec:FR2]{3.2.2} of the SRS.
+
+\begin{enumerate}
+
+\item{\textbf{test-NFR2.1} Immediate error propagation\\}
+
+\textbf{Type:} Non-Functional, Dynamic, Automatic
+					
+\textbf{Initial State:} 
+The driver layer is running on the microcontroller. Hardware peripherals are in 
+various states (some operational, some generating errors). High-precision timing 
+measurement is configured to track error propagation delay.
+					
+\textbf{Input/Condition:} 
+A sequence of N in the range of [50 , 1000] driver API calls that 
+intentionally trigger various error 
+conditions: uninitialized hardware access, invalid parameters, timeout 
+conditions, 
+and hardware disconnections. Each call is timestamped at invocation and when 
+error code is returned.
+					
+\textbf{Output/Result:} 
+For all N error-triggering calls, the driver returns error codes within 10 
+milliseconds of the call. No error is delayed or queued for later reporting. 
+The median error propagation time is less than 1 millisecond. All errors are 
+reported to the firmware layer immediately without buffering.
+					
+\textbf{How test will be performed:} 
+Execute automated test suite with N error-inducing driver calls. Measure time 
+from function entry to error code return using microcontroller cycle counters or 
+high-precision timers. Calculate propagation delay for each call. Generate 
+statistics (minimum, median, maximum, 99th percentile). The test passes 
+if maximum delay is less than 100 milliseconds and median delay is 
+less than 10 milliseconds.
+
+\end{enumerate}
+		
 \subsubsection{Frequency Analysis Tests}
 
 \begin{enumerate}
@@ -1345,27 +1726,33 @@ passes if the average rating across all stakeholders is at least 4.
 
 \subsection{Traceability Between Test Cases and Requirements}
 
-\begin{table}[H]
-\centering
-\caption{Functional Requirements and Corresponding Test Sections}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Test Section} & \textbf{Supported Requirement(s)} \\ \hline
-Audio Filtering & FR-3.1, FR-3.2, FR-3.3, FR-3.4 \\ \hline
-Visualization Controller & FR-6.1, FR-6.2 \\ \hline
-\end{tabular}
-\end{table}
+\noindent
+\textbf{Table: Functional Requirements and Corresponding Test Sections}
 
-\begin{table}[H]
-\centering
-\caption{Non-Functional Requirements and Corresponding Test Sections}
+\noindent
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Test Section} & \textbf{Supported Requirement(s)} \\ \hline
-Audio Filtering & NFR-3.1, NFR-3.2, NFR-3.3 \\ \hline
-Visualization Controller & NFR-6.1, NFR-6.2 \\ \hline
+Embedded Firmware & \hyperref[SRS-FR1_1]{FR-1.1}, \hyperref[SRS-FR1_2]{FR-1.2}, \hyperref[SRS-FR1_3]{FR-1.3}, \hyperref[SRS-FR1_4]{FR-1.4} \\ \hline
+Driver Layer & \hyperref[SRS-FR2_1]{FR-2.1}, \hyperref[SRS-FR2_2]{FR-2.2}, \hyperref[SRS-FR2_3]{FR-2.3}, \hyperref[SRS-FR2_4]{FR-2.4} \\ \hline
+Audio Filtering & \hyperref[SRS-FR3_1]{FR-3.1}, \hyperref[SRS-FR3_2]{FR-3.2}, \hyperref[SRS-FR3_3]{FR-3.3}, \hyperref[SRS-FR3_4]{FR-3.4}, \hyperref[SRS-FR3_5]{FR-3.5} \\ \hline
+Visualization Controller & \hyperref[SRS-FR6_1]{FR-6.1}, \hyperref[SRS-FR6_2]{FR-6.2} \\ \hline
 \end{tabular}
-\end{table}
+
+\vspace{0.5cm}
+
+\noindent
+\textbf{Table: Non-Functional Requirements and Corresponding Test Sections}
+
+\noindent
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Test Section} & \textbf{Supported Requirement(s)} \\ \hline
+Embedded Firmware & \hyperref[SRS-NFR1_1]{NFR-1.1}, \hyperref[SRS-NFR1_2]{NFR-1.2} \\ \hline
+Driver Layer & \hyperref[SRS-NFR2_1]{NFR-2.1} \\ \hline
+Audio Filtering & \hyperref[SRS-NFR3_1]{NFR-3.1}, \hyperref[SRS-NFR3_2]{NFR-3.2}, \hyperref[SRS-NFR3_3]{NFR-3.3} \\ \hline
+Visualization Controller & \hyperref[SRS-NFR6_1]{NFR-6.1}, \hyperref[SRS-NFR6_2]{NFR-6.2} \\ \hline
+\end{tabular}
 
 \section{Unit Test Description}
 
