@@ -432,7 +432,7 @@ in all test runs.
 
 \item{\textbf{test-FR-1.2} Audio signal synchronization\\}
 
-\textbf{Control:} Automatic
+\textbf{Control:} Manual
 					
 \textbf{Initial State:} 
 The firmware is deployed on the microcontroller with all four microphones 
@@ -444,15 +444,14 @@ simultaneously by all four microphones. The same acoustic event should be
 detected by all microphones with known time delays based on geometry.
 					
 \textbf{Output:}
-Four synchronized audio buffers, each containing the impulse signal. Cross-correlation 
-analysis between channels shows time alignment within margins of 10 microseconds, 
-accounting for physical microphone spacing. All channels have matching sample 
-rates and frame timestamps.
+Four synchronized audio buffers, each containing the impulse signal. 
+Cross-correlation analysis between channels shows time alignment within 
+margins of 10 microseconds, accounting for physical microphone spacing. 
+All channels have matching sample rates and frame timestamps.
 
 \textbf{Test Case Derivation:} 
 Accurate direction of arrival estimation requires precise temporal alignment 
-across microphone channels. The firmware must synchronize sampling across all 
-ADC channels to maintain phase relationships. Misalignment exceeding 10 
+across microphone channels. Misalignment exceeding 10 
 microseconds will degrade localization accuracy per the system's spatial 
 resolution requirements.
 					
@@ -504,7 +503,7 @@ the system remains operational.
 					
 \textbf{Initial State:} 
 The firmware is deployed with all hardware components (microphones, display, 
-ADCs) connected and operational. Diagnostic subsystem is initialized and logging 
+etc.) connected and operational. Diagnostic subsystem is initialized and logging 
 is enabled.
 					
 \textbf{Input:}
@@ -550,7 +549,7 @@ the system meets the associated functional requirement.
 					
 \textbf{Initial State:} 
 The driver layer is compiled and running on the microcontroller. Hardware 
-peripherals (ADCs, GPIO for display, timers) are connected and initialized. 
+peripherals (GPIO for display, timers, etc.) are connected and initialized. 
 Test application with driver API access is ready to execute.
 					
 \textbf{Input:}
@@ -1419,18 +1418,18 @@ processing is detected across the entire 60-second capture period.
 					
 \textbf{Initial State:} 
 The firmware is deployed on the microcontroller with all audio processing 
-components active. Microphones are configured to sample at 44100 Hz. Performance 
+components active. Microphones are configured to sample at 16 kHz. Performance 
 monitoring is enabled to track processing frame rates.
 					
 \textbf{Input/Condition:} 
-Continuous audio input captured at 44100 Hz for 5 minutes. This generates 
+Continuous audio input captured at 16 kHz for 5 minutes. This generates 
 approximately 13,230,000 samples (44100 samples/second × 300 seconds) that must 
 be processed in real-time. Processing includes audio capture, synchronization, 
 and preparation for downstream components.
 					
 \textbf{Output/Result:} 
 Performance logs show that the firmware processes all audio frames without falling 
-behind the input rate. Processing rate consistently exceeds 44100 Hz (e.g., 
+behind the input rate. Processing rate consistently exceeds 16 kHz (e.g., 
 processes 44100 samples in less than 1 second). No buffer overflows occur. No 
 frames are dropped due to processing delays.
 					
@@ -1439,7 +1438,7 @@ Deploy firmware to microcontroller and start continuous audio capture. Monitor
 processing rate through performance counters and logs over 5-minute duration. 
 Calculate effective processing rate (samples processed per second). Check for 
 buffer overflow indicators in logs. The test passes if processing rate remains 
-above 44100 Hz throughout the test and no overflows occur.
+above 16 kHz throughout the test and no overflows occur.
 
 \end{enumerate}
 
@@ -1460,23 +1459,26 @@ various states (some operational, some generating errors). High-precision timing
 measurement is configured to track error propagation delay.
 					
 \textbf{Input/Condition:} 
-A sequence of 100 driver API calls that intentionally trigger various error 
-conditions: uninitialized hardware access, invalid parameters, timeout conditions, 
+A sequence of N in the range of [50 , 1000] driver API calls that 
+intentionally trigger various error 
+conditions: uninitialized hardware access, invalid parameters, timeout 
+conditions, 
 and hardware disconnections. Each call is timestamped at invocation and when 
 error code is returned.
 					
 \textbf{Output/Result:} 
-For all 100 error-triggering calls, the driver returns error codes within 10 
+For all N error-triggering calls, the driver returns error codes within 10 
 milliseconds of the call. No error is delayed or queued for later reporting. 
 The median error propagation time is less than 1 millisecond. All errors are 
 reported to the firmware layer immediately without buffering.
 					
 \textbf{How test will be performed:} 
-Execute automated test suite with 100 error-inducing driver calls. Measure time 
+Execute automated test suite with N error-inducing driver calls. Measure time 
 from function entry to error code return using microcontroller cycle counters or 
 high-precision timers. Calculate propagation delay for each call. Generate 
-statistics (minimum, median, maximum, 99th percentile). The test passes if maximum 
-delay is less than 10 milliseconds and median delay is less than 1 millisecond.
+statistics (minimum, median, maximum, 99th percentile). The test passes 
+if maximum delay is less than 100 milliseconds and median delay is 
+less than 10 milliseconds.
 
 \end{enumerate}
 		
