@@ -1,3 +1,5 @@
+** Note this README.md file was generated using ChatGPT ** 
+
 # Direction of Arrival (DOA) Analysis
 
 This module provides Direction of Arrival (DOA) analysis functionality for multi-microphone audio recordings. It can process pre-recorded MP3 files from 4 microphones and estimate the direction of the audio source using various DOA algorithms.
