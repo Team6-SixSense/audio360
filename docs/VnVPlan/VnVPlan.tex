@@ -9,7 +9,6 @@
 \usepackage{cite}
 \hypersetup{ colorlinks, citecolor=blue, filecolor=black, linkcolor=red,
     urlcolor=blue }
-\usepackage[numbers]{natbib}
 \usepackage{amsmath}
 \usepackage{float}
 
@@ -22,6 +21,8 @@
 
 \setlength{\parindent}{0pt} % Set no indent to entire document.
 
+\externaldocument[SRS-]{../SRS/SRS}
+
 \begin{document}
 
 \title{System Verification and Validation Plan for \progname{}} 
@@ -32,8 +33,6 @@
 
 \pagenumbering{roman}
 
-\externaldocument[SRS-]{../SRS/SRS}
-
 \section*{Revision History}
 
 \begin{tabularx}{\textwidth}{|p{3cm}|p{2cm}|X|}
@@ -41,6 +40,11 @@
 {\bf Date} & {\bf Version} & {\bf Notes}\\
 \hline
 2025-10-27 & 1.0 & Initial write-up\\
+2025-10-30 & 2.0 & Traceability to SRS in 3.2 \\
+2025-10-30 & 2.1 & Specifying tools in 4.6 and fixing bibliography \\
+2025-10-31 & 2.2 & Merics included to checklist in section 4.3 \\
+2025-10-31 & 2.3 & Clearly stating exclusion of specific non-dynamic testing \\
+2025-10-31 & 2.4 & Defining success criteria for software validation \\
 \hline
 \end{tabularx}
 
@@ -118,8 +122,9 @@ The primary objectives of this verification and validation plan are:
     classification with 90\% accuracy.
     
     \item \textbf{Real-time Performance:} Demonstrate that the system meets all
-    timing constraints, including processing audio at 16 kHz sampling rate and
-    providing visual feedback within 1 second latency.
+    timing constraints, including processing audio at 16 kHz sampling rate
+    (\hyperref[SRS-NFR1_2]{NF1.2}) and providing visual feedback within 1 second
+    latency (\hyperref[SRS-sec:VC-4.1]{VC-4.1}).
     
     \item \textbf{User Safety and Usability:} Validate that the system
     effectively addresses the needs of individuals who are deaf or hard of
@@ -334,40 +339,33 @@ resulting action items will be tracked and resolved through the project's issue
 tracker. \newline
 
 
-For validation, the team will engage users who are hard of hearing in structured
-sessions. These sessions will include observation of product use and
-semi-structured interviews. The observation aspect aims to allow the team
-understand the usability of the product while the interview serves as a method
-to identify validation issues in addressing user's needs related to situational
-awareness. This will fall under the \hyperref[role:visual_vnv]{visual
-validation} and \hyperref[role:product_validation]{product validation} roles.
-
 \subsection{Design Verification}\label{sec:design_verification}
 
 The design verification process will include structured peer reviews conducted
 by the team. Below is the checklist to verify the design.\\
 \newline
 \textbf{Software Core Architecture} \\
-$\square$ Does the selected software architecture appropriately support the
+$\square$ Does the selected software architecture appropriately support the all
 system's requirements and intended functionality? \\
 $\square$ Is the software design portable, allowing the software to be easily
-integrated with different hardware or simulation layer. \\
+integrated with different hardware or simulation layer. That is minimal changes
+are required to migrate software to a new hardware. \\
 \newline
 \newline
 \textbf{Software Design} \\
 $\square$ Is the system decomposed into small, modular components that can be
-individually tested? \\
+individually tested? Tests should be able to verify single functionality. \\
 $\square$ Are encapsulation principles followed, ensuring that data and
 functions that should be private are private? \\
 $\square$ Are design assumptions, dependencies, and interfaces clearly defined
-and documented? \\
-$\square$ Are software design principles being followed. Check box should fail
+and documented? Check in MIS documentation \cite{MIS} for this. \\
+$\square$ Are software design principles being followed? Check box should fail
 if there is an another design principle that will be better fitted.
 \newline
 \newline
 \textbf{General} \\
-$\square$ Is there a corresponding UML diagram of the design being tracked on
-git. \\
+$\square$ Is there atleast one corresponding UML diagram of the design being
+tracked on git. \\
 
 Reviewers will document feedback on any checklist criteria that are not
 satisfied and provide recommendations for improvement. The team will track all
@@ -394,7 +392,10 @@ merging PRs. It will block the PR from merging until all issues identified by
 the static analyzer has been resolved.
 
 The team will also develop test that verify requirements. These tests are
-outline in the \hyperref[sec:system_tests]{System Tests section}.
+outline in the \hyperref[sec:system_tests]{System Tests section}. Other
+non-dynamic tests, such as review cadence and code inspections, will not be
+performed as these activities take a lot of time and effort. Due to limited
+bandwidth of the team, automated non-dynamic tests will be prioritized. 
 
 \subsection{Automated Testing and Verification Tools}
 \label{sec:testing_tools}
@@ -404,8 +405,21 @@ from the Development Plan document.
 
 \begin{itemize}
   \item 10.3: Linter, Static Analyzer and Formatting Tools
+  \begin{itemize}
+    \item Clangformat \cite{ClangFormat}
+    \item Clang Static Analyzer \cite{clangStaticAnalyzer}
+  \end{itemize}
   \item 10.4: Testing Frameworks (section also includes code coverage)
+  \begin{itemize}
+    \item GoogleTest \cite{GoogleTest}
+    \item pytest \cite{pytest}
+    \item gcov \cite{gcov} / lcov \cite{lcov}
+  \end{itemize}
   \item 10.5: CI/CD (contains automated testing plan in CI)
+  \begin{itemize}
+    \item Run all unit tests (PR blocking)
+    \item Build source code using compiler (PR blocking)
+  \end{itemize}
 \end{itemize}
 
 As the software will be deployed on an embedded device, running unit tests on
@@ -414,22 +428,46 @@ local machine without any hardware in loop.
 
 \subsection{Software Validation}\label{sec:software_validation}
 
-The \hyperref[role:product_validation]{Product Validation} role, defined in
+The \hyperref[role:product_validation]{Product Validation} and 
+the \hyperref[role:visual_vnv]{Visual Validation} role, defined in
 section \hyperref[sec:vnv_team]{3.1: Verification and Validation Team}, is
-responsible for validating the product with the primary stakeholder. The product
+responsible for validating the product and visualization with the primary
+stakeholder. The product
 is composed of both software and hardware with more focus on the software. The
 validation will be conducted primarily with members of the McMaster Sign
 Language Club, who may not have the technical expertise to evaluate the
-requirements from the SRS. To address this, the Product Validation team member
-will conduct semi-structured interviews as described in section
-\hyperref[sec:srs_verification]{3.2: SRS Verification}. Rev 0 demo will include
-the results of the user validation, providing an opportunity to gather feedback
-and improve the software.
+requirements from the SRS. To address this, the validation team members
+will conduct observations of product use and semi-structured interviews.
+The observation aspect aims to allow the team understand the usability of the
+product while the interview serves as a method to identify validation issues
+in addressing user's needs related to situational awareness. Rev 0 demo will
+include the results of the user validation, providing an opportunity to gather
+feedback and improve the software.
+\newline
+\newline
+The criteria for success for validation with the primary stakeholder is as
+follows:
+
+\begin{itemize}
+  \item Users are more situationally aware of their environments compared to
+  without the technology in some enviroments. This directly addresses the
+  stakeholder's main pain point.
+  \item The provided sound classification and directional indicators helps the
+  users take appropriate actions at the moment. This directly related to
+  \hyperref[SRS-goal:visual_display]{Goal G.4} (non-obstructive display)
+  \item The user can use the product for an extended period of time without
+  discomfort. This directly relates to
+  \hyperref[SRS-goal:user_comfort]{Goal G.1.6} (user comfort).
+\end{itemize}
+
+
+This information will be derived by analyzing the data from the 
+\hyperref[sec:usability_survery_questions]{Usability Survey Questions} set.
 
 \section{System Tests} \label{sec:system_tests}
 
 This section outlines the tests for verifying and validating the functional and
-nonfunctional requirements outlined in the SRS \citep{SRS}. When done correctly
+nonfunctional requirements outlined in the SRS \cite{SRS}. When done correctly
 this ensures the system meets the user expectations and performs reliably. 
 
 \subsection{Tests for Functional Requirements}
@@ -684,7 +722,7 @@ peripheral.
 \textbf{Output:}
 For each error condition, the driver returns a specific error code identifying
 the failure type (e.g., ERROR\_NOT\_INITIALIZED, ERROR\_INVALID\_PIN,
-ERROR\_INVALID\_PARAMETER, ERROR\_HARDWARE\_DISCONNECTED). Error codes are
+ERROR\_INVALID\_PARAMETER, \\ ERROR\_HARDWARE\_DISCONNECTED). Error codes are
 returned immediately without hanging or crashing. Higher-level software receives
 these codes and can take appropriate action.
 
@@ -1843,7 +1881,7 @@ This is where you can place additional information.
 The definition of the test cases will call for SYMBOLIC\_CONSTANTS. Their values
 are defined in this section for easy maintenance.
 
-\subsection{Usability Survey Questions}
+\subsection{Usability Survey Questions}\label{sec:usability_survery_questions}
 
 The following 10 essential survey questions will be used during user validation
 sessions with members of the McMaster Sign Language Club who are hard of hearing
@@ -1854,7 +1892,7 @@ to assess the effectiveness and usability of \progname{Audio360}.
     deafness / Severe / Moderate / Mild)
     
     \textbf{Rationale:} This question directly relates to
-    \hyperref[goal:user_friendly_interaction]{Goal G.1.5} (user-friendly
+    \hyperref[SRS-goal:user_friendly_interaction]{Goal G.1.5} (user-friendly
     interaction) by ensuring the system is tested across a range of hearing loss
     levels. Understanding the user's specific hearing profile helps validate
     that the system meets the needs of the primary stakeholder group
@@ -1864,8 +1902,8 @@ to assess the effectiveness and usability of \progname{Audio360}.
     directional indicators? (1-5 scale: 1 = Very unclear, 5 = Very clear)
     
     \textbf{Rationale:} This question directly validates
-    \hyperref[goal:visual_display]{Goal G.1.4} (visual display) and
-    \hyperref[goal:audio_direction_analysis]{Goal G.2} (direction of arrival
+    \hyperref[SRS-goal:visual_display]{Goal G.1.4} (visual display) and
+    \hyperref[SRS-goal:audio_direction_analysis]{Goal G.2} (direction of arrival
     analysis). Clear directional indicators are essential for users to
     understand where sounds are coming from, which is a core requirement for
     maintaining situational awareness and safety.
@@ -1874,8 +1912,9 @@ to assess the effectiveness and usability of \progname{Audio360}.
     sounds are detected? (Yes / No / Sometimes)
     
     \textbf{Rationale:} This question validates the real-time performance
-    requirements from \hyperref[goal:audio_direction_analysis]{Goal G.1.2} and
-    \hyperref[goal:audio_identification_analysis]{Goal G.3}. The system must
+    requirements from \hyperref[SRS-goal:audio_direction_analysis]{Goal G.1.2}
+    and
+    \hyperref[SRS-goal:audio_identification_analysis]{Goal G.3}. The system must
     provide near real-time feedback to be effective for safety-critical
     applications, as delayed responses could lead to missed safety cues.
     
@@ -1884,8 +1923,8 @@ to assess the effectiveness and usability of \progname{Audio360}.
     distracting at all)
     
     \textbf{Rationale:} This question relates to
-    \hyperref[goal:visual_display]{Goal G.4} (non-obstructive display) and
-    \hyperref[goal:user_comfort]{Goal G.1.6} (user comfort). The system must
+    \hyperref[SRS-goal:visual_display]{Goal G.4} (non-obstructive display) and
+    \hyperref[SRS-goal:user_comfort]{Goal G.1.6} (user comfort). The system must
     enhance situational awareness without interfering with normal activities,
     ensuring it integrates seamlessly into daily life rather than creating
     additional barriers.
@@ -1894,8 +1933,9 @@ to assess the effectiveness and usability of \progname{Audio360}.
     sound the system is detecting? (Yes / No / Sometimes)
     
     \textbf{Rationale:} This question directly validates
-    \hyperref[goal:audio_identification_analysis]{Goal G.1.3} (sound
-    classification) and \hyperref[goal:user_friendly_interaction]{Goal G.1.5}
+    \hyperref[SRS-goal:audio_identification_analysis]{Goal G.1.3} (sound
+    classification) and
+    \hyperref[SRS-goal:user_friendly_interaction]{Goal G.1.5}
     (user-friendly interaction). Clear sound classification is essential for
     users to understand their environment and respond appropriately to different
     types of audio cues.
@@ -1923,7 +1963,8 @@ to assess the effectiveness and usability of \progname{Audio360}.
     wear? (1-5 scale: 1 = Very uncomfortable, 5 = Very comfortable)
     
     \textbf{Rationale:} This question directly validates
-    \hyperref[goal:user_comfort]{Goal G.1.6} (user comfort for extended wear).
+    \hyperref[SRS-goal:user_comfort]{Goal G.1.6} (user comfort for extended
+    wear).
     Comfort is essential for daily use and adoption of the assistive technology,
     ensuring users can wear the system for extended periods without discomfort
     or fatigue.
@@ -1954,7 +1995,7 @@ feedback to evaluate the system's effectiveness for the target user community.
 \bibliographystyle{IEEEtran}
 \bibliography{../../refs/References}
 
-\newpage{}
+\newpage
 \section*{Appendix --- Reflection}
 
 \begin{enumerate}
