@@ -9,7 +9,6 @@
 \usepackage{cite}
 \hypersetup{ colorlinks, citecolor=blue, filecolor=black, linkcolor=red,
     urlcolor=blue }
-\usepackage[numbers]{natbib}
 \usepackage{amsmath}
 \usepackage{float}
 
@@ -22,6 +21,8 @@
 
 \setlength{\parindent}{0pt} % Set no indent to entire document.
 
+\externaldocument[SRS-]{../SRS/SRS}
+
 \begin{document}
 
 \title{System Verification and Validation Plan for \progname{}} 
@@ -32,8 +33,6 @@
 
 \pagenumbering{roman}
 
-\externaldocument[SRS-]{../SRS/SRS}
-
 \section*{Revision History}
 
 \begin{tabularx}{\textwidth}{|p{3cm}|p{2cm}|X|}
@@ -42,6 +41,7 @@
 \hline
 2025-10-27 & 1.0 & Initial write-up\\
 2025-10-30 & 2.0 & Traceability to SRS in 3.2 \\
+2025-10-30 & 2.1 & Specifying tools in 4.6 and fixing bibliography \\
 \hline
 \end{tabularx}
 
@@ -406,8 +406,21 @@ from the Development Plan document.
 
 \begin{itemize}
   \item 10.3: Linter, Static Analyzer and Formatting Tools
+  \begin{itemize}
+    \item Clangformat \cite{ClangFormat}
+    \item Clang Static Analyzer \cite{clangStaticAnalyzer}
+  \end{itemize}
   \item 10.4: Testing Frameworks (section also includes code coverage)
+  \begin{itemize}
+    \item GoogleTest \cite{GoogleTest}
+    \item pytest \cite{pytest}
+    \item gcov \cite{gcov} / lcov \cite{lcov}
+  \end{itemize}
   \item 10.5: CI/CD (contains automated testing plan in CI)
+  \begin{itemize}
+    \item Run all unit tests (PR blocking)
+    \item Build source code using compiler (PR blocking)
+  \end{itemize}
 \end{itemize}
 
 As the software will be deployed on an embedded device, running unit tests on
@@ -431,7 +444,7 @@ and improve the software.
 \section{System Tests} \label{sec:system_tests}
 
 This section outlines the tests for verifying and validating the functional and
-nonfunctional requirements outlined in the SRS \citep{SRS}. When done correctly
+nonfunctional requirements outlined in the SRS \cite{SRS}. When done correctly
 this ensures the system meets the user expectations and performs reliably. 
 
 \subsection{Tests for Functional Requirements}
@@ -686,7 +699,7 @@ peripheral.
 \textbf{Output:}
 For each error condition, the driver returns a specific error code identifying
 the failure type (e.g., ERROR\_NOT\_INITIALIZED, ERROR\_INVALID\_PIN,
-ERROR\_INVALID\_PARAMETER, ERROR\_HARDWARE\_DISCONNECTED). Error codes are
+ERROR\_INVALID\_PARAMETER, \\ ERROR\_HARDWARE\_DISCONNECTED). Error codes are
 returned immediately without hanging or crashing. Higher-level software receives
 these codes and can take appropriate action.
 
@@ -1956,7 +1969,7 @@ feedback to evaluate the system's effectiveness for the target user community.
 \bibliographystyle{IEEEtran}
 \bibliography{../../refs/References}
 
-\newpage{}
+\newpage
 \section*{Appendix --- Reflection}
 
 \begin{enumerate}
