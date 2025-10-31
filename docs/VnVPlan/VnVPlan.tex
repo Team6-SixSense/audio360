@@ -43,6 +43,7 @@
 2025-10-30 & 2.0 & Traceability to SRS in 3.2 \\
 2025-10-30 & 2.1 & Specifying tools in 4.6 and fixing bibliography \\
 2025-10-31 & 2.2 & Merics included to checklist in section 4.3 \\
+2025-10-31 & 2.2 & Clearly stating exclusion of specific non-dynamic testing \\
 \hline
 \end{tabularx}
 
@@ -398,7 +399,10 @@ merging PRs. It will block the PR from merging until all issues identified by
 the static analyzer has been resolved.
 
 The team will also develop test that verify requirements. These tests are
-outline in the \hyperref[sec:system_tests]{System Tests section}.
+outline in the \hyperref[sec:system_tests]{System Tests section}. Other
+non-dynamic tests, such as review cadence and code inspections, will not be
+performed as these activities take a lot of time and effort. Due to limited
+bandwidth of the team, automated non-dynamic tests will be prioritized. 
 
 \subsection{Automated Testing and Verification Tools}
 \label{sec:testing_tools}
