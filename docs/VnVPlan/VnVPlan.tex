@@ -42,6 +42,7 @@
 2025-10-27 & 1.0 & Initial write-up\\
 2025-10-30 & 2.0 & Traceability to SRS in 3.2 \\
 2025-10-30 & 2.1 & Specifying tools in 4.6 and fixing bibliography \\
+2025-10-31 & 2.2 & Merics included to checklist in section 4.3 \\
 \hline
 \end{tabularx}
 
@@ -350,26 +351,27 @@ The design verification process will include structured peer reviews conducted
 by the team. Below is the checklist to verify the design.\\
 \newline
 \textbf{Software Core Architecture} \\
-$\square$ Does the selected software architecture appropriately support the
+$\square$ Does the selected software architecture appropriately support the all
 system's requirements and intended functionality? \\
 $\square$ Is the software design portable, allowing the software to be easily
-integrated with different hardware or simulation layer. \\
+integrated with different hardware or simulation layer. That is minimal changes
+are required to migrate software to a new hardware. \\
 \newline
 \newline
 \textbf{Software Design} \\
 $\square$ Is the system decomposed into small, modular components that can be
-individually tested? \\
+individually tested? Tests should be able to verify single functionality. \\
 $\square$ Are encapsulation principles followed, ensuring that data and
 functions that should be private are private? \\
 $\square$ Are design assumptions, dependencies, and interfaces clearly defined
-and documented? \\
-$\square$ Are software design principles being followed. Check box should fail
+and documented? Check in MIS documentation \cite{MIS} for this. \\
+$\square$ Are software design principles being followed? Check box should fail
 if there is an another design principle that will be better fitted.
 \newline
 \newline
 \textbf{General} \\
-$\square$ Is there a corresponding UML diagram of the design being tracked on
-git. \\
+$\square$ Is there atleast one corresponding UML diagram of the design being
+tracked on git. \\
 
 Reviewers will document feedback on any checklist criteria that are not
 satisfied and provide recommendations for improvement. The team will track all
