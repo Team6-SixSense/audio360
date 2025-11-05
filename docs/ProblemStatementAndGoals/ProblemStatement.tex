@@ -25,6 +25,7 @@
 \midrule
 2025-09-22 & Nirmal, Sathurshan, Omar, Kalp, Jay & Initial Write-up\\
 2025-09-29 & Jay & Update goals and stretch goals\\
+2025-11-04 & Kalp & Revision from TA feedback\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -49,34 +50,53 @@ over 4 million individuals in Canada dealing with these struggles every day.
 
 The high level input of the system is the audio from the surrounding
 environments, with the output being a visual indication of the direction of
-audio sources and their respective classifications.
+audio sources and their respective classifications (ex. 'car on your left',
+'phone on your right', 'kettle on your front', etc. where 'car' would be 
+the classification and 'on your left' would be the direction).
 
 \subsection{Stakeholders}
 
 The primary stakeholders are individuals who are deaf or hard of hearing.
+These individuals will be the end-users of the system and will benefit from the
+system's ability to provide them with a visual indication of the direction of
+audio sources and their respective classifications.
+
+The secondary stakeholders are family members and caregivers of individuals who
+are deaf or hard of hearing. These individuals will benefit from the system's
+ability to provide them with a visual indication of the direction of audio
+sources and their respective classifications.
+
+The tertiary stakeholders are employers and workplace safety officers. These
+individuals will benefit from the system's ability to provide them with a visual
+indication of the direction of audio sources and their respective 
+classifications.
 
 \subsection{Environment}
 
-The software environment is a real-time operating system (RTOS, i.e. FreeRTOS)
-running C/C++ code. The hardware environment is a 4 dimentional microphone
-array, with each microphone connected to a STM32F767 microcontroller for
-processing, as well as a pair of smart glasses (Rokid Smart Glasses) for the
+The software environment is a real-time operating system. 
+The hardware environment is a 4 dimentional microphone
+array, with each microphone connected to a microcontroller for
+processing, as well as a pair of smart glasses for the
 visual display.
 
 \section{Goals}
 
 \begin{itemize}
-    \item Capture real-time audio from a 4-microphone array with synchronized
-    sampling to enable accurate spatial analysis of sound sources.
-    \item Estimate direction of arrival (DoA) with less than or equal to 45°
-    error for single sound sources, providing reliable localization for practical use cases.
+    \item Capture real-time audio from a set of microphones.
+    \item Syncronize a set of incoming audio sources.
+    \item Estimate direction of arrival (DoA) for single sound sources, 
+    providing reliable localization for practical use cases.
+    \item The system should be easy to use, with a user-friendly
+    interface (easy to interpret output) and no setup required.
+    \item The system should be comfortable to wear for extended periods of time,
+    with minimal discomfort or fatigue.
 \end{itemize}
 \section{Stretch Goals}
 
 \begin{itemize}
-    \item Classify sounds using audio fingerprinting with at least 90\% accuracy,
+    \item Classify sounds using audio fingerprinting with high accuracy,
     allowing the system to recognize and differentiate between common sounds.
-    \item Display audio classification and transcription on smart glasses with a latency of <= 1s,
+    \item Display audio classification and transcription on smart glasses with,
     supporting real-time, user-friendly interaction.
 \end{itemize}
 \section{Extras}
