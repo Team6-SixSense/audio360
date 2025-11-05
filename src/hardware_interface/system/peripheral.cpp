@@ -9,18 +9,26 @@
 #include "fatfs.h"
 
 static void SystemClock_Config();
+static void PeriphCommonClock_Config();
 static void MX_GPIO_Init();
 static void MX_SPI1_Init();
 static void MX_SAI_1_Init();
+static void MX_SAI_2_Init();
 static void MX_USART3_UART_Init();
 
 UART_HandleTypeDef huart3;
 SPI_HandleTypeDef SD_SPI_HANDLE;
 
+// SAI 1 blocks.
+static SAI_HandleTypeDef hsai_BlockA1;
+static SAI_HandleTypeDef hsai_BlockB1;
+
+// SAI 2 blocks.
+static SAI_HandleTypeDef hsai_BlockA2;
+static SAI_HandleTypeDef hsai_BlockB2;
+
 #define SD_CS_Pin GPIO_PIN_4
 #define SD_CS_GPIO_Port GPIOA
-
-static SAI_HandleTypeDef hsai_BlockA1;
 
 void setupPeripherals() {
 
@@ -30,9 +38,13 @@ void setupPeripherals() {
 
   // Configure the system clock to 216 MHz
   SystemClock_Config();
+  PeriphCommonClock_Config();
 
   // Set buffer to flush immediately.
   setvbuf(stdout, NULL, _IONBF, 0);
+
+  // Set up GPIO. Must call before setting up other peripherals.
+  MX_GPIO_Init();
 
   // Initialize Board Support Language (BSP) for LED3
   BSP_LED_Init(LED3);
@@ -40,15 +52,16 @@ void setupPeripherals() {
   // Set up and intial UART pherrials.
   MX_USART3_UART_Init();
 
-  // Set up SAI_1
+  // Set up SAI buses
   MX_SAI_1_Init();
+  MX_SAI_2_Init();
 
   // Set up logging sd card and FATFS
-  MX_GPIO_Init();
   MX_SPI1_Init();
   MX_FATFS_Init();
 }
 
+/** @brief Sets up clock for the entire system. */
 static void SystemClock_Config() {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
@@ -93,6 +106,28 @@ static void SystemClock_Config() {
   }
 }
 
+/** @brief Sets up clock for specific periperals. */
+void PeriphCommonClock_Config(void) {
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+  /** Initializes the peripherals clock */
+  PeriphClkInitStruct.PeriphClockSelection =
+      RCC_PERIPHCLK_SAI1 | RCC_PERIPHCLK_SAI2;
+  PeriphClkInitStruct.PLLSAI.PLLSAIN = 192;
+  PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
+  PeriphClkInitStruct.PLLSAI.PLLSAIQ = 3;
+  PeriphClkInitStruct.PLLSAI.PLLSAIP = RCC_PLLSAIP_DIV2;
+  PeriphClkInitStruct.PLLSAIDivQ = 1;
+  PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_2;
+  PeriphClkInitStruct.Sai1ClockSelection = RCC_SAI1CLKSOURCE_PLLSAI;
+  PeriphClkInitStruct.Sai2ClockSelection = RCC_SAI2CLKSOURCE_PLLSAI;
+
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+    Error_Handler();
+  }
+}
+
+/** @brief Initializes GPIO. */
 static void MX_GPIO_Init() {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
@@ -116,6 +151,7 @@ static void MX_GPIO_Init() {
   HAL_GPIO_Init(SD_CS_GPIO_Port, &GPIO_InitStruct);
 }
 
+/** @brief Initializes SPI 1 bus. */
 static void MX_SPI1_Init() {
   /* SPI1 parameter configuration*/
   SD_SPI_HANDLE.Instance = SPI1;
@@ -137,7 +173,13 @@ static void MX_SPI1_Init() {
   }
 }
 
+/** @brief Initializes SAI 1 bus. */
 static void MX_SAI_1_Init() {
+
+  // SAI 1 has 2 subblocks: A and B. Set A with the master clock, so B can sync
+  // with A.
+
+  // Block A initialization.
   hsai_BlockA1.Instance = SAI1_Block_A;
   hsai_BlockA1.Init.AudioMode = SAI_MODEMASTER_RX;
   hsai_BlockA1.Init.Synchro = SAI_ASYNCHRONOUS;
@@ -145,15 +187,70 @@ static void MX_SAI_1_Init() {
   hsai_BlockA1.Init.NoDivider = SAI_MASTERDIVIDER_ENABLE;
   hsai_BlockA1.Init.FIFOThreshold = SAI_FIFOTHRESHOLD_EMPTY;
   hsai_BlockA1.Init.AudioFrequency = SAI_AUDIO_FREQUENCY_48K;
-  hsai_BlockA1.Init.SynchroExt = SAI_SYNCEXT_DISABLE;
+  hsai_BlockA1.Init.SynchroExt = SAI_SYNCEXT_OUTBLOCKA_ENABLE;
   hsai_BlockA1.Init.MonoStereoMode = SAI_MONOMODE;
   hsai_BlockA1.Init.CompandingMode = SAI_NOCOMPANDING;
+  hsai_BlockA1.Init.TriState = SAI_OUTPUT_NOTRELEASED;
+
   if (HAL_SAI_InitProtocol(&hsai_BlockA1, SAI_I2S_STANDARD,
+                           SAI_PROTOCOL_DATASIZE_24BIT, 2) != HAL_OK) {
+    Error_Handler();
+  }
+
+  // Block B initialization.
+  hsai_BlockB1.Instance = SAI1_Block_B;
+  hsai_BlockB1.Init.AudioMode = SAI_MODESLAVE_RX;
+  hsai_BlockB1.Init.Synchro = SAI_SYNCHRONOUS;
+  hsai_BlockB1.Init.OutputDrive = SAI_OUTPUTDRIVE_DISABLE;
+  hsai_BlockB1.Init.FIFOThreshold = SAI_FIFOTHRESHOLD_EMPTY;
+  hsai_BlockB1.Init.SynchroExt = SAI_SYNCEXT_OUTBLOCKA_ENABLE;
+  hsai_BlockB1.Init.MonoStereoMode = SAI_MONOMODE;
+  hsai_BlockB1.Init.CompandingMode = SAI_NOCOMPANDING;
+  hsai_BlockB1.Init.TriState = SAI_OUTPUT_NOTRELEASED;
+
+  if (HAL_SAI_InitProtocol(&hsai_BlockB1, SAI_I2S_STANDARD,
                            SAI_PROTOCOL_DATASIZE_24BIT, 2) != HAL_OK) {
     Error_Handler();
   }
 }
 
+/** @brief Initializes SAI 2 bus. */
+static void MX_SAI_2_Init() {
+
+  // Bot sub blocks (A and B) in SAI2 is synchronized with SAI 1 sub block A.
+
+  // Block A initialization.
+  hsai_BlockA2.Instance = SAI2_Block_A;
+  hsai_BlockA2.Init.AudioMode = SAI_MODESLAVE_RX;
+  hsai_BlockA2.Init.Synchro = SAI_SYNCHRONOUS_EXT_SAI1;
+  hsai_BlockA2.Init.OutputDrive = SAI_OUTPUTDRIVE_DISABLE;
+  hsai_BlockA2.Init.FIFOThreshold = SAI_FIFOTHRESHOLD_EMPTY;
+  hsai_BlockA2.Init.MonoStereoMode = SAI_MONOMODE;
+  hsai_BlockA2.Init.CompandingMode = SAI_NOCOMPANDING;
+  hsai_BlockA2.Init.TriState = SAI_OUTPUT_NOTRELEASED;
+
+  if (HAL_SAI_InitProtocol(&hsai_BlockA2, SAI_I2S_STANDARD,
+                           SAI_PROTOCOL_DATASIZE_24BIT, 2) != HAL_OK) {
+    Error_Handler();
+  }
+
+  // Block B initialization.
+  hsai_BlockB2.Instance = SAI2_Block_B;
+  hsai_BlockB2.Init.AudioMode = SAI_MODESLAVE_RX;
+  hsai_BlockB2.Init.Synchro = SAI_SYNCHRONOUS;
+  hsai_BlockB2.Init.OutputDrive = SAI_OUTPUTDRIVE_DISABLE;
+  hsai_BlockB2.Init.FIFOThreshold = SAI_FIFOTHRESHOLD_EMPTY;
+  hsai_BlockB2.Init.MonoStereoMode = SAI_MONOMODE;
+  hsai_BlockB2.Init.CompandingMode = SAI_NOCOMPANDING;
+  hsai_BlockB2.Init.TriState = SAI_OUTPUT_NOTRELEASED;
+
+  if (HAL_SAI_InitProtocol(&hsai_BlockB2, SAI_I2S_STANDARD,
+                           SAI_PROTOCOL_DATASIZE_24BIT, 2) != HAL_OK) {
+    Error_Handler();
+  }
+}
+
+/** @brief Initializes USART3. */
 static void MX_USART3_UART_Init() {
   huart3.Instance = USART3;
   huart3.Init.BaudRate = 115200;
@@ -178,6 +275,12 @@ void Error_Handler() {
   }
 }
 
-SAI_HandleTypeDef *getSAI_Handle() { return &hsai_BlockA1; }
+SAI_HandleTypeDef *getSAI1A_Handle() { return &hsai_BlockA1; }
+
+SAI_HandleTypeDef *getSAI1B_Handle() { return &hsai_BlockB1; }
+
+SAI_HandleTypeDef *getSAI2A_Handle() { return &hsai_BlockA2; }
+
+SAI_HandleTypeDef *getSAI2B_Handle() { return &hsai_BlockB2; }
 
 #endif
