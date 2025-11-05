@@ -286,3 +286,7 @@ build/*
 cmake-build-debug-arm/
 cmake-build-debug-x86
 .idea/
+
+
+venv
+*.egg-info/
