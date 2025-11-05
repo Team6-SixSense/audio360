@@ -83,10 +83,9 @@
 1. Install clion. This will be used for debugging and deploying.
 2. Download the latest of openOCD from <https://gnutoolchains.com/arm-eabi/openocd/>
 3. Set the executable path of openOCD on clion.
-4. link the .cfg file
+4. link the .cfg file. `src/configs/st_nucleo_f7.cfg`
 5. Set up GDB with interface and target config.
-
-TODO: define the files names that need to be linked here.
+6. Set `arm-cortex-m7` as the cmake profile when building.
 
 ### Windows Note
 
