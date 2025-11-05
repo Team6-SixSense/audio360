@@ -37,11 +37,9 @@ def main():
     print("Generating sine wave signals")
 
     ROOT = Path(__file__).resolve().parents[3]   # adjust depending on depth
-    signal1 = generate_signal_from_audio_file(ROOT / "prototyping/examples_runs/data/example_sine_wave", "mic_1.mp3")
-    signal2 = generate_signal_from_audio_file(ROOT / "prototyping/examples_runs/data/example_sine_wave", "mic_2.mp3")
+    signal1 = generate_signal_from_audio_file(ROOT / "prototyping/examples_runs/data/example_audio", "car_horn_8k.mp3")
     print("Adding sources with signal")
     add_source_with_signal(room, [9, 9, 1], signal1)
-    add_source_with_signal(room, [1, 7, 2.5], signal2)
 
     print("Simulating room")
     room.simulate()

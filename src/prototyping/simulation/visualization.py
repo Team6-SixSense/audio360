@@ -4,7 +4,8 @@ Plotting helpers for simulated rooms.
 
 from __future__ import annotations
 
-from datetime import datetime
+from typing import Optional
+
 import matplotlib.pyplot as plt
 from pydub import AudioSegment
 from .database import save_audio_data, write_readme
@@ -75,18 +76,24 @@ def plot_room(room: pra.ShoeBox, x_lim: tuple = (0, 2000), y_lim: tuple = (0, 15
     plt.show()
 
 
-def save_room_data(room: pra.ShoeBox, title: str, description: str) -> bool:
+def save_room_data(
+    room: pra.ShoeBox,
+    title: str,
+    description: str,
+    output_dir: Optional[str] = None,
+) -> bool:
     """
     Save the room data to a local directory.
     
     :param room: The ShoeBox object representing the room.
     :param title: The title of the test case.
     :param description: The description of the test case.
+    :param output_dir: Optional directory name override for where to save results.
     :return: Boolean value representing success of save operation.
     """
 
-    # Get output directory from current timestamp
-    output_dir = title.replace(" ", "_")
+    # Default directory name derived from title when none is provided
+    output_dir = output_dir or title.replace(" ", "_")
 
     fs_hz = room.fs
     signals = room.mic_array.signals  # shape: (n_mics, n_samples)
