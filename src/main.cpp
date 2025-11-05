@@ -30,8 +30,9 @@ int main() {
   FFT fft_test(static_cast<uint16_t>(test_vec.size()));
 #endif
 
-  SDCardWriter sdcardWriter{"temp"};
-  sdcardWriter.write("Sample text");
+  SDCardWriter *sdcardWriterPointer = new SDCardWriter("temp");
+  sdcardWriterPointer->write("Audio360 SD Card Initialization!");
+  sdcardWriterPointer->write("Let's GOOOOOO!");
 
   while (1) {
 

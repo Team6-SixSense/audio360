@@ -40,7 +40,7 @@ SDCardWriter::~SDCardWriter() {
 int SDCardWriter::write(const char *text) {
 
   UINT textSize = strlen(text);
-  BYTE buffer[textSize];
+  BYTE buffer[256];
   strncpy((char *)buffer, text, textSize);
 
   UINT bytesWrote;
@@ -51,6 +51,8 @@ int SDCardWriter::write(const char *text) {
   } else {
     ERROR("f_write error (%i)\r\n", bytesWrote);
   }
+
+  f_sync(&this->fil);
 
   return this->fres;
 }
