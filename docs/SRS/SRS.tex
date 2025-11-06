@@ -446,7 +446,7 @@ laboratory testing to validate technical approaches and refine requirements.
   \label{def:normal_operation_condition} The state in which the system,
   including hardware and softwre, operate within expected environmental and
   usage parameters. This includes audio input sampled at the correct sample
-  rate, input audio signals are within the human hearing audible range
+  rate, input audio signals are within the human hearing most audible range
   (250 Hz – 8 kHz) \cite{MiracleEar2025}, and audio input levels below 90 dB.
 
   \item \textbf{Real Time:} \label{def:real_time} Computational processing of
@@ -753,6 +753,11 @@ Non-Functional Requirements
   the connected microphone sample rate 16 kHz, referring to
   \hyperref[NFR7_1]{NFR7.1}. This ensures that all input data from the
   microphone can be processed.
+
+  \item \label{NFR4_3}\textbf{NFR1.3:} The firmware shall permanently
+  discard microphone audio data that is greater than the sampling window size.
+  This ensures that audio data is retained only temporarily for processing,
+  supporting \hyperref[goal:user_safety]{Goal 7}, protecting user privacy.
 \end{itemize}
 
 % DRIVER LAYER REQUIREMENTS.
@@ -948,7 +953,8 @@ Non-Functional Requirements
   from its environment and translate them to digital representation.
 
   \item \label{FR7_2}\textbf{FR7.2:} The microphone shall collect soundwaves
-  within the human hearing audible range (250 Hz - 8 kHz) \cite{MiracleEar2025}.
+  within the human hearing most audible range (250 Hz - 8 kHz)
+  \cite{MiracleEar2025}.
 \end{itemize}
 
 Non-Functional Requirements
@@ -956,7 +962,7 @@ Non-Functional Requirements
   \item \label{NFR7_1}\textbf{NFR7.1:} The microphone shall collect soundwaves
   at 16 kHz. According to Nyquist's theorem, audio sampling should be greater
   than two times the highest frequency to avoid aliasing \cite{DataForth2025}.
-  The maximum frequency audible to humans is approximately 8 kHz.
+  The maximum frequency most audible to humans is approximately 8 kHz.
   \cite{MiracleEar2025}.
 \end{itemize}
 
@@ -1118,8 +1124,8 @@ Estimated deadline: December 9th, 2025 \\
 \begin{itemize}
     \item \hyperref[FR7_1]{FR7.1} - Microphone soundwave collection and digital
     conversion
-    \item \hyperref[FR7_2]{FR7.2} - Human audible range coverage (250 Hz - 8
-    kHz)
+    \item \hyperref[FR7_2]{FR7.2} - Human most audible range coverage
+      (250 Hz - 8 kHz)
     \item \hyperref[NFR7_1]{NFR7.1} - 16 kHz sampling rate
     \item \hyperref[FR9_1]{FR9.1} - Closed microcontroller environment
     \item \hyperref[NFR9_1]{NFR9.1} - Minimum 100 MHz clock speed
