@@ -338,6 +338,29 @@ between requirements and modules is listed in Table~\ref{TblRT}.
   requirements, a specific design decision may be made to satisfy those
   requirements with a password.}
 
+\begin{enumerate}
+  \item \hyperref[SRS-NFR3_3]{NFR3.2} specifies that the system shall support
+  different audio sample sizes. Sample size directly affects both the speed and
+  quality of audio analysis. Consequently, a dedicated module,
+  \mref{mAudioSampling}, is responsible for managing this.
+
+\item \hyperref[SRS-FR3_4]{FR3.4} recommends the use of
+  \hyperref[SRS-def:hardware_acceleration]{hardware acceleration} to leverage
+  hardware optimizations. However, there may be cases where traditional
+  software algorithms perform more efficiently, such as when processing
+  smaller datasets. Therefore, specific computational tasks are encapsulated
+  within dedicated modules that determine whether to use hardware acceleration
+  based on the input characteristics. This design consideration affects
+  \mref{mAudioSpectralLeakage}, \mref{mAudioNormalizer}, and \mref{mFFT}.
+
+\item \hyperref[SRS-FR4_5]{FR4.5} requires that the software be portable
+  across different hardware platforms. This directly influenced the design
+  decision to abstract the Audio360 Engine from the hardware layer. Inputs to
+  the Audio360 Engine are maintained in a generic format, enabling deployment
+  on various hardware targets, including simulation environments.
+
+\end{enumerate}
+
 \section{Module Decomposition} \label{SecMD}
 
 Modules are decomposed according to the principle of ``information hiding''
@@ -377,6 +400,7 @@ to be implemented.
 \item[Implemented By:] --
 \end{description}
 
+% AUDIO360 ENGINE MODULE.
 \subsubsection{Audio360 Engine Module (\mref{mAudio360Engine})}
 
 \begin{description}
@@ -404,7 +428,7 @@ to be implemented.
   % improve performance than by externally imposed changes.
 \item[Implemented By:] --
 \end{description}
-
+% AUDIO SAMPLING MODULE.
 \subsubsection{Audio Sampling Module (\mref{mAudioSampling})}
 \begin{description}
 \item[Secrets:] The data structure used to store sampled audio data, the
@@ -415,6 +439,7 @@ to be implemented.
 \item[Implemented By:] \progname
 \end{description}
 
+% AUDIO SPECTRAL LEAKAGE PREVENTION MODULE.
 \subsubsection{Audio Spectral Leakage Prevention Module
   (\mref{mAudioSpectralLeakage})}
 \begin{description}
@@ -426,6 +451,7 @@ to be implemented.
 \item[Implemented By:] \progname
 \end{description}
 
+% AUDIO NORMALIZER MODULE.
 \subsubsection{Audio Normalizer Module (\mref{mAudioNormalizer})}
 \begin{description}
 \item[Secrets:] The normalization algorithm.
@@ -434,6 +460,7 @@ to be implemented.
 \item[Implemented By:] \progname
 \end{description}
 
+% AUDIO ANOMOLY DETECTION MODULE.
 \subsubsection{Audio Anomoly Detection Module (\mref{mAudioAnamoly})}
 \begin{description}
 \item[Secrets:] The detection algorithms used to identify anomalies in the audio
@@ -444,6 +471,7 @@ to be implemented.
 \item[Implemented By:] \progname
 \end{description}
 
+% FAST FOURIER TRANSFORM MODULE.
 \subsubsection{Fast Fourier Transform Module (\mref{mFFT})}
 \begin{description}
 \item[Secrets:] The specific algorithm to compute the fourier transform,
@@ -456,6 +484,7 @@ to be implemented.
 \item[Implemented By:] \progname
 \end{description}
 
+% LOGGING MODULE.
 \subsubsection{Logging Module (\mref{mLogging})}
 \begin{description}
 \item[Secrets:] The method used to route character streams to output sources,
@@ -466,6 +495,7 @@ to be implemented.
 \item[Implemented By:] \progname
 \end{description}
 
+% FAULT MANAGER MODULE.
 \subsubsection{Fault Manager Module (\mref{mFaultManager})}
 \begin{description}
 \item[Secrets:] The internal mechanisms and decision logic used to detect,
@@ -488,17 +518,28 @@ requirements and between the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+\hyperref[SRS-FR1_4]{FR1.4} & \mref{mFaultManager} \\
+\hyperref[SRS-NFR1_1]{NFR1.1} & \mref{mAudioSampling} \\
+\hline
+\hyperref[SRS-FR2_3]{FR2.3} & \mref{mFaultManager} \\
+\hyperref[SRS-NFR2_1]{NFR2.1} & \mref{mFaultManager} \\
+\hline
+\hyperref[SRS-FR3_1]{FR3.1} & \mref{mFFT} \\
+\hyperref[SRS-FR3_2]{FR3.2} & \mref{mAudioNormalizer} \\
+\hyperref[SRS-FR3_3]{FR3.3} & \mref{mAudioSpectralLeakage} \\
+\hyperref[SRS-FR3_4]{FR3.4} & \mref{mAudioSpectralLeakage},
+  \mref{mAudioNormalizer}, \mref{mFFT} \\
+\hyperref[SRS-FR3_5]{FR3.5} & \mref{mAudioAnamoly} \\
+\hyperref[SRS-NFR3_1]{NFR3.1} & \mref{mFFT} \\
+\hyperref[SRS-NFR3_2]{NFR3.2} & \mref{mAudioSampling} \\
+\hline
+\hyperref[SRS-FR4_1]{FR4.1} & \mref{mAudio360Engine} \\
+\hyperref[SRS-FR4_2]{FR4.2} & \mref{mAudio360Engine} \\
+\hyperref[SRS-FR4_3]{FR4.3} & \mref{mAudio360Engine} \\
+\hyperref[SRS-FR4_4]{FR4.4} & \mref{mAudio360Engine}, \mref{mFaultManager} \\
+\hyperref[SRS-NFR4_1]{NFR4.1} & \mref{mAudioSampling} \\
+\hyperref[SRS-NFR4_2]{NFR4.2} & \mref{mAudioSampling} \\
+\hyperref[SRS-NFR4_3]{NFR4.3} & \mref{mAudioSampling} \\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
@@ -512,17 +553,15 @@ R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
 \textbf{AC} & \textbf{Modules}\\
 \midrule
 \acref{acHardware} & \mref{mHH}\\
-\acref{acInput} & \mref{mInput}\\
-\acref{acParams} & \mref{mParams}\\
-\acref{acVerify} & \mref{mVerify}\\
+\acref{acNumMic} & -\\
+\acref{acMicArrangement} & -\\
 \acref{acOutput} & \mref{mOutput}\\
-\acref{acVerifyOut} & \mref{mVerifyOut}\\
-\acref{acODEs} & \mref{mODEs}\\
-\acref{acEnergy} & \mref{mEnergy}\\
-\acref{acControl} & \mref{mControl}\\
-\acref{acSeqDS} & \mref{mSeqDS}\\
-\acref{acSolver} & \mref{mSolver}\\
-\acref{acPlot} & \mref{mPlot}\\
+\acref{NumClassification} & -\\
+\acref{SampleRate} & \mref{mAudioSampling}\\
+\acref{SampleSize} & \mref{mAudioSampling}\\
+\acref{acVizContent} & -\\
+\acref{acHardwareAccel} & \mref{mFFT}\\
+\acref{acConfidenceAction} & \mref{mAudio360Engine}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}

@@ -88,6 +88,7 @@
 2025-10-22 & 2.0 & Technical terms to glossary\\
 2025-10-22 & 2.1 & Context diagram included\\
 2025-10-26 & 2.2 & Update sampling rate requirement\\
+2025-11-07 & 4.0 & Added requirements for software layer abstraction (FR4.5) \\
 \bottomrule
 \end{tabularx}
 
@@ -641,6 +642,7 @@ display.
 
 \subsection{S.2 Functionality} \label{sec:S.2}
 
+% EMBEDDED FIRMWARE REQUIREMENTS.
 \subsubsection{\hyperref[comp:embedded_firmware]{Embedded Firmware}} Functional
 Requirements \label{sec:FR1}
 \begin{itemize}
@@ -670,6 +672,7 @@ Non-Functional Requirements
   \hyperref[NFR7_1]{NFR7.1}.
 \end{itemize}
 
+% DRIVER LAYER REQUIREMENTS.
 \subsubsection{\hyperref[comp:driver_layer]{Driver Layer}} Functional
 Requirements \label{sec:FR2}
 \begin{itemize}
@@ -693,6 +696,7 @@ Non-Functional Requirements
   any errors to the firmware layer for proper error handling.
 \end{itemize}
 
+% AUDIO FILTERING REQUIREMENTS.
 \subsubsection{\hyperref[comp:audio_filtering]{Audio Filtering}} Functional
 Requirements \label{sec:FR3}
 \begin{itemize}
@@ -728,6 +732,7 @@ Non-Functional Requirements
   an audio processing success rate end to end of atleast 90\% over 60 seconds.
 \end{itemize}
 
+% AUDIO360 REQUIREMENTS.
 \subsubsection{\hyperref[comp:audio360Engine]{Audio360 Engine}} Functional
 Requirements
 \begin{itemize}
@@ -746,6 +751,11 @@ Requirements
   classification and directional analysis features until microphone faults
   addressed in \hyperref[FR3_5]{FR3.5} are resolved. This prevents the
   generation of unreliable or unsafe outputs.
+
+  \item \label{FR4_5}\textbf{FR4.5:} The Audio360 Engine shall portable. That is
+  the system can be deployed on different hardware. This is to ensure that the
+  there is flexibility to upgrade hardware to meet higher processing demands
+  when needed.
 \end{itemize}
 
 Non-Functional Requirements
@@ -762,6 +772,7 @@ Non-Functional Requirements
   discard microphone audio data immediately after completion of audio analysis.
 \end{itemize}
 
+% FREQUENCY ANALYSIS REQUIREMENTS.
 \subsubsection{\hyperref[comp:frequency_analysis]{Frequency Analysis}}
 Functional Requirements
 \begin{itemize}
@@ -804,6 +815,7 @@ Non-Functional Requirements
   This ensures reliable directional awareness for the user.
 \end{itemize}
 
+% VISUALIZATION CONTROLLER REQUIREMENTS.
 \subsubsection{\hyperref[comp:viz_controller]{Visualization Controller}}
 Functional Requirements\label{sec:FR6}
 \begin{itemize}
@@ -827,6 +839,7 @@ Non-Functional Requirements
   obstruction so users can safely perform external activities.
 \end{itemize}
 
+% MICROPHONE REQUIREMENTS.
 \subsubsection{\hyperref[comp:microphone]{Microphone}} Functional Requirements
 \begin{itemize}
   \item \label{FR7_1}\textbf{FR7.1:} The microphone shall collect soundwaves
@@ -845,6 +858,7 @@ Non-Functional Requirements
   \cite{MiracleEar2025}.
 \end{itemize}
 
+% OUTPUT DISPLAY REQUIREMENTS.
 \subsubsection{\hyperref[comp:display]{Output Display}} Functional Requirements
 \begin{itemize}
   \item \label{FR8_1}\textbf{FR8.1:} The output display shall notify users of
@@ -861,6 +875,7 @@ Non-Functional Requirements
   information to the user without perceptible delay.
 \end{itemize}
 
+% MICROCONTROLLER REQUIREMENTS.
 \subsubsection{\hyperref[comp:microcontroller]{Microcontroller}} Functional
 Requirements
 \begin{itemize}
