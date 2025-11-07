@@ -49,8 +49,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2025-11-13 & 1.0 & Initial write-up\\
 \bottomrule
 \end{tabularx}
 
@@ -274,7 +273,21 @@ actually be implemented.
 
 \begin{description}
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item ...
+\item [\refstepcounter{mnum} \mthemnum \label{mAudio360Engine}:] Audio360 Engine
+  Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioSampling}:] Audio Sampling 
+  Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioSpectralLeakage}:] Audio
+  Spectral Leakage Prevention Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioNormalizer}:] Audio
+  Normalizer Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioAnamoly}:] Audio Anomoly
+  Detection Module
+\item [\refstepcounter{mnum} \mthemnum \label{mFFT}:] Fast Fourier Transform 
+  Module 
+\item [\refstepcounter{mnum} \mthemnum \label{mLogging}:] Logging Module
+\item [\refstepcounter{mnum} \mthemnum \label{mFaultManager}:] Fault Manager
+  Module 
 \end{description}
 
 
@@ -288,7 +301,7 @@ actually be implemented.
 {Hardware-Hiding Module} & ~ \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & \mref{mAudio360Engine}\\
 & ?\\
 & ?\\
 & ?\\
@@ -298,9 +311,13 @@ actually be implemented.
 & ?\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
-& ?\\
-& ?\\
+\multirow{3}{0.3\textwidth}{Software Decision Module} & \mref{mAudioSampling}\\
+& \mref{mAudioSpectralLeakage}\\
+& \mref{mAudioNormalizer}\\
+& \mref{mAudioAnamoly}\\
+& \mref{mFFT}\\
+& \mref{mLogging}\\
+& \mref{mFaultManager}\\
 \bottomrule
 
 \end{tabular}
@@ -360,19 +377,20 @@ to be implemented.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Input Format Module (\mref{mInput})}
+\subsubsection{Audio360 Engine Module (\mref{mAudio360Engine})}
 
 \begin{description}
-\item[Secrets:]The format and structure of the input data.
-\item[Services:]Converts the input data into the data structure used by the
-  input parameters module.
-\item[Implemented By:] [Your Program Name Here]
-\item[Type of Module:] [Record, Library, Abstract Object, or Abstract Data Type]
-  [Information to include for leaf modules in the decomposition by secrets tree.]
+\item[Secrets:] The internal coordination logic that determines the execution
+  order and timing of core audio processing features. Also, the mechanisms that
+  manage data flow between hardware interfaces and the software modules.
+\item[Services:] Orchestrates the overall audio processing by receiving
+  raw input data and managing module communication.
+\item[Implemented By:] \progname
+\item[Type of Module:] Class 
+
+% Types of modules can be [Record, Library, Abstract Object, or Abstract Data
+% Type]
 \end{description}
-
-\subsubsection{Etc.}
-
 
 \subsection{Software Decision Module}
 
@@ -387,7 +405,75 @@ to be implemented.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Etc.}
+\subsubsection{Audio Sampling Module (\mref{mAudioSampling})}
+\begin{description}
+\item[Secrets:] The data structure used to store sampled audio data, the
+  scheduling of sampling times, and the memory optimization strategy for
+  acquiring and storing samples.
+\item[Services:] Provides sampling of audio data from a given source while
+  preserving the order of individual samples.
+\item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Audio Spectral Leakage Prevention Module
+  (\mref{mAudioSpectralLeakage})}
+\begin{description}
+\item[Secrets:] Windowing function strategy (Windowing is the method to minimize
+  spectral leakage).
+\item[Services:] Applying windowing on audio signal to reduce
+  \hyperref[SRS-def:spectral_leakage]{spectral leakage} before
+  \hyperref[SRS-def:frequency_domain]{frequency domain} processing.
+\item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Audio Normalizer Module (\mref{mAudioNormalizer})}
+\begin{description}
+\item[Secrets:] The normalization algorithm.
+\item[Services:] Processes audio signals to maintain consistent amplitude across
+  different sources.
+\item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Audio Anomoly Detection Module (\mref{mAudioAnamoly})}
+\begin{description}
+\item[Secrets:] The detection algorithms used to identify anomalies in the audio
+  stream. Also includes the list of dependent modules that must be notified
+  upon specific anomaly occurrences.
+\item[Services:]  Detects anomalies in the audio signal, such as clipping,
+  dropouts, or empty buffer conditions, and issues appropriate notifications.
+\item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Fast Fourier Transform Module (\mref{mFFT})}
+\begin{description}
+\item[Secrets:] The specific algorithm to compute the fourier transform,
+  potentially including
+  \hyperref[SRS-def:hardware_acceleration]{hardware acceleraion}
+  provided by the STM32 platform.
+\item[Services:] Computes the discrete Fourier transform of the input signal to
+  obtain its \hyperref[SRS-def:frequency_domain]{frequency domain}
+  representation.
+\item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Logging Module (\mref{mLogging})}
+\begin{description}
+\item[Secrets:] The method used to route character streams to output sources,
+  and the internal log formatting strategy, including timestamping and file
+  source information.
+\item[Services:] Provides centralized logging of data streams to designated
+  output destinations for debugging and monitoring. 
+\item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Fault Manager Module (\mref{mFaultManager})}
+\begin{description}
+\item[Secrets:] The internal mechanisms and decision logic used to detect,
+  manage, and recover from system faults.
+\item[Services:] Monitors system health and manages critical faults to maintain
+  core functionality.
+\item[Implemented By:] \progname
+\end{description}
 
 \section{Traceability Matrix} \label{SecTM}
 
