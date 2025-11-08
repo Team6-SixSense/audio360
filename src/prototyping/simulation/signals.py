@@ -47,14 +47,3 @@ def capture_audio_from_source(source_audio, rirs, mic_buffers, chunk_length):
 
 
     return mic_buffers
-
-        # audio_segment = np.array(mic_buffers[m], dtype=np.float32)
-
-        # [pred, prob] = classify_audio(audio_segment)
-        # pred_prob = np.max(prob)
-        # if (pred_prob < 0.9):
-
-        #     print("")
-        # else:            
-        #     print(f"Prediction {pred}")
-        #     # print(f"Probability {prob}")
