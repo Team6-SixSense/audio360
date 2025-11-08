@@ -11,8 +11,10 @@ dependencies = [
     "scipy",
     "pydub",
     "librosa",
-    "joblib"
+    "joblib",
+    "pyaudio"
 ]
 
-[tool.setuptools.packages.find]
-where = ["."]
+[tool.setuptools]
+packages = ["simulation"]
+package-dir = { "simulation" = "." }

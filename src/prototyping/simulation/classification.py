@@ -8,7 +8,6 @@ PACKAGE_ROOT = Path(__file__).resolve().parent
 file_path = PACKAGE_ROOT / "bin" / "pca_lda.pkl"
 
 def extract_mfcc_features(y, sr=16000, n_mfcc=26):
-    # y, sr = librosa.load(audio_path, sr=sr, mono=True)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
     return np.concatenate([np.mean(mfcc, axis=1), np.std(mfcc, axis=1)])
 
@@ -20,6 +19,11 @@ def classify_audio(audio_path):
     feat_pca = pca.transform(feat_scaled)
     pred = lda.predict(feat_pca)[0]
     prob = lda.predict_proba(feat_pca)[0]
-    return [pred, prob]
+
+    pred_prob = np.max(prob)
+    if (pred_prob < 0.9):
+        return "Undetermined"
+    else:     
+        return pred
 
 

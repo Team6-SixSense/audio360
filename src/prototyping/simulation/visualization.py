@@ -172,3 +172,95 @@ def _format_readme(room: pra.ShoeBox, title: str, description: str) -> str:
         content += "\n"
     
     return content
+
+# Persistent state
+_doa_fig = None
+_doa_ax = None
+_doa_est_arrow_artists = {}
+_doa_est_text_artists = {}
+_doa_true_arrow = None
+_classification = None
+
+def visualize_simulation_continuous(doa_results: dict,
+                                mic_positions: np.ndarray,
+                                classification,
+                                true_source_position: Optional[np.ndarray] = None):
+    """
+    Real-time DOA visualization that updates arrow directions instead of redrawing the plot.
+    """
+    global _doa_fig, _doa_ax, _doa_est_arrow_artists, _doa_est_text_artists, _doa_true_arrow, _classification
+
+    # ---- INITIAL SETUP (only once) ----
+    if _doa_fig is None:
+        plt.ion()
+        _doa_fig, _doa_ax = plt.subplots(figsize=(8, 8))
+
+        mic_center = np.mean(mic_positions[:2, :], axis=1)
+        mic_x = mic_positions[0, :] - mic_center[0]
+        mic_y = mic_positions[1, :] - mic_center[1]
+
+        # Mic positions
+        _doa_ax.scatter(mic_x, mic_y, c='blue', s=120, zorder=3)
+        for i in range(mic_positions.shape[1]):
+            _doa_ax.text(mic_x[i], mic_y[i], f"Mic {i+1}", fontsize=9, ha="center", va="center")
+
+        _doa_ax.set_xlim(-1, 1)
+        _doa_ax.set_ylim(-1, 1)
+        _doa_ax.set_aspect("equal")
+        _doa_ax.grid(True, alpha=0.3)
+        _doa_ax.set_title("Real-Time DOA Estimation (0° = North)")
+
+        _classification = _doa_ax.text(
+            0.5, -1.15, 
+            f"Classification: {classification}", 
+            ha="center", va="top", fontsize=12, transform=_doa_ax.transData
+        )
+
+        # ---- TRUE SOURCE DIRECTION STATIC ARROW ----
+        if true_source_position is not None:
+            source_x = true_source_position[0] - mic_center[0]
+            source_y = true_source_position[1] - mic_center[1]
+
+            true_angle = np.arctan2(source_y, source_x)   # ✅ correct
+            sx = 0.6 * np.cos(true_angle)
+            sy = 0.6 * np.sin(true_angle)
+
+            _doa_true_arrow = _doa_ax.arrow(
+                0, 0, sx, sy,
+                head_width=0.05, head_length=0.05,
+                fc='black', ec='black', linestyle='--', linewidth=2, alpha=0.7
+            )
+            _doa_ax.text(sx*1.15, sy*1.15, "True Source", fontsize=10, color='black')
+
+    # ---- CLEAR PREVIOUS ESTIMATED DOA ARROWS ----
+    for artist in list(_doa_est_arrow_artists.values()) + list(_doa_est_text_artists.values()):
+        artist.remove()
+
+    _doa_est_arrow_artists.clear()
+    _doa_est_text_artists.clear()
+
+    # ---- PLOT UPDATED ESTIMATED DOA ----
+    colors = ['red', 'green', 'orange', 'purple']
+
+    for idx, (name, doa) in enumerate(doa_results.items()):
+        if doa.azimuth_recon is None or len(doa.azimuth_recon) == 0:
+            continue
+
+        color = colors[idx % len(colors)]
+
+        for src_i, azimuth_rad in enumerate(doa.azimuth_recon):
+            azimuth_deg = np.rad2deg(azimuth_rad)
+
+            # Convert degrees to unit direction
+            x = 0.6 * np.cos(np.deg2rad(azimuth_deg))
+            y = 0.6 * np.sin(np.deg2rad(azimuth_deg))
+
+            arrow = _doa_ax.arrow(0, 0, x, y, fc=color, ec=color, width=0.02)
+            text = _doa_ax.text(x*1.15, y*1.15, f"{name}: {azimuth_deg:.1f}°", fontsize=9, color=color)
+
+            _doa_est_arrow_artists[f"{name}_{src_i}"] = arrow
+            _doa_est_text_artists[f"{name}_{src_i}"] = text
+
+    if _classification is not None:
+        _classification.set_text(f"Classification: {classification}")
+    plt.pause(0.01)

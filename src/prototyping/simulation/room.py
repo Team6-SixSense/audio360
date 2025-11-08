@@ -52,4 +52,3 @@ def add_source_with_signal(room: pra.ShoeBox, source_position: list, signal: np.
 
     room.add_source(source_position, signal=signal)
     return room
-

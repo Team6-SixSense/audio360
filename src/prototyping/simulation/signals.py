@@ -35,3 +35,26 @@ def generate_signal_from_audio_file(dirname: str, filename: str) -> np.ndarray:
 
     samples = load_audio_data(dirname, filename).get_array_of_samples()
     return np.array(samples)
+
+
+def capture_audio_from_source(source_audio, rirs, mic_buffers, chunk_length):
+    for m, rir in enumerate(rirs):
+        # This stores what microphone m picks up from the source_chunk
+        conv = np.convolve(source_audio, rir[0])[:chunk_length]
+        
+        # Add the audio stream to the buffer (automatically removes the stream from (BUFFER_SECONDS - 1) * CHUNK)
+        mic_buffers[m].extend(conv)
+
+
+    return mic_buffers
+
+        # audio_segment = np.array(mic_buffers[m], dtype=np.float32)
+
+        # [pred, prob] = classify_audio(audio_segment)
+        # pred_prob = np.max(prob)
+        # if (pred_prob < 0.9):
+
+        #     print("")
+        # else:            
+        #     print(f"Prediction {pred}")
+        #     # print(f"Probability {prob}")
