@@ -1,0 +1,16 @@
+@startuml Audio360EngineStateMachine
+title Audio360 Engine State Machine
+
+hide empty description
+
+[*] -> Ready
+Ready -> AudioClassificationState : Success
+AudioClassificationState -> DirectionalAnalysisState: Success
+DirectionalAnalysisState -> OutputProcessState: Success
+OutputProcessState -> Ready : Success
+
+AudioClassificationState --> [*] : Error
+DirectionalAnalysisState --> [*] : Error
+OutputProcessState --> [*] : Error
+
+@enduml

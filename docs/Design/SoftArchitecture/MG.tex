@@ -1,13 +1,14 @@
 \documentclass[12pt, titlepage]{article}
 
 \usepackage{fullpage}
-\usepackage[round]{natbib}
 \usepackage{multirow}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage{xr}
+\usepackage{cite}
 \hypersetup{
     colorlinks,
     citecolor=blue,
@@ -18,6 +19,8 @@
 
 \input{../../Comments}
 \input{../../Common}
+
+\externaldocument[SRS-]{../../SRS/SRS}
 
 \newcounter{acnum}
 \newcommand{\actheacnum}{AC\theacnum}
@@ -46,8 +49,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2025-11-13 & 1.0 & Initial write-up\\
 \bottomrule
 \end{tabularx}
 
@@ -66,15 +68,16 @@ This section records information for easy reference.
   \midrule 
   AC & Anticipated Change\\
   DAG & Directed Acyclic Graph \\
+  F & Functional Requirement \\
   M & Module \\
   MG & Module Guide \\
+  NFR & Non-functional Requirement \\
   OS & Operating System \\
   R & Requirement\\
   SC & Scientific Computing \\
   SRS & Software Requirements Specification\\
-  \progname & Explanation of program name\\
+  \progname & 360 Audio analysis system on smart glasses\\
   UC & Unlikely Change \\
-  \wss{etc.} & \wss{...}\\
   \bottomrule
 \end{tabular}\\
 
@@ -94,14 +97,14 @@ This section records information for easy reference.
 
 Decomposing a system into modules is a commonly accepted approach to developing
 software.  A module is a work assignment for a programmer or programming
-team~\citep{ParnasEtAl1984}.  We advocate a decomposition
-based on the principle of information hiding~\citep{Parnas1972a}.  This
+team~\cite{ParnasEtAl1984}.  We advocate a decomposition
+based on the principle of information hiding~\cite{Parnas1972a}.  This
 principle supports design for change, because the ``secrets'' that each module
 hides represent likely future changes.  Design for change is valuable in SC,
 where modifications are frequent, especially during initial development as the
 solution space is explored.  
 
-Our design follows the rules layed out by \citet{ParnasEtAl1984}, as follows:
+Our design follows the rules layed out by \cite{ParnasEtAl1984}, as follows:
 \begin{itemize}
 \item System details that are likely to change independently should be the
   secrets of separate modules.
@@ -111,7 +114,7 @@ Our design follows the rules layed out by \citet{ParnasEtAl1984}, as follows:
 \end{itemize}
 
 After completing the first stage of the design, the Software Requirements
-Specification (SRS), the Module Guide (MG) is developed~\citep{ParnasEtAl1984}. The MG
+Specification (SRS), the Module Guide (MG) is developed~\cite{ParnasEtAl1984}. The MG
 specifies the modular structure of the system and is intended to allow both
 designers and maintainers to easily identify the parts of the software.  The
 potential readers of this document are as follows:
@@ -157,16 +160,73 @@ adapted here is called design for
 change.
 
 \begin{description}
-\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-  hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-  initial input data.
-\item ...
-\end{description}
+\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:]
+  The specific hardware on which the software is running. \\
+  \textbf{Rationale:} There will be a benefit to using a hardware that is 
+  smaller (better integration with glasses), cheaper (reduce costs for user),
+  and stronger compute (allows for further advanced audio processing), if one
+  exists in the market.
 
-\wss{Anticipated changes relate to changes that would be made in requirements,
-design or implementation choices.  They are not related to changes that are made
-at run-time, like the values of parameters.}
+\item[\refstepcounter{acnum} \actheacnum \label{acNumMic}:] 
+  The number of microphones in microphone array. \\
+  \textbf{Rationale:} Depending on the performance on audio classification and
+  directional analysis features, more or less microphones may be required than
+  what is specified \hyperref[SRS-NFR9_2]{NFR9.2}.
+
+\item[\refstepcounter{acnum} \actheacnum \label{acMicArrangement}:] 
+  The arrangement of the microphones relative to each other. \\
+  \textbf{Rationale:} The system may be deployed on other survaces other than
+  glasses, such as a hat. As a result, the microphone arrangement can change.
+
+\item[\refstepcounter{acnum} \actheacnum \label{acOutput}:]
+  The output display hardware. At the moment, it is Rokid Glasses
+  \cite{RokidGlasses}, which projects visuals onto glasses lens. Display may be
+  changed to a simpler screen. \\
+  \textbf{Rationale:} Due to Rokid Glasses availability and cost, it may be
+  swapped with a cheaper and easily available display that can be integrated
+  easily onto a glasses frame.
+
+\item[\refstepcounter{acnum} \actheacnum \label{NumClassification}:]
+  The number of classification of audio sources. \\
+  \textbf{Rationale:} \hyperref[SRS-NFR5_1]{NFR5.1} specifies atleast 3 distinct
+  audio classification of audio sources required. This can be changed to detect
+  a single audio classification if detecting one source is more critical.
+
+\item[\refstepcounter{acnum} \actheacnum \label{SampleRate}:]
+  The sample rate that audio is sampled from the environment from the
+  environment. \\
+  \textbf{Rationale:} \hyperref[SRS-NFR7_1]{NFR7.1} states to sample at 16 kHz
+  as that is the minimum to analyze audible sounds to human. However, the scope
+  can expand to detect sounds outside the human audible range to notify users of
+  other critical sounds that human would have never been able to process on
+  their own.
+
+\item[\refstepcounter{acnum} \actheacnum \label{SampleSize}:]
+The sample size of audio data to analyze each time step. Currently specified
+to be up to 4096 samples from \hyperref[SRS-NFR3_3]{NFR3.2}. \\
+\textbf{Rationale:} For higher quality of audio processing, an higher sample
+rate is required.
+
+\item[\refstepcounter{acnum} \actheacnum \label{acVizContent}:] 
+  The visualization content on the output display. \\
+  \textbf{Rationale:} Stakeholders may require alternative information or a 
+  different presentation format that is more effective and appropriate for
+  the display. This is related to \hyperref[SRS-NFR6_2]{NFR6.2}
+
+\item[\refstepcounter{acnum} \actheacnum \label{acHardwareAccel}:]
+  Traditional algorithms may be used over
+  \hyperref[SRS-def:hardware_acceleration]{hardware acceleration}. \\
+  \textbf{Rationale:} Hardware acceleration can consume more power than
+  tradional software algorithms. The trade-off of slower processing over
+  power consumption may be desirable.
+
+\item[\refstepcounter{acnum} \actheacnum \label{acConfidenceAction}:]
+  Action when low confience occurs during audio source classification. \\
+  \textbf{Rationale:} According to \hyperref[SRS-FR5_4]{FR5.4}, the system
+  shall notify user when results from classification is low confidence. However,
+  this may be disregarded if the accuracy of the classification module is near 
+  perfect. 
+\end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
 
@@ -178,9 +238,30 @@ will potentially need to be modified. Hence, it is not intended that these
 decisions will be changed.
 
 \begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
-  (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-\item ...
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucInput}:]
+  The input devices for providing audio data from the environment are
+  microphones. \\
+ \textbf{Rationale:} Cheapest and easiest method of getting real-time audio
+ from the environment of the user.
+
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucClosed}:]
+  The processor works as a closed system. That is no external devices other than
+  the microphones and display can be connected, and all processing occurs on
+  the processor (processing is not offloaded to another device). \\
+ \textbf{Rationale:} Adheres to user \hyperref[SRS-goal:user_safety]{Goal 7},
+ user safety and privacy, as well as \hyperref[SRS-FR9_1]{FR9.1}.
+
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucMicSych}:]
+  Microphones must always be synchronized at each sample.\\
+ \textbf{Rationale:} Microphone synchronization is a requirement for directional
+ analysis, which a core feature. Relates to \hyperref[SRS-FR1_2]{FR1.2:}
+
+\item[\refstepcounter{ucnum} \uctheucnum \label{ucHardwareAbstraction}:]
+  The core features interact with hardware through an hardware abstraction
+  layer.\\
+ \textbf{Rationale:} This allows the achieve
+ \hyperref[acHardware]{hardware antricipated change} without system redesign.
+
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
@@ -192,7 +273,21 @@ actually be implemented.
 
 \begin{description}
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item ...
+\item [\refstepcounter{mnum} \mthemnum \label{mAudio360Engine}:] Audio360 Engine
+  Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioSampling}:] Audio Sampling 
+  Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioSpectralLeakage}:] Audio
+  Spectral Leakage Prevention Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioNormalizer}:] Audio
+  Normalizer Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioAnamoly}:] Audio Anomoly
+  Detection Module
+\item [\refstepcounter{mnum} \mthemnum \label{mFFT}:] Fast Fourier Transform 
+  Module 
+\item [\refstepcounter{mnum} \mthemnum \label{mLogging}:] Logging Module
+\item [\refstepcounter{mnum} \mthemnum \label{mFaultManager}:] Fault Manager
+  Module 
 \end{description}
 
 
@@ -206,7 +301,7 @@ actually be implemented.
 {Hardware-Hiding Module} & ~ \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & \mref{mAudio360Engine}\\
 & ?\\
 & ?\\
 & ?\\
@@ -216,9 +311,13 @@ actually be implemented.
 & ?\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
-& ?\\
-& ?\\
+\multirow{3}{0.3\textwidth}{Software Decision Module} & \mref{mAudioSampling}\\
+& \mref{mAudioSpectralLeakage}\\
+& \mref{mAudioNormalizer}\\
+& \mref{mAudioAnamoly}\\
+& \mref{mFFT}\\
+& \mref{mLogging}\\
+& \mref{mFaultManager}\\
 \bottomrule
 
 \end{tabular}
@@ -239,10 +338,33 @@ between requirements and modules is listed in Table~\ref{TblRT}.
   requirements, a specific design decision may be made to satisfy those
   requirements with a password.}
 
+\begin{enumerate}
+  \item \hyperref[SRS-NFR3_3]{NFR3.2} specifies that the system shall support
+  different audio sample sizes. Sample size directly affects both the speed and
+  quality of audio analysis. Consequently, a dedicated module,
+  \mref{mAudioSampling}, is responsible for managing this.
+
+\item \hyperref[SRS-FR3_4]{FR3.4} recommends the use of
+  \hyperref[SRS-def:hardware_acceleration]{hardware acceleration} to leverage
+  hardware optimizations. However, there may be cases where traditional
+  software algorithms perform more efficiently, such as when processing
+  smaller datasets. Therefore, specific computational tasks are encapsulated
+  within dedicated modules that determine whether to use hardware acceleration
+  based on the input characteristics. This design consideration affects
+  \mref{mAudioSpectralLeakage}, \mref{mAudioNormalizer}, and \mref{mFFT}.
+
+\item \hyperref[SRS-FR4_5]{FR4.5} requires that the software be portable
+  across different hardware platforms. This directly influenced the design
+  decision to abstract the Audio360 Engine from the hardware layer. Inputs to
+  the Audio360 Engine are maintained in a generic format, enabling deployment
+  on various hardware targets, including simulation environments.
+
+\end{enumerate}
+
 \section{Module Decomposition} \label{SecMD}
 
 Modules are decomposed according to the principle of ``information hiding''
-proposed by \citet{ParnasEtAl1984}. The \emph{Secrets} field in a module
+proposed by \cite{ParnasEtAl1984}. The \emph{Secrets} field in a module
 decomposition is a brief statement of the design decision hidden by the
 module. The \emph{Services} field specifies \emph{what} the module will do
 without documenting \emph{how} to do it. For each module, a suggestion for the
@@ -278,19 +400,21 @@ to be implemented.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Input Format Module (\mref{mInput})}
+% AUDIO360 ENGINE MODULE.
+\subsubsection{Audio360 Engine Module (\mref{mAudio360Engine})}
 
 \begin{description}
-\item[Secrets:]The format and structure of the input data.
-\item[Services:]Converts the input data into the data structure used by the
-  input parameters module.
-\item[Implemented By:] [Your Program Name Here]
-\item[Type of Module:] [Record, Library, Abstract Object, or Abstract Data Type]
-  [Information to include for leaf modules in the decomposition by secrets tree.]
+\item[Secrets:] The internal coordination logic that determines the execution
+  order and timing of core audio processing features. Also, the mechanisms that
+  manage data flow between hardware interfaces and the software modules.
+\item[Services:] Orchestrates the overall audio processing by receiving
+  raw input data and managing module communication.
+\item[Implemented By:] \progname
+\item[Type of Module:] Class 
+
+% Types of modules can be [Record, Library, Abstract Object, or Abstract Data
+% Type]
 \end{description}
-
-\subsubsection{Etc.}
-
 
 \subsection{Software Decision Module}
 
@@ -304,8 +428,82 @@ to be implemented.
   % improve performance than by externally imposed changes.
 \item[Implemented By:] --
 \end{description}
+% AUDIO SAMPLING MODULE.
+\subsubsection{Audio Sampling Module (\mref{mAudioSampling})}
+\begin{description}
+\item[Secrets:] The data structure used to store sampled audio data, the
+  scheduling of sampling times, and the memory optimization strategy for
+  acquiring and storing samples.
+\item[Services:] Provides sampling of audio data from a given source while
+  preserving the order of individual samples.
+\item[Implemented By:] \progname
+\end{description}
 
-\subsubsection{Etc.}
+% AUDIO SPECTRAL LEAKAGE PREVENTION MODULE.
+\subsubsection{Audio Spectral Leakage Prevention Module
+  (\mref{mAudioSpectralLeakage})}
+\begin{description}
+\item[Secrets:] Windowing function strategy (Windowing is the method to minimize
+  spectral leakage).
+\item[Services:] Applying windowing on audio signal to reduce
+  \hyperref[SRS-def:spectral_leakage]{spectral leakage} before
+  \hyperref[SRS-def:frequency_domain]{frequency domain} processing.
+\item[Implemented By:] \progname
+\end{description}
+
+% AUDIO NORMALIZER MODULE.
+\subsubsection{Audio Normalizer Module (\mref{mAudioNormalizer})}
+\begin{description}
+\item[Secrets:] The normalization algorithm.
+\item[Services:] Processes audio signals to maintain consistent amplitude across
+  different sources.
+\item[Implemented By:] \progname
+\end{description}
+
+% AUDIO ANOMOLY DETECTION MODULE.
+\subsubsection{Audio Anomoly Detection Module (\mref{mAudioAnamoly})}
+\begin{description}
+\item[Secrets:] The detection algorithms used to identify anomalies in the audio
+  stream. Also includes the list of dependent modules that must be notified
+  upon specific anomaly occurrences.
+\item[Services:]  Detects anomalies in the audio signal, such as clipping,
+  dropouts, or empty buffer conditions, and issues appropriate notifications.
+\item[Implemented By:] \progname
+\end{description}
+
+% FAST FOURIER TRANSFORM MODULE.
+\subsubsection{Fast Fourier Transform Module (\mref{mFFT})}
+\begin{description}
+\item[Secrets:] The specific algorithm to compute the fourier transform,
+  potentially including
+  \hyperref[SRS-def:hardware_acceleration]{hardware acceleraion}
+  provided by the STM32 platform.
+\item[Services:] Computes the discrete Fourier transform of the input signal to
+  obtain its \hyperref[SRS-def:frequency_domain]{frequency domain}
+  representation.
+\item[Implemented By:] \progname
+\end{description}
+
+% LOGGING MODULE.
+\subsubsection{Logging Module (\mref{mLogging})}
+\begin{description}
+\item[Secrets:] The method used to route character streams to output sources,
+  and the internal log formatting strategy, including timestamping and file
+  source information.
+\item[Services:] Provides centralized logging of data streams to designated
+  output destinations for debugging and monitoring. 
+\item[Implemented By:] \progname
+\end{description}
+
+% FAULT MANAGER MODULE.
+\subsubsection{Fault Manager Module (\mref{mFaultManager})}
+\begin{description}
+\item[Secrets:] The internal mechanisms and decision logic used to detect,
+  manage, and recover from system faults.
+\item[Services:] Monitors system health and manages critical faults to maintain
+  core functionality.
+\item[Implemented By:] \progname
+\end{description}
 
 \section{Traceability Matrix} \label{SecTM}
 
@@ -320,17 +518,28 @@ requirements and between the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+\hyperref[SRS-FR1_4]{FR1.4} & \mref{mFaultManager} \\
+\hyperref[SRS-NFR1_1]{NFR1.1} & \mref{mAudioSampling} \\
+\hline
+\hyperref[SRS-FR2_3]{FR2.3} & \mref{mFaultManager} \\
+\hyperref[SRS-NFR2_1]{NFR2.1} & \mref{mFaultManager} \\
+\hline
+\hyperref[SRS-FR3_1]{FR3.1} & \mref{mFFT} \\
+\hyperref[SRS-FR3_2]{FR3.2} & \mref{mAudioNormalizer} \\
+\hyperref[SRS-FR3_3]{FR3.3} & \mref{mAudioSpectralLeakage} \\
+\hyperref[SRS-FR3_4]{FR3.4} & \mref{mAudioSpectralLeakage},
+  \mref{mAudioNormalizer}, \mref{mFFT} \\
+\hyperref[SRS-FR3_5]{FR3.5} & \mref{mAudioAnamoly} \\
+\hyperref[SRS-NFR3_1]{NFR3.1} & \mref{mFFT} \\
+\hyperref[SRS-NFR3_2]{NFR3.2} & \mref{mAudioSampling} \\
+\hline
+\hyperref[SRS-FR4_1]{FR4.1} & \mref{mAudio360Engine} \\
+\hyperref[SRS-FR4_2]{FR4.2} & \mref{mAudio360Engine} \\
+\hyperref[SRS-FR4_3]{FR4.3} & \mref{mAudio360Engine} \\
+\hyperref[SRS-FR4_4]{FR4.4} & \mref{mAudio360Engine}, \mref{mFaultManager} \\
+\hyperref[SRS-NFR4_1]{NFR4.1} & \mref{mAudioSampling} \\
+\hyperref[SRS-NFR4_2]{NFR4.2} & \mref{mAudioSampling} \\
+\hyperref[SRS-NFR4_3]{NFR4.3} & \mref{mAudioSampling} \\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
@@ -344,17 +553,15 @@ R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
 \textbf{AC} & \textbf{Modules}\\
 \midrule
 \acref{acHardware} & \mref{mHH}\\
-\acref{acInput} & \mref{mInput}\\
-\acref{acParams} & \mref{mParams}\\
-\acref{acVerify} & \mref{mVerify}\\
+\acref{acNumMic} & -\\
+\acref{acMicArrangement} & -\\
 \acref{acOutput} & \mref{mOutput}\\
-\acref{acVerifyOut} & \mref{mVerifyOut}\\
-\acref{acODEs} & \mref{mODEs}\\
-\acref{acEnergy} & \mref{mEnergy}\\
-\acref{acControl} & \mref{mControl}\\
-\acref{acSeqDS} & \mref{mSeqDS}\\
-\acref{acSolver} & \mref{mSolver}\\
-\acref{acPlot} & \mref{mPlot}\\
+\acref{NumClassification} & -\\
+\acref{SampleRate} & \mref{mAudioSampling}\\
+\acref{SampleSize} & \mref{mAudioSampling}\\
+\acref{acVizContent} & -\\
+\acref{acHardwareAccel} & \mref{mFFT}\\
+\acref{acConfidenceAction} & \mref{mAudio360Engine}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
@@ -364,7 +571,7 @@ R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
 In this section, the uses hierarchy between modules is
-provided. \citet{Parnas1978} said of two programs A and B that A {\em uses} B if
+provided. \cite{Parnas1978} said of two programs A and B that A {\em uses} B if
 correct execution of B may be necessary for A to complete the task described in
 its specification. That is, A {\em uses} B if there exist situations in which
 the correct functioning of A depends upon the availability of a correct
@@ -390,7 +597,6 @@ arrows in the diagram typically correspond to the presence of import statement.}
 \label{FigUH}
 \end{figure}
 
-%\section*{References}
 
 \section{User Interfaces}
 
@@ -407,7 +613,8 @@ needed. Drawings, Sketches, Figma}
 
 \wss{You can point to GitHub if this information is included there}
 
-\bibliographystyle {plainnat}
+\newpage
+\bibliographystyle{IEEEtran}
 \bibliography{../../../refs/References}
 
 \newpage{}
