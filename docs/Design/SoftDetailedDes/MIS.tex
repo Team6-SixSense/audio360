@@ -2,7 +2,6 @@
 
 \usepackage{amsmath, mathtools}
 
-\usepackage[round]{natbib}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -19,6 +18,7 @@
 \usepackage[section]{placeins}
 \usepackage{caption}
 \usepackage{fullpage}
+\usepackage{cite}
 
 \hypersetup{
 bookmarks=true,     % show bookmarks bar?
@@ -31,7 +31,9 @@ urlcolor=cyan          % color of external links
 
 \usepackage{array}
 
-\externaldocument{../../SRS/SRS}
+\externaldocument[SRS-]{../../SRS/SRS}
+\externaldocument[MG-]{../SoftArchitecture/MG}
+\newcommand{\mref}[1]{M\ref{#1}}
 
 \input{../../Comments}
 \input{../../Common}
@@ -53,8 +55,7 @@ urlcolor=cyan          % color of external links
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2025-11-13 & 1.0 & Initial write-up\\
 \bottomrule
 \end{tabularx}
 
@@ -88,10 +89,10 @@ found at \url{...}.  \wss{provide the url for your repo}
 \wss{You should describe your notation.  You can use what is below as
   a starting point.}
 
-The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
+The structure of the MIS for modules comes from \cite{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
 \cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
-\citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
+\cite{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
 multiple assignment statement and conditional rules follow the form $(c_1
 \Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
 
@@ -154,12 +155,67 @@ The following table is taken directly from the Module Guide document for this pr
 \end{table}
 
 \newpage
+\section{Data Types}
+
+\newpage
+\subsection{Generics}
+
+\subsubsection{int32}\label{generic:int32}
+32 bits signed integer ($\mathbb{Z}$).
+
+\subsubsection{int64}\label{generic:int64}
+64 bits signed integer ($\mathbb{Z}$).
+
+\subsubsection{uint32}\label{generic:uint32}
+32 bits unsigned integer ($\mathbb{N}$).
+
+\subsubsection{uint64}\label{generic:uint64}
+64 bits unsigned integer ($\mathbb{N}$).
+
+\subsubsection{float32}\label{generic:float32}
+32 bits floating point ($\mathbb{R}$).
+
+\subsubsection{float64}\label{generic:float64}
+64 bits floating point ($\mathbb{R}$).
+
+\newpage
+\subsection{Enums}
+\subsubsection{Audio360State}\label{state:Audio360State}
+\begin{enumerate}
+  \item AudioClassificationProcess:
+    \label{state:Audio360State:AudioClassificationState}
+    State when audio classification is running.
+  \item DirectionalAnalysisProcess:
+    \label{state:Audio360State:DirectionalAnalysisState}
+    State when directional analysis is running.
+  \item OutputProcess:
+    \label{state:Audio360State:OutputProcessState}
+    State when output processing is running.
+\end{enumerate}
+
+\subsubsection{Audio360Status}\label{state:Audio360Status}
+\begin{enumerate}
+  \item Uninitialized: \label{state:Audio360Status:Uninitialized}
+    Audio360 Engine is not initialized.
+  \item Initialized: \label{state:Audio360Status:Initialized}
+    Audio360 Engine is initialized, but not ready.
+  \item Ready: \label{state:Audio360Status:Ready}
+    Audio360 Engine ready for requests.
+  \item Running: \label{state:Audio360Status:Running}
+    Audio360 Engine is running. Can not accept new requests.
+  \item Error: \label{state:Audio360Status:Error}
+    Audio360 Engine is stuck at an unhandled error.
+\end{enumerate}
+
+\newpage
+\subsection{Data Structures}
+
 ~\newpage
 
 \section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
   cross-referencing}
 
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+\wss{You can reference SRS labels, such as R.}
 
 \wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
 
@@ -177,13 +233,13 @@ The following table is taken directly from the Module Guide document for this pr
 \subsubsection{Exported Access Programs}
 
 \begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+\begin{tabularx}{\linewidth}{l X X X}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
 \wss{accessProg} & - & - & - \\
 \hline
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \subsection{Semantics}
@@ -226,11 +282,92 @@ The following table is taken directly from the Module Guide document for this pr
   They are not necessarily something that is going to be implemented
   explicitly.  Even if they are implemented, they are not exported; they only
   have local scope.}
+  
+\newpage
+\section{MIS of Audio360 Engine \label{MAudio360Engine} - 
+  \mref{MG-mAudio360Engine}}
+
+\subsection{Module}
+
+Orchestrates the overall audio processing by receiving raw input data and
+managing \hyperref[MAudio360Engine_Uses]{module} communication.
+
+\subsection{Uses}\label{MAudio360Engine_Uses}
+
+\begin{enumerate}
+  \item Audio classification
+  \item Directional Analysis
+  \item Output
+  \item Audio Sampling Module
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+runProgram & - & - & ProgramStartFailure, ProgramRunTimeFailure \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item state [\hyperref[state:Audio360State]{Audio360State}]:
+    Determines the current state of the the Audio360 engine. Each state will run
+    a specific module in \hyperref[MAudio360Engine_Uses]{used modules}.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item status [\hyperref[state:Audio360State]{Audio360Status}]:
+    Status of the module. This encapsulates initialization, running, ready,
+    or errored.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent run():
+\begin{itemize}
+\item transition: The state machine in figure
+  \ref{fig:audio360_engine_state_machine} outlines the transition of this
+  module.
+
+\begin{figure}[h!]
+    \centering 
+    \includegraphics[width=\textwidth]{diagrams/Audio360EngineStateMachine.png}
+    \caption{Internal state machine of Audio360 Engine module.}
+    \label{fig:audio360_engine_state_machine}
+\end{figure}
+
+\item output: None
+\item exception: ProgramStartFailure, ProgramRunTimeFailure
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
 
 \newpage
 
-\bibliographystyle {plainnat}
-\bibliography {../../../refs/References}
+\bibliographystyle{IEEEtran}
+\bibliography{../../../refs/References}
 
 \newpage
 
