@@ -31,7 +31,7 @@ jobs:
       - name: Get changed LaTeX files
         id: latex-files
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- docs/**/*.tex | xargs)
+          CHANGED_FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | grep '^docs/.*\.tex$' || true)
           echo "Changed files: $CHANGED_FILES"
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
           CHANGED_FILENAMES=$(for file in $CHANGED_FILES; do basename "$file"; done | xargs)
