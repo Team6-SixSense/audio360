@@ -305,8 +305,6 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mLogging}:] Logging Module
 \item [\refstepcounter{mnum} \mthemnum \label{mFaultManager}:] Fault Manager
   Module 
-\item [\refstepcounter{mnum} \mthemnum \label{mSTFT}:] Short Time Fourier 
-Transform Module
 \item [\refstepcounter{mnum} \mthemnum \label{mMelFilter}: Mel Filter Module]
 \item [\refstepcounter{mnum} \mthemnum \label{mDCT}:] Discret Cosine Transform 
 Module
@@ -349,7 +347,6 @@ Module
 & \mref{mFFT}\\
 & \mref{mLogging}\\
 & \mref{mFaultManager}\\
-& \mref{mSTFT}\\
 & \mref{mMelFilter}\\
 & \mref{mDCT}\\
 & \mref{mPCA}\\
@@ -415,7 +412,7 @@ clipping or dropouts.
   Analysis (LDA) on components to predict the classification. Since this is a 
   multi-step process, speciic computational tasks are encapsulated within 
   de-coupled modules that will be called individualy. This design affects 
-  \mref{mSTFT}, \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and 
+  \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and 
   \mref{mClassification}. 
 
 \end{enumerate}
@@ -588,16 +585,6 @@ maintain core functionality when possible.
 \item[Implemented By:] \progname
 \end{description}
 
-\subsubsection{Short Time Fourier Transform Module (\mref{mSTFT})}
-\begin{description}
-  \item[Secrets:] The specific algorithm to compute the Short Time Fourier 
-  Transform (STFT).
-  \item[Services:] Accepts framed time-domain samples and outputs their 
-  corresponding frequency-domain magnitude for each time frame. Involves 
-  using \mref{mFFT} module to compute the FFT for each time frame. 
-  \item[Implemented By:] \progname
-\end{description}
-
 \subsubsection{Mel Filter Module (\mref{mMelFilter})}
 \begin{description}
   \item[Secrets:] The specific algorithm for converting a signal from the 
@@ -691,7 +678,7 @@ requirements and between the modules and the anticipated changes.
 \hyperref[SRS-NFR4_2]{NFR4.2} & \mref{mAudioSampling} \\
 \hyperref[SRS-NFR4_3]{NFR4.3} & \mref{mAudioSampling} \\
 \hline
-\hyperref[SRS-FR5_1]{FR5.1} & \mref{mSTFT}, \mref{mMelFilter}, \mref{mDCT}, 
+\hyperref[SRS-FR5_1]{FR5.1} & \mref{mMelFilter}, \mref{mDCT}, 
 \mref{mPCA}, \mref{mLDA}, \mref{mClassification}\\
 \hyperref[SRS-FR5_4]{FR5.4} & \mref{mClassification}\\
 \bottomrule
