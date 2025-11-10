@@ -4,6 +4,8 @@
 \restylefloat{table}
 
 \usepackage{booktabs}
+\usepackage{cite}
+\usepackage{xr}
 
 \title{Team Contributions: POC\\\progname}
 
@@ -14,24 +16,49 @@
 \input{../Comments}
 \input{../Common}
 
+\externaldocument[DevPlan-]{../DevelopmentPlan/DevelopmentPlan}
+
 \begin{document}
 
 \maketitle
 
-This document summarizes the contributions of each team member up to the POC
-Demo.  The time period of interest is the time between the beginning of the term
-and the POC demo.
+\newpage
+
+\tableofcontents
+
+\newpage
+
+This document provides a summary of each team member's contributions leading
+up to the Proof of Concept (POC) demonstration. The reporting period covers all
+work completed from the beginning of the term through November 2, 2025.
 
 \section{Demo Plans}
 
-\wss{What will you be demonstrating}
+The team will be demonstrating the core features of \progname working in a 
+simulated environment. The core features include direction detection of a sound
+source, where the system outputs the angle of arrival of the detected sound. 
+The other feature is audio classification of atleast 3 distinct classifications.
+Demonstrating that these features work at a high level  will allow the team to
+get validation from stakeholders who are hard of hearing ensuring that the
+solution effectively addresses their pain point of limited situational
+awareness.
+
+According to the SRS \cite{SRS}, these features are intended to be deployed on a
+microcontroller integrated into a pair of smart glasses. However, the shipment
+of the glasses is scheduled to arrive after the POC deadline. While the team
+currently has access to the microcontrollers, the hardware setup and integration
+process require significant development effort. As a result, the system will
+initially be deployed in a simulated environment for the POC. In this setup,
+pre-recorded microphone array audio data will be used as input for the core
+algorithms. The team will employ pyroomacoustics \cite{pyroomacoustics}, a
+Python based audio room processing library, to generate simulated audio input
+based on the spatial configuration and relative positions of the microphones
+and sound sources.
 
 \section{Team Meeting Attendance}
 
-\wss{For each team member how many team meetings have they attended over the
-time period of interest.  This number should be determined from the meeting
-issues in the team's repo.  The first entry in the table should be the total
-number of team meetings held by the team.}
+Team meetings are held weekly to discuss progress updates, address blockers,
+and plan upcoming tasks.
 
 \begin{table}[H]
 \centering
@@ -39,28 +66,24 @@ number of team meetings held by the team.}
 \toprule
 \textbf{Student} & \textbf{Meetings}\\
 \midrule
-Total & Num\\
-Name 1 & Num\\
-Name 2 & Num\\
-Name 3 & Num\\
-Name 4 & Num\\
-Name 5 & Num\\
+Total & 7\\
+Omar Alam & 6\\
+Sathurshan Arulmohan & 6\\
+Nirmal Chaudhari & 7\\
+Kalp Shah & 6\\
+Jay Sharma & 6\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the counts can be provided here.}
 
-\section{Supervisor/Stakeholder Meeting Attendance}
+\section{Supervisor Meeting Attendance}
 
-\wss{For each team member how many supervisor/stakeholder team meetings have
-they attended over the time period of interest.  This number should be determined
-from the supervisor meeting issues in the team's repo.  The first entry in the
-table should be the total number of supervisor and team meetings held by the
-team.  If there is no supervisor, there will usually be meetings with
-stakeholders (potential users) that can serve a similar purpose.}
-
-\noindent \textbf{Supervisor's Name: } [fill in this information]
+Supervisor meetings were held only when expert guidance was required, minimizing\
+the number of scheduled sessions.
+\newline
+\newline
+\noindent \textbf{Supervisor's Name: } Dr. Martin v. Mohrenschildt
 
 \begin{table}[H]
 \centering
@@ -68,29 +91,25 @@ stakeholders (potential users) that can serve a similar purpose.}
 \toprule
 \textbf{Student} & \textbf{Meetings}\\
 \midrule
-Total & Num\\
-Name 1 & Num\\
-Name 2 & Num\\
-Name 3 & Num\\
-Name 4 & Num\\
-Name 5 & Num\\
+Total & 2\\
+Omar Alam & 2\\
+Sathurshan Arulmohan & 2\\
+Nirmal Chaudhari & 2\\
+Kalp Shah & 2\\
+Jay Sharma & 1\\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\wss{If needed, an explanation for the counts can be provided here.}
 
 \section{Lecture Attendance}
 
-\wss{For each team member how many lectures have they attended over the time
-period of interest.  This number should be determined from the lecture issues in
-the team's repo. You can find the number of lectures in the time period of
-interest by looking at the
-\href{https://calendar.google.com/calendar/u/0/embed?src=rnboqiaki1k2la7rpu3bn0um58@group.calendar.google.com&ctz=America/Toronto}
-{Google calendar} for the capstone course.}
-
-\wss{NOTE: There will be approximately 13 lectures between the start of class
-and the POC demos}
+Lecture tracking began on September 15, 2025. Lectures prior to this date were
+not documented, as the team and project charter had not yet been established.
+The team agreed that at least one member would attend each lecture and take
+notes, with Nirmal designated as the
+\hyperref[DevPlan-role:note_taker]{Note Taker}. In cases where Nirmal
+was unable to attend, another team member served as a substitute. The team
+successfully ensured that at least one representative attended every lecture.
 
 \begin{table}[H]
 \centering
@@ -98,49 +117,39 @@ and the POC demos}
 \toprule
 \textbf{Student} & \textbf{Lectures}\\
 \midrule
-Total & Num\\
-Name 1 & Num\\
-Name 2 & Num\\
-Name 3 & Num\\
-Name 4 & Num\\
-Name 5 & Num\\
+Total & 7\\
+Omar Alam & 4\\
+Sathurshan Arulmohan & 5\\
+Nirmal Chaudhari & 5\\
+Kalp Shah & 2\\
+Jay Sharma & 1\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the lecture attendance can be provided here.}
 
 \section{TA Document Discussion Attendance}
 
-\wss{For each team member how many of the informal document discussion meetings
-with the TA were attended over the time period of interest.}
 
-\noindent \textbf{TA's Name: } [fill in this information]
+\noindent \textbf{TA's Name: } Rashad Bhuiyan
 
 \begin{table}[H]
 \centering
 \begin{tabular}{ll}
 \toprule
-\textbf{Student} & \textbf{Lectures}\\
+\textbf{Student} & \textbf{TA Meetings}\\
 \midrule
-Total & Num\\
-Name 1 & Num\\
-Name 2 & Num\\
-Name 3 & Num\\
-Name 4 & Num\\
-Name 5 & Num\\
+Total & 3\\
+Omar Alam & 3\\
+Sathurshan Arulmohan & 3\\
+Nirmal Chaudhari & 3\\
+Kalp Shah & 3\\
+Jay Sharma & 3\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the attendance can be provided here.}
-
 \section{Commits}
-
-\wss{For each team member how many commits to the main branch have been made
-over the time period of interest.  The total is the total number of commits for
-the entire team since the beginning of the term.  The percentage is the
-percentage of the total commits made by each team member.}
 
 \begin{table}[H]
 \centering
@@ -148,26 +157,29 @@ percentage of the total commits made by each team member.}
 \toprule
 \textbf{Student} & \textbf{Commits} & \textbf{Percent}\\
 \midrule
-Total & Num & 100\% \\
-Name 1 & Num & \% \\
-Name 2 & Num & \% \\
-Name 3 & Num & \% \\
-Name 4 & Num & \% \\
-Name 5 & Num & \% \\
+Total & 283 & 100\% \\
+Omar Alam & 33 & 11.7\% \\
+Sathurshan Arulmohan & 142 & 50.2\% \\
+Nirmal Chaudhari & 48 & 17.0\% \\
+Kalp Shah & 31 & 10.9\% \\
+Jay Sharma & 29 & 10.2\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the counts can be provided here.  For
-instance, if a team member has more commits to unmerged branches, these numbers
-can be provided here.  If multiple people contribute to a commit, git allows for
-multi-author commits.}
+Sathurshan's commit count is higher than that of other team members
+because GitHub registers a commit each time a developer merges a pull request
+related to documentation updates. This is caused by the continuous deployment
+bot automatically generating a commit when building and commiting the PDF
+documentation. Sathurshan has primarily been responsible for managing pull
+request merges on days when documentation submissions are due.
+
+Furthermore, Omar has focused on hardware-related tasks, which are not
+reflected in the commit metrics. Similarly, Nirmal, Kalp, and Jay have
+undertaken research tasks for feature development that does not directly
+result in commits.
 
 \section{Issue Tracker}
-
-\wss{For each team member how many issues have they authored (including open and
-closed issues (O+C)) and how many have they been assigned (only counting closed
-issues (C only)) over the time period of interest.}
 
 \begin{table}[H]
 \centering
@@ -175,36 +187,44 @@ issues (C only)) over the time period of interest.}
 \toprule
 \textbf{Student} & \textbf{Authored (O+C)} & \textbf{Assigned (C only)}\\
 \midrule
-Name 1 & Num & Num \\
-Name 2 & Num & Num \\
-Name 3 & Num & Num \\
-Name 4 & Num & Num \\
-Name 5 & Num & Num \\
+Omar Alam & 5 & 24 \\
+Sathurshan Arulmohan & 132 & 56 \\
+Nirmal Chaudhari & 7 & 32 \\
+Kalp Shah & 13 & 21 \\
+Jay Sharma & 0 & 24 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\wss{If needed, an explanation for the counts can be provided here.}
+Sathurshan has a higher number of authored issues, as it is the
+\hyperref[DevPlan-role:leader]{Leader's} responsibility to create and assign
+tasks to team members for each milestone. This role distribution was agreed
+upon by the team, as outlined in the Development Plan document
+\cite{DevelopmentPlan}. Additionally, Sathurshan has closed more issues than
+other members, having resolved the majority of peer review items at the time
+of the report (12 out of 20 closed issues).
 
-\section{CICD}
+\section{CI/CD}
 
-\wss{Say how CICD will be used in your project}
+Section \textbf{CI/CD} of the Development Document \cite{DevelopmentPlan}
+describes the team's approach to implementing CI/CD for the project.
+At a high level, the CI/CD pipeline is used to automatically execute all
+team-developed tests, including unit and integration tests, and to build the
+source code using the target compiler. This process ensures that new code
+changes do not break or regress previously implemented functionality.
 
 \section{Team Charter Trigger Items}
 
-\wss{Provide a summary of the quantified triggers identified in the team's
-charter.}
+There have been no team charter trigger items to date, and the team has made
+good progress on the project. However, there is room for improvement in overall
+work ethics throughout the semester to ensure the capstone is completed on
+schedule. To address this, a
+\href{https://github.com/Team6-SixSense/audio360/issues/278}{GitHub issue} has
+been created to revise the team charter and implement the necessary updates to
+support the successful completion of the project.
 
-\wss{Provide a list of any violations of the triggers.  If the team wishes, the
-violations can be summarized on aggregate, instead of naming specific team
-members.}
-
-\wss{Provide a plan to address the violations.  This could include revising the
-triggers, if they are found to be too weak, strong or ambiguous.}
-
-\section{Additional Productivity Metrics}
-
-\wss{If your team has additional metrics of productivity, please feel free to
-add them to this report.}
+\newpage
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \end{document}

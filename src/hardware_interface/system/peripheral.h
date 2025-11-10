@@ -13,6 +13,10 @@
 #include "stm32f7xx_nucleo_144.h"
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @brief Sets up required peripherals on the hardware with proper clock
  * configurations. This function must be called before using any hardware
@@ -24,6 +28,16 @@ void setupPeripherals();
  * @brief Output for when errors occurs. Will output LED3. @ref setupPeripherals
  * must be called before calling this function
  */
-void errorHandler();
+void Error_Handler();
+
+/**
+ *@brief Get handle to SAI module block
+ */
+
+SAI_HandleTypeDef* getSAI_Handle();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
