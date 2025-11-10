@@ -78,6 +78,8 @@ This section records information for easy reference.
   SRS & Software Requirements Specification\\
   \progname & 360 Audio analysis system on smart glasses\\
   UC & Unlikely Change \\
+  USART & Universal Synchronous/Asynchronous Receiver/Transmitter \\
+  SPI & Serial Peripheral Interface \\
   \bottomrule
 \end{tabular}\\
 
@@ -175,7 +177,7 @@ change.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acMicArrangement}:] 
   The arrangement of the microphones relative to each other. \\
-  \textbf{Rationale:} The system may be deployed on other survaces other than
+  \textbf{Rationale:} The system may be deployed on devices other than
   glasses, such as a hat. As a result, the microphone arrangement can change.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acOutput}:]
@@ -217,15 +219,21 @@ rate is required.
   Traditional algorithms may be used over
   \hyperref[SRS-def:hardware_acceleration]{hardware acceleration}. \\
   \textbf{Rationale:} Hardware acceleration can consume more power than
-  tradional software algorithms. The trade-off of slower processing over
+  traditional software algorithms. The trade-off of slower processing over
   power consumption may be desirable.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acConfidenceAction}:]
-  Action when low confience occurs during audio source classification. \\
+  Action when low confidence occurs during audio source classification. \\
   \textbf{Rationale:} According to \hyperref[SRS-FR5_4]{FR5.4}, the system
   shall notify user when results from classification is low confidence. However,
   this may be disregarded if the accuracy of the classification module is near 
   perfect. 
+
+\item[\refstepcounter{acnum} \actheacnum \label{acSDCardLogging}:]
+  The SD card logging method for diagnostic audio data.\\
+  \textbf{Rationale:} The SD card diagnostic method is useful for 
+  bulk data logging during testing. In a production system it is 
+  going to be removed since no debug logs will be captured.
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
@@ -272,6 +280,14 @@ below, which are leaves in the hierarchy tree, are the modules that will
 actually be implemented.
 
 \begin{description}
+\item [\refstepcounter{mnum} \mthemnum \label{mMicInput}:] Microphone Input 
+  Module
+\item [\refstepcounter{mnum} \mthemnum \label{mUSART}:] USART Communication 
+  Module
+\item [\refstepcounter{mnum} \mthemnum \label{mSDInterface}:] SD Card 
+  Interface Module
+\item [\refstepcounter{mnum} \mthemnum \label{mMicDiag}:] Microphone Diagnostic
+  Module 
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAudio360Engine}:] Audio360 Engine
   Module
@@ -281,24 +297,28 @@ actually be implemented.
   Spectral Leakage Prevention Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAudioNormalizer}:] Audio
   Normalizer Module
-\item [\refstepcounter{mnum} \mthemnum \label{mAudioAnamoly}:] Audio Anomoly
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioAnomaly}:] Audio Anomaly
   Detection Module
 \item [\refstepcounter{mnum} \mthemnum \label{mFFT}:] Fast Fourier Transform 
   Module 
 \item [\refstepcounter{mnum} \mthemnum \label{mLogging}:] Logging Module
-\item [\refstepcounter{mnum} \mthemnum \label{mFaultManager}:] Fault Manager
-  Module 
+\item [\refstepcounter{mnum} \mthemnum \label{mFaultManager}:] Software Fault 
+Manager Module 
+
 \end{description}
 
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding Module} & ~ \\
+\multirow{4}{0.3\textwidth}{Hardware-Hiding Module} & \mref{mMicInput}\\ 
+& \mref{mUSART} \\
+& \mref{mSDInterface} \\
+& \mref{mMicDiag}\\
 \midrule
 
 \multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & \mref{mAudio360Engine}\\
@@ -339,6 +359,13 @@ between requirements and modules is listed in Table~\ref{TblRT}.
   requirements with a password.}
 
 \begin{enumerate}
+
+\item \hyperref[SRS-NFR2_1]{NFR2.1} and \hyperref[SRS-FR1_4]{FR1.4} specify 
+that the system shall detect and propagate faults to the embedded firmware layer 
+for appropriate handling. A software fault manager module, \mref{mFaultManager}, 
+is responsible for monitoring and reacting to software error states. In addition, 
+the \mref{mMicDiag} module monitors the microphone array for hardware faults.
+
   \item \hyperref[SRS-NFR3_3]{NFR3.2} specifies that the system shall support
   different audio sample sizes. Sample size directly affects both the speed and
   quality of audio analysis. Consequently, a dedicated module,
@@ -352,6 +379,11 @@ between requirements and modules is listed in Table~\ref{TblRT}.
   within dedicated modules that determine whether to use hardware acceleration
   based on the input characteristics. This design consideration affects
   \mref{mAudioSpectralLeakage}, \mref{mAudioNormalizer}, and \mref{mFFT}.
+
+\item \hyperref[SRS-FR3_5]{FR3.5} requires the system to detect anomalies in 
+the audio stream. To address this, a dedicated module, \mref{mAudioAnomaly}, is
+responsible for monitoring the audio data and identifying anomalies such as
+clipping or dropouts.
 
 \item \hyperref[SRS-FR4_5]{FR4.5} requires that the software be portable
   across different hardware platforms. This directly influenced the design
@@ -377,28 +409,52 @@ Only the leaf modules in the hierarchy have to be implemented. If a dash
 (\emph{--}) is shown, this means that the module is not a leaf and will not have
 to be implemented.
 
-\subsection{Hardware Hiding Modules (\mref{mHH})}
+\subsection{Hardware Hiding Modules}
 
+%% MICROPHONE INPUT MODULE.
+\subsubsection{Microphone Input Module \mref{mMicInput}}
 \begin{description}
-\item[Secrets:]The data structure and algorithm used to implement the virtual
-  hardware.
-\item[Services:]Serves as a virtual hardware used by the rest of the
-  system. This module provides the interface between the hardware and the
-  software. So, the system can use it to display outputs or to accept inputs.
-\item[Implemented By:] OS
+\item [Secrets: ] The configuration and initialization of the hardware
+peripherals required to read data from the microphone array. 
+\item [Services: ] Provides a driver interface to read audio 
+sample data from the microphone array as a buffered stream.
+\item [Implemented By: ] Driver Layer
 \end{description}
+
+%% USART COMMUNICATION MODULE.
+\subsubsection{USART Communication Module \mref{mUSART}}
+\begin{description}
+\item [Secrets: ] The configuration and initialization of the hardware
+peripherals required for USART serial communication with external devices.
+\item [Services: ] Provides an interface for sending and receiving serial 
+data using the USART protocol on the serial pins of the microcontroller.
+\item [Implemented By: ] Driver Layer
+\end{description}
+
+%% SD CARD INTERFACE MODULE.
+\subsubsection{SD Card Interface Module \mref{mSDInterface}}
+\begin{description}
+\item [Secrets:] The configuration and initialization of the SPI hardware
+peripherals and clocks required for SD card communication. Thi module also 
+hides the SD card file system management and driver used to send commands
+to the SD card.
+\item [Services:] Provides an interface for reading and writing files to
+an SD card module connected to the microcontroller via SPI.
+\item [Implemented By:] Driver Layer
+\end{description}
+
+%% MICROPHONE DIAGNOSTIC MODULE.
+\subsubsection{Microphone Diagnostic Module \mref{mMicDiag}}
+\begin{description}
+\item [Secrets: ] The internal logic used to perform diagnostic
+tests on the microphone array hardware using hardware ADC converters. 
+\item [Services: ] Provides diagnostic state information about the microphone
+array hardware and its connections to the microcontroller. 
+\item [Implemented By: ] Driver Layer
+\end{description}
+
 
 \subsection{Behaviour-Hiding Module}
-
-\begin{description}
-\item[Secrets:]The contents of the required behaviours.
-\item[Services:]Includes programs that provide externally visible behaviour of
-  the system as specified in the software requirements specification (SRS)
-  documents. This module serves as a communication layer between the
-  hardware-hiding module and the software decision module. The programs in this
-  module will need to change if there are changes in the SRS.
-\item[Implemented By:] --
-\end{description}
 
 % AUDIO360 ENGINE MODULE.
 \subsubsection{Audio360 Engine Module (\mref{mAudio360Engine})}
@@ -460,8 +516,8 @@ to be implemented.
 \item[Implemented By:] \progname
 \end{description}
 
-% AUDIO ANOMOLY DETECTION MODULE.
-\subsubsection{Audio Anomoly Detection Module (\mref{mAudioAnamoly})}
+% AUDIO ANOMALY DETECTION MODULE.
+\subsubsection{Audio Anomaly Detection Module (\mref{mAudioAnomaly})}
 \begin{description}
 \item[Secrets:] The detection algorithms used to identify anomalies in the audio
   stream. Also includes the list of dependent modules that must be notified
@@ -495,13 +551,13 @@ to be implemented.
 \item[Implemented By:] \progname
 \end{description}
 
-% FAULT MANAGER MODULE.
-\subsubsection{Fault Manager Module (\mref{mFaultManager})}
+% SOFTWARE FAULT MANAGER MODULE.
+\subsubsection{Software Fault Manager Module (\mref{mFaultManager})}
 \begin{description}
 \item[Secrets:] The internal mechanisms and decision logic used to detect,
-  manage, and recover from system faults.
-\item[Services:] Monitors system health and manages critical faults to maintain
-  core functionality.
+  manage, and recover from software system faults.
+\item[Services:] Monitors system error states and manages critical faults to 
+maintain core functionality when possible.
 \item[Implemented By:] \progname
 \end{description}
 
@@ -518,7 +574,7 @@ requirements and between the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-\hyperref[SRS-FR1_4]{FR1.4} & \mref{mFaultManager} \\
+\hyperref[SRS-FR1_4]{FR1.4} & \mref{mFaultManager}, \mref{mMicDiag}\\
 \hyperref[SRS-NFR1_1]{NFR1.1} & \mref{mAudioSampling} \\
 \hline
 \hyperref[SRS-FR2_3]{FR2.3} & \mref{mFaultManager} \\
@@ -529,7 +585,7 @@ requirements and between the modules and the anticipated changes.
 \hyperref[SRS-FR3_3]{FR3.3} & \mref{mAudioSpectralLeakage} \\
 \hyperref[SRS-FR3_4]{FR3.4} & \mref{mAudioSpectralLeakage},
   \mref{mAudioNormalizer}, \mref{mFFT} \\
-\hyperref[SRS-FR3_5]{FR3.5} & \mref{mAudioAnamoly} \\
+\hyperref[SRS-FR3_5]{FR3.5} & \mref{mAudioAnomaly} \\
 \hyperref[SRS-NFR3_1]{NFR3.1} & \mref{mFFT} \\
 \hyperref[SRS-NFR3_2]{NFR3.2} & \mref{mAudioSampling} \\
 \hline
@@ -541,6 +597,8 @@ requirements and between the modules and the anticipated changes.
 \hyperref[SRS-NFR4_2]{NFR4.2} & \mref{mAudioSampling} \\
 \hyperref[SRS-NFR4_3]{NFR4.3} & \mref{mAudioSampling} \\
 \bottomrule
+\hyperref[SRS-FR7_1]{FR7.1} & \mref{mMicInput}, \mref{mAudioSampling} \\
+
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
 \label{TblRT}
