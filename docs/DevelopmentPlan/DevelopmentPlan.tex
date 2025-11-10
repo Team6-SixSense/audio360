@@ -28,6 +28,7 @@
 2025-09-22 & Nirmal, Sathurshan, Omar, Kalp, Jay & Initial Write-up\\
 2025-10-11 & Sathurshan & Defining static analyzer tool\\
 2025-10-26 & Sathurshan & Updating Proof of Concept scope\\
+2025-11-01 & Nirmal & Update Team Member Technical Roles \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -58,7 +59,7 @@ Our team will be adopting the MIT
 \section{Team Meeting Plan}
 
 The team will meet twice a week in-person at a predetermined location. Each
-meetings will limited to a maximum of 30 minutes. Additional meetings may be
+meetings will be limited to a maximum of 30 minutes. Additional meetings may be
 scheduled as needed during lecture times if course instructor has no content to
 share. Team meetings will be organized by the the
 \hyperref[role:meeting_chair]{meeting chair} and follow the agenda similar to
@@ -122,39 +123,133 @@ listed:
 
 \section{Team Member Roles}\label{sec:TeamMemberRoles}
 
+From an admin perspective, each team member will have unique responsibilities
+they are expected to carry out. These responsibilities are defined under 
+distinct roles each member has been assigned to. A breakdown of the roles, 
+responsibilities, qualifications and assignee has been provided below. 
+
 \begin{itemize}
   \item Leader (Sathurshan Arulmohan) \label{role:leader}
     \begin{itemize}
-      \item Point of contact for professor and TAs. 
-      \item Ensures that the team is on track to meet deadlines.
-      \item Project planning and scheduling.
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Point of contact for professor and TAs. 
+          \item Ensures that the team is on track to meet deadlines.
+          \item Project planning and scheduling.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Strong organizational and leadership skills. 
+          \item Has experience in coordinating group projects and managing
+          timelines. 
+          \item Strong communication skills. 
+        \end{itemize}
     \end{itemize}
-  \item Meeting chair (Kalp Shah) \label{role:meeting_chair}
+  \item Meeting Chair (Kalp Shah)
     \begin{itemize}
-      \item Creates the agenda for meetings.
-      \item Facilitates the meetings.
-      \item Ensures that the team sticks to the agenda.
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Creates the agenda for meetings.
+          \item Facilitates the meetings.
+          \item Ensures that the team sticks to the agenda.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Great time management and facilitation skills. 
+          \item Strong interpersonal, communication and organizational skills. 
+          \item Prior experience in leading meetings. 
+        \end{itemize}
     \end{itemize}
   \item Reviewer (Jay Sharma)
     \begin{itemize}
-      \item Reviews all deliverables before deadline to ensure all sections are
-      completed.
-      \item Reach out to the reviewers of each section to ensure they approve it
-      before the deadline.
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Reviews all deliverables before deadline to ensure all sections
+           are completed.
+          \item Reach out to the reviewers of each section to ensure they
+          approve it before the deadline.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Attention to detail and strong analytical skills.
+          \item Experience in document quality assurance, and proof reading. 
+          \item Understanding of project requirements and documentation
+          standards. 
+        \end{itemize}
     \end{itemize}
   \item Note taker (Nirmal Chaudhari)\label{role:note_taker}
     \begin{itemize}
-      \item Takes notes during meetings.
-      \item Create meeting notes summary after the meeting ends to grasp meeting
-      content.
-      \item Coordinates with project leader after meeting ends for action items. 
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Takes notes during meetings.
+          \item Create meeting notes summary after the meeting ends to grasp
+          meeting content.
+          \item Coordinates with project leader after meeting ends for action
+          items. 
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Strong written communication, and summarization skills. 
+          \item Multi-tasking abilities, able to capture technical discussions
+          while contributing to meetings. 
+          \item Ability to type fast, with little error. 
+        \end{itemize}
     \end{itemize}
   \item System Specialist (Omar Alam)
     \begin{itemize}
-      \item Manages and validates system design at a high level. 
-      \item Responsible for hardware \& software interfaces.
-      \item Handles budgeting and expenses, ensures total budget remains under
-      \$500.
+      \item \textit{Responsibilities:}
+        \begin{itemize}
+          \item Manages and validates system design at a high level. 
+          \item Responsible for hardware \& software interfaces.
+          \item Handles budgeting and expenses, ensures total budget remains
+          under \$500.
+        \end{itemize}
+      \item \textit{Qualifications:}
+        \begin{itemize}
+          \item Technical background in software and hardware system design. 
+          \item Experience with system architecture and prototyping.  
+          \item Basic knowledge of budgeting and resource allocation. 
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+Moreover, from a technical perspective, the team has been divided into two 
+subgroups: Feature Development Team, and Hardware Integration Team. The members 
+assigned to each team have responsibilities they are required to carry out. 
+A breakdown of the responsibilities and assignees for each subteam has been 
+provided below. 
+
+\begin {itemize}
+  \item Feature Development Team
+  \begin{itemize}
+    \item \textit{Members: Kalp Shah, Jay Sharma, Nirmal Chaudhari}
+    \item \textit{Responsibilities}
+      \begin{itemize}
+        \item Design and implement software features aligned with system 
+        requirements. 
+        \item Collaborate with the
+        \hyperref[hardware_integration_team]{Hardware Integration Team}
+        to ensure software  can be supported by the hardware. 
+        \item Conduct code reviews on each other's feature development PRs. 
+        \item Support testing and integration phases by providing software-side 
+        troubleshooting. 
+      \end{itemize} 
+    \end{itemize}
+
+  \item Hardware Integration Team \label{hardware_integration_team}
+    \begin{itemize}
+      \item \textit{Members: Sathurshan Arulmohan, Omar Alam}
+      \item \textit{Responsibilities}
+        \begin{itemize}
+          \item Set up and configure microcontroller environment, including 
+          toolchains, peripheral connections and communication protocols. 
+          \item Test and validate hardware components for compatibility and 
+          reliability. 
+          \item Prepare hardware platform for software integration once feature 
+          development has been completed. 
+          \item Document setup procedure and hardware constraints for Feature 
+          Development Team. 
+        \end{itemize} 
     \end{itemize}
 \end{itemize}
 
