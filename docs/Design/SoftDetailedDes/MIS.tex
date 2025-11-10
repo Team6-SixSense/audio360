@@ -127,14 +127,19 @@ The following table summarizes the primitive data types used by \progname.
 \textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
 \midrule
 character & char & a single symbol or digit\\
-integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
-natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
+integer & $\mathbb{Z}$ & a number without a fractional component in
+  (-$\infty$, $\infty$) \\
+natural number & $\mathbb{N}$ & a number without a fractional component in
+  [1, $\infty$) \\
 real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+array/list & x[] & Ordered list of type x. \\
 negate & $\neg$ & Logical math NOT.\\
 and & $\wedge$ & Logical math AND \\
 or & $\vee$ & Logical math OR \\
 implies & $\implies$ & Logical math implies \\
 assignment & $:=$ & For A := B. B is assigned to A. \\
+for all & $\forall$ & Referencing all items. For example:
+  $(\forall~variable~|~condition:~statement)$ \\
 \bottomrule
 \end{tabular} 
 \end{center}
@@ -183,7 +188,6 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 \section{Data Types}
 
-\newpage
 \subsection{Generics}
 
 
@@ -243,7 +247,7 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 \subsection{Data Structures}
 
-~\newpage
+\newpage
 
 \section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
   cross-referencing}
@@ -484,6 +488,198 @@ None
 
 None
 
+\newpage
+\section{MIS of Audio Spectral Leakage Module \label{MAudioSpectralLeakage} -
+  \mref{MG-mAudioSpectralLeakage}}
+
+\subsection{Module}
+
+Applying windowing on audio signal to reduce
+\hyperref[SRS-def:spectral_leakage]{spectral leakage} before
+\hyperref[SRS-def:frequency_domain]{frequency domain} processing.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+applyFilter & sampleWindow & filteredWindow & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyFilter():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
+    $sampleWindow[i] * \sin(\dfrac{\pi * i}{N - 1})^2)$ \\
+    such that $N = $ size of sampleWindow.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+
+\subsubsection{Local Functions}
+
+None
+
+
+\newpage
+
+\section{MIS of Audio Normalizer Module \label{MAudioNormalizer} -
+  \mref{MG-mAudioNormalizer}}
+
+\subsection{Module}
+
+Processes audio signals to maintain consistent amplitude across different
+sources.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+normalize & sampleWindow, source & filteredWindow & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+Normalization factor is pre-deteremined and known for all given sources.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent normalize():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
+    $\dfrac{sampleWindow[i]}{F_{source}})$ \\
+    such that $N = $ size of sampleWindow and $F_{source}$ is normalization
+    factor of a the sampleWindow source.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+
+\section{MIS of Logging Module \label{MLogging} -
+  \mref{MG-mLogging}}
+
+\subsection{Module}
+
+Provides centralized logging of data streams to designated output destinations
+for debugging and monitoring.
+
+\subsection{Uses}
+
+TODO References
+
+\begin{itemize}
+  \item SD card interface
+  \item USART interface
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+log & text & - & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent log():
+\begin{itemize}
+\item transition: None
+\item output: input text is logged to output source (SD card or USART port)
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+
+
+
 \newpage 
 
 \section{MIS of Mel Filter Module \label{mMelFilter} - 
@@ -520,7 +716,6 @@ real array & invalidSpectrogramDimension \\
 \end{center}
 
 \subsection{Semantics}
-
 \subsubsection{State Variables}
 
 None
