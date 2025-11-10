@@ -1,5 +1,3 @@
 # run with `pip install -r requirements.txt`
-matplotlib
-pydub
-pyroomacoustics
-scipy
+numpy
+wave
