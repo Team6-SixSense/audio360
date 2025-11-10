@@ -130,6 +130,11 @@ character & char & a single symbol or digit\\
 integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
 natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
 real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+negate & $\neg$ & Logical math NOT.\\
+and & $\wedge$ & Logical math AND \\
+or & $\vee$ & Logical math OR \\
+implies & $\implies$ & Logical math implies \\
+assignment & $:=$ & For A := B. B is assigned to A. \\
 \bottomrule
 \end{tabular} 
 \end{center}
@@ -181,11 +186,18 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 \subsection{Generics}
 
+
+\subsubsection{int16}\label{generic:int16}
+16 bits signed integer ($\mathbb{Z}$).
+
 \subsubsection{int32}\label{generic:int32}
 32 bits signed integer ($\mathbb{Z}$).
 
 \subsubsection{int64}\label{generic:int64}
 64 bits signed integer ($\mathbb{Z}$).
+
+\subsubsection{uint16}\label{generic:uint16}
+16 bits unsigned integer ($\mathbb{N}$).
 
 \subsubsection{uint32}\label{generic:uint32}
 32 bits unsigned integer ($\mathbb{N}$).
@@ -386,6 +398,93 @@ None
 None
 
 \newpage
+
+\section{MIS of Audio Sampling Module \label{MAudioSampling} -
+  \mref{MG-mAudioSampling}}
+
+\subsection{Module}
+Provides sampling of audio data from a given source while preserving the order
+of individual samples.
+
+
+\subsection{Uses}
+
+TODO
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item sampleWindowSize [\hyperref[generic:uint16]{uint16}]:
+    \label{var:sampleWindowSize}
+    The number of samples in a window. The value is a power of 2.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+sample & inputSource & - & InputSouceError \\
+getSampledData & - & sampledData & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item sampledData [\hyperref[generic:uint32]{uint32}[]]:
+    \label{var:sampleData}  
+    A cyclic array of size \hyperref[var:sampleWindowSize]{sampleWindowSize}
+    that stored the sampled data.
+  \item windowPosition [\hyperref[generic:uint32]{uint32}]:
+    \label{var:windowPosition}  
+    The current reference index position of the array storing sampled data.
+    This denotes the starting point of the cyclic array. 
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent sample():
+\begin{itemize}
+\item transition: 
+  \begin{enumerate}
+    \item $sampleData[windowPosition] := inputSource.newData$
+    \item $((windowPosition + 1) \geq sampleWindowSize) \implies $
+      $windowPosition:= 0~\vee \neg ((windowPosition + 1) \geq $
+      $sampleWindowSize) \implies$ \\ $ windowPosition:= windowPosition + 1$
+  \end{enumerate}
+
+\item output: None
+\item exception: InputSouceError
+\end{itemize}
+
+\noindent getSampledData():
+\begin{itemize}
+\item transition: None 
+\item output: \hyperref[var:sampleData]{sampleData}
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
 
 \section{MIS of Mel Filter Module \label{mMelFilter} - 
 \mref{MG-mMelFilter}}
