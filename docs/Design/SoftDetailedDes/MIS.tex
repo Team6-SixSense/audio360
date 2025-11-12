@@ -280,7 +280,7 @@ subsubsection{Audio360Status}\label{enum:FaultState}
 
 \newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
+\section{MIS of \wss{Module Name}} \label{mod:Module} \wss{Use labels for
   cross-referencing}
 
 \wss{You can reference SRS labels, such as R.}
@@ -352,21 +352,21 @@ subsubsection{Audio360Status}\label{enum:FaultState}
   have local scope.}
   
 \newpage
-\section{MIS of Audio360 Engine \label{MAudio360Engine} - 
+\section{MIS of Audio360 Engine \label{mod:Audio360Engine} - 
   \mref{MG-mAudio360Engine}}
 
 \subsection{Module}
 
 Orchestrates the overall audio processing by receiving raw input data and
-managing \hyperref[MAudio360Engine_Uses]{module} communication.
+managing \hyperref[mod:Audio360Engine_Uses]{module} communication.
 
-\subsection{Uses}\label{MAudio360Engine_Uses}
+\subsection{Uses}\label{mod:Audio360Engine_Uses}
 
 \begin{enumerate}
-  \item Audio classification
-  \item Directional Analysis
-  \item Output
-  \item Audio Sampling Module
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:FaultManager]{Fault Manager Module} 
+  \item \item \hyperref[mod:Logging]{Logging Module} 
 \end{enumerate}
 
 \subsection{Syntax}
@@ -394,7 +394,7 @@ runProgram & - & - & ProgramStartFailure, ProgramRunTimeFailure \\
 \begin{itemize}
   \item state [\hyperref[enum:Audio360State]{Audio360State}]:
     Determines the current state of the the Audio360 engine. Each state will run
-    a specific module in \hyperref[MAudio360Engine_Uses]{used modules}.
+    a specific module in \hyperref[mod:Audio360Engine_Uses]{used modules}.
 \end{itemize}
 
 \subsubsection{Environment Variables}
@@ -434,7 +434,7 @@ None
 
 \newpage
 
-\section{MIS of Audio Sampling Module \label{MAudioSampling} -
+\section{MIS of Audio Sampling Module \label{mod:AudioSampling} -
   \mref{MG-mAudioSampling}}
 
 \subsection{Module}
@@ -444,7 +444,10 @@ of individual samples.
 
 \subsection{Uses}
 
-TODO
+\begin{itemize}
+  \item \hyperref[mod:MicInput]{Microphone Input Module}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+\end{itemize}
 
 \subsection{Syntax}
 
@@ -521,7 +524,7 @@ None
 
 \newpage
 \section{MIS of Audio Spectral Leakage Prevention Module
-  \label{MAudioSpectralLeakage} - \mref{MG-mAudioSpectralLeakage}}
+  \label{mod:AudioSpectralLeakage} - \mref{MG-mAudioSpectralLeakage}}
 
 \subsection{Module}
 
@@ -586,7 +589,7 @@ None
 
 \newpage
 
-\section{MIS of Audio Normalizer Module \label{MAudioNormalizer} -
+\section{MIS of Audio Normalizer Module \label{mod:AudioNormalizer} -
   \mref{MG-mAudioNormalizer}}
 
 \subsection{Module}
@@ -649,7 +652,7 @@ Normalization factor is pre-deteremined and known for all given sources.
 None
 
 \newpage
-\section{MIS of Fast Fourier Transform - \mref{MG-mFFT}} \label{MFFT}
+\section{MIS of Fast Fourier Transform - \mref{MG-mFFT}} \label{mod:FFT}
 
 \subsection{Module}
 
@@ -659,7 +662,7 @@ obtain its \hyperref[SRS-def:frequency_domain]{frequency domain}
 \subsection{Uses}
 
 \begin{itemize}
-  \item \hyperref[MAudioSpectralLeakage]{Audio Spectral Leakage Prevention
+  \item \hyperref[mod:AudioSpectralLeakage]{Audio Spectral Leakage Prevention
     Module}
 \end{itemize}
 
@@ -724,7 +727,7 @@ None
 
 \newpage
 
-\section{MIS of Logging Module \label{MLogging} -
+\section{MIS of Logging Module \label{mod:Logging} -
   \mref{MG-mLogging}}
 
 \subsection{Module}
@@ -734,11 +737,9 @@ for debugging and monitoring.
 
 \subsection{Uses}
 
-TODO References
-
 \begin{itemize}
-  \item SD card interface
-  \item USART interface
+  \item \hyperref[mod:USART]{USART Communication Module}
+  \item \hyperref[mod:SDInterface]{SD Card Interface Module}
 \end{itemize}
 
 \subsection{Syntax}
@@ -792,7 +793,7 @@ None
 
 \newpage 
 
-\section{MIS of Mel Filter Module \label{mMelFilter} - 
+\section{MIS of Mel Filter Module \label{mod:MelFilter} - 
 \mref{MG-mMelFilter}}
 
 \subsection{Module}
@@ -802,9 +803,7 @@ of $n$ mel-scaled triangular filters to each frequency frame.
 
 \subsection{Uses}
 
-\begin{enumerate}
-  \item Audio Classification
-\end{enumerate}
+None
 
 \subsection{Syntax}
 
@@ -884,7 +883,7 @@ None
 
 \newpage 
 
-\section{MIS of Discrete Cosine Transform Module \label{mDCT} - 
+\section{MIS of Discrete Cosine Transform Module \label{mod:DCT} - 
 \mref{MG-mDCT}}
 
 \subsection{Module}
@@ -897,9 +896,7 @@ perform Principle Component Analysis later on.
 
 \subsection{Uses}
 
-\begin{enumerate}
-  \item Audio Classification
-\end{enumerate}
+None
 
 \subsection{Syntax}
 
@@ -985,7 +982,7 @@ None
 
 \newpage 
 
-\section{MIS of Principle Component Analysis Module \label{mPCA} - 
+\section{MIS of Principle Component Analysis Module \label{mod:PCA} - 
 \mref{MG-mPCA}}
 
 \subsection{Module}
@@ -997,9 +994,7 @@ helps with eliminating noise and unimportant information.
 
 \subsection{Uses}
 
-\begin{enumerate}
-  \item Audio Classification
-\end{enumerate}
+Non
 
 \subsection{Syntax}
 
@@ -1095,7 +1090,7 @@ None
 
 \newpage 
 
-\section{MIS of Linear Discriminant Analysis Module \label{mLDA} - 
+\section{MIS of Linear Discriminant Analysis Module \label{mod:LDA} - 
 \mref{MG-mLDA}}
 
 \subsection{Module}
@@ -1108,9 +1103,7 @@ module.
 
 \subsection{Uses}
 
-\begin{enumerate}
-  \item Audio Classification
-\end{enumerate}
+None
 
 \subsection{Syntax}
 
@@ -1212,7 +1205,7 @@ None
 
 \newpage 
 
-\section{MIS of Classification Module \label{mClassification} - 
+\section{MIS of Classification Module \label{mod:Classification} - 
 \mref{MG-mClassification}}
 
 \subsection{Module}
@@ -1224,7 +1217,14 @@ involved.
 \subsection{Uses}
 
 \begin{enumerate}
-  \item Audio Classification
+  \item \hyperref[mod:AudioSampling]{Audio Sampling Module}
+  \item \hyperref[mod:AudioNormalizer]{Audio Normalizer Module}
+  \item \hyperref[mod:FFT]{Fast Fourier Transform Module}
+  \item \hyperref[mod:MelFilter]{Mel Filter Module}
+  \item \hyperref[mod:DCT]{Discrete Cosine Transform Module}
+  \item \hyperref[mod:PCA]{Principle Component Analysis Module}
+  \item \hyperref[mod:LDA]{Linear Discrete Analysis Module}
+  \item 
 \end{enumerate}
 
 \subsection{Syntax}
@@ -1297,7 +1297,7 @@ None
 \newpage 
 
 \section{MIS of Fault Manager Module - \mref{MG-mFaultManager}
-  \label{MFaultManager}} 
+  \label{mod:FaultManager}} 
 
 \subsection{Module}
 
@@ -1306,12 +1306,11 @@ functionality.
 
 \subsection{Uses}
 
-TODO: refine and add hyperlinks
 \begin{enumerate}
-  \item Audio classification
-  \item Directional Analysis
-  \item Visualization controller 
-  \item ...
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
 \end{enumerate}
 
 \subsection{Syntax}
