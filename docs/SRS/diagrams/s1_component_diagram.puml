@@ -1,4 +1,8 @@
 @startuml software_component_diagram
+
+top to bottom direction
+skinparam wrapWidth 50
+
 title Software Component Diagram
 
 package "Microphone Software" {
@@ -21,7 +25,6 @@ package "Microcontroller Software" {
     component "Embedded Firmware" as Firmware
     component "Driver Layer" as Drivers
     component "Audio Filtering" as AudioFiltering
-    component "Calibration Component" as Calibration
     component "Audio360 Engine" as Engine
     component "Frequency Analysis" as FreqAnalysis
     component "Visualization Controller" as VizController
@@ -36,7 +39,6 @@ package "Microcontroller Software" {
     Drivers -up- HardwareInterface
     Firmware --|> HardwareInterface
     AudioFiltering --|> HardwareInterface
-    Calibration --|> HardwareInterface
 
     AudioFiltering -up- AudioProcessAPI
     Firmware -down-|> AudioProcessAPI

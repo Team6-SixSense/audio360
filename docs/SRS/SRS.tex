@@ -75,6 +75,8 @@
 \pagenumbering{roman}
 
 \tableofcontents
+\listoffigures
+\listoftables
 
 ~\newpage
 
@@ -88,6 +90,12 @@
 2025-10-22 & 2.0 & Technical terms to glossary\\
 2025-10-22 & 2.1 & Context diagram included\\
 2025-10-26 & 2.2 & Update sampling rate requirement\\
+2025-11-05 & 3.0 & Addressing TA comments\\
+2025-11-05 & 3.1 & Symbolic Constants section\\
+2025-11-05 & 3.2 & Providing additional rationale and clarification for
+functional and non-functional requirements.\\
+2025-11-05 & 3.3 & Verification and acceptabce criteria abstracted away from
+defining specific metrics.\\
 2025-11-07 & 4.0 & Added requirements for software layer abstraction (FR4.5) \\
 2025-11-12 & 4.1 & Added a symbols, abbreviations, and acronyms table \\
 \bottomrule
@@ -100,7 +108,7 @@
 
 \section{Goal}
 
-\subsection{G.1 Context and overall objective}
+\subsection{G.1 Context and overall objective}\label{sec:G.1}
 
 With around 4 million Canadians affected by hearing loss \cite{Healthing2025}, 
 there is a significant need for assistive technologies that can improve 
@@ -149,6 +157,13 @@ understand visual indicators.
 
 \begin{goal}\label{goal:user_comfort} Ensure that the system is comfortable to
 wear for extended periods of time, with minimal discomfort or fatigue.
+\end{goal}
+
+\begin{goal}\label{goal:user_safety} Ensure that the system provides additional
+safety aids to the user by providing information to the user to make
+cautious decisions. Also ensure user privacy and security when using the system
+to avoid external malicious actors.
+  
 \end{goal}
     
 \subsection{G.2 Current situation}
@@ -234,17 +249,19 @@ temporal alignment for accurate spatial analysis.
 
 \item \textbf{Direction of arrival (DoA) estimation:} Process captured audio to
 determine the angular direction of sound sources on a 2D plane relative to the
-user's position, with a target accuracy of ±45° for single sound sources.
+user's position, with a target accuracy of \hyperref[symbol:theta_e]{$\theta_e$}
+for single sound sources.
 
 \item \textbf{Sound source classification:} Analyze audio characteristics to
 classify detected sounds into meaningful categories (e.g., speech, vehicle
 sounds, alarms, household appliances) using audio fingerprinting techniques,
-with a target accuracy of at least 90\%.
+with a target accuracy of at least
+\hyperref[symbol:A_classfication]{$A_{classification}\%$}.
 
 \item \textbf{Visual feedback generation:} Generate intuitive visual
 representations of detected sound sources, including their direction and
 classification, displayed on the smart glasses interface with minimal latency
-($\leq$1 second).
+($\leq$ \hyperref[symbol:t_lat]{$t_{lat}$} second).
 
 \item \textbf{Multi-source handling:} Detect and track multiple simultaneous
 sound sources when feasible, prioritizing the most relevant or critical sounds
@@ -339,7 +356,8 @@ cloud-based services for core functionality.
 \label{stakeholder:hardHearing} The primary end-users of the system, who will
 directly benefit from improved situational awareness and safety. This group is
 quite large in population, with approximately 4 million people who experience
-hearing loss in Canada alone (1 in 10). The McMaster Sign Language club is a
+hearing loss in Canada alone (1 in 10) \cite{Healthing2025}.
+The McMaster Sign Language club is a
 group at McMaster University that falls in this stakeholder group.
 
 \end{itemize}
@@ -399,8 +417,25 @@ laboratory testing to validate technical approaches and refine requirements.
 
 \begin{itemize}
 
-  \item \textbf{ASL}: American Sign Language used by deaf and hard of hearing
+  \item \textbf{ASL:} American Sign Language used by deaf and hard of hearing
   individuals to communicate using hand gestures and facial expressions.
+
+  \item \textbf{Euclidean Quadrants:}\label{def:euclidean_quadrant}
+  The four regions of a 2D Cartesian plane, divided by the x and y axes,
+  numbered 1 to 4 in a counterclockwise direction starting from the top-right.
+  The ranges of the quadrants are (0°–90°), (90°–180°), (180°–270°), and
+  (270°–360°) degrees.
+
+  \item \textbf{Frequency Domain:}\label{def:frequency_domain}
+  A way to represent periodic or sinusoidal signals based on their frequency
+  content, showing how much of the signal lies within each given frequency
+  range. Frequency units is $Hz$.
+
+  \item \textbf{Hardware Acceleration:}\label{def:hardware_acceleration}
+  The use of specialized hardware modules within a microcontroller to perform
+  specific computational tasks that are more computationally efficient than
+  running equaicalent software on the CPU. For example, signal processing and
+  vector operations.
 
   \item \textbf{Microcontroller:}\label{def:microcontroller} Compact embedded
   hardware system with a CPU, memory, input/output peripherals, designed to
@@ -417,7 +452,7 @@ laboratory testing to validate technical approaches and refine requirements.
   \label{def:normal_operation_condition} The state in which the system,
   including hardware and softwre, operate within expected environmental and
   usage parameters. This includes audio input sampled at the correct sample
-  rate, input audio signals are within the human hearing audible range
+  rate, input audio signals are within the human hearing most audible range
   (250 Hz – 8 kHz) \cite{MiracleEar2025}, and audio input levels below 90 dB.
 
   \item \textbf{Real Time:} \label{def:real_time} Computational processing of
@@ -434,34 +469,53 @@ laboratory testing to validate technical approaches and refine requirements.
 \subsubsection{E.1.1 Symbols, Abbreviations, and Acronyms}
 \label{sec:symbols}
 
+\begin{longtable}{|l|l|p{10cm}|}
+    \hline
+    \textbf{Symbol} & \textbf{Value} & \textbf{Description} \\
+    \hline
+    $\theta_e$ \label{symbol:theta_e} & ±45° & 
+    Angle error threshold. 45 threshold is selected to indicate the sound
+    source direction within half-quadrant resolution. \\
+    \hline
+    $A_{classification}$ \label{symbol:A_classfication} & $90\%$ & 
+    Classification accuracy. $90\%$ is chosen as it an achievable metric
+    with the time given while providing high confidence in audio
+    classification for stakeholder's use cases. \\
+    \hline
+    $t_{lat}$ \label{symbol:t_lat} & $1 s$ & 
+    Latency time of visual feedback. 1 second was chosen arbitrarily
+    chosen. It will be tuned to better fit stakeholder's reaction time
+    in critical situations. This will be tuned during the validation
+    stage.\\
+    \hline
+\caption{Table of symbolic constants used in \progname.}
+\label{tab:symbol_table}
+\end{longtable}
 
-\begin{table}[H]
-\centering
-  \begin{tabular}{|l|l|} 
+\begin{longtable}{|l|l|} 
     \hline	
     \textbf{symbol} & \textbf{description}\\
     \hline
-    AC & Anticipated Change\\
-    \progname & 360 Audio analysis system on smart glasses\\
-    DAG & Directed Acyclic Graph \\
-    FR & Functional Requirement\\
-    M & Module \\
-    MG & Module Guide \\
-    MIS & Module Interface Specification \\
-    NFR & Non-Functional Requirement\\
-    OS & Operating System \\
-    R & Requirement\\
-    SC & Scientific Computing \\
-    SPI & Serial Peripheral Interface \\
-    SRS & Software Requirements Specification\\
-    T & Test\\
-    UC & Unlikely Change \\
-    USART & Universal Synchronous/Asynchronous Receiver/Transmitter \\
-    VnV & Verification and Validation \\
-    \hline
-  \end{tabular}
-  \caption{Table of symbols, abbreviations and acronyms used in \progname.}
-\end{table}
+    AC & Anticipated Change\\ \hline
+    \progname & 360 Audio analysis system on smart glasses\\ \hline
+    DAG & Directed Acyclic Graph \\ \hline
+    FR & Functional Requirement\\ \hline
+    M & Module \\ \hline
+    MG & Module Guide \\ \hline
+    MIS & Module Interface Specification \\ \hline
+    NFR & Non-Functional Requirement\\ \hline
+    OS & Operating System \\ \hline
+    R & Requirement\\ \hline
+    SC & Scientific Computing \\ \hline
+    SPI & Serial Peripheral Interface \\ \hline
+    SRS & Software Requirements Specification\\ \hline
+    T & Test\\ \hline
+    UC & Unlikely Change \\ \hline
+    USART & Universal Synchronous/Asynchronous Receiver/Transmitter \\ \hline
+    VnV & Verification and Validation \\ \hline
+  \caption{Table of abbreviations and acronyms used in \progname.}
+\end{longtable}
+
 
 \subsection{E.2 Components}
 
@@ -586,8 +640,7 @@ affect users.
   \item User Safety \& Comfort
   \begin{itemize}
     \item The system must not significantly reduce the user's field of vision. 
-    \item The system must not emit heat at levels that cause discomfort or harm
-    to the user. 
+    \item The system must not emit heat at levels that cause harm to the user. 
   \end{itemize}
 
   \item Legal Boundaries
@@ -619,7 +672,7 @@ display.
 
 \begin{figure}[H]     
     \centering 
-    \includegraphics[width=0.9\textwidth]{diagrams/s1_component_diagram.png}
+    \includegraphics[width=0.7\textwidth]{diagrams/s1_component_diagram.png}
     \caption{Software component diagram.}
     \label{fig:software_component_diagram}
 \end{figure}
@@ -639,9 +692,6 @@ display.
   \item \textbf{Audio Filtering:} \label{comp:audio_filtering} Component
   responsible for processing raw audio signals in real-time sent by the
   microphones.
-
-  \item \textbf{Calibration Component:} \label{comp:calibration} Component for
-  calibrating hardware including microphones and output display.
   
   \item \textbf{Audio360 Engine:} \label{comp:audio360Engine} Main component
   responsible for running Audio360 features. It serves as the primary interface
@@ -680,13 +730,17 @@ display.
 Requirements \label{sec:FR1}
 \begin{itemize}
   \item \label{FR1_1}\textbf{FR1.1:} The firmware shall schedule tasks based on
-  its priority.
+  its priority. Priority ensures that critical tasks are ran and completed
+  before its deadline, avoiding functionality loss.
   
   \item \label{FR1_2}\textbf{FR1.2:} The firmware shall process and synchronize
-  audio signals from all microphones connected to the microcontroller.
+  audio signals from all microphones connected to the microcontroller. Audio
+  synchronization is required to determine direction of audio source as it
+  depends on frequency phase shift.
 
   \item \label{FR1_3}\textbf{FR1.3:} The firmware shall handle memory errors to
-  prevent the micrcontroller from crashing.
+  prevent the microcontroller from crashing. This ensures that the system will
+  never enter an unrecoverable state.
 
   \item \label{FR1_4}\textbf{FR1.4:} The system shall perform continuous
   diagnostics on all hardware components to monitor hardware errors in
@@ -698,11 +752,18 @@ Non-Functional Requirements
 \begin{itemize}
   \item \label{NFR1_1}\textbf{NFR1.1:} The firmware shall process audio signals
   in real-time with monotonic frame sequences. Earliest frames shall have higher
-  priority.
+  priority. For example, if frame $F_t$ arrives at time $t$, then the priority,
+  $P(F_t)$, must satisfy $P(F_t) > P(F_{t+1})$.
   
   \item \label{NFR1_2}\textbf{NFR1.2:} The firmware shall operate faster than
   the connected microphone sample rate 16 kHz, referring to
-  \hyperref[NFR7_1]{NFR7.1}.
+  \hyperref[NFR7_1]{NFR7.1}. This ensures that all input data from the
+  microphone can be processed.
+
+  \item \label{NFR4_3}\textbf{NFR1.3:} The firmware shall permanently
+  discard microphone audio data that is greater than the sampling window size.
+  This ensures that audio data is retained only temporarily for processing,
+  supporting \hyperref[goal:user_safety]{Goal 7}, protecting user privacy.
 \end{itemize}
 
 % DRIVER LAYER REQUIREMENTS.
@@ -726,7 +787,8 @@ Requirements \label{sec:FR2}
 Non-Functional Requirements
 \begin{itemize}
   \item \label{NFR2_1}\textbf{NFR2.1:} The driver shall immediately propagate
-  any errors to the firmware layer for proper error handling.
+  any errors to the firmware layer for proper error handling. This is to ensure
+  that the processor can take the neccessary steps to recover out of the error.
 \end{itemize}
 
 % AUDIO FILTERING REQUIREMENTS.
@@ -734,17 +796,21 @@ Non-Functional Requirements
 Requirements \label{sec:FR3}
 \begin{itemize}
   \item \label{FR3_1}\textbf{FR3.1:} The audio filtering component shall convert
-  digital audio waveform to frequency domain.
+  digital audio waveform to \hyperref[def:frequency_domain]{frequency domain}.
 
   \item \label{FR3_2}\textbf{FR3.2:} The audio filtering component shall
-  normalize the amplitude of incoming and outgoing signals.
+  normalize the amplitude of incoming and outgoing signals. This is to simplify 
+  analysis when comparing different signals.
 
   \item \label{FR3_3}\textbf{FR3.3:} The audio filtering component shall filter
   incoming audio signals to reduce frequency
   \hyperref[def:spectral_leakage]{spectral leakage}.
 
   \item \label{FR3_4}\textbf{FR3.4:} The audio filtering component shall use
-  available hardware acceleration method for efficient computations.
+  available \hyperref[def:hardware_acceleration]{hardware acceleration}
+  for efficient computations. The system needs to run as fast as possible with
+  limited compute power, and using hardware acceleration is the most efficient
+  method available.
 
   \item \label{FR3_5}\textbf{FR3.5:} The audio filtering component shall detect
   and flag audio anomalies such as clipping, lost signal and silence. This
@@ -755,14 +821,23 @@ Non-Functional Requirements
 \begin{itemize}
   \item \label{NFR3_1}\textbf{NFR3.1:} The audio filtering component shall
   represent audio signals in the frequency domain with less than 10\% error from
-  the true value.
+  the true value. This is maximum tolerable error to process audio for
+  classification and directional analysis.
   \item \label{NFR3_2}\textbf{NFR3.2:} The audio filtering component shall be
   scalable to handle different input signal sizes without missing timing
-  constraints defined in \hyperref[NFR1_2]{NFR1.2} for input signal size up to
-  4096 frames.
+  constraints defined in \hyperref[NFR1_2]{NFR1.2} for input signal that are
+  powers of 2 and size up to 4096 samples. Powers of 2 since 
+  hardware acceleration, from \hyperref[FR3_4]{FR3.4}, for FFT are most
+  optimized for this \cite{CMSIS_DSP_FFT}. 4096 samples is the maximum standard
+  size.
 
   \item \label{NFR3_3}\textbf{NFR3.3:} The audio filtering component shall have
-  an audio processing success rate end to end of atleast 90\% over 60 seconds.
+  an audio processing success rate end to end of atleast 80\%.
+  Due to variations in input audio quality, some errors are expected.
+  While state of the art audio classification systems can reach up to 90\%
+  accuracy, they typically require significantly more computational resources
+  that this project does not have access to.
+
 \end{itemize}
 
 % AUDIO360 REQUIREMENTS.
@@ -779,6 +854,7 @@ Requirements
 
   \item \label{FR4_3}\textbf{FR4.3:} The Audio360 Engine shall control the flow
   of processed audio data from audio frequency analysis to visualization.
+  Only processed data should be visualized to the user.
 
   \item \label{FR4_4}\textbf{FR4.4:} The Audio360 Engine shall disable audio
   classification and directional analysis features until microphone faults
@@ -803,15 +879,17 @@ Non-Functional Requirements
 
   \item \label{NFR4_3}\textbf{NFR4.3:} The Audio360 Engine shall permanently
   discard microphone audio data immediately after completion of audio analysis.
+  This adheres to \hyperref[goal:user_safety]{Goal 7}, protecting user privacy.
 \end{itemize}
 
 % FREQUENCY ANALYSIS REQUIREMENTS.
 \subsubsection{\hyperref[comp:frequency_analysis]{Frequency Analysis}}
 Functional Requirements
 \begin{itemize}
-  \item \label{FR5_1}\textbf{FR5.1:} The frequency analysis component shall
-  classify sound sources based on features extracted from the frequency domain
-  representation of the audio input signal.
+    \item \label{FR5_1}\textbf{FR5.1:} The frequency analysis component shall
+    classify sound sources based on features extracted from the
+    \hyperref[def:frequency_domain]{frequency domain} representation of the
+    audio input signal.
 
    \item \label{FR5_2}\textbf{FR5.2:} The frequency analysis component shall
    estimate the direction of arrival of the audio source using frequency domain
@@ -823,7 +901,8 @@ Functional Requirements
    sound source, Figure \ref{fig:coordinate_system}.
 
    \item \label{FR5_4}\textbf{FR5.4:} The frequency analysis component shall
-   notify users when a sound classification result has low confidence or is
+   notify users when a sound classification result has low confidence
+   (predicted accuracy of classification prediction $<$ treshold) or is
    unrecognized to prevent misleading contextual feedback.
 \end{itemize}
 
@@ -838,14 +917,19 @@ Non-Functional Requirements
 \begin{itemize}
   \item \label{NFR5_1}\textbf{NFR5.1:} The frequency analysis shall classify
   atleast 3 distinct sound sources relevant to people who are hard of hearing.
+  Three was chosen to provide a minimal base that is useful for the
+  stakeholders.
 
   \item \label{NFR5_2}\textbf{NFR5.2:} The frequency analysis component shall
-  achieve a minimum classification accuracy of 90\% under
+  achieve a minimum classification accuracy of
+  \hyperref[symbol:A_classfication]{$A_{classification}$} under
   \hyperref[def:normal_operation_condition]{normal operating conditions}.
 
   \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
-  direction of arrival of an audio source with a maximum error of 45 degrees.
-  This ensures reliable directional awareness for the user.
+  direction of arrival of an audio source with a maximum error of
+  \hyperref[symbol:theta_e]{$\theta_e$} degrees. This requirement ensures that
+  the system can correctly notify users of sound sources within their
+  respective \hyperref[def:euclidean_quadrant]{Euclidean quadrants}.
 \end{itemize}
 
 % VISUALIZATION CONTROLLER REQUIREMENTS.
@@ -869,25 +953,27 @@ Non-Functional Requirements
   because display space is limited.
   \item \label{NFR6_2}\textbf{NFR6.2:} The visualization controller component
   shall present information in a non-intrusive manner, minimizing visual
-  obstruction so users can safely perform external activities.
+  obstruction so users can safely perform external activities. This allows the
+  user to wear the glasses and perform daily activities without distraction.
 \end{itemize}
 
 % MICROPHONE REQUIREMENTS.
 \subsubsection{\hyperref[comp:microphone]{Microphone}} Functional Requirements
 \begin{itemize}
   \item \label{FR7_1}\textbf{FR7.1:} The microphone shall collect soundwaves
-  from its environment and translate to digital representation.
+  from its environment and translate them to digital representation.
 
   \item \label{FR7_2}\textbf{FR7.2:} The microphone shall collect soundwaves
-  with the human hearing audible range (250 Hz - 8 kHz) \cite{MiracleEar2025}.
+  within the human hearing most audible range (250 Hz - 8 kHz)
+  \cite{MiracleEar2025}.
 \end{itemize}
 
 Non-Functional Requirements
 \begin{itemize}
   \item \label{NFR7_1}\textbf{NFR7.1:} The microphone shall collect soundwaves
-  at 16 Hz. According to Nyquist's theorem, audio sampling should be greater
+  at 16 kHz. According to Nyquist's theorem, audio sampling should be greater
   than two times the highest frequency to avoid aliasing \cite{DataForth2025}.
-  The maximum frequency audible to humans is approximately 8 kHz.
+  The maximum frequency most audible to humans is approximately 8 kHz.
   \cite{MiracleEar2025}.
 \end{itemize}
 
@@ -915,17 +1001,24 @@ Requirements
   \item \label{FR9_1}\textbf{FR9.1:} The microcontroller shall run the main
   \progname ~software in a closed environment. No external devices other than
   the microphones and output display shall be able to connect to it. This
-  ensures protection against unauthorized access.
+  ensures protection against unauthorized access adhering to
+  \hyperref[goal:user_safety]{Goal 7}: security and privacy.
 \end{itemize}
 
 Non-Functional Requirements
 \begin{itemize}
   \item \label{NFR9_1}\textbf{NFR9.1:} The microcontroller shall have a clock
   speed of atleast 100 MHz to support audio sampling at 16 kHz, derived from
-  \hyperref[NFR7_1]{NFR7.1}.
+  \hyperref[NFR7_1]{NFR7.1}. This allows approximately 5000 computational steps
+  to process each audio sample, which is enough to meet core features
+  functionality.
 
   \item \label{FR9_2}\textbf{NFR9.2:} The microcontroller shall provide atleast
   four microphone inputs to support directional analysis of audio.
+  Directional analysis requires a minimum of two microphones. However, since the
+  microphones are mounted on glasses and sound damping occurs across the user's
+  head, at least four microphones, one in each corner, are required to achieve
+  reliable directional analysis.
 \end{itemize}
 
 
@@ -1042,8 +1135,8 @@ Estimated deadline: December 9th, 2025 \\
 \begin{itemize}
     \item \hyperref[FR7_1]{FR7.1} - Microphone soundwave collection and digital
     conversion
-    \item \hyperref[FR7_2]{FR7.2} - Human audible range coverage (250 Hz - 8
-    kHz)
+    \item \hyperref[FR7_2]{FR7.2} - Human most audible range coverage
+      (250 Hz - 8 kHz)
     \item \hyperref[NFR7_1]{NFR7.1} - 16 kHz sampling rate
     \item \hyperref[FR9_1]{FR9.1} - Closed microcontroller environment
     \item \hyperref[NFR9_1]{NFR9.1} - Minimum 100 MHz clock speed
@@ -1194,8 +1287,9 @@ features (classification, visualization).
 This section specifies the conditions under which the implementation will be
 deemed satisfactory. The verification criteria are organized by the major
 functional areas of the system and are directly traceable to the goals defined
-in Section 1 and the functional/non-functional requirements defined in Section
-S.2.
+in \hyperref[sec:G.1]{G.1 Context and overall objective} and the
+functional/non-functional requirements defined in 
+\hyperref[sec:S.2]{S.2 Functionality}.
 
 \subsubsection{S.6.1 Audio capture verification}
 
@@ -1204,18 +1298,19 @@ Related to \hyperref[goal:audio_capture]{Goal 1}, \hyperref[FR1_2]{FR1.2},
 
 \begin{itemize}
 \item \textbf{VC-1.1 Synchronized sampling:} The system shall demonstrate that
-all four microphones in the array capture audio samples with temporal alignment
-within ±10 microseconds, verified through oscilloscope measurements or timestamp
-analysis of captured data.
+all four microphones in the array capture audio samples with synchronously, that
+is all microphone data are captured within 4 timesteps (one timestep per
+microphone). This will be verified through oscilloscope measurements or
+timestamp analysis of captured data.
 
 \item \textbf{VC-1.2 Sampling rate:} The system shall maintain a minimum
 sampling rate of 16 kHz across all microphone channels, verified through
 analysis of captured audio buffer timestamps.
 
 \item \textbf{VC-1.3 Continuous operation:} The system shall demonstrate
-continuous audio capture for at least 1 hour without buffer overruns, dropped
-samples, or system crashes, verified through stress testing and log file
-analysis.
+continuous audio capture for the duration the power lifecycle of the system
+(single charge on a battery) without buffer overruns, dropped samples, or
+system crashes, verified through stress testing and log file analysis.
 \end{itemize}
 
 \subsubsection{S.6.2 Direction of arrival (DoA) verification}
@@ -1226,12 +1321,14 @@ Related to \hyperref[goal:audio_direction_analysis]{Goal 2},
 \begin{itemize}
 \item \textbf{VC-2.1 Single source accuracy:} For a single sound source in a
 controlled environment, the system shall estimate the direction of arrival with
-an angular error of less than or equal to 45° in at least 90\% of test cases,
-verified through testing with known sound source positions at various angles
-(0°, 45°, 90°, 135°, 180°, 225°, 270°, 315°) around the user.
+an angular error of less than or equal to \hyperref[symbol:theta_e]{$\theta_e$}
+in all test cases, verified through testing with known sound source positions
+at various angles, $\theta$, that are multiples of $\theta_e$ and satisfies
+$0 \leq \theta \leq 360$\textdegree.
 
 \item \textbf{VC-2.2 Processing latency:} The DoA estimation algorithm shall
-complete processing and output a direction estimate within 500 milliseconds of
+complete processing and output a direction estimate within
+\hyperref[symbol:t_lat]{$t_{lat}$}  of
 sound detection, verified through timestamp logging of detection and output
 events.
 
@@ -1241,9 +1338,8 @@ horizontal plane around the user, verified through systematic testing at
 multiple angles.
 
 \item \textbf{VC-2.5 Consistency:} For a stationary sound source, the system
-shall provide consistent direction estimates with a standard deviation of less
-than or equal to 45° over 10 consecutive measurements, verified through repeated
-testing.
+shall provide consistent direction estimates within
+\hyperref[symbol:theta_e]{$\theta_e$}, verified through repeated testing.
 \end{itemize}
 
 \subsubsection{S.6.3 Sound classification verification}
@@ -1254,17 +1350,16 @@ Related to \hyperref[goal:audio_identification_analysis]{Goal 3},
 
 \begin{itemize}
 \item \textbf{VC-3.1 Classification accuracy:} The audio classification system
-shall achieve at least 90\% accuracy in identifying sound categories from a
-predefined set (including at minimum: speech, vehicle sounds, alarms, and
-household appliances), verified through testing with a labeled dataset of at
-least 100 sound samples across all categories.
+shall achieve at least \hyperref[symbol:A_classfication]{$A_{classification}\%$} 
+accuracy in identifying sound categories from a predefined set, verified through
+testing with a labeled dataset.
 
 \item \textbf{VC-3.2 Processing latency:}\label{sec:VC-3.2} The classification 
-algorithm shall complete processing and output a classification label within 1 
-second of sound detection, verified through timestamp logging.
+algorithm shall complete processing and output a classification label before
+the next microphone audio sampling, verified through timestamp logging.
 
 \item \textbf{VC-3.3 Category coverage:} The system shall support classification
-of at least 5 distinct sound categories relevant to safety and daily life,
+of at least 3 distinct sound categories relevant to safety and daily life,
 verified through documentation of the classification model and testing with
 representative samples from each category.
 
@@ -1283,18 +1378,14 @@ Related to \hyperref[goal:visual_display]{Goal 4}, \hyperref[FR6_1]{FR6.1},
 \begin{itemize}
 \item \textbf{VC-4.1 Display latency:}\label{sec:VC-4.1}
 The complete system pipeline from sound
-detection to visual display on the smart glasses shall complete within 1 second
-(less than or equal to 1s end-to-end latency), verified through synchronized
+detection to visual display on the smart glasses shall complete within 
+\hyperref[symbol:t_lat]{$t_{lat}$}, verified through synchronized
 video recording of sound source activation and display appearance.
 
 \item \textbf{VC-4.2 Display visibility:} Visual indicators on the smart glasses
 shall be clearly visible and distinguishable under typical indoor and outdoor
 lighting conditions, verified through user testing and subjective evaluation by
-at least 3 test participants.
-
-\item \textbf{VC-4.3 Non-obstruction:} Visual indicators shall not obstruct more
-than 20\% of the user's field of view at any given time, verified through
-measurement of display area relative to total viewable area.
+test participants.
 \end{itemize}
 
 \subsubsection{S.6.5 User interaction verification}
@@ -1304,13 +1395,10 @@ Related to \hyperref[goal:user_friendly_interaction]{Goal 5},
 
 \begin{itemize}
 \item \textbf{VC-5.1 Setup simplicity:} A new user shall be able to power on the
-device and begin receiving audio alerts within 5 minutes without requiring
-external documentation, verified through timed user testing with participants
-unfamiliar with the system.
+device and begin receiving audio alerts without requiring external
+documentation, verified through observing participants unfamiliar
+with the system using it for the first time.
 
-\item \textbf{VC-5.2 Calibration process:} If calibration is required, the
-process shall be completable within 2 minutes and require no user actions,
-verified through testing.
 \end{itemize}
 
 \subsubsection{S.6.6 System reliability verification}
@@ -1322,8 +1410,9 @@ Related to \hyperref[FR1_3]{FR1.3}, \hyperref[FR1_4]{FR1.4},
 
 \begin{itemize}
 \item \textbf{VC-6.1 Startup reliability:} The system shall successfully
-complete initialization and enter operational mode in at least 95\% of power-on
-attempts, verified through repeated startup testing (minimum 20 trials).
+complete initialization and enter operational mode in all power-on
+attempts, verified through repeated startup testing. This ensures the system
+is working all the time as it is a safety critical system.
 \end{itemize}
 
 
@@ -1385,16 +1474,21 @@ All experts share the following responsibilities for their area of focus.
 \textbf{Microcontroller:}  
 The system shall use a dedicated microcontroller with a minimum clock speed of
 100 MHz. This constraint is imposed to ensure that the audio processing tasks
-defined in functional requirement \hyperref[NFR1_3]{NFR1.3} can be completed
+defined in functional requirement \hyperref[NFR9_1]{NFR9.1} can be completed
 within timing constraints. A microcontroller is also chosen because it can be
-physically embedded within the glasses, ensuring low power consumption, compact
-integration, and user comfort.
-
+physically embedded within the glasses, ensuring low power consumption and
+compact integration. For this capstone project, a larger developer
+microcontroller will be used for ease of development, regardless of if it can be
+embedded into the glasses. Future iterations must use a microcontroller that is
+small enough to fit inside the glasses and has the required computer power.
+\newline
+\newline
 \textbf{Microphones:}  
 The system shall use between two and four omnidirectional microphones to collect
 audio data from the environment. This range of microphones enables directional
 detection while minimizing hardware complexity, cost, and power consumption.
-
+\newline
+\newline
 \textbf{Programming Languages:}  
 The embedded firmware shall be implemented in C/C++. This choice is imposed
 because compiled C/C++ binaries can be directly executed on any microcontroller,

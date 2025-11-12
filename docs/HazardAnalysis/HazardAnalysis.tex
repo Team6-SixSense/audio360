@@ -8,8 +8,11 @@
 \usepackage{geometry}
 \usepackage{float}
 \usepackage{pdflscape}
-\usepackage{xr-hyper}
 \usepackage{cite}
+\usepackage{xr}
+\usepackage{xr-hyper}
+
+\externaldocument[SRS-]{../SRS/SRS}
 
 \hypersetup{ colorlinks=true,       % false: boxed links; true: colored links
     linkcolor=red,          % color of internal links (change box color with
@@ -54,6 +57,8 @@
 \midrule
 2025-10-06 &  Nirmal, Sathurshan, Omar, Kalp, Jay & Initial Write-up\\
 2025-10-26 & Sathurshan & Update sampling rate requirement\\
+2025-11-06 & Sathurshan & Provided rationale for roadmap\\
+2025-11-06 & Sathurshan & Traceability of safety requirements to SRS\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -170,7 +175,8 @@ microphone performance.
     \item Microphone
     \begin{itemize}
         \item All microphones are able to capture frequencies between at least
-        250 Hz to 8kHz, which is the human hearing audio frequency range.
+        250 Hz to 8 kHz, which covers most of the frequency range of human
+        hearing.
         \cite{MiracleEar2025}.
         \item Microphones operate correctly within normal operating temperatures
         of 0-35°C. 
@@ -186,8 +192,9 @@ microphone performance.
 
     \item Output Display
     \begin{itemize}
-        \item Visual indicators on the smart glasses remain visible in typical
-        lighting conditions. 
+        \item Visual indicators on the smart glasses remain visible in
+        all lighting conditions. This includes outdoor with sun and indoor with
+        no light. 
     \end{itemize}
 
     \item System Integration
@@ -346,9 +353,9 @@ are considered out of scope:
 
 \begin{itemize}
     \item \label{SR1}\textbf{SR1:} The microcontroller shall run the main
-    \progname ~software in a closed environment. Only the approved microphones
-    and output display shall interface to it. This ensures protection against
-    unauthorized access.
+    \progname ~software in a closed environment. No external devices other than
+    the microphones and output display shall be able to connect to it. This
+    ensures protection against unauthorized access.
 
     \item \label{SR2}\textbf{SR2:} The system shall permanently discard
     microphone audio data immediately after completion of audio analysis. This
@@ -365,25 +372,29 @@ are considered out of scope:
     or unsafe outputs.
 
     \item \label{SR5}\textbf{SR5:} The visualization controller shall present
-    information in a non-intrusive manner, minimizing visual obstruction so
-    users can safely perform external activities.
+    information in a non-intrusive manner, minimizing visual
+    obstruction so users can safely perform external activities. This allows the
+    user to wear the glasses and perform daily activities without distraction.
 
     \item \label{SR6}\textbf{SR6:} The visualization controller component shall
-    alert users when critical features such as sound classification or direction
-    determination fail. This ensures that users are aware of degraded safety
-    functions.
+    alert users when the core safety features such as direction
+    determination or classification fail. This ensures that users are aware of
+    degraded safety functions.
 
     \item \label{SR7}\textbf{SR7:} The system shall have an audio processing
-    success rate end to end of at least 90\% over 60 seconds. This mitigates
-    classification related hazards identified in the FMEA.
+    success rate end to end of 100\%. All user core features depends on this
+    component, thus, it must work every time. This mitigates classification
+    related hazards identified in the FMEA.
 
-    \item \label{SR8}\textbf{SR8:} The system shall notify users when a sound
-    classification result has low confidence or is unrecognized to prevent
-    misleading contextual feedback.
+    \item \label{SR8}\textbf{SR8:} The system shall
+    notify users when a sound classification result has low confidence
+    (predicted accuracy of classification prediction $<$ treshold) or is
+    unrecognized to prevent misleading contextual feedback.
 
-    \item \label{SR9}\textbf{SR9:} The system shall estimate the direction of
-    arrival of an audio source with a maximum error of 45 degrees. This ensures
-    reliable directional awareness for the user.
+    \item \label{SR9}\textbf{SR9:} The system shall estimate the
+    direction of arrival of an audio source with a maximum error of
+    \hyperref[SRS-symbol:theta_e]{$\theta_e$} degrees.
+    This ensures reliable directional awareness for the user.
 
     \item \label{SR10}\textbf{SR10:} The system shall perform continuous
     diagnostics on all hardware components to monitor hardware errors in
@@ -392,15 +403,40 @@ are considered out of scope:
     
 \end{itemize}
 
+\begin{table}[h!]
+\centering
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Safety Requirement} & \textbf{Requirement from SRS} \\
+\midrule
+\hyperref[SR1]{SR1} & \hyperref[SRS-FR9_1]{FR9.1} \\
+\hyperref[SR2]{SR2} & \hyperref[SRS-NFR4_3]{FR4.3} \\
+\hyperref[SR3]{SR3} & \hyperref[SRS-FR3_5]{FR3.5} \\
+\hyperref[SR4]{SR4} & \hyperref[SRS-FR4_4]{FR4.4} \\
+\hyperref[SR5]{SR5} & \hyperref[SRS-NFR6_2]{NFR6.2} \\
+\hyperref[SR6]{SR6} & \hyperref[SRS-FR6_2]{FR6.2} \\
+\hyperref[SR7]{SR7} & \hyperref[SRS-NFR3_3]{FR3.3} \\
+\hyperref[SR8]{SR8} & \hyperref[SRS-FR5_4]{FR5.4} \\
+\hyperref[SR9]{SR9} & \hyperref[SRS-NFR5_3]{NFR5.3} \\
+\hyperref[SR10]{SR10} & \hyperref[SRS-FR1_4]{FR1.4} \\
+\bottomrule
+\end{tabular}
+\caption{Safety requirements traceability to SRS requirements.}
+\end{table}
+
 \section{Roadmap}
 
 The following safety and security requirements are planned for implementation
-within the scope of the capstone project timeline:
+within the scope of the capstone project timeline. All these requirements are
+necessary and feasible in a 6 month development period.
 \begin{itemize}
     \item \hyperref[SR2]{SR2}
     \item \hyperref[SR3]{SR3}
+    \item \hyperref[SR4]{SR4}
     \item \hyperref[SR5]{SR5}
     \item \hyperref[SR7]{SR7}
+    \item \hyperref[SR8]{SR8}
     \item \hyperref[SR9]{SR9}
 \end{itemize}
 
@@ -408,10 +444,13 @@ The following safety and security requirements are identified as stretch goals.
 Their implementation will depend on the available development bandwidth and
 project progress:
 \begin{itemize}
-    \item \hyperref[SR4]{SR4}
-    \item \hyperref[SR6]{SR6}
-    \item \hyperref[SR8]{SR8}
-    \item \hyperref[SR10]{SR10}
+    \item \hyperref[SR6]{SR6}: This requirement is a stretch goal as
+    visualization output on glasses is limited. Core features of the glasses
+    are being prioritized as safety features.
+    \item \hyperref[SR10]{SR10}: This requirement will be implement to some
+    extent. Diagnostics for the microphones will be implemented as all core
+    features of \progname~depends on the microphones. Other diagnostics, such
+    as ones for output display, are less priority.
 \end{itemize}
 
 \newpage
