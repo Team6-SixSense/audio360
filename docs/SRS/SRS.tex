@@ -162,7 +162,7 @@ wear for extended periods of time, with minimal discomfort or fatigue.
 \begin{goal}\label{goal:user_safety} Ensure that the system provides additional
 safety aids to the user by providing information to the user to make
 cautious decisions. Also ensure user privacy and security when using the system
-to avoid external malicious acts.
+to avoid external malicious actors.
   
 \end{goal}
     
@@ -417,15 +417,21 @@ laboratory testing to validate technical approaches and refine requirements.
 
 \begin{itemize}
 
-  \item \textbf{ASL}: American Sign Language used by deaf and hard of hearing
+  \item \textbf{ASL:} American Sign Language used by deaf and hard of hearing
   individuals to communicate using hand gestures and facial expressions.
+
+  \item \textbf{Euclidean Quadrants:}\label{def:euclidean_quadrant}
+  The four regions of a 2D Cartesian plane, divided by the x and y axes,
+  numbered 1 to 4 in a counterclockwise direction starting from the top-right.
+  The ranges of the quadrants are (0°–90°), (90°–180°), (180°–270°), and
+  (270°–360°) degrees.
 
   \item \textbf{Frequency Domain:}\label{def:frequency_domain}
   A way to represent periodic or sinusoidal signals based on their frequency
   content, showing how much of the signal lies within each given frequency
   range. Frequency units is $Hz$.
 
-  \item \textbf{Hardware Acceleration}\label{def:hardware_acceleration}
+  \item \textbf{Hardware Acceleration:}\label{def:hardware_acceleration}
   The use of specialized hardware modules within a microcontroller to perform
   specific computational tasks that are more computationally efficient than
   running equaicalent software on the CPU. For example, signal processing and
@@ -820,14 +826,18 @@ Non-Functional Requirements
   \item \label{NFR3_2}\textbf{NFR3.2:} The audio filtering component shall be
   scalable to handle different input signal sizes without missing timing
   constraints defined in \hyperref[NFR1_2]{NFR1.2} for input signal that are
-  powers of 2 and size up to 4096 frames. Powers of 2 since 
+  powers of 2 and size up to 4096 samples. Powers of 2 since 
   hardware acceleration, from \hyperref[FR3_4]{FR3.4}, for FFT are most
-  optimized for this \cite{CMSIS_DSP_FFT}. 4096 frame is the maximum standard
+  optimized for this \cite{CMSIS_DSP_FFT}. 4096 samples is the maximum standard
   size.
 
   \item \label{NFR3_3}\textbf{NFR3.3:} The audio filtering component shall have
-  an audio processing success rate end to end of 100\%. All user core features
-  depends on this component, thus, it must work every time.
+  an audio processing success rate end to end of atleast 80\%.
+  Due to variations in input audio quality, some errors are expected.
+  While state of the art audio classification systems can reach up to 90\%
+  accuracy, they typically require significantly more computational resources
+  that this project does not have access to.
+
 \end{itemize}
 
 % AUDIO360 REQUIREMENTS.
@@ -917,8 +927,9 @@ Non-Functional Requirements
 
   \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
   direction of arrival of an audio source with a maximum error of
-  \hyperref[symbol:theta_e]{$\theta_e$} degrees.
-  This ensures reliable directional awareness for the user.
+  \hyperref[symbol:theta_e]{$\theta_e$} degrees. This requirement ensures that
+  the system can correctly notify users of sound sources within their
+  respective \hyperref[def:euclidean_quadrant]{Euclidean quadrants}.
 \end{itemize}
 
 % VISUALIZATION CONTROLLER REQUIREMENTS.
@@ -1467,7 +1478,7 @@ defined in functional requirement \hyperref[NFR9_1]{NFR9.1} can be completed
 within timing constraints. A microcontroller is also chosen because it can be
 physically embedded within the glasses, ensuring low power consumption and
 compact integration. For this capstone project, a larger developer
-microcontroller will be used for ease of development, regardless if it can be
+microcontroller will be used for ease of development, regardless of if it can be
 embedded into the glasses. Future iterations must use a microcontroller that is
 small enough to fit inside the glasses and has the required computer power.
 \newline
