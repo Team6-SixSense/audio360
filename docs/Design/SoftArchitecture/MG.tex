@@ -172,6 +172,13 @@ adapted here is called design for
 change.
 
 \begin{description}
+\item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
+  hardware on which the software is running.
+\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
+  initial input data.
+\item[\refstepcounter{acnum} \actheacnum \label{acAudioGen}:] The method of 
+  generating simulated microphone array input for testing and proof of concept.
+
 \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:]
   The specific hardware on which the software is running. \\
   \textbf{Rationale:} There will be a benefit to using a hardware that is 
@@ -299,6 +306,8 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mMicDiag}:] Microphone Diagnostic
   Module 
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioGen}:] Audio Generation Module
+\item [\refstepcounter{mnum} \mthemnum \label{mDOA}:] DOA Processor Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAudio360Engine}:] Audio360 Engine
   Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAudioSampling}:] Audio Sampling 
@@ -339,20 +348,16 @@ Module
 & \mref{mMicDiag}\\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & \mref{mAudio360Engine}\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\ 
-& ?\\
+\multirow{1}{0.3\textwidth}{Behaviour-Hiding Module} & \mref{mAudio360Engine}\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & \mref{mAudioSampling}\\
+\multirow{14}{0.3\textwidth}{Software Decision Module} & \mref{mAudioSampling}\\
+& \mref{mDOA}\\
+& \mref{mAudioGen}\\
+& \mref{mAudioSampling}\\
 & \mref{mAudioSpectralLeakage}\\
 & \mref{mAudioNormalizer}\\
-& \mref{mAudioAnamoly}\\
+& \mref{mAudioAnomaly}\\
 & \mref{mFFT}\\
 & \mref{mLogging}\\
 & \mref{mFaultManager}\\
@@ -489,6 +494,16 @@ array hardware and its connections to the microcontroller.
 
 \subsection{Behaviour-Hiding Module}
 
+\begin{description}
+\item[Secrets:]The contents of the required behaviours.
+\item[Services:]Includes programs that provide externally visible behaviour of
+  the system as specified in the software requirements specification (SRS)
+  documents. This module serves as a communication layer between the
+  hardware-hiding module and the software decision module. The programs in this
+  module will need to change if there are changes in the SRS.
+\item[Implemented By:] --
+\end{description}
+
 % AUDIO360 ENGINE MODULE.
 \subsubsection{Audio360 Engine Module (\mref{mAudio360Engine})}
 
@@ -500,10 +515,10 @@ array hardware and its connections to the microcontroller.
   raw input data and managing module communication.
 \item[Implemented By:] \progname
 \item[Type of Module:] Class 
+\end{description}
 
 % Types of modules can be [Record, Library, Abstract Object, or Abstract Data
 % Type]
-\end{description}
 
 \subsection{Software Decision Module}
 
@@ -517,6 +532,53 @@ array hardware and its connections to the microcontroller.
   % improve performance than by externally imposed changes.
 \item[Implemented By:] --
 \end{description}
+
+
+\subsubsection{Audio Generation Module (\mref{mAudioGen})}
+
+\begin{description}
+\item[Secrets:] The algorithm for simulating room acoustics and generating 
+  synthetic microphone array data from a given audio source and position. This 
+  includes room response calculations and spatial audio propagation 
+  models. 
+\item[Services:] Provides simulated four-channel microphone array output for 
+  testing and proof-of-concept development. Takes as input an audio source 
+  signal and 3D position coordinates, and outputs four synchronized audio 
+  streams representing what each microphone in the array would capture given 
+  the room acoustics and source location.
+\item[Implemented By:] Python using pyroomacoustics library
+\item[Type of Module:] Library
+\item[Notes:] This module is temporary and intended only for proof-of-concept 
+  development. It will be removed in the final product once physical hardware 
+  microphones are integrated. The module enables algorithm development and 
+  testing without requiring the complete hardware setup.
+\end{description}
+
+\subsubsection{DOA Processor Module (\mref{mDOA})}
+
+\begin{description}
+\item[Secrets:] The specific direction of arrival estimation algorithm and its 
+  implementation details, including signal processing techniques (MUSIC, 
+  SRP-PHAT, or FRIDA), frequency analysis methods, and coordinate system 
+  transformations.
+\item[Services:] Analyzes four synchronized microphone audio streams to estimate 
+  the direction of arrival of a sound source. Takes as input four time-domain or 
+  frequency-domain audio signals and outputs an angle (in degrees) representing 
+  the estimated direction of the sound source relative to the microphone array's 
+  reference axis. Provides real-time directional audio analysis with target 
+  accuracy of 45 degrees as specified in the SRS (\hyperref[NFR5_3]{NFR5.3}).
+\item[Implemented By:] \progname{} (Python for prototyping, C/C++ for embedded 
+  implementation)
+\item[Type of Module:] Abstract Data Type
+\item[Notes:] This module is core to the system's primary functionality of 
+  providing directional awareness. It implements one or more DOA algorithms and 
+  may include algorithm selection logic based on environmental conditions or 
+  computational constraints. Ideally, there should be no changes to this module
+  for the final product aside from the internal implementation details 
+  (programming language for efficiency and combatilibility).
+\end{description}
+
+
 % AUDIO SAMPLING MODULE.
 \subsubsection{Audio Sampling Module (\mref{mAudioSampling})}
 \begin{description}
@@ -656,6 +718,12 @@ maintain core functionality when possible.
 This section shows two traceability matrices: between the modules and the
 requirements and between the modules and the anticipated changes.
 
+\subsection{Modules to Requirements Traceability}
+
+The following table maps each module to the functional and non-functional 
+requirements from the SRS that it helps satisfy. Requirements are referenced 
+using the labels defined in the SRS document.
+
 % the table should use mref, the requirements should be named, use something
 % like fref
 \begin{table}[H]
@@ -700,10 +768,51 @@ requirements and between the modules and the anticipated changes.
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+\begin{tabular}{p{0.25\textwidth} p{0.65\textwidth}}
+\toprule
+\textbf{Module} & \textbf{Requirements}\\
+\midrule
+\mref{mAudioGen} & Testing support for FR1.2, FR5.2, FR7.1, FR7.2, NFR7.1\\
+\midrule
+\mref{mDOA} & FR5.2, FR5.3, NFR5.3\\
+\bottomrule
+\end{tabular}
+\caption{Trace Between Modules and SRS Requirements}
+\label{TblMR}
+\end{table}
+
+\noindent
+\textbf{Explanation of Module-Requirement Mappings:}
+
+\begin{itemize}
+\item \textbf{Audio Generation Module (\mref{mAudioGen}):} This module is used 
+exclusively for testing and proof-of-concept development. It enables validation 
+of requirements related to microphone synchronization (FR1.2), direction of 
+arrival estimation (FR5.2), and audio capture specifications (FR7.1, FR7.2, 
+NFR7.1) without requiring complete hardware integration.
+
+\item \textbf{DOA Processor Module (\mref{mDOA}):} This module directly 
+implements the core direction of arrival functionality specified in the SRS:
+  \begin{itemize}
+  \item FR5.2 - Direction of arrival estimation from frequency domain audio
+  \item FR5.3 - Angular representation of sound source direction
+  \item NFR5.3 - Maximum 45° error in direction estimation accuracy
+  \end{itemize}
+\end{itemize}
+
+\subsection{Modules to Anticipated Changes Traceability}
+
+The following table maps anticipated changes to the modules that would need to 
+be modified if those changes occur. This supports the principle of information 
+hiding by showing which design decisions are localized to specific modules.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.25\textwidth} p{0.65\textwidth}}
 \toprule
 \textbf{AC} & \textbf{Modules}\\
 \midrule
+\acref{acAudioGen} & \mref{mAudioGen}\\
 \acref{acHardware} & \mref{mHH}\\
 \acref{acNumMic} & -\\
 \acref{acMicArrangement} & -\\
@@ -719,6 +828,19 @@ requirements and between the modules and the anticipated changes.
 \caption{Trace Between Anticipated Changes and Modules}
 \label{TblACT}
 \end{table}
+
+\noindent
+\textbf{Explanation of Anticipated Change Mappings:}
+
+\begin{itemize}
+\item \textbf{\acref{acAudioGen} - Audio generation method:} Changes to the 
+simulation approach, room acoustics model, or testing methodology would only 
+affect the Audio Generation Module. Since this module is temporary and isolated 
+from the production system, it can be modified or removed without impacting other 
+modules. The final product will replace this module entirely with hardware 
+microphone drivers.
+
+\end{itemize}
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
@@ -742,6 +864,64 @@ arrows in the diagram typically correspond to the presence of import statement.}
 
 \wss{If module A uses module B, the arrow is directed from A to B.}
 
+\subsection{Use Relationships for Audio Generation and DOA Processor Modules}
+
+The following describes the use relationships for the two modules being 
+documented:
+
+\subsubsection{Audio Generation Module (\mref{mAudioGen}) Dependencies}
+
+\textbf{Modules Used By Audio Generation Module:}
+\begin{itemize}
+\item \textbf{Hardware-Hiding Module (\mref{mHH}):} The Audio Generation Module 
+uses the Hardware-Hiding Module to access file I/O services for reading source 
+audio files and writing generated microphone array outputs. This dependency 
+ensures the module can operate across different platforms without modification.
+
+\item \textbf{Python Standard Libraries:} For numerical computation (NumPy), 
+audio processing (SciPy), and room acoustics simulation (pyroomacoustics). These 
+are external dependencies that provide the mathematical foundations for the 
+simulation.
+\end{itemize}
+
+\textbf{Modules That Use Audio Generation Module:}
+\begin{itemize}
+\item \textbf{DOA Processor Module (\mref{mDOA}):} During testing and 
+proof-of-concept development, the DOA Processor uses the Audio Generation Module 
+to obtain synthetic four-channel microphone data for algorithm validation.
+
+\item \textbf{Testing Framework:} Automated tests use this module to generate 
+controlled audio scenarios with known ground truth for validation of the entire 
+signal processing pipeline.
+\end{itemize}
+
+\subsubsection{DOA Processor Module (\mref{mDOA}) Dependencies}
+
+\textbf{Modules Used By DOA Processor Module:}
+\begin{itemize}
+\item \textbf{Audio Filtering Module:} The DOA Processor uses the Audio Filtering 
+Module to obtain frequency-domain representations of the four microphone signals. 
+The filtering module provides FFT-transformed, normalized, and noise-filtered 
+audio data that is suitable for DOA algorithms.
+
+\item \textbf{Audio Generation Module:} The DOA Processor uses the Audio 
+Generation Module to obtain the four microphone signals. 
+The audio generation module provides the four microphone signals that are 
+suitable for DOA algorithms. Note, as mentioned previosuly, this module 
+dependency is expected to be removed for the final product.
+
+\item \textbf{Mathematical Libraries:} Uses linear algebra and signal processing 
+libraries for matrix operations, FFT/IFFT, and statistical computations required 
+by DOA algorithms.
+\end{itemize}
+
+\textbf{Modules That Use DOA Processor Module:}
+\begin{itemize}
+\item \textbf{Visualization Module:} Uses the DOA Processor's output 
+(direction angle in degrees) to generate visual indicators on the display 
+showing the user where sound sources are located.
+\end{itemize}
+
 \begin{figure}[H]
 \centering
 %\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
@@ -752,8 +932,8 @@ arrows in the diagram typically correspond to the presence of import statement.}
 
 \section{User Interfaces}
 
-\wss{Design of user interface for software and hardware.  Attach an appendix if
-needed. Drawings, Sketches, Figma}
+\wss{[Design of user interface for software and hardware. Attach an appendix if needed. Drawings,
+Sketches, Figma —SS]}
 
 \section{Design of Communication Protocols}
 
