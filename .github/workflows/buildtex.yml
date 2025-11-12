@@ -31,7 +31,15 @@ jobs:
       - name: Get changed LaTeX files
         id: latex-files
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- docs/**/*.tex | xargs)
+          git fetch --unshallow || true
+
+          BEFORE_SHA=${{ github.event.before }}
+          if ! git cat-file -e "$BEFORE_SHA" 2>/dev/null; then
+            echo "Previous commit not found, falling back to HEAD~1"
+            BEFORE_SHA=$(git rev-parse HEAD~1)
+          fi
+
+          CHANGED_FILES=$(git diff --name-only "$BEFORE_SHA" ${{ github.sha }} | grep -E '^docs/.*\.tex$' | xargs || true)
           echo "Changed files: $CHANGED_FILES"
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
           CHANGED_FILENAMES=$(for file in $CHANGED_FILES; do basename "$file"; done | xargs)

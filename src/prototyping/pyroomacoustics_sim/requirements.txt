@@ -1,4 +1,5 @@
-pyroomacoustics
+# run with `pip install -r requirements.txt`
 matplotlib
-scipy
 pydub
+pyroomacoustics
+scipy

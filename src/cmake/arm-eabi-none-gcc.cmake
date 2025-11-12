@@ -123,13 +123,10 @@ set(HARDWARE_SRC_FILE
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sai.c
 
         # FATFS
-
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/src/ff.c
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/src/diskio.c
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/src/ff_gen_drv.c
-
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/App/fatfs.c
-
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/Target/user_diskio.c
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/Target/user_diskio_spi.c
 
@@ -163,7 +160,6 @@ set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 
         # FATFS
-
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/src
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/Target
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/App
