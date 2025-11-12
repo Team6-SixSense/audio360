@@ -33,7 +33,11 @@ jobs:
         run: |
           CHANGED_FILES=$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" | grep '^docs/.*\.tex$' || true)
           echo "Changed files: $CHANGED_FILES"
-          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
+          {
+            echo "CHANGED_FILES<<EOF"
+            echo "$CHANGED_FILES"
+            echo "EOF"
+          } >> $GITHUB_ENV
           CHANGED_FILENAMES=$(for file in $CHANGED_FILES; do basename "$file"; done | xargs)
           echo "CHANGED_FILENAMES=$CHANGED_FILENAMES" >> $GITHUB_ENV
           FILE_COUNT=$(echo $CHANGED_FILENAMES | wc -w)
