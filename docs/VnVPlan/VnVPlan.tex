@@ -3,6 +3,7 @@
 \usepackage{amssymb}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{longtable}
 \usepackage[x11names]{xcolor}
 \usepackage{hyperref}
 \usepackage{xr}
@@ -262,12 +263,7 @@ implementation components, ensuring an unbiased evaluation of system
 functionality. The supervisor also contributes by providing technical oversight
 and expert validation for signal processing.
 
-\noindent
-\textbf{Table: Verification and validation team breakdown}
-\label{table:vnv_team}
-
-\noindent
-\begin{tabularx}{\textwidth}{|p{4cm}|X|p{3cm}|}
+\begin{longtable}{|p{4cm}|p{6cm}|p{2cm}|}
 \hline
 \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
 \hline
@@ -304,7 +300,9 @@ Reviews and assesses the audio processing methodologies implemented. The team
 will demonstrate and explain these techniques in a supervisor meeting and
 receive verbal or written feedback. & MVM (Supervisor) \\
 \hline
-\end{tabularx}
+
+\caption{verification and validation team breakdown} \label{table:vnv_team}
+\end{longtable}
 
 \subsection{SRS Verification}\label{sec:srs_verification}
 
@@ -318,6 +316,7 @@ implementation of the component. These fall under the
 \hyperref[role:firmware_verfication]{firmware verification},
 \hyperref[role:visual_vnv]{visual verification},
 \hyperref[role:classification_verfication]{audio classification verification},
+and
 \hyperref[role:directional_verfication]{directional analysis verification}
 roles. \newline
 
@@ -340,13 +339,25 @@ explaining the rationale for the change.
 The 
 \hyperref[role:audio_processing_verification]{supervisor verification process}
 will follow a formal meeting based review approach. During these meetings, the
-team will present core system elements, mainly audio processing methodologies,
+team will present core system elements - mainly audio processing methodologies -
 using mathematical descriptions, prototype demonstrations, and graphed data. The
-supervisor will be provided with targeted review questions and asked to identify
+supervisor will be provided with targeted
+\hyperref[questions:supervisor]{review questions}  and asked to identify
 potential weaknesses or missing test cases. Feedback will be documented, and
 resulting action items will be tracked and resolved through the project's issue
 tracker. \newline
 
+\textbf{Supervisor Audio Processing Verification Questions}
+\label{questions:supervisor}
+\begin{enumerate}
+  \item Are the derived audio processing formulas correct in the context of this
+    project?
+
+  \item Are the assumptions that the team made about audio processing in the
+    context of the project make sense?
+  \item Is there anything in particular in the processed audio results that does
+     not make sense?
+  \end{enumerate}
 
 \subsection{Design Verification}\label{sec:design_verification}
 
