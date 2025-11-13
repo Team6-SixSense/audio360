@@ -327,7 +327,7 @@ actually be implemented.
   Module 
 \item [\refstepcounter{mnum} \mthemnum \label{mAudioGen}:] Audio Generation
   Module
-\item [\refstepcounter{mnum} \mthemnum \label{mAudioGen}:] DOA (Direction of Arrival)
+\item [\refstepcounter{mnum} \mthemnum \label{mDOA}:] DOA (Direction of Arrival)
   Processor Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAudio360Engine}:] Audio360 Engine
   Module
@@ -570,6 +570,25 @@ array hardware and its connections to the microcontroller.
 \item[Type of Module:] Abstract Data Type 
 \end{description}
 
+% VISUALIZATION MODULE.
+\subsubsection{Visualization Module (\mref{mVisualization})}
+\begin{description}
+  \item[Secrets:] The algorithms and data structures used to format and render 
+  visual information on the smart glasses display. This includes the layout 
+  strategy for HUD elements, prioritization logic for safety-critical 
+  information, and the rendering pipeline for directional indicators and 
+  classification labels. The module also hides the specific display hardware 
+  interface details, allowing the visualization format to be modified 
+  independently of the underlying display technology.
+  \item[Services:] Accepts classification labels and direction angles (in 
+  radians) from the Audio360 Engine, formats this information according to 
+  display constraints and prioritization rules, and renders visual indicators 
+  on the smart glasses display. The module ensures non-intrusive presentation 
+  while maintaining a minimum update rate of 30 frames per second. It also 
+  handles display of error states and safety feature failure alerts.
+  \item[Implemented By:] \progname
+  \item[Type of Module:] Abstract Data Type 
+\end{description}
 
 \subsection{Software Decision Module}
 
@@ -771,24 +790,7 @@ maintain core functionality when possible.
   \item[Type of Module:] Abstract Data Type
 \end{description}
 
-\subsubsection{Visualization Module (\mref{mVisualization})}
-\begin{description}
-  \item[Secrets:] The algorithms and data structures used to format and render 
-  visual information on the smart glasses display. This includes the layout 
-  strategy for HUD elements, prioritization logic for safety-critical 
-  information, and the rendering pipeline for directional indicators and 
-  classification labels. The module also hides the specific display hardware 
-  interface details, allowing the visualization format to be modified 
-  independently of the underlying display technology.
-  \item[Services:] Accepts classification labels and direction angles (in 
-  radians) from the Audio360 Engine, formats this information according to 
-  display constraints and prioritization rules, and renders visual indicators 
-  on the smart glasses display. The module ensures non-intrusive presentation 
-  while maintaining a minimum update rate of 30 frames per second. It also 
-  handles display of error states and safety feature failure alerts.
-  \item[Implemented By:] \progname
-\end{description}
-
+% ICA MODULE.
 \subsubsection{Independent Component Analysis (ICA) Module (\mref{mICA})}
 \begin{description}
   \item[Secrets:] The specific ICA algorithm implementation (e.g., FastICA) 
@@ -804,10 +806,12 @@ maintain core functionality when possible.
   sources are present simultaneously. The module may be conditionally invoked 
   by the Audio360 Engine when multiple sources are detected.
   \item[Implemented By:] \progname
+  \item[Type of Module] Abstract Object
   \item[Notes:] This module is a stretch goal and may or may not be 
   implemented depending on computational constraints and development timeline. 
   It supports the multi-source handling functionality mentioned in the SRS 
-  (Section G.4). If implemented, it would enhance the system's ability to 
+  (\hyperref[SRS-sec:g4]{Section G.4}). If implemented, it would enhance the
+  system's ability to 
   handle complex acoustic environments with overlapping sound sources by 
   separating them before classification and direction estimation.
 \end{description}
@@ -927,76 +931,9 @@ the modules. It can be seen that the graph is a directed acyclic graph
 system, and modules in the higher level of the hierarchy are essentially simpler
 because they use modules from the lower levels.
 
-\wss{The uses relation is not a data flow diagram.  In the code there will often
-be an import statement in module A when it directly uses module B.  Module B
-provides the services that module A needs.  The code for module A needs to be
-able to see these services (hence the import statement).  Since the uses
-relation is transitive, there is a use relation without an import, but the
-arrows in the diagram typically correspond to the presence of import statement.}
-
-\wss{If module A uses module B, the arrow is directed from A to B.}
-
-\subsection{Use Relationships for Audio Generation and DOA Processor Modules}
-
-The following describes the use relationships for the two modules being 
-documented:
-
-\subsubsection{Audio Generation Module (\mref{mAudioGen}) Dependencies}
-
-\textbf{Modules Used By Audio Generation Module:}
-\begin{itemize}
-\item \textbf{Hardware-Hiding Module (\mref{mHH}):} The Audio Generation Module 
-uses the Hardware-Hiding Module to access file I/O services for reading source 
-audio files and writing generated microphone array outputs. This dependency 
-ensures the module can operate across different platforms without modification.
-
-\item \textbf{Python Standard Libraries:} For numerical computation (NumPy), 
-audio processing (SciPy), and room acoustics simulation (pyroomacoustics). These 
-are external dependencies that provide the mathematical foundations for the 
-simulation.
-\end{itemize}
-
-\textbf{Modules That Use Audio Generation Module:}
-\begin{itemize}
-\item \textbf{DOA Processor Module (\mref{mDOA}):} During testing and 
-proof-of-concept development, the DOA Processor uses the Audio Generation Module 
-to obtain synthetic four-channel microphone data for algorithm validation.
-
-\item \textbf{Testing Framework:} Automated tests use this module to generate 
-controlled audio scenarios with known ground truth for validation of the entire 
-signal processing pipeline.
-\end{itemize}
-
-\subsubsection{DOA Processor Module (\mref{mDOA}) Dependencies}
-
-\textbf{Modules Used By DOA Processor Module:}
-\begin{itemize}
-\item \textbf{Audio Filtering Module:} The DOA Processor uses the Audio Filtering 
-Module to obtain frequency-domain representations of the four microphone signals. 
-The filtering module provides FFT-transformed, normalized, and noise-filtered 
-audio data that is suitable for DOA algorithms.
-
-\item \textbf{Audio Generation Module:} The DOA Processor uses the Audio 
-Generation Module to obtain the four microphone signals. 
-The audio generation module provides the four microphone signals that are 
-suitable for DOA algorithms. Note, as mentioned previosuly, this module 
-dependency is expected to be removed for the final product.
-
-\item \textbf{Mathematical Libraries:} Uses linear algebra and signal processing 
-libraries for matrix operations, FFT/IFFT, and statistical computations required 
-by DOA algorithms.
-\end{itemize}
-
-\textbf{Modules That Use DOA Processor Module:}
-\begin{itemize}
-\item \textbf{Visualization Module:} Uses the DOA Processor's output 
-(direction angle in degrees) to generate visual indicators on the display 
-showing the user where sound sources are located.
-\end{itemize}
-
 \begin{figure}[H]
 \centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+\includegraphics[width=\textwidth]{diagrams/uses_hierarchy.png}
 \caption{Use hierarchy among modules}
 \label{FigUH}
 \end{figure}
