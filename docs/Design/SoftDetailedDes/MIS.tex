@@ -296,15 +296,248 @@ subsubsection{Audio360Status}\label{enum:FaultState}
     The magnitude of the frequency component.
 \end{enumerate}
 
+\subsubsection{CALLBACK\_MIC\_DATA} \label{ds:cb-mic-data}
+\begin{enumerate}
+  \item func\_callback : ([MIC\_INPUT\_BUFFER\_SIZE] of int16) \(\rightarrow\ \{0, 1\}\)
+  Defines the callback function type for microphone data subscription.
+ 
+\end{enumerate}
+
+\subsubsection{MIC\_INPUT\_CALLBACK} \label{ds:mic-input-callback}
+\begin{enumerate}
+  \item pair of (id: \(\mathbb{N}\), callback:
+    \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA})
+ 
+\end{enumerate}
+
 
 \newpage
 
-\section{MIS of \wss{Module Name}} \label{mod:Module} \wss{Use labels for
+\section{MIS of Microphone Input Module \label{MMicInput} - \mref{MG-mMicInput}}
+
+\subsection{Module}
+This module handles the task of interfacing and receiving audio sample
+data from the microphone array connected to the microcontroller and providing
+a buffered stream to modules fetching the stream.
+
+\subsection{Uses}
+\begin{enumerate}
+  \item Serial Audio Interface (SAI) Driver - STM32 HAL Library
+  \item Direct Memory Access (DMA) Driver - STM32 HAL Library
+  \item Microphone Diagnostic Module - \mref{MG-mMicDiag}
+  \item \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA} 
+  \item SAI\_HandleTypeDef - STM32 HAL Library
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item MIC\_INPUT\_IDLE = 0
+  \item MIC\_INPUT\_ERROR = 1
+  \item MIC\_INPUT\_RECEIVED = 2
+  \item MIC\_INPUT\_BUFFER\_SIZE = 4096
+  \item MIC\_INPUT\_SAMPLE\_RATE = 16000
+  \item NUM\_MICROPHONES = 4
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+initMicInput & - & uint8 & MicInputInitFailure \\
+\hline
+subscribeMicInput & callback: \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA}
+& subscriptionCB: \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK} & MicInputSubscriptionFailure \\
+\hline
+unsubscribeMicInput & subscriptionID: \(\mathbb{N}\) & - & MicInputUnsubscriptionFailure \\
+\hline
+micInput\_DMA\_Rx & handle: SAI\_HandleTypeDef* & - & - \\
+\hline
+micInput\_diagnostic\_error & errorCode: \(\mathbb{N}\) & - & - \\
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+  \item micInputStatus : \(\mathbb{N}\)
+  \item subscriptions: sequence of \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK}
+  \item nextSubscriptionID: \(\mathbb{N}\)
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item audioBuffer: sequence [MIC\_INPUT\_BUFFER\_SIZE \(\times\) 
+  (MIC\_INPUT\_SAMPLE\_RATE \(\times\) 2) \(\times\) 
+  NUM\_MICROPHONES] of \(\mathbb{N}\) 
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+  \item Callback functions provided in subscribeMicInput are valid function pointers.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent initMicInput():
+\begin{itemize}
+\item transition: micInputStatus := MIC\_INPUT\_IDLE \(\wedge\) nextSubscriptionID := 0 \(\wedge\)
+subscriptions := \(\langle\ \rangle\) \(\wedge\ (\forall i \in \mathbb{N} | 0 \le i < |\text{audioBuffer}|: \text{audioBuffer}[i] := 0)\) 
+\(\wedge\) Initialize SAI and DMA drivers.
+\item output: micInputStatus
+\item exception: exc := MicInputInitFailure if SAI or DMA initialization fails.
+\end{itemize}
+\noindent subscribeMicInput(callback):
+\begin{itemize}
+\item transition: nextSubscriptionID := nextSubscriptionID + 1 \(\wedge\) 
+subscriptions := subscriptions \(\parallel\) \(\langle\) pair of (id: 
+nextSubscriptionID, callback: callback) \(\rangle\)
+
+\item output: subscriptionCB := pair of (id: nextSubscriptionID, callback: callback) 
+\item exception: exc := MicInputSubscriptionFailure if subscription fails for 
+any reason.
+\end{itemize}
+
+\noindent unsubscribeMicInput(subscriptionID):
+\begin{itemize}
+\item transition: isValidCallback(subscriptionID) \(\Rightarrow\) \\ 
+subscriptions := (subscriptions
+  - \{cb: MIC\_INPUT\_CALLBACK \(\vert\) cb \(\in\) subscriptions: 
+  cb.id \(\equiv\) subscriptionID\})
+\item output: None
+\item exception: exc := \(\neg\) isValidCallback(subscriptionID) \(\Rightarrow\) MicInputUnsubscriptionFailure
+\end{itemize}
+
+\noindent micInput\_DMA\_Rx(handle):
+\begin{itemize}
+  \item transition: (handle.ErrorCode \(\equiv\) HAL\_SAI\_ERROR\_NONE) \(\Rightarrow\) \\
+  micInputStatus := MIC\_INPUT\_RECEIVED \(\wedge\)
+  (\(\forall\) cb: MIC\_INPUT\_CALLBACK \(\vert\) cb \(\in\) subscriptions : 
+  cb.callback(audioBuffer))
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\noindent micInput\_diagnostic\_error(errorCode):
+\begin{itemize}
+  \item transition: (errorCode \(\not\equiv\) 0) \(\Rightarrow\) micInputStatus := MIC\_INPUT\_ERROR
+  \item output: None
+  \item exception: None
+\end{itemize} 
+
+
+\subsubsection{Local Functions}
+\begin{itemize}
+  \item isValidCallback: \(\mathbb{N} \rightarrow\) \hyperref[generic:bool]{boolean}\\
+  isValidCallback(id) \(\equiv\ (\exists \text{ cb}: \text{MIC\_INPUT\_CALLBACK } \vert  
+  \text{ cb} \in \text{subscriptions} : cb.id \equiv id)\) 
+\end{itemize}
+
+\newpage
+
+\section{MIS of USART Communication Module \label{MUsartComm} - \mref{MG-mUSART}}
+\subsection{Module}
+This module handles USART communication between the microcontroller and an 
+external device.
+
+\subsection{Uses}
+\begin{enumerate}
+  \item USART Driver - STM32 HAL Library
+  \item USART\_Init() - STM32 HAL Library
+  \item UART\_Transmit() - STM32 HAL Library
+\end{enumerate}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item USART\_BAUDRATE = 115200
+  \item USART\_TIMEOUT = 1000
+  \item USART\_BUFFER\_SIZE = 256
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+initUSART & - & uint8 & USARTInitFailure \\
+\hline
+transmitData & data: sequence of uint8 & - & USARTTxFailure \\
+\hline
+receiveData & length: \(\mathbb{N}\) & data: sequence of uint8 & USARTRxFailure \\
+
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+None.
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item usartBuffer: sequence [USART\_BUFFER\_SIZE] of uint8
+\end{itemize}
+
+\subsubsection{Assumptions}
+None.
+
+\subsubsection{Access Routine Semantics}
+\noindent initUSART():
+\begin{itemize}
+\item transition: \((\forall i \in \mathbb{N} | 0 \le i < |\text{usartBuffer}|: \text{usartBuffer}[i] := 0) \wedge\)\\
+  USART\_Init(USART\_BAUD\_RATE, ...).
+\item output: (Successful Initialization) \(\Rightarrow\) 0 \(\wedge\ \neg\) 
+  (Successful Initialization) \(\Rightarrow\) 1
+\item exception: exc := USARTInitFailure if USART initialization fails.
+\end{itemize}
+
+\noindent transmitData(data):
+\begin{itemize}
+  \item transition: (\(\vert data \vert\ \leq \) USART\_BUFFER\_SIZE) \(\Rightarrow\) 
+   copy\_array\_data(data,usartBuffer, \(\vert data \vert\ \leq \)) \(\wedge\) 
+   (\(\vert data \vert\ > \) USART\_BUFFER\_SIZE) \(\Rightarrow\) 
+    copy\_array\_data(data,usartBuffer, USART\_BUFFER\_SIZE) \(\wedge\) 
+    UART\_Transmit(usartBuffer, \(\min(\vert data \vert\ ,\) USART\_BUFFER\_SIZE), USART\_TIMEOUT)
+  \item output: None
+  \item exception: exc := (UART\_Transmit(...) \(\equiv\) HAL\_ERROR) \(\Rightarrow\) USARTTxFailure 
+\end{itemize}
+
+\noindent receiveData(length):
+\begin{itemize}
+  \item transition: (\(length \leq \) USART\_BUFFER\_SIZE) \(\Rightarrow\) 
+    UART\_Receive(usartBuffer, length, USART\_TIMEOUT) \(\wedge\)
+    (\(length > \) USART\_BUFFER\_SIZE) \(\Rightarrow\) UART\_Receive(usartBuffer, 
+    USART\_BUFFER\_SIZE, USART\_TIMEOUT)
+  \item output: data
+  \item exception: exc := (UART\_Receive(...) \(\equiv\) HAL\_ERROR) \(\Rightarrow\) USARTRxFailure
+\end{itemize}
+
+\subsection{Local Functions}
+\begin{itemize}
+  \item copy\_array\_data: sequence of \(\mathbb{N} \times\) sequence of \(\mathbb{N} \times \mathbb{N}\ \rightarrow \text{void}\)  \\
+  copy\_array\_data(src, dest, length) \(\equiv\) 
+  (\(\forall i \in \mathbb{N} | 0 \le i \le \text{length} : \text{dest}[i] := \text{src}[i]\))
+\end{itemize}
+
+\newpage
+
+\section{MIS of \wss{Module Name}} \label{mod:Module} \wss{Use labels for  
   cross-referencing}
 
 \wss{You can reference SRS labels, such as R.}
 
 \wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+
+
+
+
 
 \subsection{Module}
 
@@ -363,7 +596,7 @@ subsubsection{Audio360Status}\label{enum:FaultState}
 \wss{Modules rarely have both a transition and an output.  In most cases you
   will have one or the other.}
 
-\subsubsection{Local Functions}
+
 
 \wss{As appropriate} \wss{These functions are for the purpose of specification.
   They are not necessarily something that is going to be implemented
