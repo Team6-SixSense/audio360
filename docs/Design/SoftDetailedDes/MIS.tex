@@ -127,9 +127,19 @@ The following table summarizes the primitive data types used by \progname.
 \textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
 \midrule
 character & char & a single symbol or digit\\
-integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
-natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
+integer & $\mathbb{Z}$ & a number without a fractional component in
+  (-$\infty$, $\infty$) \\
+natural number & $\mathbb{N}$ & a number without a fractional component in
+  [1, $\infty$) \\
 real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+array/list & x[] & Ordered list of type x. \\
+negate & $\neg$ & Logical math NOT.\\
+and & $\wedge$ & Logical math AND \\
+or & $\vee$ & Logical math OR \\
+implies & $\implies$ & Logical math implies \\
+assignment & $:=$ & For A := B. B is assigned to A. \\
+for all & $\forall$ & Referencing all items. For example:
+  $(\forall~variable~|~condition:~statement)$ \\
 \bottomrule
 \end{tabular} 
 \end{center}
@@ -178,14 +188,20 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 \section{Data Types}
 
-\newpage
 \subsection{Generics}
+
+
+\subsubsection{int16}\label{generic:int16}
+16 bits signed integer ($\mathbb{Z}$).
 
 \subsubsection{int32}\label{generic:int32}
 32 bits signed integer ($\mathbb{Z}$).
 
 \subsubsection{int64}\label{generic:int64}
 64 bits signed integer ($\mathbb{Z}$).
+
+\subsubsection{uint16}\label{generic:uint16}
+16 bits unsigned integer ($\mathbb{N}$).
 
 \subsubsection{uint32}\label{generic:uint32}
 32 bits unsigned integer ($\mathbb{N}$).
@@ -201,39 +217,70 @@ The following table is taken directly from the Module Guide document for this pr
 
 \newpage
 \subsection{Enums}
-\subsubsection{Audio360State}\label{state:Audio360State}
+\subsubsection{Audio360State}\label{enum:Audio360State}
 \begin{enumerate}
   \item AudioClassificationProcess:
-    \label{state:Audio360State:AudioClassificationState}
+    \label{enum:Audio360State:AudioClassificationState}
     State when audio classification is running.
   \item DirectionalAnalysisProcess:
-    \label{state:Audio360State:DirectionalAnalysisState}
+    \label{enum:Audio360State:DirectionalAnalysisState}
     State when directional analysis is running.
   \item OutputProcess:
-    \label{state:Audio360State:OutputProcessState}
+    \label{enum:Audio360State:OutputProcessState}
     State when output processing is running.
 \end{enumerate}
 
-\subsubsection{Audio360Status}\label{state:Audio360Status}
+\subsubsection{Audio360Status}\label{enum:Audio360Status}
 \begin{enumerate}
-  \item Uninitialized: \label{state:Audio360Status:Uninitialized}
+  \item Uninitialized: \label{enum:Audio360Status:Uninitialized}
     Audio360 Engine is not initialized.
-  \item Initialized: \label{state:Audio360Status:Initialized}
+  \item Initialized: \label{enum:Audio360Status:Initialized}
     Audio360 Engine is initialized, but not ready.
-  \item Ready: \label{state:Audio360Status:Ready}
+  \item Ready: \label{enum:Audio360Status:Ready}
     Audio360 Engine ready for requests.
-  \item Running: \label{state:Audio360Status:Running}
+  \item Running: \label{enum:Audio360Status:Running}
     Audio360 Engine is running. Can not accept new requests.
-  \item Error: \label{state:Audio360Status:Error}
+  \item Error: \label{enum:Audio360Status:Error}
     Audio360 Engine is stuck at an unhandled error.
 \end{enumerate}
 
+subsubsection{Audio360Status}\label{enum:FaultState}
+\begin{enumerate}
+  \item NoFault: \label{enum:FaultState:NoFault}
+    No fault state.
+  \item MicrophoneXFault: \label{enum:FaultState:MicFault}
+    Fault with microphone X.
+  \item AudioClassificationFault: \label{enum:FaultState:ClassificationFault}
+    Fault with audio classification.
+  \item directionalAnalsysiFault: \label{enum:FaultState:DOAFault}
+    Fault with the directional analysis.
+\end{enumerate}
+
+
 \newpage
 \subsection{Data Structures}
+\subsubsection{FrequencyDomain}\label{struct:FrequencyDomain}
+\begin{enumerate}
+  \item N [\hyperref[generic:uint16]{uint16}]: \label{state:FrequencyDomain:N}
+    The number of data points.
+  \item frequency [\hyperref[generic:float32]{float32}[]]:
+    \label{state:FrequencyDomain:frequency}
+    The frequency represented in Hz.
+  \item real [\hyperref[generic:float32]{float32}[]]:
+    \label{state:FrequencyDomain:real}
+    The real component of thre frequency contribution.
+  \item img [\hyperref[generic:float32]{float32}[]]:
+    \label{state:FrequencyDomain:img}
+    The imaginary component of thre frequency contribution.
+  \item magnitude [\hyperref[generic:float32]{float32}[]]:
+    \label{state:FrequencyDomain:magnitude}
+    The magnitude of the frequency component.
+\end{enumerate}
 
-~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
+\newpage
+
+\section{MIS of \wss{Module Name}} \label{mod:Module} \wss{Use labels for
   cross-referencing}
 
 \wss{You can reference SRS labels, such as R.}
@@ -305,21 +352,21 @@ The following table is taken directly from the Module Guide document for this pr
   have local scope.}
   
 \newpage
-\section{MIS of Audio360 Engine \label{MAudio360Engine} - 
+\section{MIS of Audio360 Engine \label{mod:Audio360Engine} - 
   \mref{MG-mAudio360Engine}}
 
 \subsection{Module}
 
 Orchestrates the overall audio processing by receiving raw input data and
-managing \hyperref[MAudio360Engine_Uses]{module} communication.
+managing \hyperref[mod:Audio360Engine_Uses]{module} communication.
 
-\subsection{Uses}\label{MAudio360Engine_Uses}
+\subsection{Uses}\label{mod:Audio360Engine_Uses}
 
 \begin{enumerate}
-  \item Audio classification
-  \item Directional Analysis
-  \item Output
-  \item Audio Sampling Module
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:FaultManager]{Fault Manager Module} 
+  \item \item \hyperref[mod:Logging]{Logging Module} 
 \end{enumerate}
 
 \subsection{Syntax}
@@ -345,15 +392,15 @@ runProgram & - & - & ProgramStartFailure, ProgramRunTimeFailure \\
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item state [\hyperref[state:Audio360State]{Audio360State}]:
+  \item state [\hyperref[enum:Audio360State]{Audio360State}]:
     Determines the current state of the the Audio360 engine. Each state will run
-    a specific module in \hyperref[MAudio360Engine_Uses]{used modules}.
+    a specific module in \hyperref[mod:Audio360Engine_Uses]{used modules}.
 \end{itemize}
 
 \subsubsection{Environment Variables}
 
 \begin{itemize}
-  \item status [\hyperref[state:Audio360State]{Audio360Status}]:
+  \item status [\hyperref[enum:Audio360Status]{Audio360Status}]:
     Status of the module. This encapsulates initialization, running, ready,
     or errored.
 \end{itemize}
@@ -387,7 +434,366 @@ None
 
 \newpage
 
-\section{MIS of Mel Filter Module \label{mMelFilter} - 
+\section{MIS of Audio Sampling Module \label{mod:AudioSampling} -
+  \mref{MG-mAudioSampling}}
+
+\subsection{Module}
+Provides sampling of audio data from a given source while preserving the order
+of individual samples.
+
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:MicInput]{Microphone Input Module}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item sampleWindowSize [\hyperref[generic:uint16]{uint16}]:
+    \label{var:sampleWindowSize}
+    The number of samples in a window. The value is a power of 2.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+sample & inputSource & - & InputSouceError \\
+getSampledData & - & sampledData & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item sampledData [\hyperref[generic:uint32]{uint32}[]]:
+    \label{var:sampleData}  
+    A cyclic array of size \hyperref[var:sampleWindowSize]{sampleWindowSize}
+    that stored the sampled data.
+  \item windowPosition [\hyperref[generic:uint32]{uint32}]:
+    \label{var:windowPosition}  
+    The current reference index position of the array storing sampled data.
+    This denotes the starting point of the cyclic array. 
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent sample():
+\begin{itemize}
+\item transition: 
+  \begin{enumerate}
+    \item $sampleData[windowPosition] := inputSource.newData$
+    \item $((windowPosition + 1) \geq sampleWindowSize) \implies $
+      $windowPosition:= 0~\vee \neg ((windowPosition + 1) \geq $
+      $sampleWindowSize) \implies$ \\ $ windowPosition:= windowPosition + 1$
+  \end{enumerate}
+
+\item output: None
+\item exception: InputSouceError
+\end{itemize}
+
+\noindent getSampledData():
+\begin{itemize}
+\item transition: None 
+\item output: \hyperref[var:sampleData]{sampleData}
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage
+\section{MIS of Audio Spectral Leakage Prevention Module
+  \label{mod:AudioSpectralLeakage} - \mref{MG-mAudioSpectralLeakage}}
+
+\subsection{Module}
+
+Applying windowing on audio signal to reduce
+\hyperref[SRS-def:spectral_leakage]{spectral leakage} before
+\hyperref[SRS-def:frequency_domain]{frequency domain} processing.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+applyFilter & sampleWindow & filteredWindow & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyFilter():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
+    $sampleWindow[i] * \sin(\dfrac{\pi * i}{N - 1})^2)$ \\
+    such that $N = $ size of sampleWindow.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+
+\subsubsection{Local Functions}
+
+None
+
+
+\newpage
+
+\section{MIS of Audio Normalizer Module \label{mod:AudioNormalizer} -
+  \mref{MG-mAudioNormalizer}}
+
+\subsection{Module}
+
+Processes audio signals to maintain consistent amplitude across different
+sources.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+normalize & sampleWindow, source & filteredWindow & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+Normalization factor is pre-deteremined and known for all given sources.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent normalize():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
+    $\dfrac{sampleWindow[i]}{F_{source}})$ \\
+    such that $N = $ size of sampleWindow and $F_{source}$ is normalization
+    factor of a the sampleWindow source.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage
+\section{MIS of Fast Fourier Transform - \mref{MG-mFFT}} \label{mod:FFT}
+
+\subsection{Module}
+
+Computes the discrete Fourier transform of the input signal to 
+obtain its \hyperref[SRS-def:frequency_domain]{frequency domain}
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:AudioSpectralLeakage]{Audio Spectral Leakage Prevention
+    Module}
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+signalToFrequency & signal & frequency & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item inputsize [uint32]: The size of the signal input, as in number of
+     samples. This is required to interface with hardware acceleration methods
+     on the microcontroller.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent signalToFrequency():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~k~|~0 \leq k \leq N - 1:~frequency[k] := $
+    $\sum_{n=0}^{N-1} x_n * e^{-2i \pi n \frac{k}{N}})$ \\
+    such that $N = $ size of input signal.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item createOutput(): returns a
+    \hyperref[struct:FrequencyDomain]{FrequencyDomain}. This function extract
+    features from the FFT and stores it in the data structure.
+\end{itemize}
+
+\newpage
+
+\section{MIS of Logging Module \label{mod:Logging} -
+  \mref{MG-mLogging}}
+
+\subsection{Module}
+
+Provides centralized logging of data streams to designated output destinations
+for debugging and monitoring.
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:USART]{USART Communication Module}
+  \item \hyperref[mod:SDInterface]{SD Card Interface Module}
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+log & text & - & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent log():
+\begin{itemize}
+\item transition: None
+\item output: input text is logged to output source (SD card or USART port)
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+
+
+
+\newpage 
+
+\section{MIS of Mel Filter Module \label{mod:MelFilter} - 
 \mref{MG-mMelFilter}}
 
 \subsection{Module}
@@ -397,9 +803,7 @@ of $n$ mel-scaled triangular filters to each frequency frame.
 
 \subsection{Uses}
 
-\begin{enumerate}
-  \item Audio Classification
-\end{enumerate}
+None
 
 \subsection{Syntax}
 
@@ -421,7 +825,6 @@ real array & invalidSpectrogramDimension \\
 \end{center}
 
 \subsection{Semantics}
-
 \subsubsection{State Variables}
 
 None
@@ -480,7 +883,7 @@ None
 
 \newpage 
 
-\section{MIS of Discrete Cosine Transform Module \label{mDCT} - 
+\section{MIS of Discrete Cosine Transform Module \label{mod:DCT} - 
 \mref{MG-mDCT}}
 
 \subsection{Module}
@@ -493,9 +896,7 @@ perform Principle Component Analysis later on.
 
 \subsection{Uses}
 
-\begin{enumerate}
-  \item Audio Classification
-\end{enumerate}
+None
 
 \subsection{Syntax}
 
@@ -581,7 +982,7 @@ None
 
 \newpage 
 
-\section{MIS of Principle Component Analysis Module \label{mPCA} - 
+\section{MIS of Principle Component Analysis Module \label{mod:PCA} - 
 \mref{MG-mPCA}}
 
 \subsection{Module}
@@ -593,9 +994,7 @@ helps with eliminating noise and unimportant information.
 
 \subsection{Uses}
 
-\begin{enumerate}
-  \item Audio Classification
-\end{enumerate}
+Non
 
 \subsection{Syntax}
 
@@ -691,7 +1090,7 @@ None
 
 \newpage 
 
-\section{MIS of Linear Discriminant Analysis Module \label{mLDA} - 
+\section{MIS of Linear Discriminant Analysis Module \label{mod:LDA} - 
 \mref{MG-mLDA}}
 
 \subsection{Module}
@@ -704,9 +1103,7 @@ module.
 
 \subsection{Uses}
 
-\begin{enumerate}
-  \item Audio Classification
-\end{enumerate}
+None
 
 \subsection{Syntax}
 
@@ -808,7 +1205,7 @@ None
 
 \newpage 
 
-\section{MIS of Classification Module \label{mClassification} - 
+\section{MIS of Classification Module \label{mod:Classification} - 
 \mref{MG-mClassification}}
 
 \subsection{Module}
@@ -820,7 +1217,14 @@ involved.
 \subsection{Uses}
 
 \begin{enumerate}
-  \item Audio Classification
+  \item \hyperref[mod:AudioSampling]{Audio Sampling Module}
+  \item \hyperref[mod:AudioNormalizer]{Audio Normalizer Module}
+  \item \hyperref[mod:FFT]{Fast Fourier Transform Module}
+  \item \hyperref[mod:MelFilter]{Mel Filter Module}
+  \item \hyperref[mod:DCT]{Discrete Cosine Transform Module}
+  \item \hyperref[mod:PCA]{Principle Component Analysis Module}
+  \item \hyperref[mod:LDA]{Linear Discrete Analysis Module}
+  \item 
 \end{enumerate}
 
 \subsection{Syntax}
@@ -891,6 +1295,77 @@ ClassificationRunTimeFailure
 None
 
 \newpage 
+
+\section{MIS of Fault Manager Module - \mref{MG-mFaultManager}
+  \label{mod:FaultManager}} 
+
+\subsection{Module}
+
+Monitors system health and manages critical faults to maintain core
+functionality.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+runFaultAnalysis & - & - & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item faultState [\hyperref[enum:FaultState]{FaultState}]:
+    \label{faultState}
+    The current fault state of the overall software system.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \hyperref[faultState]{faultState}: This variable is shared with the
+    display, to notifiy user of the internal status of the software system.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+Fault Manager module itself does not run into any critical faults.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent faultState():
+\begin{itemize}
+\item transition: update the value of faultState depending on the overal health
+  of the software system.
+\item output: None
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+\newpage
 
 \bibliographystyle{IEEEtran}
 \bibliography{../../../refs/References}
