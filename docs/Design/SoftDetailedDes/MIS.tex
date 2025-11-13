@@ -527,83 +527,147 @@ None.
 \end{itemize}
 
 \newpage
-
-\section{MIS of \wss{Module Name}} \label{mod:Module} \wss{Use labels for  
-  cross-referencing}
-
-\wss{You can reference SRS labels, such as R.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
-
-
-
-
+\section{MIS of SD Card Interface Module \label{MIS:sdcard} - \mref{MG-mSDInterface}}
 
 \subsection{Module}
-
-\wss{Short name for the module}
+This module manages reading from and writing to an SD card connected to the
+microcontroller via the SPI interface.
 
 \subsection{Uses}
-
+\begin{enumerate}
+  \item SPI Driver - STM32 HAL Library
+  \item FATFS Library - Chan's FatFs
+\end{enumerate}
 
 \subsection{Syntax}
-
 \subsubsection{Exported Constants}
+None.
 
 \subsubsection{Exported Access Programs}
-
 \begin{center}
 \begin{tabularx}{\linewidth}{l X X X}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-\wss{accessProg} & - & - & - \\
+initSDCard & - & uint8 & SDCardInitFailure \\
+\hline
+writeLog & data: string & - & SDCardWriteFailure \\
 \hline
 \end{tabularx}
 \end{center}
 
 \subsection{Semantics}
-
 \subsubsection{State Variables}
-
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
-
+None.
 \subsubsection{Environment Variables}
-
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
-
+None.
 \subsubsection{Assumptions}
-
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+None.
 
 \subsubsection{Access Routine Semantics}
-
-\noindent \wss{accessProg}():
+\noindent initSDCard():
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+\item transition: HAL\_SPI\_Init(...) \(\wedge\) f\_mount(...)
+\item output: (Successful Initialization) \(\Rightarrow\) 0 \(\wedge\ \neg\) 
+  (Successful Initialization) \(\Rightarrow\) 1
+\item exception: exc := (SPI \(\vee\) FATFS initialization failure) \(\Rightarrow\) SDCardInitFailure.
 \end{itemize}
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+\noindent writeLog(data):
+\begin{itemize}
+  \item transition: f\_write(data) \(\wedge\) f\_sync()
+  \item output: None
+  \item exception: exc := ((f\_write() \(\not\equiv\) FR\_OK) \(\vee\) (f\_sync() failure \(\not\equiv\) FR\_OK))
+  \(\Rightarrow\) SDCardWriteFailure 
+\end{itemize}
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
-
-
-
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+\subsection{Local Functions}
+None.
 
 \newpage
+
+\section{MIS of Microphone Diagnostic Module \label{MIS:micdiag}- \mref{MG-mMicDiag}}
+\subsection{Module}
+This module performs diagnostics on the microphone array to detect hardware
+errors.
+
+\subsection{Uses}
+\begin{itemize}
+  \item ADC Driver - STM32 HAL Library
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item MIC\_DIAG\_ERROR = 1
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+initMicDiagnostics & - & uint8 & MicDiagInitFailure \\
+\hline
+runMicDiagnostics & - & uint8 & MicDiagFailure \\
+\hline
+subscribeDiagnostics & callback: \(\mathbb{N} \rightarrow \text{void}\) & - & - \\
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+  \item diagStatus : \(\mathbb{N}\)
+  \item callbacks: sequence of (\(\mathbb{N} \rightarrow \text{void}\))
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item ADC\_Handle: ADC\_HandleTypeDef
+  \item adcValue: \(\mathbb{R}\)
+\end{itemize}
+
+\subsubsection{Assumptions}
+None.
+
+\subsubsection{Access Routine Semantics}
+\noindent initMicDiagnostics():
+\begin{itemize}
+  \item transition: diagStatus := 0 \(\wedge\) ADC\_Init(ADC\_Handle).
+  \item output: (Successful Initialization) \(\Rightarrow\) 0 \(\wedge\ \neg\) 
+    (Successful Initialization) \(\Rightarrow\) 1
+  \item exception: exc := (ADC\_Init(...) \(\equiv\) HAL\_ERROR) \(\Rightarrow\) MicDiagInitFailure.
+\end{itemize}
+
+\noindent runMicDiagnostics():
+\begin{itemize}
+  \item transition: adcValue = HAL\_ADC\_GetValue(ADC\_Handle) \(\wedge\) 
+    (map(adcValue, 0, 65535, 0, 3.3) \(<\) 3.1) \(\Rightarrow\) diagStatus := MIC\_DIAG\_ERROR \(\wedge\) 
+    (\(\forall\) cb: (\(\mathbb{N} \rightarrow \text{void}\)) \(\vert\) cb \(\in\) callbacks : cb(diagStatus))
+    \item output: diagStatus
+    \item exception: exc := (ADC read failure) \(\Rightarrow\) MicDiagFailure
+\end{itemize}
+
+\noindent subscribeDiagnostics(callback):
+\begin{itemize}
+  \item transition: callbacks := callbacks \(\parallel\) \(\langle\) callback \(\rangle\)
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+
+\subsection{Local Functions}
+\begin{itemize}
+  \item map: \(\mathbb{N} \times \mathbb{N} \times \mathbb{N} 
+  \times \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}\)
+  map(x, in\_min, in\_max, out\_min, out\_max) \(\equiv\) \\
+  (x - in\_min) \(\times\) (out\_max - out\_min + 1) / (in\_max - in\_min + 1) + out\_min
+\end{itemize}
+
+\newpage
+
 \section{MIS of Audio Generation Module - \mref{MG-mAudioGen}}
 \label{mod:AudioGeneration}
 
