@@ -238,7 +238,7 @@ important sounds, fostering greater autonomy in daily activities.
 
 
 
-\subsection{G.4 Functionality overview}
+\subsection{G.4 Functionality overview} \label{sec:g4}
 
 The system will provide the following principal functions:
 
@@ -464,6 +464,10 @@ laboratory testing to validate technical approaches and refine requirements.
   to finite time windowing. Essentially, noise that is caused by sharp signal
   cutting when processing audio signals as windows.
 
+  \item \textbf{STM32:} \label{def:stm32}
+  Family of 32 bit microcontrollers provided by STMicroelectronics
+  \cite{STMicroelectronics}.
+
 \end{itemize}
 
 \subsubsection{E.1.1 Symbols, Abbreviations, and Acronyms}
@@ -499,8 +503,11 @@ laboratory testing to validate technical approaches and refine requirements.
     AC & Anticipated Change\\ \hline
     \progname & 360 Audio analysis system on smart glasses\\ \hline
     DAG & Directed Acyclic Graph \\ \hline
+    DOA & Direction of Arrival \\ \hline
     FFT & Fast Fourier Transform \\ \hline
     FR & Functional Requirement\\ \hline
+    HUD & Heads Up Display \\ \hline
+    ICA & Independent Component Analysis \\ \hline
     M & Module \\ \hline
     MG & Module Guide \\ \hline
     MIS & Module Interface Specification \\ \hline
@@ -752,16 +759,16 @@ Requirements \label{sec:FR1}
 Non-Functional Requirements
 \begin{itemize}
   \item \label{NFR1_1}\textbf{NFR1.1:} The firmware shall process audio signals
-  in real-time with monotonic frame sequences. Earliest frames shall have higher
-  priority. For example, if frame $F_t$ arrives at time $t$, then the priority,
-  $P(F_t)$, must satisfy $P(F_t) > P(F_{t+1})$.
+  in real-time with monotonic sample sequences. Earliest samples shall have
+  higher priority. For example, if sample $S_t$ arrives at time $t$, then the
+  priority, $P(S_t)$, must satisfy $P(S_t) > P(S_{t+1})$.
   
-  \item \label{NFR1_2}\textbf{NFR1.2:} The firmware shall operate faster than
-  the connected microphone sample rate 16 kHz, referring to
-  \hyperref[NFR7_1]{NFR7.1}. This ensures that all input data from the
+  \item \label{NFR1_2}\textbf{NFR1.2:} The firmware shall operate at the same
+  rate or faster than the connected microphone sample rate of 16 kHz, referring
+  to \hyperref[NFR7_1]{NFR7.1}. This ensures that all input data from the
   microphone can be processed.
 
-  \item \label{NFR4_3}\textbf{NFR1.3:} The firmware shall permanently
+  \item \label{NFR1_3}\textbf{NFR1.3:} The firmware shall permanently
   discard microphone audio data that is greater than the sampling window size.
   This ensures that audio data is retained only temporarily for processing,
   supporting \hyperref[goal:user_safety]{Goal 7}, protecting user privacy.
