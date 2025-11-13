@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simulation"
+version = "0.1.0"
+dependencies = [
+    "pyroomacoustics",
+    "matplotlib",
+    "scipy",
+    "pydub",
+    "librosa",
+    "joblib",
+    "pyaudio"
+]
+
+[tool.setuptools]
+packages = ["simulation"]
+package-dir = { "simulation" = "." }
