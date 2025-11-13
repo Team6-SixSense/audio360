@@ -251,6 +251,16 @@ rate is required.
   \textbf{Rationale:} The SD card diagnostic method is useful for 
   bulk data logging during testing. In a production system it is 
   going to be removed since no debug logs will be captured.
+
+\item[\refstepcounter{acnum} \actheacnum \label{acICA}:]
+  The implementation of Independent Component Analysis (ICA) for 
+  separating multiple simultaneous audio sources from mixed signals. \\
+  \textbf{Rationale:} The SRS mentions multi-source handling as a 
+  functionality goal (Section G.4), where the system should detect 
+  and track multiple simultaneous sound sources. ICA would enable 
+  the extraction of individual audio sources from mixed microphone 
+  signals, improving classification and direction estimation accuracy 
+  in complex acoustic environments.
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
@@ -331,7 +341,11 @@ Analysis Module
 \item [\refstepcounter{mnum} \mthemnum \label{mLDA}:] Linear Discriminant 
 Analysis Module
 \item [\refstepcounter{mnum} \mthemnum \label{mClassification}:] Classification 
-Module
+  Module
+\item [\refstepcounter{mnum} \mthemnum \label{mVisualization}:] Visualization 
+  Module
+\item [\refstepcounter{mnum} \mthemnum \label{mICA}:] Independent Component 
+  Analysis (ICA) Module
 \end{description}
 
 
@@ -351,7 +365,7 @@ Module
 \multirow{1}{0.3\textwidth}{Behaviour-Hiding Module} & \mref{mAudio360Engine}\\
 \midrule
 
-\multirow{14}{0.3\textwidth}{Software Decision Module} & \mref{mAudioSampling}\\
+\multirow{16}{0.3\textwidth}{Software Decision Module} & \mref{mAudioSampling}\\
 & \mref{mDOA}\\
 & \mref{mAudioGen}\\
 & \mref{mAudioSampling}\\
@@ -366,6 +380,8 @@ Module
 & \mref{mPCA}\\
 & \mref{mLDA}\\
 & \mref{mClassification}\\
+& \mref{mVisualization}\\
+& \mref{mICA}\\
 \bottomrule
 
 \end{tabular}
@@ -428,6 +444,35 @@ clipping or dropouts.
   de-coupled modules that will be called individualy. This design affects 
   \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and 
   \mref{mClassification}. 
+
+\item \hyperref[SRS-FR6_1]{FR6.1}, \hyperref[SRS-FR6_2]{FR6.2}, 
+  \hyperref[SRS-FR8_1]{FR8.1}, and \hyperref[SRS-FR8_2]{FR8.2} specify that 
+  the system shall display sound classification and direction information to 
+  users. \hyperref[SRS-NFR6_1]{NFR6.1} requires prioritization of 
+  safety-critical information, while \hyperref[SRS-NFR6_2]{NFR6.2} mandates 
+  non-intrusive presentation. \hyperref[SRS-NFR8_1]{NFR8.1} requires a minimum 
+  of 30 display updates per second for low latency. To satisfy these 
+  requirements, a dedicated visualization module is responsible for receiving 
+  classification and direction data from the Audio360 Engine, formatting the 
+  information according to display constraints, and managing the visual 
+  presentation on the smart glasses display. The module implements prioritization 
+  logic to ensure safety-critical alerts are displayed prominently while 
+  maintaining a non-obstructive HUD-style interface. This design decision 
+  separates visualization concerns from audio processing, allowing the display 
+  format and content to be modified independently (supporting 
+  \hyperref[acVizContent]{AC: Visualization Content}) without affecting core 
+  audio analysis functionality.
+
+\item The SRS mentions multi-source handling as a functionality goal (Section 
+  G.4), where the system should detect and track multiple simultaneous sound 
+  sources when feasible. To support this capability, an Independent Component 
+  Analysis (ICA) module, \mref{mICA}, is designed to separate mixed audio 
+  signals into individual source components. This module would enable improved 
+  classification and direction estimation accuracy when multiple sound sources 
+  are present simultaneously by separating them before processing. The module is designed 
+  to be conditionally invoked by the Audio360 Engine when multiple sources are 
+  detected, allowing the system to operate with or without this 
+  capability.
 
 \end{enumerate}
 
@@ -713,6 +758,47 @@ maintain core functionality when possible.
   \item[Implemented By:] \progname
 \end{description}
 
+\subsubsection{Visualization Module (\mref{mVisualization})}
+\begin{description}
+  \item[Secrets:] The algorithms and data structures used to format and render 
+  visual information on the smart glasses display. This includes the layout 
+  strategy for HUD elements, prioritization logic for safety-critical 
+  information, and the rendering pipeline for directional indicators and 
+  classification labels. The module also hides the specific display hardware 
+  interface details, allowing the visualization format to be modified 
+  independently of the underlying display technology.
+  \item[Services:] Accepts classification labels and direction angles (in 
+  radians) from the Audio360 Engine, formats this information according to 
+  display constraints and prioritization rules, and renders visual indicators 
+  on the smart glasses display. The module ensures non-intrusive presentation 
+  while maintaining a minimum update rate of 30 frames per second. It also 
+  handles display of error states and safety feature failure alerts.
+  \item[Implemented By:] \progname
+\end{description}
+
+\subsubsection{Independent Component Analysis (ICA) Module (\mref{mICA})}
+\begin{description}
+  \item[Secrets:] The specific ICA algorithm implementation (e.g., FastICA) 
+  and its parameters for blind source separation. This 
+  includes the statistical independence criteria, optimization methods, and 
+  convergence thresholds used to separate mixed audio signals into independent 
+  source components.
+  \item[Services:] Accepts multi-channel audio signals from the microphone 
+  array and separates them into individual independent audio source components. 
+  Takes as input mixed audio signals from multiple microphones and outputs 
+  separated audio streams, each representing an individual sound source. This 
+  enables improved classification and direction estimation when multiple sound 
+  sources are present simultaneously. The module may be conditionally invoked 
+  by the Audio360 Engine when multiple sources are detected.
+  \item[Implemented By:] \progname
+  \item[Notes:] This module is a stretch goal and may or may not be 
+  implemented depending on computational constraints and development timeline. 
+  It supports the multi-source handling functionality mentioned in the SRS 
+  (Section G.4). If implemented, it would enhance the system's ability to 
+  handle complex acoustic environments with overlapping sound sources by 
+  separating them before classification and direction estimation.
+\end{description}
+
 \section{Traceability Matrix} \label{SecTM}
 
 This section shows two traceability matrices: between the modules and the
@@ -757,9 +843,22 @@ using the labels defined in the SRS document.
 \hline
 \hyperref[SRS-FR5_1]{FR5.1} & \mref{mMelFilter}, \mref{mDCT}, 
 \mref{mPCA}, \mref{mLDA}, \mref{mClassification}\\
+\hyperref[SRS-FR5_2]{FR5.2} & \mref{mDOA} \\
+\hyperref[SRS-FR5_3]{FR5.3} & \mref{mDOA} \\
 \hyperref[SRS-FR5_4]{FR5.4} & \mref{mClassification}\\
-\bottomrule
+\hyperref[SRS-NFR5_3]{NFR5.3} & \mref{mDOA} \\
+\hline
+\hyperref[SRS-FR6_1]{FR6.1} & \mref{mAudio360Engine}, \mref{mVisualization} \\
+\hyperref[SRS-FR6_2]{FR6.2} & \mref{mVisualization}, \mref{mFaultManager} \\
+\hyperref[SRS-NFR6_1]{NFR6.1} & \mref{mVisualization} \\
+\hyperref[SRS-NFR6_2]{NFR6.2} & \mref{mVisualization} \\
+\hline
 \hyperref[SRS-FR7_1]{FR7.1} & \mref{mMicInput}, \mref{mAudioSampling} \\
+\hline
+\hyperref[SRS-FR8_1]{FR8.1} & \mref{mVisualization} \\
+\hyperref[SRS-FR8_2]{FR8.2} & \mref{mVisualization} \\
+\hyperref[SRS-NFR8_1]{NFR8.1} & \mref{mVisualization} \\
+\bottomrule
 
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
@@ -775,6 +874,8 @@ using the labels defined in the SRS document.
 \mref{mAudioGen} & Testing support for FR1.2, FR5.2, FR7.1, FR7.2, NFR7.1\\
 \midrule
 \mref{mDOA} & FR5.2, FR5.3, NFR5.3\\
+\midrule
+\mref{mVisualization} & FR6.1, FR6.2, FR8.1, FR8.2, NFR6.1, NFR6.2, NFR8.1\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Modules and SRS Requirements}
@@ -798,6 +899,18 @@ implements the core direction of arrival functionality specified in the SRS:
   \item FR5.3 - Angular representation of sound source direction
   \item NFR5.3 - Maximum 45° error in direction estimation accuracy
   \end{itemize}
+
+\item \textbf{Visualization Module (\mref{mVisualization}):} This module 
+implements the visual display functionality specified in the SRS:
+  \begin{itemize}
+  \item FR6.1 - Notify users of sound source direction when detected
+  \item FR6.2 - Alert users when core safety features fail
+  \item FR8.1 - Display classified sound source information
+  \item FR8.2 - Display sound source direction information
+  \item NFR6.1 - Prioritize safety-critical information display
+  \item NFR6.2 - Present information in a non-intrusive manner
+  \item NFR8.1 - Operate at minimum 30 display updates per second
+  \end{itemize}
 \end{itemize}
 
 \subsection{Modules to Anticipated Changes Traceability}
@@ -816,13 +929,14 @@ hiding by showing which design decisions are localized to specific modules.
 \acref{acHardware} & \mref{mHH}\\
 \acref{acNumMic} & -\\
 \acref{acMicArrangement} & -\\
-\acref{acOutput} & \mref{mOutput}\\
+\acref{acOutput} & \mref{mVisualization}\\
 \acref{NumClassification} & -\\
 \acref{SampleRate} & \mref{mAudioSampling}\\
 \acref{SampleSize} & \mref{mAudioSampling}\\
-\acref{acVizContent} & -\\
+\acref{acVizContent} & \mref{mVisualization}\\
 \acref{acHardwareAccel} & \mref{mFFT}\\
 \acref{acConfidenceAction} & \mref{mAudio360Engine}\\
+\acref{acICA} & \mref{mICA}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
