@@ -251,6 +251,16 @@ rate is required.
   \textbf{Rationale:} The SD card diagnostic method is useful for 
   bulk data logging during testing. In a production system it is 
   going to be removed since no debug logs will be captured.
+
+\item[\refstepcounter{acnum} \actheacnum \label{acICA}:]
+  The implementation of Independent Component Analysis (ICA) for 
+  separating multiple simultaneous audio sources from mixed signals. \\
+  \textbf{Rationale:} The SRS mentions multi-source handling as a 
+  functionality goal (Section G.4), where the system should detect 
+  and track multiple simultaneous sound sources. ICA would enable 
+  the extraction of individual audio sources from mixed microphone 
+  signals, improving classification and direction estimation accuracy 
+  in complex acoustic environments.
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
@@ -334,6 +344,8 @@ Analysis Module
   Module
 \item [\refstepcounter{mnum} \mthemnum \label{mVisualization}:] Visualization 
   Module
+\item [\refstepcounter{mnum} \mthemnum \label{mICA}:] Independent Component 
+  Analysis (ICA) Module
 \end{description}
 
 
@@ -353,7 +365,7 @@ Analysis Module
 \multirow{1}{0.3\textwidth}{Behaviour-Hiding Module} & \mref{mAudio360Engine}\\
 \midrule
 
-\multirow{15}{0.3\textwidth}{Software Decision Module} & \mref{mAudioSampling}\\
+\multirow{16}{0.3\textwidth}{Software Decision Module} & \mref{mAudioSampling}\\
 & \mref{mDOA}\\
 & \mref{mAudioGen}\\
 & \mref{mAudioSampling}\\
@@ -369,6 +381,7 @@ Analysis Module
 & \mref{mLDA}\\
 & \mref{mClassification}\\
 & \mref{mVisualization}\\
+& \mref{mICA}\\
 \bottomrule
 
 \end{tabular}
@@ -449,6 +462,17 @@ clipping or dropouts.
   format and content to be modified independently (supporting 
   \hyperref[acVizContent]{AC: Visualization Content}) without affecting core 
   audio analysis functionality.
+
+\item The SRS mentions multi-source handling as a functionality goal (Section 
+  G.4), where the system should detect and track multiple simultaneous sound 
+  sources when feasible. To support this capability, an Independent Component 
+  Analysis (ICA) module, \mref{mICA}, is designed to separate mixed audio 
+  signals into individual source components. This module would enable improved 
+  classification and direction estimation accuracy when multiple sound sources 
+  are present simultaneously by separating them before processing. The module is designed 
+  to be conditionally invoked by the Audio360 Engine when multiple sources are 
+  detected, allowing the system to operate with or without this 
+  capability.
 
 \end{enumerate}
 
@@ -752,6 +776,29 @@ maintain core functionality when possible.
   \item[Implemented By:] \progname
 \end{description}
 
+\subsubsection{Independent Component Analysis (ICA) Module (\mref{mICA})}
+\begin{description}
+  \item[Secrets:] The specific ICA algorithm implementation (e.g., FastICA) 
+  and its parameters for blind source separation. This 
+  includes the statistical independence criteria, optimization methods, and 
+  convergence thresholds used to separate mixed audio signals into independent 
+  source components.
+  \item[Services:] Accepts multi-channel audio signals from the microphone 
+  array and separates them into individual independent audio source components. 
+  Takes as input mixed audio signals from multiple microphones and outputs 
+  separated audio streams, each representing an individual sound source. This 
+  enables improved classification and direction estimation when multiple sound 
+  sources are present simultaneously. The module may be conditionally invoked 
+  by the Audio360 Engine when multiple sources are detected.
+  \item[Implemented By:] \progname
+  \item[Notes:] This module is a stretch goal and may or may not be 
+  implemented depending on computational constraints and development timeline. 
+  It supports the multi-source handling functionality mentioned in the SRS 
+  (Section G.4). If implemented, it would enhance the system's ability to 
+  handle complex acoustic environments with overlapping sound sources by 
+  separating them before classification and direction estimation.
+\end{description}
+
 \section{Traceability Matrix} \label{SecTM}
 
 This section shows two traceability matrices: between the modules and the
@@ -889,6 +936,7 @@ hiding by showing which design decisions are localized to specific modules.
 \acref{acVizContent} & \mref{mVisualization}\\
 \acref{acHardwareAccel} & \mref{mFFT}\\
 \acref{acConfidenceAction} & \mref{mAudio360Engine}\\
+\acref{acICA} & \mref{mICA}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
