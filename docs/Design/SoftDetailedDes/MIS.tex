@@ -1538,6 +1538,12 @@ None
   much dependencies on each other. Furthermore, writing the MIS has helped the
   team further align with design decisions and formally document.
 
+  \textbf{Kalp:} I think that developing the PoC (Proof of Concept) was a great
+  way to get a better understanding of the system and the modules that are
+  involved. Though maybe not ideal in other scenarios, getting a small headstart
+  on the design implementation helped us really easily scope out what the 
+  modules on the system should be.
+
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
 
@@ -1547,16 +1553,31 @@ None
   and fornately received an extension allowing us to put more effort into this
   document.
 
+  \textbf{Kalp:} I think that the main pain point was just timing. With the VnV 
+  plan due shortly prior to this deliverable, and the team PoC implementation 
+  being due a week after this deliverable, there was really not much time to 
+  write out this document, especailly given the lenght and detail that it goes 
+  into. This was slightly mitigated by the provided extension and the PoC 
+  implementation, but it was still a challenge to get everything done in time.
+
   \item Which of your design decisions stemmed from speaking to your client(s)
   or a proxy (e.g. your peers, stakeholders, potential users)? For those that
   were not, why, and where did they come from?
 
-  \textbf{Sathurshan:} The supervisor mentionned the difficulty of getting
+  \textbf{Sathurshan:} The supervisor mentioned the difficulty of getting
   access to hardware that will meet our software specification. As a result, we
   designed the system such that the software is portable and can take input
   from different sources. This ensures that the capstone project can still
   be successful in the case we are not able to find the right hardware within
   our budget.
+
+  \textbf{Kalp:} A lot of the hardware and software design decisions that we 
+  made was based from speaking to the supervisor and the team. Our supervisor 
+  would be able to give better insight on what would and wouldn't work for 
+  the scope of what we're trying to accomplish. We selected the pipeline 
+  design of audio to processing to output with the specific hardware, but the 
+  specific algorithm (ex. LDA for classification) or the specific hardware came
+  through our supervisors insights. 
 
   \item While creating the design doc, what parts of your other documents (e.g.
   requirements, hazard analysis, etc), it any, needed to be changed, and why?
@@ -1566,6 +1587,12 @@ None
   parts of the requirements that can be improved based on recent better
   understanding of the system.
 
+  \textbf{Kalp:} The SRS document was updated to reflect the 
+  changes that we made to the system. A lot of the requirements changes revolved 
+  around the hardware and software design decisions that we made (ex. choosing
+  to serperate a process into multiple modules leads to more specific 
+  requirements). 
+
   \item What are the limitations of your solution?  Put another way, given
   unlimited resources, what could you do to make the project better?
   (LO\_ProbSolutions)
@@ -1574,8 +1601,15 @@ None
   power. Given further time, the team would be able to design a system that
   is more low level and is optimized in accomplishing the tasks that are
   required.
+
+  \textbf{Kalp:} I think the biggest limitation that we can see right now is the
+  hardware limitations. The software that we're using for this project is good 
+  enough to handle the tasks that we're trying to accomplish within the 
+  software requirements, but the hardware limitations are what are holding us 
+  back slightly. With just better hardware (at the expense of higher cost), a 
+  lot of the issues we're dealing with could be mitigated.
   
-  \item Give a brief overview of other design solutions you considered.  What
+  \item Give a brief overview of other design solutions you considered. What
   are the benefits and tradeoffs of those other designs compared with the chosen
   design?  From all the potential options, why did you select the documented
   design? (LO\_Explores)
@@ -1586,6 +1620,14 @@ None
   document is due. Thus, the team already considered and analyzed high level
   designs months ago and is too far back to document them.
 
+  \textbf{Kalp:} I know for the software side, specifically the audio 
+  classification, we considered using a neural network for the classification.
+  This was a potential solution, but we ultimately decided against it because
+  of the hardware limitations. The neural network would require a lot of memory
+  and processing power, which is not available on the hardware that we're using.
+  For this reason, we decided to use the LDA for classification because it is a 
+  simple algorithm that is easy to implement and understand, and a lot less 
+  computationally expensive than a neural network.
 \end{enumerate}
 
 
