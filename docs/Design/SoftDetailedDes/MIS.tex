@@ -1547,6 +1547,12 @@ None
   the research was already completed, which means I knew what equations I 
   needed for each module. 
 
+  \textbf{Jay:} I think the part that went well was how aligned the team already 
+  was before writing the document. Because we had been discussing the system and 
+  reviewing each module ahead of time, putting everything together felt more 
+  organized. The MIS ended up reinforcing our understanding and helped us
+  clearly lay out how each part of the system will work.
+
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
 
@@ -1570,6 +1576,13 @@ None
   coming up with the LDA projection matrix was encapsulated into python 
   libraries. For this document, I had to reverse engineer how exactly this is 
   done using equations. 
+
+  \textbf{Jay:} The biggest pain point for me was keeping everything consistent 
+  across the sections, especially since multiple people were writing at the same 
+  time while also balancing work on the PoC. It was a bit overwhelming to juggle 
+  both. We resolved this by coordinating early and reviewing each other's 
+  sections so the document stayed cohesive. The extension also gave us some 
+  breathing room to fix issues we noticed.
 
   \item Which of your design decisions stemmed from speaking to your client(s)
   or a proxy (e.g. your peers, stakeholders, potential users)? For those that
@@ -1596,6 +1609,14 @@ None
   but our supervisor mentioned this isn't really necessary, and might be 
   overkill. 
 
+  \textbf{Jay:} Most of the high-level decisions came from discussions with the 
+  supervisor, especially around what is realistic for the hardware we have 
+  access to. Hearing their perspective helped steer us toward a design that is
+  flexible and doesn’t rely too heavily on one specific setup. Some of the 
+  lower-level decisions, like how we break up certain processes, came from our
+  own team discussions and figuring out what would make implementation more 
+  manageable.
+
   \item While creating the design doc, what parts of your other documents (e.g.
   requirements, hazard analysis, etc), it any, needed to be changed, and why?
 
@@ -1614,6 +1635,12 @@ None
   other documents needed to be changed, since the other documents never 
   mentioned any exact implementation details. Which is what this document 
   is focused on. 
+
+  \textbf{Jay:} Similar to the others, I found that parts of the SRS needed 
+  updates. While detailing the modules in this document, it became clear that a 
+  few requirements could be phrased more precisely or split into smaller pieces 
+  based on the updated understanding of the system. So the changes mostly came 
+  from wanting the requirements to better match the actual design.
 
   \item What are the limitations of your solution?  Put another way, given
   unlimited resources, what could you do to make the project better?
@@ -1635,6 +1662,13 @@ None
   classification approach. The current approach of using PCA and LDA comes from 
   not having computation power to use resources like SVM or neural networks 
   taking in the full audio input. 
+
+  \textbf{Jay:} The biggest limitation I see is tied to performance and the 
+  hardware we're working with. If we had more resources, we could definitely 
+  explore more powerful hardware and push the system to handle more complex 
+  processing or higher-resolution data. With more time and computing power, 
+  we could also refine the software to be more efficient and include features 
+  that aren't feasible right now.
   
   \item Give a brief overview of other design solutions you considered. What
   are the benefits and tradeoffs of those other designs compared with the chosen
@@ -1662,6 +1696,13 @@ None
   microcontroller which we didn't have. And also involved running full 
   blackbox models. The approach now just invovles doing matrix multiplications 
   which is what the microcontroller is optimized for. 
+
+  \textbf{Jay:} One alternative we discussed early on was using more advanced 
+  machine learning methods for classification, like a small neural network or 
+  more complex models. They might have improved accuracy, but they also would 
+  have required more memory and processing power than we realistically have. 
+  The chosen design gives us a simpler, reliable system that fits within our 
+  constraints, which made it the more practical option for the project. 
 
 \end{enumerate}
 
