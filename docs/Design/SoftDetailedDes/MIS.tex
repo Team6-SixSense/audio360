@@ -70,6 +70,7 @@ urlcolor=cyan          % color of external links
     \textbf{symbol} & \textbf{description}\\
     \midrule 
     \progname & 360 Audio analysis system on smart glasses\\
+    DOA & Direction of Arrival \\
     FR & Functional Requirement\\
     M & Module \\
     MG & Module Guide \\
@@ -181,6 +182,9 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 \subsection{Generics}
 
+\subsubsection{bool}\label{generic:bool}
+Logical 0 or 1.
+
 \subsubsection{int32}\label{generic:int32}
 32 bits signed integer ($\mathbb{Z}$).
 
@@ -198,6 +202,9 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsubsection{float64}\label{generic:float64}
 64 bits floating point ($\mathbb{R}$).
+
+\subsubsection{string}\label{generic:string}
+Character stream.
 
 \newpage
 \subsection{Enums}
@@ -305,7 +312,8 @@ The following table is taken directly from the Module Guide document for this pr
   have local scope.}
 
 \newpage
-\section{MIS of DOA Processor Module}
+\section{MIS of Direction of Arrival (DOA) Processor Module - 
+\mref{MG-mDOA}} \label{mod:DOA}
 
 \subsection{Module}
 
@@ -316,16 +324,18 @@ direction estimation algorithms.
 \subsection{Uses}
 
 \begin{enumerate}
-  \item Audio Generation Module (\mref{mAudioGen})
-  \item Audio Filtering Module (\mref{mFFT})
-  \item Audio Normalizer Module (\mref{mAudioNormalizer})
-  \item Audio Spectral Leakage Module (\mref{mAudioSpectralLeakage})
-  \item Audio Anomaly Module (\mref{mAudioAnomaly})
+  \item \hyperref[mod:AudioGen]{Audio Generation Module}
+  \item \hyperref[mod:AudioNormalizer]{Audio Normalizer Module} 
+  \item \hyperref[mod:AudioSpectralLeakage]{Audio Spectral Leakage Prevention
+    Module}
+  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
 \end{enumerate}
 
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+None
 
 \subsubsection{Exported Access Programs}
 
@@ -369,7 +379,8 @@ None.
 None.
 
 \newpage
-\section{MIS of Audio Generation Module} \label{MAudioGeneration}
+\section{MIS of Audio Generation Module - \mref{MG-mAudioGen}}
+  \label{mod:AudioGeneration}
 
 \subsection{Module}
 
@@ -381,7 +392,6 @@ models.
 \subsection{Uses}
 
 \begin{enumerate}
-  \item Hardware-Hiding Module (\mref{mHH})
   \item Python Standard Libraries
 \end{enumerate}
 
@@ -398,7 +408,8 @@ models.
 \hline
 generateAudio & audioSource: \hyperref[generic:float32]{float32}[], 
 position: \hyperref[generic:float32]{float32}[], 
-outputFile: str & micrphoneData[][]: [][\hyperref[generic:float32]{float32}] 
+outputFile: \hyperref[generic:string]{string} & 
+micrphoneData[][]: [][\hyperref[generic:float32]{float32}] 
 & AudioGenerationFailure \\
 \hline
 \end{tabularx}
@@ -424,14 +435,15 @@ realistic and reliable audio data based on configuration parameters).
 \noindent generateAudio():
 \begin{itemize}
 \item transition: None
-\item output: micrphoneData
+\item output: microphoneData
 \item exception: AudioGenerationFailure
 \end{itemize}
 
 \subsubsection{Local Functions}
 
 \begin{itemize}
-\item simulateRoom(room: pra.ShoeBox) -> bool
+\item simulateRoom(room: pra.ShoeBox) $\rightarrow$
+  \hyperref[generic:bool]{bool}
 \end{itemize}
   
 \newpage
