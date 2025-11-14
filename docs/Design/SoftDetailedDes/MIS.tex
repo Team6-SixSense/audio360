@@ -108,9 +108,6 @@ found at \url{...}.  \wss{provide the url for your repo}
 
 \section{Notation}
 
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
-
 The structure of the MIS for modules comes from \cite{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
 \cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
@@ -128,9 +125,19 @@ The following table summarizes the primitive data types used by \progname.
 \textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
 \midrule
 character & char & a single symbol or digit\\
-integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
-natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
+integer & $\mathbb{Z}$ & a number without a fractional component in
+  (-$\infty$, $\infty$) \\
+natural number & $\mathbb{N}$ & a number without a fractional component in
+  [1, $\infty$) \\
 real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+array/list & x[] & Ordered list of type x. \\
+negate & $\neg$ & Logical math NOT.\\
+and & $\wedge$ & Logical math AND \\
+or & $\vee$ & Logical math OR \\
+implies & $\implies$ & Logical math implies \\
+assignment & $:=$ & For A := B. B is assigned to A. \\
+for all & $\forall$ & Referencing all items. For example:
+  $(\forall~variable~|~condition:~statement)$ \\
 \bottomrule
 \end{tabular} 
 \end{center}
@@ -179,17 +186,22 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 \section{Data Types}
 
-\newpage
 \subsection{Generics}
 
 \subsubsection{bool}\label{generic:bool}
 Logical 0 or 1.
+
+\subsubsection{int16}\label{generic:int16}
+16 bits signed integer ($\mathbb{Z}$).
 
 \subsubsection{int32}\label{generic:int32}
 32 bits signed integer ($\mathbb{Z}$).
 
 \subsubsection{int64}\label{generic:int64}
 64 bits signed integer ($\mathbb{Z}$).
+
+\subsubsection{uint16}\label{generic:uint16}
+16 bits unsigned integer ($\mathbb{N}$).
 
 \subsubsection{uint32}\label{generic:uint32}
 32 bits unsigned integer ($\mathbb{N}$).
@@ -208,39 +220,70 @@ Character stream.
 
 \newpage
 \subsection{Enums}
-\subsubsection{Audio360State}\label{state:Audio360State}
+\subsubsection{Audio360State}\label{enum:Audio360State}
 \begin{enumerate}
   \item AudioClassificationProcess:
-    \label{state:Audio360State:AudioClassificationState}
+    \label{enum:Audio360State:AudioClassificationState}
     State when audio classification is running.
   \item DirectionalAnalysisProcess:
-    \label{state:Audio360State:DirectionalAnalysisState}
+    \label{enum:Audio360State:DirectionalAnalysisState}
     State when directional analysis is running.
   \item OutputProcess:
-    \label{state:Audio360State:OutputProcessState}
+    \label{enum:Audio360State:OutputProcessState}
     State when output processing is running.
 \end{enumerate}
 
-\subsubsection{Audio360Status}\label{state:Audio360Status}
+\subsubsection{Audio360Status}\label{enum:Audio360Status}
 \begin{enumerate}
-  \item Uninitialized: \label{state:Audio360Status:Uninitialized}
+  \item Uninitialized: \label{enum:Audio360Status:Uninitialized}
     Audio360 Engine is not initialized.
-  \item Initialized: \label{state:Audio360Status:Initialized}
+  \item Initialized: \label{enum:Audio360Status:Initialized}
     Audio360 Engine is initialized, but not ready.
-  \item Ready: \label{state:Audio360Status:Ready}
+  \item Ready: \label{enum:Audio360Status:Ready}
     Audio360 Engine ready for requests.
-  \item Running: \label{state:Audio360Status:Running}
+  \item Running: \label{enum:Audio360Status:Running}
     Audio360 Engine is running. Can not accept new requests.
-  \item Error: \label{state:Audio360Status:Error}
+  \item Error: \label{enum:Audio360Status:Error}
     Audio360 Engine is stuck at an unhandled error.
 \end{enumerate}
 
+subsubsection{Audio360Status}\label{enum:FaultState}
+\begin{enumerate}
+  \item NoFault: \label{enum:FaultState:NoFault}
+    No fault state.
+  \item MicrophoneXFault: \label{enum:FaultState:MicFault}
+    Fault with microphone X.
+  \item AudioClassificationFault: \label{enum:FaultState:ClassificationFault}
+    Fault with audio classification.
+  \item directionalAnalsysiFault: \label{enum:FaultState:DOAFault}
+    Fault with the directional analysis.
+\end{enumerate}
+
+
 \newpage
 \subsection{Data Structures}
+\subsubsection{FrequencyDomain}\label{struct:FrequencyDomain}
+\begin{enumerate}
+  \item N [\hyperref[generic:uint16]{uint16}]: \label{state:FrequencyDomain:N}
+    The number of data points.
+  \item frequency [\hyperref[generic:float32]{float32}[]]:
+    \label{state:FrequencyDomain:frequency}
+    The frequency represented in Hz.
+  \item real [\hyperref[generic:float32]{float32}[]]:
+    \label{state:FrequencyDomain:real}
+    The real component of thre frequency contribution.
+  \item img [\hyperref[generic:float32]{float32}[]]:
+    \label{state:FrequencyDomain:img}
+    The imaginary component of thre frequency contribution.
+  \item magnitude [\hyperref[generic:float32]{float32}[]]:
+    \label{state:FrequencyDomain:magnitude}
+    The magnitude of the frequency component.
+\end{enumerate}
 
-~\newpage
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
+\newpage
+
+\section{MIS of \wss{Module Name}} \label{mod:Module} \wss{Use labels for
   cross-referencing}
 
 \wss{You can reference SRS labels, such as R.}
@@ -312,6 +355,74 @@ Character stream.
   have local scope.}
 
 \newpage
+\section{MIS of Audio Generation Module - \mref{MG-mAudioGen}}
+\label{mod:AudioGeneration}
+
+\subsection{Module}
+
+This module generates audio data by simulating room acoustics and generating 
+synthetic microphone array data from a given audio source and position. This 
+includes room response calculations and spatial audio propagation 
+models. 
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item Python Standard Libraries
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+generateAudio & audioSource: \hyperref[generic:float32]{float32}[], 
+position: \hyperref[generic:float32]{float32}[], 
+outputFile: \hyperref[generic:string]{string} & 
+micrphoneData[][]: [][\hyperref[generic:float32]{float32}] 
+& AudioGenerationFailure \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None.
+
+\subsubsection{Environment Variables}
+
+None.
+
+\subsubsection{Assumptions}
+
+The pyroomacoustics module is assumed to be working correctly (generating 
+realistic and reliable audio data based on configuration parameters).
+
+\subsubsection{Access Routine Semantics}
+
+\noindent generateAudio():
+\begin{itemize}
+\item transition: None
+\item output: microphoneData
+\item exception: AudioGenerationFailure
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+\item simulateRoom(room: pra.ShoeBox) $\rightarrow$
+  \hyperref[generic:bool]{bool}
+\end{itemize}
+
+\newpage
 \section{MIS of Direction of Arrival (DOA) Processor Module - 
 \mref{MG-mDOA}} \label{mod:DOA}
 
@@ -379,89 +490,22 @@ None.
 None.
 
 \newpage
-\section{MIS of Audio Generation Module - \mref{MG-mAudioGen}}
-  \label{mod:AudioGeneration}
 
-\subsection{Module}
-
-This module generates audio data by simulating room acoustics and generating 
-synthetic microphone array data from a given audio source and position. This 
-includes room response calculations and spatial audio propagation 
-models. 
-
-\subsection{Uses}
-
-\begin{enumerate}
-  \item Python Standard Libraries
-\end{enumerate}
-
-\subsection{Syntax}
-
-\subsubsection{Exported Constants}
-
-\subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-generateAudio & audioSource: \hyperref[generic:float32]{float32}[], 
-position: \hyperref[generic:float32]{float32}[], 
-outputFile: \hyperref[generic:string]{string} & 
-micrphoneData[][]: [][\hyperref[generic:float32]{float32}] 
-& AudioGenerationFailure \\
-\hline
-\end{tabularx}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-
-None.
-
-\subsubsection{Environment Variables}
-
-None.
-
-\subsubsection{Assumptions}
-
-The pyroomacoustics module is assumed to be working correctly (generating 
-realistic and reliable audio data based on configuration parameters).
-
-\subsubsection{Access Routine Semantics}
-
-\noindent generateAudio():
-\begin{itemize}
-\item transition: None
-\item output: microphoneData
-\item exception: AudioGenerationFailure
-\end{itemize}
-
-\subsubsection{Local Functions}
-
-\begin{itemize}
-\item simulateRoom(room: pra.ShoeBox) $\rightarrow$
-  \hyperref[generic:bool]{bool}
-\end{itemize}
-  
-\newpage
-\section{MIS of Audio360 Engine \label{MAudio360Engine} - 
+\section{MIS of Audio360 Engine \label{mod:Audio360Engine} - 
   \mref{MG-mAudio360Engine}}
 
 \subsection{Module}
 
 Orchestrates the overall audio processing by receiving raw input data and
-managing \hyperref[MAudio360Engine_Uses]{module} communication.
+managing \hyperref[mod:Audio360Engine_Uses]{module} communication.
 
-\subsection{Uses}\label{MAudio360Engine_Uses}
+\subsection{Uses}\label{mod:Audio360Engine_Uses}
 
 \begin{enumerate}
-  \item Audio classification
-  \item Directional Analysis
-  \item Output
-  \item Audio Sampling Module
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:FaultManager]{Fault Manager Module} 
+  \item \hyperref[mod:Logging]{Logging Module} 
 \end{enumerate}
 
 \subsection{Syntax}
@@ -487,15 +531,15 @@ runProgram & - & - & ProgramStartFailure, ProgramRunTimeFailure \\
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item state [\hyperref[state:Audio360State]{Audio360State}]:
+  \item state [\hyperref[enum:Audio360State]{Audio360State}]:
     Determines the current state of the the Audio360 engine. Each state will run
-    a specific module in \hyperref[MAudio360Engine_Uses]{used modules}.
+    a specific module in \hyperref[mod:Audio360Engine_Uses]{used modules}.
 \end{itemize}
 
 \subsubsection{Environment Variables}
 
 \begin{itemize}
-  \item status [\hyperref[state:Audio360State]{Audio360Status}]:
+  \item status [\hyperref[enum:Audio360Status]{Audio360Status}]:
     Status of the module. This encapsulates initialization, running, ready,
     or errored.
 \end{itemize}
@@ -528,6 +572,936 @@ None
 None
 
 \newpage
+
+\section{MIS of Audio Sampling Module \label{mod:AudioSampling} -
+  \mref{MG-mAudioSampling}}
+
+\subsection{Module}
+Provides sampling of audio data from a given source while preserving the order
+of individual samples.
+
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:MicInput]{Microphone Input Module}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item sampleWindowSize [\hyperref[generic:uint16]{uint16}]:
+    \label{var:sampleWindowSize}
+    The number of samples in a window. The value is a power of 2.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+sample & inputSource & - & InputSouceError \\
+getSampledData & - & sampledData & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item sampledData [\hyperref[generic:uint32]{uint32}[]]:
+    \label{var:sampleData}  
+    A cyclic array of size \hyperref[var:sampleWindowSize]{sampleWindowSize}
+    that stored the sampled data.
+  \item windowPosition [\hyperref[generic:uint32]{uint32}]:
+    \label{var:windowPosition}  
+    The current reference index position of the array storing sampled data.
+    This denotes the starting point of the cyclic array. 
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent sample():
+\begin{itemize}
+\item transition: 
+  \begin{enumerate}
+    \item $sampleData[windowPosition] := inputSource.newData$
+    \item $((windowPosition + 1) \geq sampleWindowSize) \implies $
+      $windowPosition:= 0~\vee \neg ((windowPosition + 1) \geq $
+      $sampleWindowSize) \implies$ \\ $ windowPosition:= windowPosition + 1$
+  \end{enumerate}
+
+\item output: None
+\item exception: InputSouceError
+\end{itemize}
+
+\noindent getSampledData():
+\begin{itemize}
+\item transition: None 
+\item output: \hyperref[var:sampleData]{sampleData}
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage
+\section{MIS of Audio Spectral Leakage Prevention Module
+  \label{mod:AudioSpectralLeakage} - \mref{MG-mAudioSpectralLeakage}}
+
+\subsection{Module}
+
+Applying windowing on audio signal to reduce
+\hyperref[SRS-def:spectral_leakage]{spectral leakage} before
+\hyperref[SRS-def:frequency_domain]{frequency domain} processing.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+applyFilter & sampleWindow & filteredWindow & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyFilter():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
+    $sampleWindow[i] * \sin(\dfrac{\pi * i}{N - 1})^2)$ \\
+    such that $N = $ size of sampleWindow.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+
+\subsubsection{Local Functions}
+
+None
+
+
+\newpage
+
+\section{MIS of Audio Normalizer Module \label{mod:AudioNormalizer} -
+  \mref{MG-mAudioNormalizer}}
+
+\subsection{Module}
+
+Processes audio signals to maintain consistent amplitude across different
+sources.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+normalize & sampleWindow, source & filteredWindow & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+Normalization factor is pre-deteremined and known for all given sources.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent normalize():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
+    $\dfrac{sampleWindow[i]}{F_{source}})$ \\
+    such that $N = $ size of sampleWindow and $F_{source}$ is normalization
+    factor of a the sampleWindow source.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage
+\section{MIS of Fast Fourier Transform - \mref{MG-mFFT}} \label{mod:FFT}
+
+\subsection{Module}
+
+Computes the discrete Fourier transform of the input signal to 
+obtain its \hyperref[SRS-def:frequency_domain]{frequency domain}
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:AudioSpectralLeakage]{Audio Spectral Leakage Prevention
+    Module}
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+signalToFrequency & signal & frequency & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item inputsize [uint32]: The size of the signal input, as in number of
+     samples. This is required to interface with hardware acceleration methods
+     on the microcontroller.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent signalToFrequency():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~k~|~0 \leq k \leq N - 1:~frequency[k] := $
+    $\sum_{n=0}^{N-1} x_n * e^{-2i \pi n \frac{k}{N}})$ \\
+    such that $N = $ size of input signal.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item createOutput(): returns a
+    \hyperref[struct:FrequencyDomain]{FrequencyDomain}. This function extract
+    features from the FFT and stores it in the data structure.
+\end{itemize}
+
+\newpage
+
+\section{MIS of Logging Module \label{mod:Logging} -
+  \mref{MG-mLogging}}
+
+\subsection{Module}
+
+Provides centralized logging of data streams to designated output destinations
+for debugging and monitoring.
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:USART]{USART Communication Module}
+  \item \hyperref[mod:SDInterface]{SD Card Interface Module}
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+log & text & - & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent log():
+\begin{itemize}
+\item transition: None
+\item output: input text is logged to output source (SD card or USART port)
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+
+\section{MIS of Fault Manager Module - \mref{MG-mFaultManager}
+  \label{mod:FaultManager}} 
+
+\subsection{Module}
+
+Monitors system health and manages critical faults to maintain core
+functionality.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+runFaultAnalysis & - & - & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item faultState [\hyperref[enum:FaultState]{FaultState}]:
+    \label{faultState}
+    The current fault state of the overall software system.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \hyperref[faultState]{faultState}: This variable is shared with the
+    display, to notifiy user of the internal status of the software system.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+Fault Manager module itself does not run into any critical faults.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent faultState():
+\begin{itemize}
+\item transition: update the value of faultState depending on the overal health
+  of the software system.
+\item output: None
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+\newpage
+
+
+\section{MIS of Mel Filter Module \label{mod:MelFilter} - 
+\mref{MG-mMelFilter}}
+
+\subsection{Module}
+
+Converts a Spectrogram into the equivalent Mel-Spectrogram by applying a bank 
+of $n$ mel-scaled triangular filters to each frequency frame.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+applyMelFilterBank & spectrogram: 2D real array & mel-spectrogram: 2D 
+real array & invalidSpectrogramDimension \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input spectrogram is the output of the 
+  \hyperref[MG-mFFT]{FFT Module} across a constant buffer time. This is 
+  arranged as a 2D matrix where the rows represent time frames and columns 
+  represent frequency bins. This matrix can be represented as $S(t, k)$ where 
+  $k$ is the number of frequency bins, and $t$ is the number of time frames. 
+  \item The mel filterbank matrix is precomputed offline and stored as a read 
+  only constant within the system. It is computed offline using pre-determined 
+  information like Sampling Rate, FFT Size, maximum and minimum frequencies and 
+  number of mel filters. This matrix can be represented as $H(m,k)$, where $m$ 
+  is the number of mel-filters, $k$ is the number of frequency bins and $H(m,k)$ 
+  is a weight that tells you how much frequency bin $k$ contributes to mel band 
+  $m$.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyMelFilterBank():
+\begin{itemize}
+\item \textbf{transition:}
+  None (function doesn't have states)
+\item \textbf{output:}
+  Returns the equivalent mel-spectrogram, where each time frame is converted 
+  from linear-frequency bin representation to mel-scaled frequency bins. This
+  is done by:
+  \begin{enumerate}
+    \item Multiplying each spectrogram frame by the mel filterbank matrix. 
+    \item Summing weighted energy contributions per mel filter. 
+  \end{enumerate}
+    \[
+    E(t, m) = \sum_{k} S(t, k) \cdot H(m, k)
+    \]
+\item \textbf{exception:} 
+  Invalid spectrogram dimension. If the dimension of the input spectrogram is 
+  not $S(t,k)$ and perhaps something like $S(t,p)$ where $p \neq k$, then the 
+  matrix multiplication would throw an invalid dimension error, which must be 
+  exposed from the module as invalid spectrogram dimension as well. This would 
+  only happens if the number of frequency bins in the computted FFT is not 
+  equal to the number of frequency bins in the pre-computed mel filterbank 
+  matrix. 
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Discrete Cosine Transform Module \label{mod:DCT} - 
+\mref{MG-mDCT}}
+
+\subsection{Module}
+
+Converts a mel-spectrogram into a 2D array containing the sequence of Mel 
+Frequency Cepstral Coefficients (MFCC) vectors by applying the Discrete Cosine Transform (DCT) to each time frame. This reduces overlap between 
+frequency bands that carry similar information and ensures each coefficient is 
+uncorrelated to the other one. Pre-processing step that makes it easier to 
+perform Principle Component Analysis later on. 
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+applyDCT & mel-spectrogram: 2D real array & mfcc: 2D 
+real array & invalidDimensions \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input mel-spectrogram is the output of the 
+  \hyperref[MG-mMelFilter]{Mel Filter Module}. This input will be of size 
+  $E(t, m)$, where $t$ is the number of time frames, and $m$ is the number of 
+  mel-frequency bins. 
+  \item The DCT transform matrix $D(c,m)$ will be computed offline, where 
+  $c$ is the desired number of MFCC coefficients for each time frame, and $m$ is 
+  the number of mel-frequency bands. $D(c,m)$ represents the unique cosine wave 
+  that is associated with the $c^{\text{th}}$ coefficient and $m^{\text{th}}$
+  band. A combination of these waves will be used to uniquely represent the 
+  spectrogram at time frame $t$. 
+
+    \[
+    D(c,m) = \cos\!\left(\frac{\pi c}{M}(m - 0.5)\right)
+    \]
+  
+  \item Only 13 MFCC coefficients will be calculated for each time frame $t$. 
+  
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyDCT():
+\begin{itemize}
+\item \textbf{transition:}
+  None (function doesn't have states)
+\item \textbf{output:}
+  Returns a matrix \textit{mfcc(t,c)}, such that for each time frame $t$ and each 
+  MFCC coefficient index $c$, the value of the matrix at $mfcc(t,c)$ can be
+  computed as
+      \[
+      mfcc(t, c) = \sum_{m=1}^{M} E(t, m) \cdot DCT(c, m)
+      \]
+
+  Where $E(t, m)$ represents the mel-spectrogram at time frame $t$ and 
+  mel-frequency $m$. And $DCT(c,m)$ represents the DCT transform matrix that 
+  was computed offline. 
+\item \textbf{exception:} 
+  Invalid spectrogram dimension. If the dimension of the input spectrogram is 
+  not $E(c,m)$ and perhaps something like $E(c,p)$ where $m \neq p$ then the 
+  matrix multiplication would throw an invalid dimension error, which must be 
+  exposed from the module as invalid spectrogram dimension as well. This would 
+  only happens if for some reason the number of mel-frequency bands returned 
+  by the \hyperref[MG-mMelFilter]{Mel Filter Module} is not the same as the 
+  number of mel-frequency bands in the DCT matrix computation.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Principle Component Analysis Module \label{mod:PCA} - 
+\mref{MG-mPCA}}
+
+\subsection{Module}
+
+Principle Component Analysis (PCA) highlights the features with the greatest 
+variance from an input feature matrix. In this case, uses the MFCC feature 
+vector for each time frame to find the direction of greatest variance. This 
+helps with eliminating noise and unimportant information.
+
+\subsection{Uses}
+
+Non
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+applyPCA & mfcc: 2D real array & pcaFeatures: 2D 
+real array & invalidDimensions \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input MFCC matrix is the output of the
+  \hyperref[MG-mDCT]{Discrete Cosine Transform Module}. This input will be of 
+  size $mfcc(t,c)$, where $t$ is the number of time frames, and $c$ is the 
+  number of coefficients. 
+  \item The PCA mean vector and PCA projection matrix will be derived offline 
+  during the system training and stored as read-only constants. The PCA mean 
+  vector will be of size $(1,c)$, and will be computed as the average MFCC 
+  vectors across all training samples. 
+    \[
+    \bar{x} = \frac{1}{T} \sum_{t=1}^{T} x(t)
+    \]
+
+  The PCA projection matrix will be of size $(K, c)$, where $K$ is the number 
+  of eigenvectors with the maximum variance and $c$ is the number of MFCC 
+  coefficients. These eigenvectors are extracted from the following covariance 
+  matrix. 
+
+    \[
+    C = \frac{1}{T} \sum_{t=1}^{T} 
+    \left(x(t) - \bar{x}\right)
+    \left(x(t) - \bar{x}\right)^{T}
+    \]
+   
+  
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyPCA():
+\begin{itemize}
+\item \textbf{transition:}
+  None (function doesn't have states)
+\item \textbf{output:}
+  Returns a matrix \textit{pca(t, K)}, where $t$ represents the number of time 
+  frames and $K$ represents the number of PCA components retained (proportional 
+  to the number of eignevectors). Essentially, each input mfcc matrix is 
+  projected onto the vectors of maximum variance, therefore extracting only the 
+  most important features of the MFCC based on training. This projection can be 
+  computed using the following matrix multiplication. 
+
+  \[
+  \text{pca} = \left( mfcc - \mathbf{1}\bar{x} \right) P^{T}
+  \]
+
+  Where $P$ represents the projection matrix, $\bar{x}$ represents the PCA 
+  mean vector, and $mfcc$ represents the full mfcc matrix. 
+\item \textbf{exception:} 
+  Invalid mfcc dimension. If the dimension of the input mfcc matrix is 
+  not $(t,c)$ and perhaps something like $(t,p)$ where $c \neq p$ then the 
+  matrix multiplication would throw an invalid dimension error, which must be 
+  exposed from the module as invalid mfcc dimension as well. This would 
+  only happens if for some reason the number of coefficients returned 
+  by the \hyperref[MG-mDCT]{Discrete Cosine Transform} is not the same as the 
+  number of coefficients in the projection matrix.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Linear Discriminant Analysis Module \label{mod:LDA} - 
+\mref{MG-mLDA}}
+
+\subsection{Module}
+
+Classifies given feature vector into one of the predefined set of
+sound classes. This is module is optimized for class seperation. 
+The feature vector in this case is already narrowed down to the 
+features with the most variance using the \hyperref[MG-mPCA]{PCA} 
+module. 
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+applyLDA & pcaFeatures: 2D real array & classLabels: 1D 
+real array & invalidDimensions \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input pcaFeatures is the output of the
+  \hyperref[MG-mPCA]{Principle Component Analysis Module}. This input will be 
+  of size $(t,K)$, where $t$ is the number of time frames, and $K$ is 
+  number of features selected with the highest variances from PCA.
+  \item The LDA projection matrix, and class weight parameters are 
+  computed offline using labelled training data. They are stored 
+  as read-only constants in the system. The LDA projection matrix is of size 
+  $(K,C-1)$, where $C$ is the number of classes, and $K$ is the number of
+  variance eigenvectors. In essence, this matrix maps the input feature space 
+  into the discriminant subspace where class seperation is maximized.
+  
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyLDA():
+\begin{itemize}
+\item \textbf{transition:}
+  None (function doesn't have states)
+\item \textbf{output:}
+
+  Returns a vector of class labels, one per time frame. 
+
+  Each feature vector from PCA is projected onto the discriminant space using 
+  the LDA projection matrix using the following multiplication. 
+
+  \[
+  z(t,:) = pca(t,:) \cdot W_{\text{LDA}}
+  \]
+
+  Where $pca(t,:)$ represents the PCA eigenvectors at time $t$, and 
+  $W_{\text{LDA}}$ represents the LDA projection matrix. 
+
+  Classification is then performed using linear discriminant functions for 
+  each class $j$, where $w_j$ and $b_j$ is the weight and bias matricies 
+  that were pre-computed offline during training for class $j$. 
+
+  \[
+  g_j(t) = w_j^{T} z(t,:) + b_j
+  \]
+
+  The predicted class for that time frame is then assigned as the class with 
+  the maximum value. 
+
+  \[
+  \text{classLabel}(t) = \arg\max_{j} \, g_j(t)
+  \]
+
+  The output of the module is then a vector of length t, representing the best 
+  classification for all time frames. 
+
+
+\item \textbf{exception:} 
+  Invalid feature space dimension. If the dimension of the input feature matrix 
+  is not $(t,K)$ and perhaps something like $(t,p)$ where $K \neq p$ then the 
+  matrix multiplication would throw an invalid dimension error, which must be 
+  exposed from the module as invalid feature dimension as well. This would 
+  only happens if for some reason the number of eigenvectors returned 
+  by the \hyperref[MG-mPCA]{PCA} module is not the same as the 
+  number of eignvectors in the precomputed LDA matrix.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Classification Module \label{mod:Classification} - 
+\mref{MG-mClassification}}
+
+\subsection{Module}
+
+Orchestrates the overall audio classification flow by receiving signals in the 
+frequency domain and encapsulating the complexity of the various modules 
+involved. 
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:AudioSampling]{Audio Sampling Module}
+  \item \hyperref[mod:AudioNormalizer]{Audio Normalizer Module}
+  \item \hyperref[mod:FFT]{Fast Fourier Transform Module}
+  \item \hyperref[mod:MelFilter]{Mel Filter Module}
+  \item \hyperref[mod:DCT]{Discrete Cosine Transform Module}
+  \item \hyperref[mod:PCA]{Principle Component Analysis Module}
+  \item \hyperref[mod:LDA]{Linear Discrete Analysis Module}
+  \item 
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+classify & spectrogram: 2D real array & - & ClassificationStartFailure, 
+ClassificationRunTimeFailure \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item state[classificationState]: Stores the current classification. 
+  Will continuously be updated at runtime after recieving continuous audio 
+  signals. 
+  \item state[classificationStatus]: Stores the confidence of the 
+  classification that was done. Values for status include high, medium or low 
+  confidence. 
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item state[status]: Encapsulates initialization, running, 
+  ready or errored status of the module.  
+\end{itemize}
+
+\subsubsection{Assumptions}
+None.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyLDA():
+\begin{itemize}
+\item \textbf{transition:}
+  \hyperref[fig:classification_state_machine]{State machine} below outlines the 
+  transition of this module.
+
+\begin{figure}[h!]
+    \centering 
+    \includegraphics[width=\textwidth]{diagrams/ClassificationStateMachine.png}
+    \caption{Internal state machine of Classification module.}
+    \label{fig:classification_state_machine}
+\end{figure}
+
+\item \textbf{output:} None
+\item \textbf{exception:} ClassificationStartFailure, 
+ClassificationRunTimeFailure
+
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
 
 \bibliographystyle{IEEEtran}
 \bibliography{../../../refs/References}
