@@ -1,0 +1,73 @@
+@startuml Uses Hierarchy
+hide empty description
+left to right direction
+
+state Hardware {
+    state Microcontroller
+    state "Microphone Input Module" as micInput
+    state "USART Communication Module" as usart
+    state "SD Card Interface Module" as sd
+    
+    micInput --> Microcontroller
+    usart --> Microcontroller
+    sd --> Microcontroller
+}
+
+state Mocks {
+    state "Audio Generation Module" as AudioGen
+}
+
+state Output {
+
+}
+
+state Audio360Software {
+    state "Microphone Diagnostic Module" as MicDiag
+    state "DOA Processor Module" as DOA
+    state "Audio360 Engine Module" as Audio360Eng
+    state "Audio Sampling Module" as AudioSampling
+    state "Audio Spectral Leakage Prevention Module" as SpectralLeakage
+    state "Audio Normalizer Module" as AudioNormalize
+    state "Audio Anomaly Detection Module" as AudioAnomaly
+    state "Logging Module" as Logging
+    state "Fast Fourier Transform Module" as fft
+    state "Fault Manager Module" as FaultManager
+    state "Mel Filter Module" as Mel
+    state "Discret Cosine Transform Module" as DisreteCos
+    state "Principle Component Analysis Module" as PCA
+    state "Linear Discriminant Analysis Module" as LDA
+    state "Classification Module" as Classification
+    state "Independent Component Analysis Module" as ICA
+    state "Visualization Module" as Viz
+
+    DOA --> AudioGen
+    MicDiag --> micInput
+    fft --> Microcontroller
+    fft --> SpectralLeakage
+
+    DOA --> AudioSampling
+    DOA --> ICA
+    Audio360Eng --> FaultManager
+    Audio360Eng --> DOA
+    Audio360Eng --> Classification
+    Audio360Eng --> Logging
+    AudioSampling --> micInput
+    AudioSampling --> MicDiag
+    AudioAnomaly --> AudioSampling
+    Logging --> usart
+    Logging --> sd
+    FaultManager --> DOA
+    FaultManager --> AudioAnomaly
+    FaultManager --> Classification
+    Classification --> AudioNormalize
+    Classification --> Mel
+    Classification --> DisreteCos
+    Classification --> PCA
+    Classification --> LDA
+    Classification --> fft
+    Classification --> ICA
+    Viz --> Audio360Eng
+    Viz --> Output
+}
+
+@enduml
