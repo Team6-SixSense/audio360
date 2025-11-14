@@ -59,6 +59,16 @@ jobs:
           run: |
             apk add make
             cd docs
+
+            for f in $(find . -name '*.tex'); do
+                if grep -q '\\documentclass' "$f"; then
+                    dir=$(dirname "$f")
+                    base=$(basename "$f")
+                    echo "Generating AUX for $f"
+                    (cd "$dir" && pdflatex -interaction=nonstopmode -halt-on-error -draftmode "$base")
+                fi
+            done
+
             for file in ${{ env.CHANGED_FILES }}; do 
               dir=$(dirname "$file" | cut -d'/' -f2-)
               make -B "$dir/$(basename "$file" .tex).pdf" 
