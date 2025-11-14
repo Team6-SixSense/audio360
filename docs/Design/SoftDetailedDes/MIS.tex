@@ -70,7 +70,10 @@ urlcolor=cyan          % color of external links
     \textbf{symbol} & \textbf{description}\\
     \midrule 
     \progname & 360 Audio analysis system on smart glasses\\
+    DOA & Direction of Arrival \\
     FR & Functional Requirement\\
+    FFT & Fast Fourier Transform \\
+    ICA & Independent Component Analysis \\
     M & Module \\
     MG & Module Guide \\
     MIS & Module Interface Specification \\
@@ -106,9 +109,6 @@ and Module Guide.  The full documentation and implementation can be
 found at \url{...}.  \wss{provide the url for your repo}
 
 \section{Notation}
-
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
 
 The structure of the MIS for modules comes from \cite{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
@@ -156,30 +156,42 @@ described by giving their type signature followed by their specification.
 
 The following table is taken directly from the Module Guide document for this project.
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding} & ~ \\
+\multirow{4}{0.3\textwidth}{Hardware-Hiding Module}
+& Microphone Input Module\\ 
+& USART Communication Module \\
+& SD Card Module \\
+& SD Card Interface Module \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
+\multirow{2}{0.3\textwidth}{Behaviour-Hiding Module}
+& Audio360 Enginer Module\\
+& Visualization Module\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+\multirow{15}{0.3\textwidth}{Software Decision Module}
+& Audio Generation Module\\
+& DOA Processor Module\\
+& Audio Sampling Module\\
+& Audio Spectral Leakage Prevention Module\\
+& Audio Normalizer Module\\
+& Audio Anomaly Detection Module\\
+& Fast Fourier Transform Module\\
+& Logging Module\\
+& Fault Manager Module\\
+& Mel Filter Module\\
+& Discret Cosine Transform Module \\
+& Principle Component Analysis Module \\
+& Linear Discriminant Analysis Module \\
+& Classification Module \\
+& Independent Component Analysis\\
 \bottomrule
-
 \end{tabular}
 \caption{Module Hierarchy}
 \label{TblMH}
@@ -190,6 +202,8 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsection{Generics}
 
+\subsubsection{bool}\label{generic:bool}
+Logical 0 or 1.
 
 \subsubsection{int16}\label{generic:int16}
 16 bits signed integer ($\mathbb{Z}$).
@@ -214,6 +228,9 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsubsection{float64}\label{generic:float64}
 64 bits floating point ($\mathbb{R}$).
+
+\subsubsection{string}\label{generic:string}
+Character stream.
 
 \newpage
 \subsection{Enums}
@@ -350,8 +367,144 @@ subsubsection{Audio360Status}\label{enum:FaultState}
   They are not necessarily something that is going to be implemented
   explicitly.  Even if they are implemented, they are not exported; they only
   have local scope.}
-  
+
 \newpage
+\section{MIS of Audio Generation Module - \mref{MG-mAudioGen}}
+\label{mod:AudioGeneration}
+
+\subsection{Module}
+
+This module generates audio data by simulating room acoustics and generating 
+synthetic microphone array data from a given audio source and position. This 
+includes room response calculations and spatial audio propagation 
+models. 
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item Python Standard Libraries
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+generateAudio & audioSource: \hyperref[generic:float32]{float32}[], 
+position: \hyperref[generic:float32]{float32}[], 
+outputFile: \hyperref[generic:string]{string} & 
+micrphoneData[][]: [][\hyperref[generic:float32]{float32}] 
+& AudioGenerationFailure \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None.
+
+\subsubsection{Environment Variables}
+
+None.
+
+\subsubsection{Assumptions}
+
+The pyroomacoustics module is assumed to be working correctly (generating 
+realistic and reliable audio data based on configuration parameters).
+
+\subsubsection{Access Routine Semantics}
+
+\noindent generateAudio():
+\begin{itemize}
+\item transition: None
+\item output: microphoneData
+\item exception: AudioGenerationFailure
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+\item simulateRoom(room: pra.ShoeBox) $\rightarrow$
+  \hyperref[generic:bool]{bool}
+\end{itemize}
+
+\newpage
+\section{MIS of Direction of Arrival (DOA) Processor Module - 
+\mref{MG-mDOA}} \label{mod:DOA}
+
+\subsection{Module}
+
+This module processes audio data to estimate the direction of arrival of a sound 
+source. This includes frequency domain analysis, signal processing, and 
+direction estimation algorithms.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:AudioGen]{Audio Generation Module}
+  \item \hyperref[mod:AudioNormalizer]{Audio Normalizer Module} 
+  \item \hyperref[mod:AudioSpectralLeakage]{Audio Spectral Leakage Prevention
+    Module}
+  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+calculateDirection & audioData[][]: [][\hyperref[generic:float32]{float32}] 
+& direction: \hyperref[generic:float32]{float32} 
+& AudioProcessingFailure \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None.
+
+\subsubsection{Environment Variables}
+
+None.
+
+\subsubsection{Assumptions}
+
+None.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent calculateDirection():
+\begin{itemize}
+\item transition: None
+\item output: direction
+\item exception: AudioProcessingFailure
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None.
+
+\newpage
+
 \section{MIS of Audio360 Engine \label{mod:Audio360Engine} - 
   \mref{MG-mAudio360Engine}}
 
@@ -366,7 +519,7 @@ managing \hyperref[mod:Audio360Engine_Uses]{module} communication.
   \item \hyperref[mod:Classification]{Classification Module}
   \item \hyperref[mod:DOA]{DOA Processor Module}
   \item \hyperref[mod:FaultManager]{Fault Manager Module} 
-  \item \item \hyperref[mod:Logging]{Logging Module} 
+  \item \hyperref[mod:Logging]{Logging Module} 
 \end{enumerate}
 
 \subsection{Syntax}
@@ -789,9 +942,77 @@ None
 \newpage 
 
 
+\section{MIS of Fault Manager Module - \mref{MG-mFaultManager}
+  \label{mod:FaultManager}} 
 
+\subsection{Module}
 
-\newpage 
+Monitors system health and manages critical faults to maintain core
+functionality.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+runFaultAnalysis & - & - & - \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item faultState [\hyperref[enum:FaultState]{FaultState}]:
+    \label{faultState}
+    The current fault state of the overall software system.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \hyperref[faultState]{faultState}: This variable is shared with the
+    display, to notifiy user of the internal status of the software system.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+Fault Manager module itself does not run into any critical faults.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent faultState():
+\begin{itemize}
+\item transition: update the value of faultState depending on the overal health
+  of the software system.
+\item output: None
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+\newpage
+
 
 \section{MIS of Mel Filter Module \label{mod:MelFilter} - 
 \mref{MG-mMelFilter}}
@@ -1295,77 +1516,6 @@ ClassificationRunTimeFailure
 None
 
 \newpage 
-
-\section{MIS of Fault Manager Module - \mref{MG-mFaultManager}
-  \label{mod:FaultManager}} 
-
-\subsection{Module}
-
-Monitors system health and manages critical faults to maintain core
-functionality.
-
-\subsection{Uses}
-
-\begin{enumerate}
-  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
-  \item \hyperref[mod:Classification]{Classification Module}
-  \item \hyperref[mod:DOA]{DOA Processor Module}
-  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
-\end{enumerate}
-
-\subsection{Syntax}
-
-\subsubsection{Exported Constants}
-
-None
-
-\subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-runFaultAnalysis & - & - & - \\
-\hline
-\end{tabularx}
-\end{center}
-
-\subsection{Semantics}
-
-\subsubsection{State Variables}
-
-\begin{itemize}
-  \item faultState [\hyperref[enum:FaultState]{FaultState}]:
-    \label{faultState}
-    The current fault state of the overall software system.
-\end{itemize}
-
-\subsubsection{Environment Variables}
-
-\begin{itemize}
-  \item \hyperref[faultState]{faultState}: This variable is shared with the
-    display, to notifiy user of the internal status of the software system.
-\end{itemize}
-
-\subsubsection{Assumptions}
-
-Fault Manager module itself does not run into any critical faults.
-
-\subsubsection{Access Routine Semantics}
-
-\noindent faultState():
-\begin{itemize}
-\item transition: update the value of faultState depending on the overal health
-  of the software system.
-\item output: None
-\item exception: None
-\end{itemize}
-
-\subsubsection{Local Functions}
-
-None
-\newpage
 
 \bibliographystyle{IEEEtran}
 \bibliography{../../../refs/References}
