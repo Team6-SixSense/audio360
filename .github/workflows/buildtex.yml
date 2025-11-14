@@ -54,8 +54,9 @@ jobs:
       - uses: xu-cheng/texlive-action@v2
         name: Compile LaTeX Files
         with:
-          scheme: full
+          scheme: small
           texlive_version: 2024
+          extra_packages: biber, latexmk, collection-latexextra, enumitem
           run: |
             apk add make
             cd docs
