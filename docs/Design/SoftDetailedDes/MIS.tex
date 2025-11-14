@@ -1519,6 +1519,275 @@ None
 
 \newpage 
 
+\section{MIS of Visualization Module \label{mod:Visualization} - 
+\mref{mVisualization}}
+
+\subsection{Module}
+
+This module formats and renders visual information on the smart glasses display. 
+It receives classification labels and direction angles from the Audio360 Engine, 
+formats this information according to display constraints and prioritization 
+rules, and renders visual indicators on the smart glasses display. The module 
+ensures non-intrusive presentation while maintaining a minimum update rate of 30 
+frames per second. It also handles display of error states and safety feature 
+failure alerts.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:Audio360Engine]{Audio360 Engine Module}
+  \item \hyperref[mod:FaultManager]{Fault Manager Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item minUpdateRate [\hyperref[generic:uint16]{uint16}]: 
+    \label{var:minUpdateRate}
+    The minimum display update rate in frames per second. The value is 30 FPS 
+    as specified by \hyperref[SRS-NFR8_1]{NFR8.1}.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+updateDisplay & classificationLabel: 
+  \hyperref[generic:string]{string}, 
+  directionAngle: \hyperref[generic:float32]{float32}, 
+  priority: \hyperref[generic:uint8]{uint8} & - & 
+  DisplayUpdateFailure, InvalidInputError \\
+\hline
+displayError & errorType: 
+  \hyperref[generic:string]{string}, 
+  errorMessage: \hyperref[generic:string]{string} & - & 
+  DisplayUpdateFailure \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item currentDisplayState [\hyperref[generic:dict]{dict}]: 
+    \label{var:currentDisplayState}
+    Stores the current state of the display, including active visual indicators, 
+    their positions, and priorities. This state is continuously updated at 
+    runtime as new classification and direction data is received.
+  \item displayQueue [\hyperref[generic:list]{list}]: 
+    \label{var:displayQueue}
+    A priority queue that stores pending display updates. Items are ordered by 
+    priority to ensure safety-critical information is displayed first, as 
+    required by \hyperref[SRS-NFR6_1]{NFR6.1}.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item display [Display Hardware]: 
+    The smart glasses display hardware interface. This encapsulates the 
+    physical display device and its driver interface, allowing the visualization 
+    format to be modified independently of the underlying display technology.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The display hardware is properly initialized and functional.
+  \item The Audio360 Engine provides valid classification labels and direction 
+    angles in radians within the range [0, 2$\pi$).
+  \item Priority values are non-negative integers, with lower values indicating 
+    higher priority (safety-critical information has priority 0).
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent updateDisplay():
+\begin{itemize}
+\item \textbf{transition:} 
+  The module receives classification and direction data, applies 
+  prioritization logic to determine if the information should be displayed 
+  (based on \hyperref[SRS-NFR6_1]{NFR6.1}), formats the information according 
+  to display constraints and non-intrusive presentation requirements 
+  (\hyperref[SRS-NFR6_2]{NFR6.2}), and updates the display state. The visual 
+  indicator is rendered on the smart glasses display at the appropriate position 
+  corresponding to the direction angle. If multiple sources are present, only 
+  the highest priority source is displayed.
+
+\item \textbf{output:} None
+
+\item \textbf{exception:} 
+  DisplayUpdateFailure if the display hardware fails to update, or 
+  InvalidInputError if the direction angle is outside the valid range [0, 2$\pi$) 
+  or if the classification label is empty.
+\end{itemize}
+
+\noindent displayError():
+\begin{itemize}
+\item \textbf{transition:} 
+  The module formats and displays an error message on the smart glasses display 
+  to alert users when core safety features such as direction determination or 
+  classification fail, as required by \hyperref[SRS-FR6_2]{FR6.2}. Error 
+  messages are displayed with high priority to ensure visibility.
+
+\item \textbf{output:} None
+
+\item \textbf{exception:} 
+  DisplayUpdateFailure if the display hardware fails to update the error 
+  message.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item formatDisplayData(classificationLabel: 
+    \hyperref[generic:string]{string}, directionAngle: 
+    \hyperref[generic:float32]{float32}) $\rightarrow$ 
+    \hyperref[generic:dict]{dict}: 
+    Formats the classification label and direction angle into a display-ready 
+    data structure, including position calculations for directional indicators 
+    and text labels.
+  \item applyPrioritization(displayQueue: 
+    \hyperref[generic:list]{list}) $\rightarrow$ 
+    \hyperref[generic:dict]{dict}: 
+    Selects the highest priority item from the display queue to be rendered, 
+    ensuring safety-critical information is displayed first as required by 
+    \hyperref[SRS-NFR6_1]{NFR6.1}.
+  \item renderNonIntrusive(displayData: 
+    \hyperref[generic:dict]{dict}) $\rightarrow$ 
+    \hyperref[generic:bool]{bool}: 
+    Renders visual indicators in a non-intrusive manner, minimizing visual 
+    obstruction so users can safely perform external activities, as required by 
+    \hyperref[SRS-NFR6_2]{NFR6.2}.
+\end{itemize}
+
+\newpage 
+
+\section{MIS of Independent Component Analysis (ICA) Module 
+\label{mod:ICA} - \mref{mICA}}
+
+\subsection{Module}
+
+This module performs blind source separation on multi-channel audio signals to 
+separate mixed audio signals into individual independent source components. The 
+module accepts multi-channel audio signals from the microphone array and outputs 
+separated audio streams, each representing an individual sound source. This 
+enables improved classification and direction estimation accuracy when multiple 
+sound sources are present simultaneously. The module is conditionally invoked by 
+the Audio360 Engine when multiple sources are detected, allowing the system to 
+operate with or without this capability.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:Audio360Engine]{Audio360 Engine Module}
+  \item \hyperref[mod:AudioSampling]{Audio Sampling Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+separateSources & mixedAudio: 
+  [][\hyperref[generic:float32]{float32}] & 
+  separatedSources: [][\hyperref[generic:float32]{float32}] & 
+  ICASeparationFailure, InvalidInputError \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item separationModel [\hyperref[generic:dict]{dict}]: 
+    \label{var:separationModel}
+    Stores the ICA separation model parameters and learned mixing matrix. This 
+    state may be updated during the separation process to adapt to the input 
+    signal characteristics.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input audio signals contain multiple independent sound sources that 
+    can be separated using ICA.
+  \item The number of microphones is at least equal to the number of sound 
+    sources to be separated.
+  \item The sound sources are statistically independent and non-Gaussian.
+  \item The mixing process is linear and instantaneous (no significant delays 
+    between sources reaching different microphones).
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent separateSources():
+\begin{itemize}
+\item \textbf{transition:} 
+  The module applies Independent Component Analysis (e.g., FastICA algorithm) to 
+  the input mixed audio signals from multiple microphones. The algorithm 
+  estimates the mixing matrix and separates the mixed signals into independent 
+  source components. The separation model state may be updated during this 
+  process. Each output stream represents a separated audio source that can be 
+  further processed by classification and direction estimation modules.
+
+\item \textbf{output:} 
+  An array of separated audio source streams, where each stream contains the 
+  audio data for one independent sound source. The number of output streams 
+  corresponds to the number of detected independent sources.
+
+\item \textbf{exception:} 
+  ICASeparationFailure if the ICA algorithm fails to converge or cannot 
+  successfully separate the sources. InvalidInputError if the input audio data 
+  is invalid, has incorrect dimensions, or does not meet the assumptions required 
+  for ICA separation.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item estimateMixingMatrix(mixedAudio: 
+    [][\hyperref[generic:float32]{float32}]) $\rightarrow$ 
+    \hyperref[generic:dict]{dict}: 
+    Estimates the mixing matrix that describes how the independent sources are 
+    combined in the mixed signals. This is a core step in the ICA algorithm.
+  \item applySeparation(mixedAudio: 
+    [][\hyperref[generic:float32]{float32}], mixingMatrix: 
+    \hyperref[generic:dict]{dict}) $\rightarrow$ 
+    [][\hyperref[generic:float32]{float32}]: 
+    Applies the inverse of the estimated mixing matrix to separate the mixed 
+    signals into independent source components.
+  \item checkConvergence(previousModel: 
+    \hyperref[generic:dict]{dict}, currentModel: 
+    \hyperref[generic:dict]{dict}) $\rightarrow$ 
+    \hyperref[generic:bool]{bool}: 
+    Checks if the ICA algorithm has converged by comparing the current model 
+    parameters with the previous iteration's parameters.
+\end{itemize}
+
+\newpage 
+
 \bibliographystyle{IEEEtran}
 \bibliography{../../../refs/References}
 
