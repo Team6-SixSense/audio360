@@ -2256,19 +2256,28 @@ None
   organized. The MIS ended up reinforcing our understanding and helped us
   clearly lay out how each part of the system will work.
 
+  \textbf{Omar: } Our team knocked it out of the park by using formal
+  math to define each module's functionality whenever possible. This was 
+  especially helpful for reducing workload looking ahead. 
+
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
+
+  \textbf{Omar: } The major pain point was the timing of this deliverable. 
+  Although it is done well, it required too much time and effort while
+  balancing other deliverables and courses. We tried to resolve this by
+  delegating sections to each team member based on their expertise. 
 
   \textbf{Sathurshan:} The main pain point was the deliverable deadline as the
   team was asked to finish the first revision in a week while preparing for the
   proof of concept of demo. The team expressed the concerns with the professor,
-  and fornately received an extension allowing us to put more effort into this
+  and fortunately received an extension allowing us to put more effort into this
   document.
 
   \textbf{Kalp:} I think that the main pain point was just timing. With the VnV 
   plan due shortly prior to this deliverable, and the team PoC implementation 
   being due a week after this deliverable, there was really not much time to 
-  write out this document, especailly given the lenght and detail that it goes 
+  write out this document, especially given the length and detail that it goes 
   into. This was slightly mitigated by the provided extension and the PoC 
   implementation, but it was still a challenge to get everything done in time.
 
@@ -2291,6 +2300,12 @@ None
   or a proxy (e.g. your peers, stakeholders, potential users)? For those that
   were not, why, and where did they come from?
 
+  \textbf{Omar:} Many design decisions stemmed from past experience working
+  on embedded projects and large system designs. The approach to effectively
+  break down larger tasks such as audio classification into smaller modules
+  (e.g., FFT, Mel Filter, DCT, PCA, LDA) was inspired by prior discussion 
+  with our capstone supervisor. 
+
   \textbf{Sathurshan:} The supervisor mentioned the difficulty of getting
   access to hardware that will meet our software specification. As a result, we
   designed the system such that the software is portable and can take input
@@ -2308,7 +2323,7 @@ None
 
   \textbf{Nirmal:} The decision of using PCA and LDA for classification stems 
   from asking our supervisor (MVM) for input on an approach that has low 
-  computation. Originally, I was using a SVM for classififying audio sources, 
+  computation. Originally, I was using a SVM for classifying audio sources, 
   but our supervisor mentioned this isn't really necessary, and might be 
   overkill. 
 
@@ -2323,6 +2338,10 @@ None
   \item While creating the design doc, what parts of your other documents (e.g.
   requirements, hazard analysis, etc), it any, needed to be changed, and why?
 
+  \textbf{Omar:} While writing the design document, some parts of the SRS needed
+  to be updated to add labels and to link module decomposition to the SRS 
+  requirements. 
+
   \textbf{Sathurshan:} SRS needed to be updated. It was updated because part
   of writing this document required reviewing the SRS. From this, I have found
   parts of the requirements that can be improved based on recent better
@@ -2331,7 +2350,7 @@ None
   \textbf{Kalp:} The SRS document was updated to reflect the 
   changes that we made to the system. A lot of the requirements changes revolved 
   around the hardware and software design decisions that we made (ex. choosing
-  to serperate a process into multiple modules leads to more specific 
+  to separate a process into multiple modules leads to more specific 
   requirements). 
   
   \textbf{Nirmal:} For the classification specific modules, no parts of any 
@@ -2348,6 +2367,12 @@ None
   \item What are the limitations of your solution?  Put another way, given
   unlimited resources, what could you do to make the project better?
   (LO\_ProbSolutions)
+
+  \textbf{Omar:} The main limitation in our case is the hardware constraints.
+  Given unlimited resources, we would be able to design custom audio hardware that
+  meets all of our software requirements without any guess work. We would also
+  be able to design PCBs that are optimized for reducing trace lengths between
+  the microphones and the microcontroller, improving signal integrity. 
   
   \textbf{Sathurshan:} The limitation of the solution is compute and memory
   power. Given further time, the team would be able to design a system that
@@ -2378,6 +2403,16 @@ None
   design?  From all the potential options, why did you select the documented
   design? (LO\_Explores)
 
+  \textbf{Omar:} During the research phase, we considered using many different
+  hardware platforms including Raspberry Pi, Texas Instruments and Arduino.
+  We settled on the STM32 platform due to its inclusion of DSP libraries and audio
+  peripherals. While the Texas Instruments controllers have great documentation
+  and software support, they are specialized for motor control applications which
+  means they lack the real-time audio peripherals required for the project. 
+  On the software side, we considered using more complex machine
+  learning algorithms for audio classification, but ultimately chose not to due to 
+  simplicity and compute resource constraints
+
   \textbf{Sathurshan:} Personally, there was not a lot of time to think about
   other designs. The team has been implementing the software before this
   document was created since the proof of concept is one week after this
@@ -2393,11 +2428,11 @@ None
   simple algorithm that is easy to implement and understand, and a lot less 
   computationally expensive than a neural network.
 
-  \textbf{Nirmal:} Another desgin solution we considered for classification was 
+  \textbf{Nirmal:} Another design solution we considered for classification was 
   using SVM. Although that seemed to work really well, compared to the PCA and 
   LDA approach, this approach would firstly take a lot of storage on the 
   microcontroller which we didn't have. And also involved running full 
-  blackbox models. The approach now just invovles doing matrix multiplications 
+  blackbox models. The approach now just involves doing matrix multiplications 
   which is what the microcontroller is optimized for. 
 
   \textbf{Jay:} One alternative we discussed early on was using more advanced 
