@@ -175,7 +175,7 @@ project.
 \midrule
 
 \multirow{2}{0.3\textwidth}{Behaviour-Hiding Module}
-& Audio360 Enginer Module\\
+& Audio360 Engine Module\\
 & Visualization Module\\
 \midrule
 
@@ -190,7 +190,7 @@ project.
 & Logging Module\\
 & Fault Manager Module\\
 & Mel Filter Module\\
-& Discret Cosine Transform Module \\
+& Discrete Cosine Transform Module \\
 & Principle Component Analysis Module \\
 & Linear Discriminant Analysis Module \\
 & Classification Module \\
@@ -275,7 +275,7 @@ project.
     X.
   \item AudioClassificationFault: \label{enum:FaultState:ClassificationFault}
     Fault with audio classification.
-  \item directionalAnalsysiFault: \label{enum:FaultState:DOAFault} Fault with
+  \item directionalAnalsysisFault: \label{enum:FaultState:DOAFault} Fault with
     the directional analysis.
 \end{enumerate}
 
@@ -291,10 +291,10 @@ project.
     The frequency represented in Hz.
   \item real [\hyperref[generic:float32]{float32}[]]:
     \label{state:FrequencyDomain:real}
-    The real component of thre frequency contribution.
+    The real component of the frequency contribution.
   \item img [\hyperref[generic:float32]{float32}[]]:
     \label{state:FrequencyDomain:img}
-    The imaginary component of thre frequency contribution.
+    The imaginary component of the frequency contribution.
   \item magnitude [\hyperref[generic:float32]{float32}[]]:
     \label{state:FrequencyDomain:magnitude}
     The magnitude of the frequency component.
@@ -742,7 +742,7 @@ includes room response calculations and spatial audio propagation models.
 \hline
 generateAudio & audioSource: \hyperref[generic:float32]{float32}[], position:
 \hyperref[generic:float32]{float32}[], outputFile:
-\hyperref[generic:string]{string} & micrphoneData[][]:
+\hyperref[generic:string]{string} & microphoneData[][]:
 [][\hyperref[generic:float32]{float32}] & AudioGenerationFailure \\
 \hline
 \end{tabularx}
@@ -960,7 +960,7 @@ of individual samples.
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-sample & inputSource: \hyperref[generic:string]{string} & - & InputSouceError \\
+sample & inputSource: \hyperref[generic:string]{string} & - & InputSourceError \\
 getSampledData & - & \hyperref[var:sampleData]{sampleData} & - \\
 \hline
 \end{tabularx}
@@ -1002,7 +1002,7 @@ None
   \end{enumerate}
 
 \item output: None
-\item exception: InputSouceError
+\item exception: InputSourceError
 \end{itemize}
 
 \noindent getSampledData():
@@ -1127,7 +1127,7 @@ None
 
 \subsubsection{Assumptions}
 
-Normalization factor is pre-deteremined and known for all given sources.
+Normalization factor is pre-determined and known for all given sources.
 
 \subsubsection{Access Routine Semantics}
 
@@ -1452,7 +1452,7 @@ runFaultAnalysis & - & - & - \\
 
 \begin{itemize}
   \item \hyperref[faultState]{faultState}: This variable is shared with the
-    display, to notifiy user of the internal status of the software system.
+    display, to notify user of the internal status of the software system.
 \end{itemize}
 
 \subsubsection{Assumptions}
@@ -1463,7 +1463,7 @@ Fault Manager module itself does not run into any critical faults.
 
 \noindent faultState():
 \begin{itemize}
-\item transition: update the value of faultState depending on the overal health
+\item transition: update the value of faultState depending on the overall health
   of the software system.
 \item output: None
 \item exception: None
@@ -1551,7 +1551,7 @@ None
   \neq k$, then the matrix multiplication would throw an invalid dimension
   error, which must be exposed from the module as invalid spectrogram dimension
   as well. This would only happens if the number of frequency bins in the
-  computted FFT is not equal to the number of frequency bins in the pre-computed
+  computed FFT is not equal to the number of frequency bins in the pre-computed
   mel filterbank matrix. 
 \end{itemize}
 
@@ -1736,7 +1736,7 @@ None
 \item \textbf{transition:} None (function doesn't have states)
 \item \textbf{output:} Returns a matrix \textit{pca(t, K)}, where $t$ represents
   the number of time frames and $K$ represents the number of PCA components
-  retained (proportional to the number of eignevectors). Essentially, each input
+  retained (proportional to the number of eigen-vectors). Essentially, each input
   mfcc matrix is projected onto the vectors of maximum variance, therefore
   extracting only the most important features of the MFCC based on training.
   This projection can be computed using the following matrix multiplication. 
@@ -1768,7 +1768,7 @@ None
 \subsection{Module}
 
 Classifies given feature vector into one of the predefined set of sound classes.
-This is module is optimized for class seperation. The feature vector in this
+This is module is optimized for class separation. The feature vector in this
 case is already narrowed down to the features with the most variance using the
 \hyperref[MG-mPCA]{PCA} module. 
 
@@ -1817,7 +1817,7 @@ None
   in the system. The LDA projection matrix is of size $(K,C-1)$, where $C$ is
   the number of classes, and $K$ is the number of variance eigenvectors. In
   essence, this matrix maps the input feature space into the discriminant
-  subspace where class seperation is maximized.
+  subspace where class separation is maximized.
   
 \end{itemize}
 
@@ -1841,7 +1841,7 @@ None
   $W_{\text{LDA}}$ represents the LDA projection matrix. 
 
   Classification is then performed using linear discriminant functions for each
-  class $j$, where $w_j$ and $b_j$ is the weight and bias matricies that were
+  class $j$, where $w_j$ and $b_j$ is the weight and bias matrices that were
   pre-computed offline during training for class $j$. 
 
   \[
@@ -1865,7 +1865,7 @@ None
   dimension error, which must be exposed from the module as invalid feature
   dimension as well. This would only happens if for some reason the number of
   eigenvectors returned by the \hyperref[MG-mPCA]{PCA} module is not the same as
-  the number of eignvectors in the precomputed LDA matrix.
+  the number of eigen-vectors in the precomputed LDA matrix.
 \end{itemize}
 
 \subsubsection{Local Functions}
@@ -1921,7 +1921,7 @@ ClassificationRunTimeFailure \\
 
 \begin{itemize}
   \item state[classificationState]: Stores the current classification. Will
-  continuously be updated at runtime after recieving continuous audio signals. 
+  continuously be updated at runtime after receiving continuous audio signals. 
   \item state[classificationStatus]: Stores the confidence of the classification
   that was done. Values for status include high, medium or low confidence. 
 \end{itemize}

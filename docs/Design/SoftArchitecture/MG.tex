@@ -113,7 +113,7 @@ change, because the ``secrets'' that each module hides represent likely future
 changes.  Design for change is valuable in SC, where modifications are frequent,
 especially during initial development as the solution space is explored.  
 
-Our design follows the rules layed out by \cite{ParnasEtAl1984}, as follows:
+Our design follows the rules laid out by \cite{ParnasEtAl1984}, as follows:
 \begin{itemize}
 \item System details that are likely to change independently should be the
   secrets of separate modules.
@@ -240,10 +240,10 @@ adapted here is called design for change.
   generating simulated microphone array input for testing and proof of concept.
   \\
   \textbf{Rationale:} Since the use case is primarily for testing and proof of
-  concept, the team will be prioritize methods that are easily integratable and
+  concept, the team will be prioritize methods that are easily integrable and
   provide sufficient functionality of testing. This can change as the team
   experiments with different methods at earlier stages. The final product will
-  replace module linked to this antricipated change entirely with hardware
+  replace module linked to this anticipated change entirely with hardware
   microphone drivers. See table \ref{TblACT} for linked modules.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acSDCardLogging}:]
@@ -279,7 +279,7 @@ decisions will be changed.
  \textbf{Rationale:} Cheapest and easiest method of getting real-time audio from
  the environment of the user. Although,~\acref{acAudioGen} mentions the
  potential of changing inputs for testing and proof of concept, \uref{ucInput}
- is focued on the final product.
+ is focused on the final product.
 
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucClosed}:]
   The processor works as a closed system. That is no external devices other than
@@ -337,7 +337,7 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mFaultManager}:] Fault Manager
   Module 
 \item [\refstepcounter{mnum} \mthemnum \label{mMelFilter}:] Mel Filter Module
-\item [\refstepcounter{mnum} \mthemnum \label{mDCT}:] Discret Cosine Transform
+\item [\refstepcounter{mnum} \mthemnum \label{mDCT}:] Discrete Cosine Transform
 Module
 \item [\refstepcounter{mnum} \mthemnum \label{mPCA}:] Principle Component
 Analysis Module
@@ -435,8 +435,8 @@ clipping or dropouts.
   will be done by performing Principle Component Analysis (PCA) on extracted
   features from the Mel-Frequency domain and performing Linear Discriminant
   Analysis (LDA) on components to predict the classification. Since this is a
-  multi-step process, speciic computational tasks are encapsulated within
-  de-coupled modules that will be called individualy. This design affects
+  multi-step process, specific computational tasks are encapsulated within
+  de-coupled modules that will be called individually. This design affects
   \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and
   \mref{mClassification}. 
 
@@ -744,7 +744,7 @@ maintain core functionality when possible.
   variance. Also includes the projection matrix and mean feature matrix learned
   during offline training.
   \item[Services:] Accepts MFCC feature vector and produces new representation
-  that preserves only the most signficant variance from the original MFCC
+  that preserves only the most significant variance from the original MFCC
   vector. This reduces the computational load for the LDA (\mref{mLDA}) module. 
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Data Type
