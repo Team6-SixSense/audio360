@@ -10,6 +10,7 @@
 \usepackage{longtable}
 \usepackage{xr}
 \usepackage{cite}
+\usepackage{pdflscape}
 \hypersetup{ colorlinks, citecolor=blue, filecolor=black, linkcolor=red,
     urlcolor=blue }
 
@@ -918,13 +919,15 @@ Each level of the hierarchy offers a testable and usable subset of the system,
 and modules in the higher level of the hierarchy are essentially simpler because
 they use modules from the lower levels.
 
+\begin{landscape}
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{diagrams/uses_hierarchy.png}
+\includegraphics[scale=0.34]{diagrams/uses_hierarchy.png}
 \caption{Use hierarchy among modules}
 \label{FigUH}
 \end{figure}
-
+\end{landscape}
 
 \section{User Interfaces}
 
@@ -935,7 +938,7 @@ information.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{../../Images/Smart glasses HUD.png}
+    \includegraphics[width=0.65\textwidth]{../../Images/Smart glasses HUD.png}
     \caption{Smart glasses HUD visualization showing sound detection interface.
     The display shows a detected sound source (Vehicle) with directional
     information overlaid on the user's field of view.}
@@ -944,7 +947,7 @@ information.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{../../Images/Smart Glasses HUD Close Up.png}
+    \includegraphics[width=0.65\textwidth]{../../Images/Smart Glasses HUD Close Up.png}
     \caption{Close-up view of the smart glasses HUD interface. This view
     provides a detailed look at the AR overlay elements including the sound
     detection indicator, classification label, and directional arrow displayed
