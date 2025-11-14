@@ -10,13 +10,8 @@
 \usepackage{longtable}
 \usepackage{xr}
 \usepackage{cite}
-\hypersetup{
-    colorlinks,
-    citecolor=blue,
-    filecolor=black,
-    linkcolor=red,
-    urlcolor=blue
-}
+\hypersetup{ colorlinks, citecolor=blue, filecolor=black, linkcolor=red,
+    urlcolor=blue }
 
 \input{../../Comments}
 \input{../../Common}
@@ -47,8 +42,8 @@
 
 \section{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \toprule {\bf Date} & {\bf Version}
+& {\bf Notes}\\
 \midrule
 2025-11-13 & 1.0 & Initial write-up\\
 \bottomrule
@@ -112,12 +107,11 @@ for a complete table used in \progname.
 
 Decomposing a system into modules is a commonly accepted approach to developing
 software.  A module is a work assignment for a programmer or programming
-team~\cite{ParnasEtAl1984}.  We advocate a decomposition
-based on the principle of information hiding~\cite{Parnas1972a}.  This
-principle supports design for change, because the ``secrets'' that each module
-hides represent likely future changes.  Design for change is valuable in SC,
-where modifications are frequent, especially during initial development as the
-solution space is explored.  
+team~\cite{ParnasEtAl1984}.  We advocate a decomposition based on the principle
+of information hiding~\cite{Parnas1972a}.  This principle supports design for
+change, because the ``secrets'' that each module hides represent likely future
+changes.  Design for change is valuable in SC, where modifications are frequent,
+especially during initial development as the solution space is explored.  
 
 Our design follows the rules layed out by \cite{ParnasEtAl1984}, as follows:
 \begin{itemize}
@@ -129,55 +123,54 @@ Our design follows the rules layed out by \cite{ParnasEtAl1984}, as follows:
 \end{itemize}
 
 After completing the first stage of the design, the Software Requirements
-Specification (SRS), the Module Guide (MG) is developed~\cite{ParnasEtAl1984}. The MG
-specifies the modular structure of the system and is intended to allow both
-designers and maintainers to easily identify the parts of the software.  The
-potential readers of this document are as follows:
+Specification (SRS), the Module Guide (MG) is developed~\cite{ParnasEtAl1984}.
+The MG specifies the modular structure of the system and is intended to allow
+both designers and maintainers to easily identify the parts of the software.
+The potential readers of this document are as follows:
 
 \begin{itemize}
 \item New project members: This document can be a guide for a new project member
-  to easily understand the overall structure and quickly find the
-  relevant modules they are searching for.
+  to easily understand the overall structure and quickly find the relevant
+  modules they are searching for.
 \item Maintainers: The hierarchical structure of the module guide improves the
   maintainers' understanding when they need to make changes to the system. It is
   important for a maintainer to update the relevant sections of the document
   after changes have been made.
-\item Designers: Once the module guide has been written, it can be used to
-  check for consistency, feasibility, and flexibility. Designers can verify the
-  system in various ways, such as consistency among modules, feasibility of the
+\item Designers: Once the module guide has been written, it can be used to check
+  for consistency, feasibility, and flexibility. Designers can verify the system
+  in various ways, such as consistency among modules, feasibility of the
   decomposition, and flexibility of the design.
 \end{itemize}
 
-The rest of the document is organized as follows. Section
-\ref{SecChange} lists the anticipated and unlikely changes of the software
-requirements. Section \ref{SecMH} summarizes the module decomposition that
-was constructed according to the likely changes. Section \ref{SecConnection}
-specifies the connections between the software requirements and the
-modules. Section \ref{SecMD} gives a detailed description of the
-modules. Section \ref{SecTM} includes two traceability matrices. One checks
-the completeness of the design against the requirements provided in the SRS. The
-other shows the relation between anticipated changes and the modules. Section
-\ref{SecUse} describes the use relation between modules.
+The rest of the document is organized as follows. Section \ref{SecChange} lists
+the anticipated and unlikely changes of the software requirements. Section
+\ref{SecMH} summarizes the module decomposition that was constructed according
+to the likely changes. Section \ref{SecConnection} specifies the connections
+between the software requirements and the modules. Section \ref{SecMD} gives a
+detailed description of the modules. Section \ref{SecTM} includes two
+traceability matrices. One checks the completeness of the design against the
+requirements provided in the SRS. The other shows the relation between
+anticipated changes and the modules. Section \ref{SecUse} describes the use
+relation between modules.
 
 \section{Anticipated and Unlikely Changes} \label{SecChange}
 
 This section lists possible changes to the system. According to the likeliness
-of the change, the possible changes are classified into two
-categories. Anticipated changes are listed in Section \ref{SecAchange}, and
-unlikely changes are listed in Section \ref{SecUchange}.
+of the change, the possible changes are classified into two categories.
+Anticipated changes are listed in Section \ref{SecAchange}, and unlikely changes
+are listed in Section \ref{SecUchange}.
 
 \subsection{Anticipated Changes} \label{SecAchange}
 
 Anticipated changes are the source of the information that is to be hidden
 inside the modules. Ideally, changing one of the anticipated changes will only
 require changing the one module that hides the associated decision. The approach
-adapted here is called design for
-change.
+adapted here is called design for change.
 
 \begin{description}
 \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:]
   The specific hardware on which the software is running. \\
-  \textbf{Rationale:} There will be a benefit to using a hardware that is 
+  \textbf{Rationale:} There will be a benefit to using a hardware that is
   smaller (better integration with glasses), cheaper (reduce costs for user),
   and stronger compute (allows for further advanced audio processing), if one
   exists in the market.
@@ -190,8 +183,8 @@ change.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acMicArrangement}:] 
   The arrangement of the microphones relative to each other. \\
-  \textbf{Rationale:} The system may be deployed on devices other than
-  glasses, such as a hat. As a result, the microphone arrangement can change.
+  \textbf{Rationale:} The system may be deployed on devices other than glasses,
+  such as a hat. As a result, the microphone arrangement can change.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acOutput}:]
   The output display hardware. At the moment, it is Rokid Glasses
@@ -203,9 +196,10 @@ change.
 
 \item[\refstepcounter{acnum} \actheacnum \label{NumClassification}:]
   The number of classification of audio sources. \\
-  \textbf{Rationale:} \hyperref[SRS-NFR5_1]{NFR5.1} specifies at least 3 distinct
-  audio classification of audio sources required. This can be changed to detect
-  a single audio classification if detecting one source is more critical.
+  \textbf{Rationale:} \hyperref[SRS-NFR5_1]{NFR5.1} specifies at least 3
+  distinct audio classification of audio sources required. This can be changed
+  to detect a single audio classification if detecting one source is more
+  critical.
 
 \item[\refstepcounter{acnum} \actheacnum \label{SampleRate}:]
   The sample rate that audio is sampled from the environment from the
@@ -224,50 +218,49 @@ change.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acVizContent}:] 
   The visualization content on the output display. \\
-  \textbf{Rationale:} Stakeholders may require alternative information or a 
-  different presentation format that is more effective and appropriate for
-  the display. This is related to \hyperref[SRS-NFR6_2]{NFR6.2}
+  \textbf{Rationale:} Stakeholders may require alternative information or a
+  different presentation format that is more effective and appropriate for the
+  display. This is related to \hyperref[SRS-NFR6_2]{NFR6.2}
 
 \item[\refstepcounter{acnum} \actheacnum \label{acHardwareAccel}:]
   Traditional algorithms may be used over
   \hyperref[SRS-def:hardware_acceleration]{hardware acceleration}. \\
   \textbf{Rationale:} Hardware acceleration can consume more power than
-  traditional software algorithms. The trade-off of slower processing over
-  power consumption may be desirable.
+  traditional software algorithms. The trade-off of slower processing over power
+  consumption may be desirable.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acConfidenceAction}:]
   Action when low confidence occurs during audio source classification. \\
-  \textbf{Rationale:} According to \hyperref[SRS-FR5_4]{FR5.4}, the system
-  shall notify user when results from classification is low confidence. However,
-  this may be disregarded if the accuracy of the classification module is near 
+  \textbf{Rationale:} According to \hyperref[SRS-FR5_4]{FR5.4}, the system shall
+  notify user when results from classification is low confidence. However, this
+  may be disregarded if the accuracy of the classification module is near
   perfect. 
 
-\item[\refstepcounter{acnum} \actheacnum \label{acAudioGen}:] The method of 
-  generating simulated microphone array input for testing and proof of
-  concept. \\
-  \textbf{Rationale:} Since the use case is primarily for testing and proof
-  of concept, the team will be prioritize methods that are easily integratable
-  and provide sufficient functionality of testing. This can change as the team
+\item[\refstepcounter{acnum} \actheacnum \label{acAudioGen}:] The method of
+  generating simulated microphone array input for testing and proof of concept.
+  \\
+  \textbf{Rationale:} Since the use case is primarily for testing and proof of
+  concept, the team will be prioritize methods that are easily integratable and
+  provide sufficient functionality of testing. This can change as the team
   experiments with different methods at earlier stages. The final product will
-  replace module linked to this antricipated change entirely with hardware 
+  replace module linked to this antricipated change entirely with hardware
   microphone drivers. See table \ref{TblACT} for linked modules.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acSDCardLogging}:]
   The SD card logging method for diagnostic audio data.\\
-  \textbf{Rationale:} The SD card diagnostic method is useful for 
-  bulk data logging during testing. In a production system it is 
-  going to be removed since no debug logs will be captured.
+  \textbf{Rationale:} The SD card diagnostic method is useful for bulk data
+  logging during testing. In a production system it is going to be removed since
+  no debug logs will be captured.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acICA}:]
-  The implementation of Independent Component Analysis (ICA) for 
-  separating multiple simultaneous audio sources from mixed signals. \\
-  \textbf{Rationale:} The SRS mentions multi-source handling as a 
-  functionality goal (Section G.4), where the system should detect 
-  and track multiple simultaneous sound sources. ICA would enable 
-  the extraction of individual audio sources from mixed microphone 
-  signals, improving classification and direction estimation accuracy 
-  in complex acoustic environments. However it is complicated to implement
-  and is defined as a stretch goal by the team.
+  The implementation of Independent Component Analysis (ICA) for separating
+  multiple simultaneous audio sources from mixed signals. \\
+  \textbf{Rationale:} The SRS mentions multi-source handling as a functionality
+  goal (Section G.4), where the system should detect and track multiple
+  simultaneous sound sources. ICA would enable the extraction of individual
+  audio sources from mixed microphone signals, improving classification and
+  direction estimation accuracy in complex acoustic environments. However it is
+  complicated to implement and is defined as a stretch goal by the team.
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
@@ -283,15 +276,15 @@ decisions will be changed.
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucInput}:]
   The input devices for providing audio data from the environment are
   microphones. \\
- \textbf{Rationale:} Cheapest and easiest method of getting real-time audio
- from the environment of the user. Although,~\acref{acAudioGen} mentions the
+ \textbf{Rationale:} Cheapest and easiest method of getting real-time audio from
+ the environment of the user. Although,~\acref{acAudioGen} mentions the
  potential of changing inputs for testing and proof of concept, \uref{ucInput}
  is focued on the final product.
 
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucClosed}:]
   The processor works as a closed system. That is no external devices other than
-  the microphones and display can be connected, and all processing occurs on
-  the processor (processing is not offloaded to another device). \\
+  the microphones and display can be connected, and all processing occurs on the
+  processor (processing is not offloaded to another device). \\
  \textbf{Rationale:} Adheres to user \hyperref[SRS-goal:user_safety]{Goal 7},
  user safety and privacy, as well as \hyperref[SRS-FR9_1]{FR9.1}.
 
@@ -303,8 +296,8 @@ decisions will be changed.
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucHardwareAbstraction}:]
   The core features interact with hardware through an hardware abstraction
   layer.\\
- \textbf{Rationale:} This allows the achieve
- \hyperref[acHardware]{hardware antricipated change} without system redesign.
+ \textbf{Rationale:} This allows the achieve \hyperref[acHardware]{hardware
+ antricipated change} without system redesign.
 
 \end{description}
 
@@ -316,12 +309,12 @@ below, which are leaves in the hierarchy tree, are the modules that will
 actually be implemented.
 
 \begin{description}
-\item [\refstepcounter{mnum} \mthemnum \label{mMicInput}:] Microphone Input 
+\item [\refstepcounter{mnum} \mthemnum \label{mMicInput}:] Microphone Input
   Module
-\item [\refstepcounter{mnum} \mthemnum \label{mUSART}:] USART Communication 
+\item [\refstepcounter{mnum} \mthemnum \label{mUSART}:] USART Communication
   Module
-\item [\refstepcounter{mnum} \mthemnum \label{mSDInterface}:] SD Card 
-  Interface Module
+\item [\refstepcounter{mnum} \mthemnum \label{mSDInterface}:] SD Card Interface
+  Module
 \item [\refstepcounter{mnum} \mthemnum \label{mMicDiag}:] Microphone Diagnostic
   Module 
 \item [\refstepcounter{mnum} \mthemnum \label{mAudioGen}:] Audio Generation
@@ -330,7 +323,7 @@ actually be implemented.
   Processor Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAudio360Engine}:] Audio360 Engine
   Module
-\item [\refstepcounter{mnum} \mthemnum \label{mAudioSampling}:] Audio Sampling 
+\item [\refstepcounter{mnum} \mthemnum \label{mAudioSampling}:] Audio Sampling
   Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAudioSpectralLeakage}:] Audio
   Spectral Leakage Prevention Module
@@ -338,23 +331,23 @@ actually be implemented.
   Normalizer Module
 \item [\refstepcounter{mnum} \mthemnum \label{mAudioAnomaly}:] Audio Anomaly
   Detection Module
-\item [\refstepcounter{mnum} \mthemnum \label{mFFT}:] Fast Fourier Transform 
+\item [\refstepcounter{mnum} \mthemnum \label{mFFT}:] Fast Fourier Transform
   Module 
 \item [\refstepcounter{mnum} \mthemnum \label{mLogging}:] Logging Module
 \item [\refstepcounter{mnum} \mthemnum \label{mFaultManager}:] Fault Manager
   Module 
 \item [\refstepcounter{mnum} \mthemnum \label{mMelFilter}:] Mel Filter Module
-\item [\refstepcounter{mnum} \mthemnum \label{mDCT}:] Discret Cosine Transform 
+\item [\refstepcounter{mnum} \mthemnum \label{mDCT}:] Discret Cosine Transform
 Module
-\item [\refstepcounter{mnum} \mthemnum \label{mPCA}:] Principle Component 
+\item [\refstepcounter{mnum} \mthemnum \label{mPCA}:] Principle Component
 Analysis Module
-\item [\refstepcounter{mnum} \mthemnum \label{mLDA}:] Linear Discriminant 
+\item [\refstepcounter{mnum} \mthemnum \label{mLDA}:] Linear Discriminant
 Analysis Module
-\item [\refstepcounter{mnum} \mthemnum \label{mClassification}:] Classification 
+\item [\refstepcounter{mnum} \mthemnum \label{mClassification}:] Classification
   Module
-\item [\refstepcounter{mnum} \mthemnum \label{mVisualization}:] Visualization 
+\item [\refstepcounter{mnum} \mthemnum \label{mVisualization}:] Visualization
   Module
-\item [\refstepcounter{mnum} \mthemnum \label{mICA}:] Independent Component 
+\item [\refstepcounter{mnum} \mthemnum \label{mICA}:] Independent Component
   Analysis (ICA) Module
 \end{description}
 
@@ -406,10 +399,10 @@ between requirements and modules is listed in Table~\ref{TblRT}.
 
 \begin{enumerate}
 
-\item \hyperref[SRS-NFR2_1]{NFR2.1} and \hyperref[SRS-FR1_4]{FR1.4} specify 
-that the system shall detect and propagate faults to the embedded firmware layer 
-for appropriate handling. A software fault manager module, \mref{mFaultManager}, 
-is responsible for monitoring and reacting to software error states. In addition, 
+\item \hyperref[SRS-NFR2_1]{NFR2.1} and \hyperref[SRS-FR1_4]{FR1.4} specify that
+the system shall detect and propagate faults to the embedded firmware layer for
+appropriate handling. A software fault manager module, \mref{mFaultManager}, is
+responsible for monitoring and reacting to software error states. In addition,
 the \mref{mMicDiag} module monitors the microphone array for hardware faults.
 
 \item \hyperref[SRS-NFR3_3]{NFR3.2} specifies that the system shall support
@@ -419,72 +412,68 @@ the \mref{mMicDiag} module monitors the microphone array for hardware faults.
 
 \item \hyperref[SRS-FR3_4]{FR3.4} recommends the use of
   \hyperref[SRS-def:hardware_acceleration]{hardware acceleration} to leverage
-  hardware optimizations. However, there may be cases where traditional
-  software algorithms perform more efficiently, such as when processing
-  smaller datasets. Therefore, specific computational tasks are encapsulated
-  within dedicated modules that determine whether to use hardware acceleration
-  based on the input characteristics. This design consideration affects
+  hardware optimizations. However, there may be cases where traditional software
+  algorithms perform more efficiently, such as when processing smaller datasets.
+  Therefore, specific computational tasks are encapsulated within dedicated
+  modules that determine whether to use hardware acceleration based on the input
+  characteristics. This design consideration affects
   \mref{mAudioSpectralLeakage}, \mref{mAudioNormalizer}, and \mref{mFFT}.
 
-\item \hyperref[SRS-FR3_5]{FR3.5} requires the system to detect anomalies in 
-the audio stream. To address this, a dedicated module, \mref{mAudioAnomaly}, is
+\item \hyperref[SRS-FR3_5]{FR3.5} requires the system to detect anomalies in the
+audio stream. To address this, a dedicated module, \mref{mAudioAnomaly}, is
 responsible for monitoring the audio data and identifying anomalies such as
 clipping or dropouts.
 
-\item \hyperref[SRS-FR4_5]{FR4.5} requires that the software be portable
-  across different hardware platforms. This directly influenced the design
-  decision to abstract the Audio360 Engine from the hardware layer. Inputs to
-  the Audio360 Engine are maintained in a generic format, enabling deployment
-  on various hardware targets, including simulation environments.
+\item \hyperref[SRS-FR4_5]{FR4.5} requires that the software be portable across
+  different hardware platforms. This directly influenced the design decision to
+  abstract the Audio360 Engine from the hardware layer. Inputs to the Audio360
+  Engine are maintained in a generic format, enabling deployment on various
+  hardware targets, including simulation environments.
 
-\item \hyperref[SRS-FR5_1]{FR5.1}, \hyperref[SRS-FR5_4]{FR5.4} requires the 
-  frequency analysis component to classify audio sources. The classification 
-  will be done by performing Principle Component Analysis (PCA) on extracted 
-  features from the Mel-Frequency domain and performing Linear Discriminant 
-  Analysis (LDA) on components to predict the classification. Since this is a 
-  multi-step process, speciic computational tasks are encapsulated within 
-  de-coupled modules that will be called individualy. This design affects 
-  \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and 
+\item \hyperref[SRS-FR5_1]{FR5.1}, \hyperref[SRS-FR5_4]{FR5.4} requires the
+  frequency analysis component to classify audio sources. The classification
+  will be done by performing Principle Component Analysis (PCA) on extracted
+  features from the Mel-Frequency domain and performing Linear Discriminant
+  Analysis (LDA) on components to predict the classification. Since this is a
+  multi-step process, speciic computational tasks are encapsulated within
+  de-coupled modules that will be called individualy. This design affects
+  \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and
   \mref{mClassification}. 
 
 \item \hyperref[SRS-FR5_2]{FR5.2}, \hyperref[SRS-NFR5_3]{NFR5.3} requires
   determining direction of sound source in radians (\hyperref[SRS-FR5_3]{FR5.3})
   within a specific error threshold. As a result, DOA processor module
-  \mref{mDOA} is responsible for implementing these requirements. This
-  modular design facilitates testing to ensure that the specified error
-  threshold is satisfied.
+  \mref{mDOA} is responsible for implementing these requirements. This modular
+  design facilitates testing to ensure that the specified error threshold is
+  satisfied.
 
-\item \hyperref[SRS-FR6_1]{FR6.1}, \hyperref[SRS-FR6_2]{FR6.2}, 
-  \hyperref[SRS-FR8_1]{FR8.1}, and \hyperref[SRS-FR8_2]{FR8.2} specify that 
-  the system shall display sound classification and direction information to 
-  users. \hyperref[SRS-NFR6_1]{NFR6.1} requires prioritization of 
-  safety-critical information, while \hyperref[SRS-NFR6_2]{NFR6.2} mandates 
-  non-intrusive presentation. \hyperref[SRS-NFR8_1]{NFR8.1} requires a minimum 
-  of 30 display updates per second for low latency. To satisfy these 
-  requirements, a dedicated visualization module is responsible for receiving 
-  classification and direction data from the Audio360 Engine, formatting the 
-  information according to display constraints, and managing the visual 
-  presentation on the smart glasses display. The module implements
-  prioritization 
-  logic to ensure safety-critical alerts are displayed prominently while 
-  maintaining a non-obstructive HUD-style interface. This design decision 
-  separates visualization concerns from audio processing, allowing the display 
-  format and content to be modified independently (supporting 
-  \hyperref[acVizContent]{AC: Visualization Content}) without affecting core 
-  audio analysis functionality.
+\item \hyperref[SRS-FR6_1]{FR6.1}, \hyperref[SRS-FR6_2]{FR6.2},
+  \hyperref[SRS-FR8_1]{FR8.1}, and \hyperref[SRS-FR8_2]{FR8.2} specify that the
+  system shall display sound classification and direction information to users.
+  \hyperref[SRS-NFR6_1]{NFR6.1} requires prioritization of safety-critical
+  information, while \hyperref[SRS-NFR6_2]{NFR6.2} mandates non-intrusive
+  presentation. \hyperref[SRS-NFR8_1]{NFR8.1} requires a minimum of 30 display
+  updates per second for low latency. To satisfy these requirements, a dedicated
+  visualization module is responsible for receiving classification and direction
+  data from the Audio360 Engine, formatting the information according to display
+  constraints, and managing the visual presentation on the smart glasses
+  display. The module implements prioritization logic to ensure safety-critical
+  alerts are displayed prominently while maintaining a non-obstructive HUD-style
+  interface. This design decision separates visualization concerns from audio
+  processing, allowing the display format and content to be modified
+  independently (supporting \hyperref[acVizContent]{AC: Visualization Content})
+  without affecting core audio analysis functionality.
 
 \item The SRS mentions multi-source handling as a functionality goal
   (\hyperref[SRS-sec:g4]{Section G.4}), where the system should detect and track
-  multiple simultaneous sound 
-  sources when feasible. To support this capability, an Independent Component 
-  Analysis (ICA) module, \mref{mICA}, is designed to separate mixed audio 
-  signals into individual source components. This module would enable improved 
-  classification and direction estimation accuracy when multiple sound sources 
-  are present simultaneously by separating them before processing. The module is
-  designed 
-  to be conditionally invoked by the Audio360 Engine when multiple sources are 
-  detected, allowing the system to operate with or without this 
-  capability.
+  multiple simultaneous sound sources when feasible. To support this capability,
+  an Independent Component Analysis (ICA) module, \mref{mICA}, is designed to
+  separate mixed audio signals into individual source components. This module
+  would enable improved classification and direction estimation accuracy when
+  multiple sound sources are present simultaneously by separating them before
+  processing. The module is designed to be conditionally invoked by the Audio360
+  Engine when multiple sources are detected, allowing the system to operate with
+  or without this capability.
 \end{enumerate}
 
 
@@ -492,14 +481,14 @@ clipping or dropouts.
 
 Modules are decomposed according to the principle of ``information hiding''
 proposed by \cite{ParnasEtAl1984}. The \emph{Secrets} field in a module
-decomposition is a brief statement of the design decision hidden by the
-module. The \emph{Services} field specifies \emph{what} the module will do
-without documenting \emph{how} to do it. For each module, a suggestion for the
+decomposition is a brief statement of the design decision hidden by the module.
+The \emph{Services} field specifies \emph{what} the module will do without
+documenting \emph{how} to do it. For each module, a suggestion for the
 implementing software is given under the \emph{Implemented By} title. If the
 entry is \emph{Driver Layer}, this means that the module is provided by the
 \hyperref[SRS-def:stm32]{STM32} or by standard programming language libraries.
-\emph{\progname{}} means the module will be implemented by the
-\progname{} software.
+\emph{\progname{}} means the module will be implemented by the \progname{}
+software.
 
 Only the leaf modules in the hierarchy have to be implemented. If a dash
 (\emph{--}) is shown, this means that the module is not a leaf and will not have
@@ -512,8 +501,8 @@ to be implemented.
 \begin{description}
 \item [Secrets: ] The configuration and initialization of the hardware
 peripherals required to read data from the microphone array. 
-\item [Services: ] Provides a driver interface to read audio 
-sample data from the microphone array as a buffered stream.
+\item [Services: ] Provides a driver interface to read audio sample data from
+the microphone array as a buffered stream.
 \item [Implemented By: ] Driver Layer
 \item[Type of Module:] Library 
 \end{description}
@@ -523,8 +512,8 @@ sample data from the microphone array as a buffered stream.
 \begin{description}
 \item [Secrets: ] The configuration and initialization of the hardware
 peripherals required for USART serial communication with external devices.
-\item [Services: ] Provides an interface for sending and receiving serial 
-data using the USART protocol on the serial pins of the microcontroller.
+\item [Services: ] Provides an interface for sending and receiving serial data
+using the USART protocol on the serial pins of the microcontroller.
 \item [Implemented By: ] Driver Layer
 \item[Type of Module:] Library 
 \end{description}
@@ -533,11 +522,11 @@ data using the USART protocol on the serial pins of the microcontroller.
 \subsubsection{SD Card Interface Module \mref{mSDInterface}}
 \begin{description}
 \item [Secrets:] The configuration and initialization of the SPI hardware
-peripherals and clocks required for SD card communication. This module also 
-hides the SD card file system management and driver used to send commands
-to the SD card.
-\item [Services:] Provides an interface for reading and writing files to
-an SD card module connected to the microcontroller via SPI.
+peripherals and clocks required for SD card communication. This module also
+hides the SD card file system management and driver used to send commands to the
+SD card.
+\item [Services:] Provides an interface for reading and writing files to an SD
+card module connected to the microcontroller via SPI.
 \item [Implemented By:] Driver Layer
 \item[Type of Module:] Library 
 \end{description}
@@ -545,8 +534,8 @@ an SD card module connected to the microcontroller via SPI.
 %% MICROPHONE DIAGNOSTIC MODULE.
 \subsubsection{Microphone Diagnostic Module \mref{mMicDiag}}
 \begin{description}
-\item [Secrets: ] The internal logic used to perform diagnostic
-tests on the microphone array hardware using hardware ADC converters. 
+\item [Secrets: ] The internal logic used to perform diagnostic tests on the
+microphone array hardware using hardware ADC converters. 
 \item [Services: ] Provides diagnostic state information about the microphone
 array hardware and its connections to the microcontroller. 
 \item [Implemented By: ] Driver Layer
@@ -563,8 +552,8 @@ array hardware and its connections to the microcontroller.
 \item[Secrets:] The internal coordination logic that determines the execution
   order and timing of core audio processing features. Also, the mechanisms that
   manage data flow between hardware interfaces and the software modules.
-\item[Services:] Orchestrates the overall audio processing by receiving
-  raw input data and managing module communication.
+\item[Services:] Orchestrates the overall audio processing by receiving raw
+  input data and managing module communication.
 \item[Implemented By:] \progname
 \item[Type of Module:] Abstract Data Type 
 \end{description}
@@ -572,19 +561,19 @@ array hardware and its connections to the microcontroller.
 % VISUALIZATION MODULE.
 \subsubsection{Visualization Module (\mref{mVisualization})}
 \begin{description}
-  \item[Secrets:] The algorithms and data structures used to format and render 
-  visual information on the smart glasses display. This includes the layout 
-  strategy for HUD elements, prioritization logic for safety-critical 
-  information, and the rendering pipeline for directional indicators and 
-  classification labels. The module also hides the specific display hardware 
-  interface details, allowing the visualization format to be modified 
+  \item[Secrets:] The algorithms and data structures used to format and render
+  visual information on the smart glasses display. This includes the layout
+  strategy for HUD elements, prioritization logic for safety-critical
+  information, and the rendering pipeline for directional indicators and
+  classification labels. The module also hides the specific display hardware
+  interface details, allowing the visualization format to be modified
   independently of the underlying display technology.
-  \item[Services:] Accepts classification labels and direction angles (in 
-  radians) from the Audio360 Engine, formats this information according to 
-  display constraints and prioritization rules, and renders visual indicators 
-  on the smart glasses display. The module ensures non-intrusive presentation 
-  while maintaining a minimum update rate of 30 frames per second. It also 
-  handles display of error states and safety feature failure alerts.
+  \item[Services:] Accepts classification labels and direction angles (in
+  radians) from the Audio360 Engine, formats this information according to
+  display constraints and prioritization rules, and renders visual indicators on
+  the smart glasses display. The module ensures non-intrusive presentation while
+  maintaining a minimum update rate of 30 frames per second. It also handles
+  display of error states and safety feature failure alerts.
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Data Type 
 \end{description}
@@ -595,20 +584,19 @@ array hardware and its connections to the microcontroller.
 \subsubsection{Audio Generation Module (\mref{mAudioGen})}
 
 \begin{description}
-\item[Secrets:] The algorithm for simulating room acoustics and generating 
-  synthetic microphone array data from a given audio source and position. This 
-  includes room response calculations and spatial audio propagation 
-  models. 
-\item[Services:] Provides simulated four-channel microphone array output for 
-  testing and proof-of-concept development. Takes as input an audio source 
-  signal and 3D position coordinates, and outputs four synchronized audio 
-  streams representing what each microphone in the array would capture given 
-  the room acoustics and source location.
+\item[Secrets:] The algorithm for simulating room acoustics and generating
+  synthetic microphone array data from a given audio source and position. This
+  includes room response calculations and spatial audio propagation models. 
+\item[Services:] Provides simulated four-channel microphone array output for
+  testing and proof-of-concept development. Takes as input an audio source
+  signal and 3D position coordinates, and outputs four synchronized audio
+  streams representing what each microphone in the array would capture given the
+  room acoustics and source location.
 \item[Implemented By:] Python using pyroomacoustics library
 \item[Type of Module:] Library
-\item[Notes:] This module is temporary and intended only for proof-of-concept 
-  development. It will be removed in the final product once physical hardware 
-  microphones are integrated. The module enables algorithm development and 
+\item[Notes:] This module is temporary and intended only for proof-of-concept
+  development. It will be removed in the final product once physical hardware
+  microphones are integrated. The module enables algorithm development and
   testing without requiring the complete hardware setup.
 \end{description}
 
@@ -616,24 +604,25 @@ array hardware and its connections to the microcontroller.
 \subsubsection{DOA (Directional of Arrival) Processor Module (\mref{mDOA})}
 
 \begin{description}
-\item[Secrets:] The specific direction of arrival estimation algorithm and its 
-  implementation details, including signal processing techniques (MUSIC, 
-  SRP-PHAT, or FRIDA), frequency analysis methods, and coordinate system 
+\item[Secrets:] The specific direction of arrival estimation algorithm and its
+  implementation details, including signal processing techniques (MUSIC,
+  SRP-PHAT, or FRIDA), frequency analysis methods, and coordinate system
   transformations.
-\item[Services:] Analyzes four synchronized microphone audio streams to estimate 
-  the direction of arrival of a sound source. Takes as input four time-domain or 
-  frequency-domain audio signals and outputs an angle (in degrees) representing 
-  the estimated direction of the sound source relative to the microphone array's 
-  reference axis. Provides real-time directional audio analysis with target 
-  accuracy of 45 degrees as specified in the SRS (\hyperref[SRS-NFR5_3]{NFR5.3}).
-\item[Implemented By:] \progname{} (Python for prototyping, C/C++ for embedded 
+\item[Services:] Analyzes four synchronized microphone audio streams to estimate
+  the direction of arrival of a sound source. Takes as input four time-domain or
+  frequency-domain audio signals and outputs an angle (in degrees) representing
+  the estimated direction of the sound source relative to the microphone array's
+  reference axis. Provides real-time directional audio analysis with target
+  accuracy of 45 degrees as specified in the SRS
+  (\hyperref[SRS-NFR5_3]{NFR5.3}).
+\item[Implemented By:] \progname{} (Python for prototyping, C/C++ for embedded
   implementation)
 \item[Type of Module:] Abstract Data Type
-\item[Notes:] This module is core to the system's primary functionality of 
-  providing directional awareness. It implements one or more DOA algorithms and 
-  may include algorithm selection logic based on environmental conditions or 
+\item[Notes:] This module is core to the system's primary functionality of
+  providing directional awareness. It implements one or more DOA algorithms and
+  may include algorithm selection logic based on environmental conditions or
   computational constraints. Ideally, there should be no changes to this module
-  for the final product aside from the internal implementation details 
+  for the final product aside from the internal implementation details
   (programming language for efficiency and combatilibility).
 \end{description}
 
@@ -677,8 +666,8 @@ array hardware and its connections to the microcontroller.
 \subsubsection{Audio Anomaly Detection Module (\mref{mAudioAnomaly})}
 \begin{description}
 \item[Secrets:] The detection algorithms used to identify anomalies in the audio
-  stream. Also includes the list of dependent modules that must be notified
-  upon specific anomaly occurrences.
+  stream. Also includes the list of dependent modules that must be notified upon
+  specific anomaly occurrences.
 \item[Services:]  Detects anomalies in the audio signal, such as clipping,
   dropouts, or empty buffer conditions, and issues appropriate notifications.
 \item[Implemented By:] \progname
@@ -716,7 +705,7 @@ array hardware and its connections to the microcontroller.
 \begin{description}
 \item[Secrets:] The internal mechanisms and decision logic used to detect,
   manage, and recover from software system faults.
-\item[Services:] Monitors system error states and manages critical faults to 
+\item[Services:] Monitors system error states and manages critical faults to
 maintain core functionality when possible.
 \item[Implemented By:] \progname
 \item[Type of Module:] Abstract Data Type
@@ -725,10 +714,10 @@ maintain core functionality when possible.
 % MEL FILTER MODULE.
 \subsubsection{Mel Filter Module (\mref{mMelFilter})}
 \begin{description}
-  \item[Secrets:] The specific algorithm for converting a signal from the 
+  \item[Secrets:] The specific algorithm for converting a signal from the
   spectral domain to the mel spectral domain. 
-  \item[Services:] Accepts a time-frequency domain signal and outputs the 
-  corresponding time-mel-frequency signal based on the desired number of 
+  \item[Services:] Accepts a time-frequency domain signal and outputs the
+  corresponding time-mel-frequency signal based on the desired number of
   mel-bands. 
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Object
@@ -737,11 +726,11 @@ maintain core functionality when possible.
 % DISCRETE COSINE TRANSFORM MODULE.
 \subsubsection{Discrete Cosine Transform Module (\mref{mDCT})}
 \begin{description}
-  \item[Secrets:] The specific algorithm for computing the Discrete Cosine 
+  \item[Secrets:] The specific algorithm for computing the Discrete Cosine
   Transform (DCT) from a signal in the mel spectral domain.
-  \item[Services:] Accepts a time-mel-frequency signal, and runs the algorithm 
-  that computes the DCT of the signal. This will output the Mel Frequency 
-  Ceptral Coefficients (MFCC) that will describe the main features of the input 
+  \item[Services:] Accepts a time-mel-frequency signal, and runs the algorithm
+  that computes the DCT of the signal. This will output the Mel Frequency
+  Ceptral Coefficients (MFCC) that will describe the main features of the input
   signal.  
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Object
@@ -750,12 +739,12 @@ maintain core functionality when possible.
 % PRINCIPLE COMPONENT ANALYSIS MODULE.
 \subsubsection{Principle Component Analysis Module (\mref{mPCA})}
 \begin{description}
-  \item[Secrets:] The specific algorithm for transforming the MFCC feature 
-  vector into a lower-dimensional space by extracting only the most significant 
-  variance. Also includes the projection matrix and mean feature matrix learned 
+  \item[Secrets:] The specific algorithm for transforming the MFCC feature
+  vector into a lower-dimensional space by extracting only the most significant
+  variance. Also includes the projection matrix and mean feature matrix learned
   during offline training.
-  \item[Services:] Accepts MFCC feature vector and produces new representation 
-  that preserves only the most signficant variance from the original MFCC 
+  \item[Services:] Accepts MFCC feature vector and produces new representation
+  that preserves only the most signficant variance from the original MFCC
   vector. This reduces the computational load for the LDA (\mref{mLDA}) module. 
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Data Type
@@ -764,12 +753,12 @@ maintain core functionality when possible.
 % LINEAR DISCRIMINANT ANALYSIS MODULE.
 \subsubsection{Linear Discriminant Analysis Module (\mref{mLDA})}
 \begin{description}
-  \item[Secrets:] The specific algorithm for applying Linear Discriminant 
-  Analysis (LDA) to determine which class the sound most likely belongs to 
-  and the probability. Also includes the project matrix and class-specific 
-  weight and bias values learned during offline training.
-  \item[Services:] Accepts feature vector extracted from the PCA (\mref{mPCA}) 
-  module and performs linear discriminant classification to output the 
+  \item[Secrets:] The specific algorithm for applying Linear Discriminant
+  Analysis (LDA) to determine which class the sound most likely belongs to and
+  the probability. Also includes the project matrix and class-specific weight
+  and bias values learned during offline training.
+  \item[Services:] Accepts feature vector extracted from the PCA (\mref{mPCA})
+  module and performs linear discriminant classification to output the
   classification label corresponding to the detected sound category. 
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Data Type
@@ -778,12 +767,12 @@ maintain core functionality when possible.
 % CLASSIFICATION MODULE.
 \subsubsection{Classification Module (\mref{mClassification})}
 \begin{description}
-  \item[Secrets:] The modules and the order to call them in to get the most 
-  probable classification using raw input audio. It also contains heuristics 
-  for determining when a classification is considered low-confidence. 
-  \item[Services:] Accepts raw input audio, passes the audio through various 
-  modules to determine the most probable classification and it's confidence. 
-  Internally determines whether the classification is considered low confidence 
+  \item[Secrets:] The modules and the order to call them in to get the most
+  probable classification using raw input audio. It also contains heuristics for
+  determining when a classification is considered low-confidence. 
+  \item[Services:] Accepts raw input audio, passes the audio through various
+  modules to determine the most probable classification and it's confidence.
+  Internally determines whether the classification is considered low confidence
   and outputs the classification with a flag if the confidence is low. 
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Data Type
@@ -792,27 +781,26 @@ maintain core functionality when possible.
 % ICA MODULE.
 \subsubsection{Independent Component Analysis (ICA) Module (\mref{mICA})}
 \begin{description}
-  \item[Secrets:] The specific ICA algorithm implementation (e.g., FastICA) 
-  and its parameters for blind source separation. This 
-  includes the statistical independence criteria, optimization methods, and 
-  convergence thresholds used to separate mixed audio signals into independent 
-  source components.
-  \item[Services:] Accepts multi-channel audio signals from the microphone 
-  array and separates them into individual independent audio source components. 
-  Takes as input mixed audio signals from multiple microphones and outputs 
-  separated audio streams, each representing an individual sound source. This 
-  enables improved classification and direction estimation when multiple sound 
-  sources are present simultaneously. The module may be conditionally invoked 
-  by the Audio360 Engine when multiple sources are detected.
+  \item[Secrets:] The specific ICA algorithm implementation (e.g., FastICA) and
+  its parameters for blind source separation. This includes the statistical
+  independence criteria, optimization methods, and convergence thresholds used
+  to separate mixed audio signals into independent source components.
+  \item[Services:] Accepts multi-channel audio signals from the microphone array
+  and separates them into individual independent audio source components. Takes
+  as input mixed audio signals from multiple microphones and outputs separated
+  audio streams, each representing an individual sound source. This enables
+  improved classification and direction estimation when multiple sound sources
+  are present simultaneously. The module may be conditionally invoked by the
+  Audio360 Engine when multiple sources are detected.
   \item[Implemented By:] \progname
   \item[Type of Module] Abstract Object
-  \item[Notes:] This module is a stretch goal and may or may not be 
-  implemented depending on computational constraints and development timeline. 
-  It supports the multi-source handling functionality mentioned in the SRS 
+  \item[Notes:] This module is a stretch goal and may or may not be implemented
+  depending on computational constraints and development timeline. It supports
+  the multi-source handling functionality mentioned in the SRS
   (\hyperref[SRS-sec:g4]{Section G.4}). If implemented, it would enhance the
-  system's ability to 
-  handle complex acoustic environments with overlapping sound sources by 
-  separating them before classification and direction estimation.
+  system's ability to handle complex acoustic environments with overlapping
+  sound sources by separating them before classification and direction
+  estimation.
 \end{description}
 
 \section{Traceability Matrix} \label{SecTM}
@@ -822,8 +810,8 @@ requirements and between the modules and the anticipated changes.
 
 \subsection{Modules to Requirements Traceability}
 
-The following table maps each module to the functional and non-functional 
-requirements from the SRS that it helps satisfy. Requirements are referenced 
+The following table maps each module to the functional and non-functional
+requirements from the SRS that it helps satisfy. Requirements are referenced
 using the labels defined in the SRS document.
 
 \begin{longtable}{p{0.2\textwidth} p{0.6\textwidth}}
@@ -858,8 +846,8 @@ using the labels defined in the SRS document.
 \hyperref[SRS-NFR4_2]{NFR4.2} & \mref{mAudioSampling} \\
 \hyperref[SRS-NFR4_3]{NFR4.3} & \mref{mAudioSampling} \\
 \hline
-\hyperref[SRS-FR5_1]{FR5.1} & \mref{mMelFilter}, \mref{mDCT}, 
-\mref{mPCA}, \mref{mLDA}, \mref{mClassification}\\
+\hyperref[SRS-FR5_1]{FR5.1} & \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA},
+\mref{mLDA}, \mref{mClassification}\\
 \hyperref[SRS-FR5_2]{FR5.2} & \mref{mDOA} \\
 \hyperref[SRS-FR5_3]{FR5.3} & \mref{mDOA} \\
 \hyperref[SRS-FR5_4]{FR5.4} & \mref{mClassification}\\
@@ -885,8 +873,8 @@ using the labels defined in the SRS document.
 
 \subsection{Modules to Anticipated Changes Traceability}
 
-The following table maps anticipated changes to the modules that would need to 
-be modified if those changes occur. This supports the principle of information 
+The following table maps anticipated changes to the modules that would need to
+be modified if those changes occur. This supports the principle of information
 hiding by showing which design decisions are localized to specific modules.
 
 \begin{table}[H]
@@ -919,16 +907,16 @@ there is no corresponding software module that traces to them.
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
-In this section, the uses hierarchy between modules is
-provided. \cite{Parnas1978} said of two programs A and B that A {\em uses} B if
-correct execution of B may be necessary for A to complete the task described in
-its specification. That is, A {\em uses} B if there exist situations in which
-the correct functioning of A depends upon the availability of a correct
+In this section, the uses hierarchy between modules is provided.
+\cite{Parnas1978} said of two programs A and B that A {\em uses} B if correct
+execution of B may be necessary for A to complete the task described in its
+specification. That is, A {\em uses} B if there exist situations in which the
+correct functioning of A depends upon the availability of a correct
 implementation of B.  Figure \ref{FigUH} illustrates the use relation between
-the modules. It can be seen that the graph is a directed acyclic graph
-(DAG). Each level of the hierarchy offers a testable and usable subset of the
-system, and modules in the higher level of the hierarchy are essentially simpler
-because they use modules from the lower levels.
+the modules. It can be seen that the graph is a directed acyclic graph (DAG).
+Each level of the hierarchy offers a testable and usable subset of the system,
+and modules in the higher level of the hierarchy are essentially simpler because
+they use modules from the lower levels.
 
 \begin{figure}[H]
 \centering
@@ -940,16 +928,16 @@ because they use modules from the lower levels.
 
 \section{User Interfaces}
 
-The user interface for \progname is primarily visual, displayed through smart 
-glasses in a heads-up display (HUD) format. The interface provides real-time 
-visual indicators showing sound source classification and direction of arrival 
+The user interface for \progname is primarily visual, displayed through smart
+glasses in a heads-up display (HUD) format. The interface provides real-time
+visual indicators showing sound source classification and direction of arrival
 information.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{../../Images/Smart glasses HUD.png}
-    \caption{Smart glasses HUD visualization showing sound detection interface. 
-    The display shows a detected sound source (Vehicle) with directional 
+    \caption{Smart glasses HUD visualization showing sound detection interface.
+    The display shows a detected sound source (Vehicle) with directional
     information overlaid on the user's field of view.}
     \label{fig:smart_glasses_hud}
 \end{figure}
@@ -957,9 +945,9 @@ information.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{../../Images/Smart Glasses HUD Close Up.png}
-    \caption{Close-up view of the smart glasses HUD interface. This view 
-    provides a detailed look at the AR overlay elements including the sound 
-    detection indicator, classification label, and directional arrow displayed 
+    \caption{Close-up view of the smart glasses HUD interface. This view
+    provides a detailed look at the AR overlay elements including the sound
+    detection indicator, classification label, and directional arrow displayed
     on the left lens.}
     \label{fig:smart_glasses_hud_closeup}
 \end{figure}
@@ -967,19 +955,21 @@ information.
 
 \section{Design of Communication Protocols}
 
-Not applicable at this stage of the project since there is no SDK or connectivity
-information available for the Rokid smart glasses. Communication protocols 
-will be designed once the hardware integration phase begins and more details    
+Not applicable at this stage of the project since there is no SDK or
+connectivity information available for the Rokid smart glasses. Communication
+protocols will be designed once the hardware integration phase begins and more
+details    
 about the smart glasses platform are known.
 
 \section{Timeline}
 
-A roadmap for completing the module implementations is provided in the \href{https://github.com/orgs/Team6-SixSense/projects/7}{Github
-project roadmap}. It is organized by milestones corresponding to the major phases of the 
+A roadmap for completing the module implementations is provided in the
+\href{https://github.com/orgs/Team6-SixSense/projects/7}{Github project
+roadmap}. It is organized by milestones corresponding to the major phases of the
 project timeline (Rev 0, Rev 1).
 
-Major implementation for the following modules have been completed as of the writing
-of this document:
+Major implementation for the following modules have been completed as of the
+writing of this document:
 \begin{itemize}
 \item Audio Generation Module (\mref{mAudioGen})
 \item Logging Module (\mref{mLogging})
