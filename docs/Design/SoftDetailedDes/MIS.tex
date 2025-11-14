@@ -19,6 +19,7 @@
 \usepackage{caption}
 \usepackage{fullpage}
 \usepackage{cite}
+\usepackage{breqn}
 
 \hypersetup{
 bookmarks=true,     % show bookmarks bar?
@@ -389,7 +390,7 @@ micInput\_diagnostic\_error & errorCode: \(\mathbb{N}\) & - & - \\
 \begin{itemize}
 \item transition: micInputStatus := MIC\_INPUT\_IDLE \(\wedge\) nextSubscriptionID := 0 \(\wedge\)
 subscriptions := \(\langle\ \rangle\) \(\wedge\ (\forall i \in \mathbb{N} | 0 \le i < |\text{audioBuffer}|: \text{audioBuffer}[i] := 0)\) 
-\(\wedge\) Initialize SAI and DMA drivers.
+\(\wedge\) Initialize SAI and DMA drivers \(\wedge\) \hyperref[mdiag:subscribe]{subscribeDiagnostics(micInput\_diagnostic\_error)}
 \item output: micInputStatus
 \item exception: exc := MicInputInitFailure if SAI or DMA initialization fails.
 \end{itemize}
@@ -650,7 +651,7 @@ None.
     \item exception: exc := (ADC read failure) \(\Rightarrow\) MicDiagFailure
 \end{itemize}
 
-\noindent subscribeDiagnostics(callback):
+\noindent subscribeDiagnostics(callback)\label{mdiag:subscribe}:
 \begin{itemize}
   \item transition: callbacks := callbacks \(\parallel\) \(\langle\) callback \(\rangle\)
   \item output: None
@@ -661,12 +662,125 @@ None.
 \subsection{Local Functions}
 \begin{itemize}
   \item map: \(\mathbb{N} \times \mathbb{N} \times \mathbb{N} 
-  \times \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}\)
-  map(x, in\_min, in\_max, out\_min, out\_max) \(\equiv\) \\
+  \times \mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}\)\\
+  map(x, in\_min, in\_max, out\_min, out\_max) \(\equiv\) 
   (x - in\_min) \(\times\) (out\_max - out\_min + 1) / (in\_max - in\_min + 1) + out\_min
 \end{itemize}
 
 \newpage
+
+\section{MIS of Audio Anomaly Detection Module \label{MAudioAnomaly} - 
+  \mref{MG-mAudioAnomaly}}
+
+\subsection{Module}
+This module analyzes audio data to detect anomalies based on predefined
+patterns.
+
+\subsection{Uses}
+\begin{itemize}
+  \item \hyperref[MMicInput]{Mic Input Module} 
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item AA\_NONE
+  \item AA\_SILENT
+  \item AA\_LOUD
+  \item AA\_SIL\_AMP\_TIM\_THRESH = 10
+  \item AA\_SIL\_AMP\_THRESH = 100
+  \item AA\_LOUD\_AMP\_THRESH = 60000
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+initAnomalyDetector & - & uint8 & AnomalyDetectorInitFailure \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+  \item aStat : \(\mathbb{N}\)
+  \item saCounter : \(\mathbb{N}\)
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item micInputCallback : \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA}
+\end{itemize}
+
+\subsection{Assumptions}
+None.
+
+\subsubsection{Access Routine Semantics}
+\noindent initAnomalyDetector():
+
+\begin{itemize}
+  \item transition: aStat = AA\_NONE \(\wedge\)\\ 
+  
+    micInputCallback := 
+    cb\_function(data: [MIC\_INPUT\_BUFFER\_SIZE] of int16) \(\rightarrow\ \{0, 1\}\)\\
+    \(\text{cb\_function(data)} \equiv\)
+    \[
+\begin{alignedat}{2}
+&
+\Big(
+   (\text{silent\_function(data)} \equiv 1)
+   \Rightarrow
+   \Big(
+      \text{saCounter} := \text{saCounter} + 1
+      \;\wedge\allowbreak\\[-2pt]
+   &\quad
+      ((\text{saCounter} \equiv \text{AA\_SIL\_AMP\_TIM\_THRESH})
+         \Rightarrow
+         \text{aStat} := \text{AA\_SILENT})
+   \Big)
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\neg(\text{silent\_function(data)} \equiv 1))
+   \Rightarrow
+   (\text{saCounter} := 0)
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\text{loud\_noise\_function(data)} \equiv 1)
+   \Rightarrow
+   (\text{aStat} := \text{AA\_LOUD})
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\neg\,\text{silent\_function(data)} \wedge
+    \neg\,\text{loud\_noise\_function(data)})
+   \Rightarrow
+   (\text{aStat} := 0 \wedge
+    \text{saCounter} := 0)
+\Big)
+\end{alignedat}
+\]
+
+\end{itemize}
+
+
+\subsection{Local Functions}
+\begin{itemize}
+  \item silent\_function: [MIC\_INPUT\_BUFFER\_SIZE] of int16 \(\rightarrow\ \{0, 1\}\)\\
+  silent\_function(data) \(\equiv\) ((\(+ i \vert 0 \le i < \text{MIC\_INPUT\_BUFFER\_SIZE }
+  \wedge \text{ data[i] } < \) \\AA\_SIL\_AMP\_THRESH : 1)
+  \( \equiv \) MIC\_INPUT\_BUFFER\_SIZE)
+  \item loud\_noise\_function: [MIC\_INPUT\_BUFFER\_SIZE] of int16 \(\rightarrow\ \{0, 1\}\)\\
+  loud\_noise\_function(data) \(\equiv\) ((\(+ i \vert 0 \le i < \text{MIC\_INPUT\_BUFFER\_SIZE }
+  \wedge \text{ data[i] } > \) AA\_LOUD\_AMP\_THRESH : 1)
+  \( \equiv \) MIC\_INPUT
+  \_BUFFER\_SIZE)
+
+\end{itemize}
 
 \section{MIS of Audio Generation Module - \mref{MG-mAudioGen}}
 \label{mod:AudioGeneration}
