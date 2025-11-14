@@ -1520,11 +1520,6 @@ None
 \bibliographystyle{IEEEtran}
 \bibliography{../../../refs/References}
 
-\newpage
-
-\section{Appendix} \label{Appendix}
-
-\wss{Extra information if required}
 
 \newpage{}
 
@@ -1544,6 +1539,12 @@ None
   on the design implementation helped us really easily scope out what the 
   modules on the system should be.
 
+  \textbf{Nirmal:} Since the classification POC was already created, I feel 
+  like it was a lot easier to decompose the classification feature into 
+  distinct features. Furthermore, since the POC was created earlier, a lot of 
+  the research was already completed, which means I knew what equations I 
+  needed for each module. 
+
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
 
@@ -1559,6 +1560,14 @@ None
   write out this document, especailly given the lenght and detail that it goes 
   into. This was slightly mitigated by the provided extension and the PoC 
   implementation, but it was still a challenge to get everything done in time.
+
+  \textbf{Nirmal:} Although I mentioned I had a good idea of which modules 
+  are needed for classification, modularizing which equation goes in what 
+  module and in what order was a difficult and time consuming task. For example 
+  the POC was done as a python implementation, and as such the logic with 
+  coming up with the LDA projection matrix was encapsulated into python 
+  libraries. For this document, I had to reverse engineer how exactly this is 
+  done using equations. 
 
   \item Which of your design decisions stemmed from speaking to your client(s)
   or a proxy (e.g. your peers, stakeholders, potential users)? For those that
@@ -1579,6 +1588,12 @@ None
   specific algorithm (ex. LDA for classification) or the specific hardware came
   through our supervisors insights. 
 
+  \textbf{Nirmal:} The decision of using PCA and LDA for classification stems 
+  from asking our supervisor (MVM) for input on an approach that has low 
+  computation. Originally, I was using a SVM for classififying audio sources, 
+  but our supervisor mentioned this isn't really necessary, and might be 
+  overkill. 
+
   \item While creating the design doc, what parts of your other documents (e.g.
   requirements, hazard analysis, etc), it any, needed to be changed, and why?
 
@@ -1592,6 +1607,11 @@ None
   around the hardware and software design decisions that we made (ex. choosing
   to serperate a process into multiple modules leads to more specific 
   requirements). 
+  
+  \textbf{Nirmal:} For the classification specific modules, no parts of any 
+  other documents needed to be changed, since the other documents never 
+  mentioned any exact implementation details. Which is what this document 
+  is focused on. 
 
   \item What are the limitations of your solution?  Put another way, given
   unlimited resources, what could you do to make the project better?
@@ -1608,6 +1628,11 @@ None
   software requirements, but the hardware limitations are what are holding us 
   back slightly. With just better hardware (at the expense of higher cost), a 
   lot of the issues we're dealing with could be mitigated.
+  
+  \textbf{Nirmal:} Given unlimited resources, we could have a more robust 
+  classification approach. The current approach of using PCA and LDA comes from 
+  not having computation power to use resources like SVM or neural networks 
+  taking in the full audio input. 
   
   \item Give a brief overview of other design solutions you considered. What
   are the benefits and tradeoffs of those other designs compared with the chosen
@@ -1628,6 +1653,14 @@ None
   For this reason, we decided to use the LDA for classification because it is a 
   simple algorithm that is easy to implement and understand, and a lot less 
   computationally expensive than a neural network.
+
+  \textbf{Nirmal:} Another desgin solution we considered for classification was 
+  using SVM. Although that seemed to work really well, compared to the PCA and 
+  LDA approach, this approach would firstly take a lot of storage on the 
+  microcontroller which we didn't have. And also involved running full 
+  blackbox models. The approach now just invovles doing matrix multiplications 
+  which is what the microcontroller is optimized for. 
+
 \end{enumerate}
 
 
