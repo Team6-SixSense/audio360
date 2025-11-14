@@ -203,10 +203,13 @@ The following table is taken directly from the Module Guide document for this pr
 \newpage
 \section{Data Types}
 
-\subsection{Generics}
+\subsection{Generics} \label{sec:generics}
 
 \subsubsection{bool}\label{generic:bool}
 Logical 0 or 1.
+
+\subsubsection{int8}\label{generic:int8}
+8 bits signed integer ($\mathbb{Z}$).
 
 \subsubsection{int16}\label{generic:int16}
 16 bits signed integer ($\mathbb{Z}$).
@@ -216,6 +219,9 @@ Logical 0 or 1.
 
 \subsubsection{int64}\label{generic:int64}
 64 bits signed integer ($\mathbb{Z}$).
+
+\subsubsection{uint8}\label{generic:uint8}
+8 bits unsigned integer ($\mathbb{N}$).
 
 \subsubsection{uint16}\label{generic:uint16}
 16 bits unsigned integer ($\mathbb{N}$).
@@ -264,7 +270,7 @@ Character stream.
     Audio360 Engine is stuck at an unhandled error.
 \end{enumerate}
 
-subsubsection{Audio360Status}\label{enum:FaultState}
+\subsubsection{Audio360Status}\label{enum:FaultState}
 \begin{enumerate}
   \item NoFault: \label{enum:FaultState:NoFault}
     No fault state.
@@ -308,13 +314,25 @@ subsubsection{Audio360Status}\label{enum:FaultState}
 \begin{enumerate}
   \item pair of (id: \(\mathbb{N}\), callback:
     \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA})
- 
+\end{enumerate}
+
+\subsubsection{Dictionary} \label{ds:dict}
+\begin{enumerate}
+  \item For any type $T_1$, $T_2$ from
+  \hyperref[sec:generics]{generic data types}, $T_1$ (key) maps to $T_2$
+  (value). Key $:= set~of~T_1$.
+\end{enumerate}
+
+\subsubsection{List} \label{ds:list}
+\begin{enumerate}
+  \item For any type $T$ from \hyperref[sec:generics]{generic data types}, a 
+    list is a collection of ordered objects of type $T$.
 \end{enumerate}
 
 
 \newpage
 
-\section{MIS of Microphone Input Module \label{MMicInput} - \mref{MG-mMicInput}}
+\section{MIS of Microphone Input Module \label{mod:MicInput} - \mref{MG-mMicInput}}
 
 \subsection{Module}
 This module handles the task of interfacing and receiving audio sample
@@ -323,11 +341,11 @@ a buffered stream to modules fetching the stream.
 
 \subsection{Uses}
 \begin{enumerate}
-  \item Serial Audio Interface (SAI) Driver - STM32 HAL Library
-  \item Direct Memory Access (DMA) Driver - STM32 HAL Library
-  \item Microphone Diagnostic Module - \mref{MG-mMicDiag}
+  \item Serial Audio Interface (SAI) Driver - STM32 HAL Library \cite{STM_USER_MANUAL}
+  \item Direct Memory Access (DMA) Driver - STM32 HAL Library \cite{STM_USER_MANUAL}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
   \item \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA} 
-  \item SAI\_HandleTypeDef - STM32 HAL Library
+  \item SAI\_HandleTypeDef - STM32 HAL Library \cite{STM_USER_MANUAL}
 \end{enumerate}
 
 \subsection{Syntax}
@@ -351,7 +369,7 @@ a buffered stream to modules fetching the stream.
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-initMicInput & - & uint8 & MicInputInitFailure \\
+initMicInput & - & \hyperref[generic:uint8]{uint8} & MicInputInitFailure \\
 \hline
 subscribeMicInput & callback: \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA}
 & subscriptionCB: \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK} & MicInputSubscriptionFailure \\
@@ -442,16 +460,16 @@ subscriptions := (subscriptions
 
 \newpage
 
-\section{MIS of USART Communication Module \label{MUsartComm} - \mref{MG-mUSART}}
+\section{MIS of USART Communication Module \label{mod:UsartComm} - \mref{MG-mUSART}}
 \subsection{Module}
 This module handles USART communication between the microcontroller and an 
 external device.
 
 \subsection{Uses}
 \begin{enumerate}
-  \item USART Driver - STM32 HAL Library
-  \item USART\_Init() - STM32 HAL Library
-  \item UART\_Transmit() - STM32 HAL Library
+  \item USART Driver - STM32 HAL Library \cite{STM_USER_MANUAL}
+  \item USART\_Init() - STM32 HAL Library \cite{STM_USER_MANUAL}
+  \item UART\_Transmit() - STM32 HAL Library \cite{STM_USER_MANUAL}
 \end{enumerate}
 
 \subsection{Syntax}
@@ -467,11 +485,11 @@ external device.
 \begin{tabularx}{\linewidth}{l X X X}
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-initUSART & - & uint8 & USARTInitFailure \\
+initUSART & - & \hyperref[generic:uint8]{uint8} & USARTInitFailure \\
 \hline
-transmitData & data: sequence of uint8 & - & USARTTxFailure \\
+transmitData & data: sequence of \hyperref[generic:uint8]{uint8} & - & USARTTxFailure \\
 \hline
-receiveData & length: \(\mathbb{N}\) & data: sequence of uint8 & USARTRxFailure \\
+receiveData & length: \(\mathbb{N}\) & data: sequence of \hyperref[generic:uint8]{uint8} & USARTRxFailure \\
 
 \end{tabularx}
 \end{center}
@@ -528,7 +546,7 @@ None.
 \end{itemize}
 
 \newpage
-\section{MIS of SD Card Interface Module \label{MIS:sdcard} - \mref{MG-mSDInterface}}
+\section{MIS of SD Card Interface Module \label{mod:sdcard} - \mref{MG-mSDInterface}}
 
 \subsection{Module}
 This module manages reading from and writing to an SD card connected to the
@@ -536,8 +554,8 @@ microcontroller via the SPI interface.
 
 \subsection{Uses}
 \begin{enumerate}
-  \item SPI Driver - STM32 HAL Library
-  \item FATFS Library - Chan's FatFs
+  \item SPI Driver - STM32 HAL Library \cite{STM_USER_MANUAL}
+  \item FATFS Library - Chan's FatFs \cite{CHAN_FATFS}
 \end{enumerate}
 
 \subsection{Syntax}
@@ -550,9 +568,9 @@ None.
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-initSDCard & - & uint8 & SDCardInitFailure \\
+initSDCard & - & \hyperref[generic:uint8]{uint8} & SDCardInitFailure \\
 \hline
-writeLog & data: string & - & SDCardWriteFailure \\
+writeLog & data: \hyperref[generic:string]{string} & - & SDCardWriteFailure \\
 \hline
 \end{tabularx}
 \end{center}
@@ -587,14 +605,14 @@ None.
 
 \newpage
 
-\section{MIS of Microphone Diagnostic Module \label{MIS:micdiag}- \mref{MG-mMicDiag}}
+\section{MIS of Microphone Diagnostic Module \label{mod:MicDiag}- \mref{MG-mMicDiag}}
 \subsection{Module}
 This module performs diagnostics on the microphone array to detect hardware
 errors.
 
 \subsection{Uses}
 \begin{itemize}
-  \item ADC Driver - STM32 HAL Library
+  \item ADC Driver - STM32 HAL Library \cite{STM_USER_MANUAL}
 \end{itemize}
 
 \subsection{Syntax}
@@ -609,9 +627,9 @@ errors.
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-initMicDiagnostics & - & uint8 & MicDiagInitFailure \\
+initMicDiagnostics & - & \hyperref[generic:uint8]{uint8} & MicDiagInitFailure \\
 \hline
-runMicDiagnostics & - & uint8 & MicDiagFailure \\
+runMicDiagnostics & - & \hyperref[generic:uint8]{uint8} & MicDiagFailure \\
 \hline
 subscribeDiagnostics & callback: \(\mathbb{N} \rightarrow \text{void}\) & - & - \\
 \end{tabularx}
@@ -669,121 +687,8 @@ None.
 
 \newpage
 
-\section{MIS of Audio Anomaly Detection Module \label{MAudioAnomaly} - 
-  \mref{MG-mAudioAnomaly}}
-
-\subsection{Module}
-This module analyzes audio data to detect anomalies based on predefined
-patterns.
-
-\subsection{Uses}
-\begin{itemize}
-  \item \hyperref[MMicInput]{Mic Input Module} 
-\end{itemize}
-
-\subsection{Syntax}
-\subsubsection{Exported Constants}
-\begin{itemize}
-  \item AA\_NONE
-  \item AA\_SILENT
-  \item AA\_LOUD
-  \item AA\_SIL\_AMP\_TIM\_THRESH = 10
-  \item AA\_SIL\_AMP\_THRESH = 100
-  \item AA\_LOUD\_AMP\_THRESH = 60000
-\end{itemize}
-
-\subsubsection{Exported Access Programs}
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-initAnomalyDetector & - & uint8 & AnomalyDetectorInitFailure \\
-\hline
-\end{tabularx}
-\end{center}
-
-\subsection{Semantics}
-\subsubsection{State Variables}
-\begin{itemize}
-  \item aStat : \(\mathbb{N}\)
-  \item saCounter : \(\mathbb{N}\)
-\end{itemize}
-
-\subsubsection{Environment Variables}
-\begin{itemize}
-  \item micInputCallback : \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA}
-\end{itemize}
-
-\subsection{Assumptions}
-None.
-
-\subsubsection{Access Routine Semantics}
-\noindent initAnomalyDetector():
-
-\begin{itemize}
-  \item transition: aStat = AA\_NONE \(\wedge\)\\ 
-  
-    micInputCallback := 
-    cb\_function(data: [MIC\_INPUT\_BUFFER\_SIZE] of int16) \(\rightarrow\ \{0, 1\}\)\\
-    \(\text{cb\_function(data)} \equiv\)
-    \[
-\begin{alignedat}{2}
-&
-\Big(
-   (\text{silent\_function(data)} \equiv 1)
-   \Rightarrow
-   \Big(
-      \text{saCounter} := \text{saCounter} + 1
-      \;\wedge\allowbreak\\[-2pt]
-   &\quad
-      ((\text{saCounter} \equiv \text{AA\_SIL\_AMP\_TIM\_THRESH})
-         \Rightarrow
-         \text{aStat} := \text{AA\_SILENT})
-   \Big)
-\Big)
-\;\vee\allowbreak\\[4pt]
-&\Big(
-   (\neg(\text{silent\_function(data)} \equiv 1))
-   \Rightarrow
-   (\text{saCounter} := 0)
-\Big)
-\;\vee\allowbreak\\[4pt]
-&\Big(
-   (\text{loud\_noise\_function(data)} \equiv 1)
-   \Rightarrow
-   (\text{aStat} := \text{AA\_LOUD})
-\Big)
-\;\vee\allowbreak\\[4pt]
-&\Big(
-   (\neg\,\text{silent\_function(data)} \wedge
-    \neg\,\text{loud\_noise\_function(data)})
-   \Rightarrow
-   (\text{aStat} := 0 \wedge
-    \text{saCounter} := 0)
-\Big)
-\end{alignedat}
-\]
-
-\end{itemize}
-
-
-\subsection{Local Functions}
-\begin{itemize}
-  \item silent\_function: [MIC\_INPUT\_BUFFER\_SIZE] of int16 \(\rightarrow\ \{0, 1\}\)\\
-  silent\_function(data) \(\equiv\) ((\(+ i \vert 0 \le i < \text{MIC\_INPUT\_BUFFER\_SIZE }
-  \wedge \text{ data[i] } < \) \\AA\_SIL\_AMP\_THRESH : 1)
-  \( \equiv \) MIC\_INPUT\_BUFFER\_SIZE)
-  \item loud\_noise\_function: [MIC\_INPUT\_BUFFER\_SIZE] of int16 \(\rightarrow\ \{0, 1\}\)\\
-  loud\_noise\_function(data) \(\equiv\) ((\(+ i \vert 0 \le i < \text{MIC\_INPUT\_BUFFER\_SIZE }
-  \wedge \text{ data[i] } > \) AA\_LOUD\_AMP\_THRESH : 1)
-  \( \equiv \) MIC\_INPUT
-  \_BUFFER\_SIZE)
-
-\end{itemize}
-
 \section{MIS of Audio Generation Module - \mref{MG-mAudioGen}}
-\label{mod:AudioGeneration}
+\label{mod:AudioGen}
 
 \subsection{Module}
 
@@ -1032,8 +937,8 @@ of individual samples.
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-sample & inputSource & - & InputSouceError \\
-getSampledData & - & sampledData & - \\
+sample & inputSource: \hyperref[generic:string]{string} & - & InputSouceError \\
+getSampledData & - & \hyperref[var:sampleData]{sampleData} & - \\
 \hline
 \end{tabularx}
 \end{center}
@@ -1115,7 +1020,8 @@ None
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-applyFilter & sampleWindow & filteredWindow & - \\
+applyFilter & sampleWindow:\hyperref[generic:float32]{float32[]} &
+filteredWindow: \hyperref[generic:float32]{float32[]} & - \\
 \hline
 \end{tabularx}
 \end{center}
@@ -1179,7 +1085,9 @@ None
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-normalize & sampleWindow, source & filteredWindow & - \\
+normalize & sampleWindow: \hyperref[generic:int32]{int32[]},
+source: \hyperref[generic:string]{string} &
+filteredWindow: \hyperref[generic:float32]{float32[]} & - \\
 \hline
 \end{tabularx}
 \end{center}
@@ -1218,6 +1126,121 @@ Normalization factor is pre-deteremined and known for all given sources.
 None
 
 \newpage
+
+\section{MIS of Audio Anomaly Detection Module \label{mod:AudioAnomaly} - 
+  \mref{MG-mAudioAnomaly}}
+
+\subsection{Module}
+This module analyzes audio data to detect anomalies based on predefined
+patterns.
+
+\subsection{Uses}
+\begin{itemize}
+  \item \hyperref[mod:MicInput]{Microphone Input Module} 
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item AA\_NONE
+  \item AA\_SILENT
+  \item AA\_LOUD
+  \item AA\_SIL\_AMP\_TIM\_THRESH = 10
+  \item AA\_SIL\_AMP\_THRESH = 100
+  \item AA\_LOUD\_AMP\_THRESH = 60000
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{center}
+\begin{tabularx}{\linewidth}{l X X X}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+initAnomalyDetector & - & \hyperref[generic:uint8]{uint8} & AnomalyDetectorInitFailure \\
+\hline
+\end{tabularx}
+\end{center}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+  \item aStat : \(\mathbb{N}\)
+  \item saCounter : \(\mathbb{N}\)
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item micInputCallback : \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA}
+\end{itemize}
+
+\subsection{Assumptions}
+None.
+
+\subsubsection{Access Routine Semantics}
+\noindent initAnomalyDetector():
+
+\begin{itemize}
+  \item transition: aStat = AA\_NONE \(\wedge\)\\ 
+  
+    micInputCallback := 
+    cb\_function(data: [MIC\_INPUT\_BUFFER\_SIZE] of int16) \(\rightarrow\ \{0, 1\}\)\\
+    \(\text{cb\_function(data)} \equiv\)
+    \[
+\begin{alignedat}{2}
+&
+\Big(
+   (\text{silent\_function(data)} \equiv 1)
+   \Rightarrow
+   \Big(
+      \text{saCounter} := \text{saCounter} + 1
+      \;\wedge\allowbreak\\[-2pt]
+   &\quad
+      ((\text{saCounter} \equiv \text{AA\_SIL\_AMP\_TIM\_THRESH})
+         \Rightarrow
+         \text{aStat} := \text{AA\_SILENT})
+   \Big)
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\neg(\text{silent\_function(data)} \equiv 1))
+   \Rightarrow
+   (\text{saCounter} := 0)
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\text{loud\_noise\_function(data)} \equiv 1)
+   \Rightarrow
+   (\text{aStat} := \text{AA\_LOUD})
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\neg\,\text{silent\_function(data)} \wedge
+    \neg\,\text{loud\_noise\_function(data)})
+   \Rightarrow
+   (\text{aStat} := 0 \wedge
+    \text{saCounter} := 0)
+\Big)
+\end{alignedat}
+\]
+
+\end{itemize}
+
+
+\subsection{Local Functions}
+\begin{itemize}
+  \item silent\_function: [MIC\_INPUT\_BUFFER\_SIZE] of int16 \(\rightarrow\ \{0, 1\}\)\\
+  silent\_function(data) \(\equiv\) ((\(+ i \vert 0 \le i < \text{MIC\_INPUT\_BUFFER\_SIZE }
+  \wedge \text{ data[i] } < \) \\AA\_SIL\_AMP\_THRESH : 1)
+  \( \equiv \) MIC\_INPUT\_BUFFER\_SIZE)
+  \item loud\_noise\_function: [MIC\_INPUT\_BUFFER\_SIZE] of int16 \(\rightarrow\ \{0, 1\}\)\\
+  loud\_noise\_function(data) \(\equiv\) ((\(+ i \vert 0 \le i < \text{MIC\_INPUT\_BUFFER\_SIZE }
+  \wedge \text{ data[i] } > \) AA\_LOUD\_AMP\_THRESH : 1)
+  \( \equiv \) MIC\_INPUT
+  \_BUFFER\_SIZE)
+
+\end{itemize}
+
+\newpage
 \section{MIS of Fast Fourier Transform - \mref{MG-mFFT}} \label{mod:FFT}
 
 \subsection{Module}
@@ -1245,7 +1268,7 @@ None
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-signalToFrequency & signal & frequency & - \\
+signalToFrequency & signal: \hyperref[generic:int32]{int32[]} & frequency \hyperref[generic:float32]{float32[]} & - \\
 \hline
 \end{tabularx}
 \end{center}
@@ -1304,8 +1327,8 @@ for debugging and monitoring.
 \subsection{Uses}
 
 \begin{itemize}
-  \item \hyperref[mod:USART]{USART Communication Module}
-  \item \hyperref[mod:SDInterface]{SD Card Interface Module}
+  \item \hyperref[mod:UsartComm]{USART Communication Module}
+  \item \hyperref[mod:sdcard]{SD Card Interface Module}
 \end{itemize}
 
 \subsection{Syntax}
@@ -1320,7 +1343,7 @@ None
 \hline
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
 \hline
-log & text & - & - \\
+log & text: \hyperref[generic:string]{string} & - & - \\
 \hline
 \end{tabularx}
 \end{center}
@@ -1931,7 +1954,7 @@ None
 \newpage 
 
 \section{MIS of Visualization Module \label{mod:Visualization} - 
-\mref{mVisualization}}
+\mref{MG-mVisualization}}
 
 \subsection{Module}
 
@@ -1987,12 +2010,12 @@ displayError & errorType:
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item currentDisplayState [\hyperref[generic:dict]{dict}]: 
+  \item currentDisplayState [\hyperref[ds:dict]{dict}]: 
     \label{var:currentDisplayState}
     Stores the current state of the display, including active visual indicators, 
     their positions, and priorities. This state is continuously updated at 
     runtime as new classification and direction data is received.
-  \item displayQueue [\hyperref[generic:list]{list}]: 
+  \item displayQueue [\hyperref[ds:list]{list}]: 
     \label{var:displayQueue}
     A priority queue that stores pending display updates. Items are ordered by 
     priority to ensure safety-critical information is displayed first, as 
@@ -2061,18 +2084,18 @@ displayError & errorType:
   \item formatDisplayData(classificationLabel: 
     \hyperref[generic:string]{string}, directionAngle: 
     \hyperref[generic:float32]{float32}) $\rightarrow$ 
-    \hyperref[generic:dict]{dict}: 
+    \hyperref[ds:dict]{dict}: 
     Formats the classification label and direction angle into a display-ready 
     data structure, including position calculations for directional indicators 
     and text labels.
   \item applyPrioritization(displayQueue: 
-    \hyperref[generic:list]{list}) $\rightarrow$ 
-    \hyperref[generic:dict]{dict}: 
+    \hyperref[ds:list]{list}) $\rightarrow$ 
+    \hyperref[ds:dict]{dict}: 
     Selects the highest priority item from the display queue to be rendered, 
     ensuring safety-critical information is displayed first as required by 
     \hyperref[SRS-NFR6_1]{NFR6.1}.
   \item renderNonIntrusive(displayData: 
-    \hyperref[generic:dict]{dict}) $\rightarrow$ 
+    \hyperref[ds:dict]{dict}) $\rightarrow$ 
     \hyperref[generic:bool]{bool}: 
     Renders visual indicators in a non-intrusive manner, minimizing visual 
     obstruction so users can safely perform external activities, as required by 
@@ -2082,7 +2105,7 @@ displayError & errorType:
 \newpage 
 
 \section{MIS of Independent Component Analysis (ICA) Module 
-\label{mod:ICA} - \mref{mICA}}
+\label{mod:ICA} - \mref{MG-mICA}}
 
 \subsection{Module}
 
@@ -2128,7 +2151,7 @@ separateSources & mixedAudio:
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item separationModel [\hyperref[generic:dict]{dict}]: 
+  \item separationModel [\hyperref[ds:dict]{dict}]: 
     \label{var:separationModel}
     Stores the ICA separation model parameters and learned mixing matrix. This 
     state may be updated during the separation process to adapt to the input 
@@ -2180,18 +2203,18 @@ None
 \begin{itemize}
   \item estimateMixingMatrix(mixedAudio: 
     [][\hyperref[generic:float32]{float32}]) $\rightarrow$ 
-    \hyperref[generic:dict]{dict}: 
+    \hyperref[ds:dict]{dict}: 
     Estimates the mixing matrix that describes how the independent sources are 
     combined in the mixed signals. This is a core step in the ICA algorithm.
   \item applySeparation(mixedAudio: 
     [][\hyperref[generic:float32]{float32}], mixingMatrix: 
-    \hyperref[generic:dict]{dict}) $\rightarrow$ 
+    \hyperref[ds:dict]{dict}) $\rightarrow$ 
     [][\hyperref[generic:float32]{float32}]: 
     Applies the inverse of the estimated mixing matrix to separate the mixed 
     signals into independent source components.
   \item checkConvergence(previousModel: 
-    \hyperref[generic:dict]{dict}, currentModel: 
-    \hyperref[generic:dict]{dict}) $\rightarrow$ 
+    \hyperref[ds:dict]{dict}, currentModel: 
+    \hyperref[ds:dict]{dict}) $\rightarrow$ 
     \hyperref[generic:bool]{bool}: 
     Checks if the ICA algorithm has converged by comparing the current model 
     parameters with the previous iteration's parameters.
