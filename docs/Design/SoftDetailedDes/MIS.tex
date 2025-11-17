@@ -242,42 +242,58 @@ project.
 \subsection{Enums}
 \subsubsection{Audio360State}\label{enum:Audio360State}
 \begin{enumerate}
-  \item AudioClassificationProcess:
+  \item AudioClassificationProcess = 0:
     \label{enum:Audio360State:AudioClassificationState}
     State when audio classification is running.
-  \item DirectionalAnalysisProcess:
+  \item DirectionalAnalysisProcess = 1:
     \label{enum:Audio360State:DirectionalAnalysisState}
     State when directional analysis is running.
-  \item OutputProcess:
+  \item OutputProcess = 2:
     \label{enum:Audio360State:OutputProcessState}
     State when output processing is running.
 \end{enumerate}
 
 \subsubsection{Audio360Status}\label{enum:Audio360Status}
 \begin{enumerate}
-  \item Uninitialized: \label{enum:Audio360Status:Uninitialized} Audio360 Engine
-    is not initialized.
-  \item Initialized: \label{enum:Audio360Status:Initialized} Audio360 Engine is
-    initialized, but not ready.
-  \item Ready: \label{enum:Audio360Status:Ready} Audio360 Engine ready for
+  \item Uninitialized = 0: \label{enum:Audio360Status:Uninitialized}
+    Audio360 Engine is not initialized.
+  \item Initialized = 1: \label{enum:Audio360Status:Initialized}
+    Audio360 Engine is initialized, but not ready.
+  \item Ready = 2: \label{enum:Audio360Status:Ready} Audio360 Engine ready for
     requests.
-  \item Running: \label{enum:Audio360Status:Running} Audio360 Engine is running.
-    Can not accept new requests.
-  \item Error: \label{enum:Audio360Status:Error} Audio360 Engine is stuck at an
-    unhandled error.
+  \item Running = 3: \label{enum:Audio360Status:Running}
+    Audio360 Engine is running. Can not accept new requests.
+  \item Error = 4: \label{enum:Audio360Status:Error}
+    Audio360 Engine is stuck at an unhandled error.
 \end{enumerate}
 
-\subsubsection{Audio360Status}\label{enum:FaultState}
+\subsubsection{FaultState}\label{enum:FaultState}
 \begin{enumerate}
-  \item NoFault: \label{enum:FaultState:NoFault} No fault state.
-  \item MicrophoneXFault: \label{enum:FaultState:MicFault} Fault with microphone
-    X.
-  \item AudioClassificationFault: \label{enum:FaultState:ClassificationFault}
+  \item NoFault = 0: \label{enum:FaultState:NoFault} No fault state.
+  \item MicrophoneXFault = 1: \label{enum:FaultState:MicFault} Fault with
+  microphone X.
+  \item AudioClassificationFault = 2:
+    \label{enum:FaultState:ClassificationFault}
     Fault with audio classification.
-  \item directionalAnalsysisFault: \label{enum:FaultState:DOAFault} Fault with
-    the directional analysis.
+  \item directionalAnalsysisFault = 3: \label{enum:FaultState:DOAFault}
+    Fault with the directional analysis.
 \end{enumerate}
 
+\subsubsection{MicInputStatus}\label{enum:MicInputStatus}
+\begin{enumerate}
+  \item Idle =  0: \label{enum:MicInputStatus:Idle} Microphone input is idled.
+  \item Error = 1: \label{enum:MicInputStatus:Error} Error in receiving
+  microphone input.
+  \item Received = 2: \label{enum:MicInputStatus:Received}
+    Received microphone input.
+\end{enumerate}
+
+\subsubsection{AudioAnomalyStatus}\label{enum:AudioAnomalyStatus}
+\begin{enumerate}
+  \item None = 0: \label{enum:AudioAnomalyStatus:None} No audio anomalies. 
+  \item Silent = 1: \label{enum:AudioAnomalyStatus:Silent} Received audio is silent.
+  \item Loud = 2: \label{enum:AudioAnomalyStatus:Loud} Received audio is loud.
+\end{enumerate}
 
 \subsection{Data Structures}
 \subsubsection{FrequencyDomain}\label{struct:FrequencyDomain}
@@ -351,12 +367,11 @@ stream to modules fetching the stream.
 \subsubsection{Exported Constants}
 
 \begin{itemize}
-  \item MIC\_INPUT\_IDLE = 0
-  \item MIC\_INPUT\_ERROR = 1
-  \item MIC\_INPUT\_RECEIVED = 2
-  \item MIC\_INPUT\_BUFFER\_SIZE = 4096
-  \item MIC\_INPUT\_SAMPLE\_RATE = 16000
-  \item NUM\_MICROPHONES = 4
+  \item MIC\_INPUT\_BUFFER\_SIZE = 4096. Traces to
+    \hyperref[SRS-NFR3_2]{NFR3.2}.
+  \item MIC\_INPUT\_SAMPLE\_RATE = 16000. Traces to
+    \hyperref[SRS-NFR1_2]{NFR1.2}.
+  \item NUM\_MICROPHONES = \hyperref[SRS-symbol:N_mic]{$N_{mic}$}
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
@@ -386,9 +401,9 @@ micInput\_diagnostic\_error & errorCode: \(\mathbb{N}\) & - & - \\
 
 \subsubsection{State Variables}
 \begin{itemize}
-  \item micInputStatus : \(\mathbb{N}\)
-  \item subscriptions: sequence of
-  \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK}
+  \item micInputStatus: \hyperref[enum:MicInputStatus]{MicInputStatus}
+  \item subscriptions:
+  \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK}[]
   \item nextSubscriptionID: \(\mathbb{N}\)
 \end{itemize}
 
@@ -408,7 +423,8 @@ micInput\_diagnostic\_error & errorCode: \(\mathbb{N}\) & - & - \\
 \subsubsection{Access Routine Semantics}
 \noindent initMicInput():
 \begin{itemize}
-\item transition: micInputStatus := MIC\_INPUT\_IDLE \(\wedge\)
+\item transition: micInputStatus :=
+  \hyperref[enum:MicInputStatus:Idle]{MIC\_INPUT\_IDLE} \(\wedge\)
 nextSubscriptionID := 0 \(\wedge\) subscriptions := \(\langle\ \rangle\)
 \(\wedge\ (\forall i \in \mathbb{N} | 0 \le i < |\text{audioBuffer}|:
 \text{audioBuffer}[i] := 0)\) \(\wedge\) Initialize SAI and DMA drivers
@@ -443,7 +459,8 @@ MicInputUnsubscriptionFailure
 \begin{itemize}
   \item transition: (handle.ErrorCode \(\equiv\) HAL\_SAI\_ERROR\_NONE)
   \(\Rightarrow\) \\
-  micInputStatus := MIC\_INPUT\_RECEIVED \(\wedge\) (\(\forall\) cb:
+  micInputStatus :=\hyperref[enum:MicInputStatus:Received]{MIC\_INPUT\_RECEIVED}
+  \(\wedge\) (\(\forall\) cb:
   MIC\_INPUT\_CALLBACK \(\vert\) cb \(\in\) subscriptions :
   cb.callback(audioBuffer))
   \item output: None
@@ -453,7 +470,7 @@ MicInputUnsubscriptionFailure
 \noindent micInput\_diagnostic\_error(errorCode):
 \begin{itemize}
   \item transition: (errorCode \(\not\equiv\) 0) \(\Rightarrow\) micInputStatus
-  := MIC\_INPUT\_ERROR
+  := \hyperref[enum:MicInputStatus:Error]{MIC\_INPUT\_ERROR}
   \item output: None
   \item exception: None
 \end{itemize} 
@@ -730,6 +747,8 @@ includes room response calculations and spatial audio propagation models.
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
+
+None
 
 \subsubsection{Exported Access Programs}
 
@@ -1163,9 +1182,6 @@ patterns.
 \subsection{Syntax}
 \subsubsection{Exported Constants}
 \begin{itemize}
-  \item AA\_NONE
-  \item AA\_SILENT
-  \item AA\_LOUD
   \item AA\_SIL\_AMP\_TIM\_THRESH = 10
   \item AA\_SIL\_AMP\_THRESH = 100
   \item AA\_LOUD\_AMP\_THRESH = 60000
@@ -1186,7 +1202,7 @@ AnomalyDetectorInitFailure \\
 \subsection{Semantics}
 \subsubsection{State Variables}
 \begin{itemize}
-  \item aStat : \(\mathbb{N}\)
+  \item aStat : \hyperref[enum:AudioAnomalyStatus]{AudioAnomalyStatus}
   \item saCounter : \(\mathbb{N}\)
 \end{itemize}
 
@@ -1202,7 +1218,8 @@ None.
 \noindent initAnomalyDetector():
 
 \begin{itemize}
-  \item transition: aStat = AA\_NONE \(\wedge\)\\ 
+  \item transition: aStat = \hyperref[enum:AudioAnomalyStatus:None]{AA\_NONE}
+     \(\wedge\)\\ 
   
     micInputCallback := cb\_function(data: [MIC\_INPUT\_BUFFER\_SIZE] of int16)
     \(\rightarrow\ \{0, 1\}\)\\
@@ -1219,7 +1236,7 @@ None.
    &\quad
       ((\text{saCounter} \equiv \text{AA\_SIL\_AMP\_TIM\_THRESH})
          \Rightarrow
-         \text{aStat} := \text{AA\_SILENT})
+         \text{aStat} := \hyperref[enum:AudioAnomalyStatus:Silent]{AA\_SILENT})
    \Big)
 \Big)
 \;\vee\allowbreak\\[4pt]
@@ -1232,7 +1249,7 @@ None.
 &\Big(
    (\text{loud\_noise\_function(data)} \equiv 1)
    \Rightarrow
-   (\text{aStat} := \text{AA\_LOUD})
+   (\text{aStat} := \hyperref[enum:AudioAnomalyStatus:Loud]{AA\_LOUD})
 \Big)
 \;\vee\allowbreak\\[4pt]
 &\Big(
@@ -1891,7 +1908,6 @@ involved.
   \item \hyperref[mod:DCT]{Discrete Cosine Transform Module}
   \item \hyperref[mod:PCA]{Principle Component Analysis Module}
   \item \hyperref[mod:LDA]{Linear Discrete Analysis Module}
-  \item 
 \end{enumerate}
 
 \subsection{Syntax}

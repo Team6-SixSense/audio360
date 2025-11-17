@@ -180,7 +180,7 @@ adapted here is called design for change.
   The number of microphones in microphone array. \\
   \textbf{Rationale:} Depending on the performance on audio classification and
   directional analysis features, more or less microphones may be required than
-  what is specified \hyperref[SRS-FR9_2]{FR9.2}.
+  what is specified \hyperref[SRS-NFR9_2]{NFR9.2}.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acMicArrangement}:] 
   The arrangement of the microphones relative to each other. \\
@@ -288,6 +288,7 @@ decisions will be changed.
   processor (processing is not offloaded to another device). \\
  \textbf{Rationale:} Adheres to user \hyperref[SRS-goal:user_safety]{Goal 7},
  user safety and privacy, as well as \hyperref[SRS-FR9_1]{FR9.1}.
+ \acref{acHardware} will be considered if additional compute power is required.
 
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucMicSych}:]
   Microphones must always be synchronized at each sample.\\
