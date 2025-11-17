@@ -492,6 +492,12 @@ laboratory testing to validate technical approaches and refine requirements.
     in critical situations. This will be tuned during the validation
     stage.\\
     \hline
+    $N_{mic}$ \label{symbol:N_mic} & $4$ & 
+    The number of microphones connected to the microcontroller. 4 is currently 
+    chosen because atleast 2 microphones is required for directional analysis,
+    and the current microcontroller board supports up to 4 microphones. Tracing
+    to \hyperref[NFR9_2]{NFR9.2}\\
+    \hline
 \caption{Table of symbolic constants used in \progname.}
 \label{tab:symbol_table}
 \end{longtable}
@@ -1021,7 +1027,7 @@ Non-Functional Requirements
   to process each audio sample, which is enough to meet core features
   functionality.
 
-  \item \label{FR9_2}\textbf{NFR9.2:} The microcontroller shall provide atleast
+  \item \label{NFR9_2}\textbf{NFR9.2:} The microcontroller shall provide atleast
   four microphone inputs to support directional analysis of audio.
   Directional analysis requires a minimum of two microphones. However, since the
   microphones are mounted on glasses and sound damping occurs across the user's
@@ -1148,7 +1154,7 @@ Estimated deadline: December 9th, 2025 \\
     \item \hyperref[NFR7_1]{NFR7.1} - 16 kHz sampling rate
     \item \hyperref[FR9_1]{FR9.1} - Closed microcontroller environment
     \item \hyperref[NFR9_1]{NFR9.1} - Minimum 100 MHz clock speed
-    \item \hyperref[FR9_2]{FR9.2} - Four microphone inputs for directional
+    \item \hyperref[NFR9_2]{FR9.2} - Four microphone inputs for directional
     analysis
 \end{itemize}
 
