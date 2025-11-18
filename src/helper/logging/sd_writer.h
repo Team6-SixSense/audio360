@@ -32,6 +32,8 @@ public:
    */
   int write(const char *text);
 
+  int write_int32_buffer(int32_t *buffer, int length);
+
 private:
   /** @brief FAT Filesystem handle. */
   FATFS FatFs;

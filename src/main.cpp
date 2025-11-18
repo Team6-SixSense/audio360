@@ -30,9 +30,8 @@ int main() {
   FFT fft_test(static_cast<uint16_t>(test_vec.size()));
 #endif
 
-  SDCardWriter *sdcardWriterPointer = new SDCardWriter("temp");
-  sdcardWriterPointer->write("Audio360 SD Card Initialization!");
-  sdcardWriterPointer->write("Let's GOOOOOO!");
+  SDCardWriter *sdcardWriterPointer = new SDCardWriter("audio");
+
 
   while (1) {
 
@@ -58,15 +57,15 @@ int main() {
       // Receive one sample.
       HAL_StatusTypeDef status =
           HAL_SAI_Receive(mic1, (uint8_t *)&sampleMic1, 1, 100);
-
-      HAL_StatusTypeDef status2 =
-          HAL_SAI_Receive(mic2, (uint8_t *)&sampleMic2, 1, 100);
-
-      HAL_StatusTypeDef status3 =
-          HAL_SAI_Receive(mic3, (uint8_t *)&sampleMic3, 1, 100);
-
-      HAL_StatusTypeDef status4 =
-          HAL_SAI_Receive(mic4, (uint8_t *)&sampleMic4, 1, 100);
+      //
+      // HAL_StatusTypeDef status2 =
+      //     HAL_SAI_Receive(mic2, (uint8_t *)&sampleMic2, 1, 100);
+      //
+      // HAL_StatusTypeDef status3 =
+      //     HAL_SAI_Receive(mic3, (uint8_t *)&sampleMic3, 1, 100);
+      //
+      // HAL_StatusTypeDef status4 =
+      //     HAL_SAI_Receive(mic4, (uint8_t *)&sampleMic4, 1, 100);
 
       if (status == HAL_OK) {
         // Sign-extend the 24-bit sample to a 32-bit signed integer
@@ -80,71 +79,82 @@ int main() {
         waveform_buffer1[i] = 0;
       }
 
-      if (status2 == HAL_OK) {
-        // Sign-extend the 24-bit sample to a 32-bit signed integer
-        if (sampleMic2 & 0x00800000) {
-          waveform_buffer2[i] = sampleMic2 | 0xFF000000;
-        } else {
-          waveform_buffer2[i] = sampleMic2;
-        }
-      } else {
-        // If there's an error, just record a zero
-        waveform_buffer2[i] = 0;
-      }
-
-      if (status3 == HAL_OK) {
-        // Sign-extend the 24-bit sample to a 32-bit signed integer
-        if (sampleMic3 & 0x00800000) {
-          waveform_buffer3[i] = sampleMic3 | 0xFF000000;
-        } else {
-          waveform_buffer3[i] = sampleMic3;
-        }
-      } else {
-        // If there's an error, just record a zero
-        waveform_buffer3[i] = 0;
-      }
-
-      if (status4 == HAL_OK) {
-        // Sign-extend the 24-bit sample to a 32-bit signed integer
-        if (sampleMic4 & 0x00800000) {
-          waveform_buffer4[i] = sampleMic4 | 0xFF000000;
-        } else {
-          waveform_buffer4[i] = sampleMic4;
-        }
-      } else {
-        // If there's an error, just record a zero
-        waveform_buffer4[i] = 0;
-      }
+      // if (status2 == HAL_OK) {
+      //   // Sign-extend the 24-bit sample to a 32-bit signed integer
+      //   if (sampleMic2 & 0x00800000) {
+      //     waveform_buffer2[i] = sampleMic2 | 0xFF000000;
+      //   } else {
+      //     waveform_buffer2[i] = sampleMic2;
+      //   }
+      // } else {
+      //   // If there's an error, just record a zero
+      //   waveform_buffer2[i] = 0;
+      // }
+      //
+      // if (status3 == HAL_OK) {
+      //   // Sign-extend the 24-bit sample to a 32-bit signed integer
+      //   if (sampleMic3 & 0x00800000) {
+      //     waveform_buffer3[i] = sampleMic3 | 0xFF000000;
+      //   } else {
+      //     waveform_buffer3[i] = sampleMic3;
+      //   }
+      // } else {
+      //   // If there's an error, just record a zero
+      //   waveform_buffer3[i] = 0;
+      // }
+      //
+      // if (status4 == HAL_OK) {
+      //   // Sign-extend the 24-bit sample to a 32-bit signed integer
+      //   if (sampleMic4 & 0x00800000) {
+      //     waveform_buffer4[i] = sampleMic4 | 0xFF000000;
+      //   } else {
+      //     waveform_buffer4[i] = sampleMic4;
+      //   }
+      // } else {
+      //   // If there's an error, just record a zero
+      //   waveform_buffer4[i] = 0;
+      // }
     }
 
     // 2. Print the captured waveform data to the serial console
     // Use standard printf for easy copy-pasting
     printf("---START_WAVEFORM_DATA 1---\r\n");
-    for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
-      printf("%ld\r\n", waveform_buffer1[i]);
-    }
+    std::string waveform_str = "";
+    // for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
+    //   //printf("%ld\r\n", waveform_buffer1[i]);
+    //   waveform_str += std::to_string(waveform_buffer1[i])+",";
+    //
+    //   if (waveform_str.length() * sizeof(char) > 235) {
+    //     sdcardWriterPointer->write(waveform_str.c_str());
+    //     waveform_str = "";
+    //   }
+    //
+    // }
+    //
+    // sdcardWriterPointer->write(waveform_str.c_str());
+    sdcardWriterPointer->write_int32_buffer(waveform_buffer1, WAVEFORM_SAMPLES);
     printf("---END_WAVEFORM_DATA 1---\r\n");
 
-    printf("---START_WAVEFORM_DATA 2---\r\n");
-    for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
-      printf("%ld\r\n", waveform_buffer2[i]);
-    }
-    printf("---END_WAVEFORM_DATA 2---\r\n");
-
-    printf("---START_WAVEFORM_DATA 3---\r\n");
-    for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
-      printf("%ld\r\n", waveform_buffer3[i]);
-    }
-    printf("---END_WAVEFORM_DATA 3---\r\n");
-
-    printf("---START_WAVEFORM_DATA 4---\r\n");
-    for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
-      printf("%ld\r\n", waveform_buffer4[i]);
-    }
-    printf("---END_WAVEFORM_DATA 4---\r\n");
+    // printf("---START_WAVEFORM_DATA 2---\r\n");
+    // for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
+    //   printf("%ld\r\n", waveform_buffer2[i]);
+    // }
+    // printf("---END_WAVEFORM_DATA 2---\r\n");
+    //
+    // printf("---START_WAVEFORM_DATA 3---\r\n");
+    // for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
+    //   printf("%ld\r\n", waveform_buffer3[i]);
+    // }
+    // printf("---END_WAVEFORM_DATA 3---\r\n");
+    //
+    // printf("---START_WAVEFORM_DATA 4---\r\n");
+    // for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
+    //   printf("%ld\r\n", waveform_buffer4[i]);
+    // }
+    //printf("---END_WAVEFORM_DATA 4---\r\n");
 
     // Delay for a couple of seconds before capturing the next waveform
-    HAL_Delay(10000);
+
 #endif
   }
 

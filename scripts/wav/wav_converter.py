@@ -20,7 +20,7 @@ def main():
                         help="Number of channels. 1: Mono, 2: Stereo.")
     parser.add_argument("--sample_width", type=int, default=4,
                         help="Sample width. 2: 16 bits, 4: 32 bits.")
-    parser.add_argument("--sample_rate", type=int, default=44100,
+    parser.add_argument("--sample_rate", type=int, default=16000,
                         help="Sample rate. Number samples per second.")
 
     args = parser.parse_args()

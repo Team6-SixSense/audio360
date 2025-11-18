@@ -37,6 +37,23 @@ SDCardWriter::~SDCardWriter() {
   f_mount(NULL, "", 0);
 }
 
+int SDCardWriter::write_int32_buffer(int32_t *buffer, int length)
+{
+  UINT bytesWritten;
+  this->fres = f_write(&this->fil, buffer, length * sizeof(int32_t), &bytesWritten);
+
+  if (this->fres == FR_OK) {
+    INFO("Wrote %i bytes to SD Card!\r\n", bytesWritten);
+  } else {
+    ERROR("f_write error (%i)\r\n", bytesWritten);
+  }
+
+  f_sync(&this->fil);
+
+  return this->fres;
+}
+
+
 int SDCardWriter::write(const char *text) {
 
   UINT textSize = strlen(text);
