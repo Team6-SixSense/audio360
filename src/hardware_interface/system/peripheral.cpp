@@ -9,7 +9,6 @@
 #include "fatfs.h"
 #include "usb_device.h"
 
-
 static void PeriphCommonClock_Config();
 static void MX_GPIO_Init();
 static void MX_SPI1_Init();
@@ -36,7 +35,7 @@ void setupPeripherals() {
   // Configure the system clock to 216 MHz
   SystemClock_Config();
   PeriphCommonClock_Config();
-  
+
   // STM32F7xx HAL library initialization. This sets up the microcontroller's
   // peripherals using the Hardware Abstraction Layer (HAL).
   HAL_Init();
@@ -207,7 +206,6 @@ static void MX_SAI_1_Init() {
   hsai_BlockA1.SlotInit.SlotSize = SAI_SLOTSIZE_32B;
   hsai_BlockA1.SlotInit.SlotNumber = 2;
   hsai_BlockA1.SlotInit.SlotActive = 0x00000001;
-
 
   if (HAL_SAI_Init(&hsai_BlockA1) != HAL_OK) {
     Error_Handler();

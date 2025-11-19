@@ -9,23 +9,20 @@
 #include "hardware_interface/system/peripheral.h"
 #endif
 
-
 #include <stdio.h>
 
 #define RUNTIME_USB_TX
 
 #if defined(STM_BUILD) && defined(RUNTIME_FFT)
-  #error "The SimpleFFT runtime is not meant for the STM32 MCU".
+#error "The SimpleFFT runtime is not meant for the STM32 MCU".
 #endif
 
 #ifdef STM_BUILD
-#include "runtimes/runtime_sd_diag.h"
-#include "runtimes/runtime_usb_tx.h"
+#include "runtimes/runtime_sd_diag.hpp"
+#include "runtimes/runtime_usb_tx.hpp"
 #else
-#include "runtimes/runtime_fft.h"
+#include "runtimes/runtime_fft.hpp"
 #endif
-
-
 
 int main() {
 
@@ -48,4 +45,3 @@ int main() {
 
   return 0;
 }
-
