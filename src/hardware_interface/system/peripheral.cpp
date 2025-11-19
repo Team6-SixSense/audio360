@@ -7,8 +7,9 @@
 #ifdef STM_BUILD
 #include "hardware_interface/system/peripheral.h"
 #include "fatfs.h"
+#include "usb_device.h"
 
-static void SystemClock_Config();
+
 static void PeriphCommonClock_Config();
 static void MX_GPIO_Init();
 static void MX_SPI1_Init();
@@ -32,13 +33,13 @@ static SAI_HandleTypeDef hsai_BlockB2;
 
 void setupPeripherals() {
 
-  // STM32F7xx HAL library initialization. This sets up the microcontroller's
-  // peripherals using the Hardware Abstraction Layer (HAL).
-  HAL_Init();
-
   // Configure the system clock to 216 MHz
   SystemClock_Config();
   PeriphCommonClock_Config();
+  
+  // STM32F7xx HAL library initialization. This sets up the microcontroller's
+  // peripherals using the Hardware Abstraction Layer (HAL).
+  HAL_Init();
 
   // Set buffer to flush immediately.
   setvbuf(stdout, NULL, _IONBF, 0);
@@ -59,10 +60,12 @@ void setupPeripherals() {
   // Set up logging sd card and FATFS
   MX_SPI1_Init();
   MX_FATFS_Init();
+
+  MX_USB_DEVICE_Init();
 }
 
 /** @brief Sets up clock for the entire system. */
-static void SystemClock_Config() {
+void SystemClock_Config(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
@@ -180,20 +183,33 @@ static void MX_SAI_1_Init() {
   // with A.
 
   // Block A initialization.
+
   hsai_BlockA1.Instance = SAI1_Block_A;
+  hsai_BlockA1.Init.Protocol = SAI_FREE_PROTOCOL;
   hsai_BlockA1.Init.AudioMode = SAI_MODEMASTER_RX;
+  hsai_BlockA1.Init.DataSize = SAI_DATASIZE_24;
+  hsai_BlockA1.Init.FirstBit = SAI_FIRSTBIT_MSB;
+  hsai_BlockA1.Init.ClockStrobing = SAI_CLOCKSTROBING_FALLINGEDGE;
   hsai_BlockA1.Init.Synchro = SAI_ASYNCHRONOUS;
   hsai_BlockA1.Init.OutputDrive = SAI_OUTPUTDRIVE_DISABLE;
   hsai_BlockA1.Init.NoDivider = SAI_MASTERDIVIDER_ENABLE;
   hsai_BlockA1.Init.FIFOThreshold = SAI_FIFOTHRESHOLD_EMPTY;
   hsai_BlockA1.Init.AudioFrequency = SAI_AUDIO_FREQUENCY_16K;
   hsai_BlockA1.Init.SynchroExt = SAI_SYNCEXT_OUTBLOCKA_ENABLE;
-  hsai_BlockA1.Init.MonoStereoMode = SAI_MONOMODE;
+  hsai_BlockA1.Init.MonoStereoMode = SAI_STEREOMODE;
   hsai_BlockA1.Init.CompandingMode = SAI_NOCOMPANDING;
-  hsai_BlockA1.Init.TriState = SAI_OUTPUT_NOTRELEASED;
+  hsai_BlockA1.FrameInit.FrameLength = 64;
+  hsai_BlockA1.FrameInit.ActiveFrameLength = 32;
+  hsai_BlockA1.FrameInit.FSDefinition = SAI_FS_CHANNEL_IDENTIFICATION;
+  hsai_BlockA1.FrameInit.FSPolarity = SAI_FS_ACTIVE_LOW;
+  hsai_BlockA1.FrameInit.FSOffset = SAI_FS_BEFOREFIRSTBIT;
+  hsai_BlockA1.SlotInit.FirstBitOffset = 0;
+  hsai_BlockA1.SlotInit.SlotSize = SAI_SLOTSIZE_32B;
+  hsai_BlockA1.SlotInit.SlotNumber = 2;
+  hsai_BlockA1.SlotInit.SlotActive = 0x00000001;
 
-  if (HAL_SAI_InitProtocol(&hsai_BlockA1, SAI_I2S_STANDARD,
-                           SAI_PROTOCOL_DATASIZE_24BIT, 2) != HAL_OK) {
+
+  if (HAL_SAI_Init(&hsai_BlockA1) != HAL_OK) {
     Error_Handler();
   }
 

@@ -9,6 +9,8 @@
 
 #ifdef STM_BUILD
 
+
+
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx_nucleo_144.h"
 #include <stdio.h>
@@ -29,6 +31,8 @@ void setupPeripherals();
  * must be called before calling this function
  */
 void Error_Handler();
+
+void SystemClock_Config(void);
 
 /** @brief Get handle to SAI 1 module block A. */
 SAI_HandleTypeDef *getSAI1A_Handle();

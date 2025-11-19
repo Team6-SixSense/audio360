@@ -18,8 +18,12 @@
 #include "helper/logging/logging.hpp"
 #include <stdio.h>
 
+#include "usbd_cdc_if.h"
+
 // Define the number of samples you want to capture for one waveform snapshot
-#define WAVEFORM_SAMPLES 1024
+#define WAVEFORM_SAMPLES 256
+
+
 
 int main() {
 
@@ -30,6 +34,9 @@ int main() {
   std::vector<double> test_vec;
   FFT fft_test(static_cast<uint16_t>(test_vec.size()));
 #endif
+
+  //SDCardWriter *sdcardWriterPointer = new SDCardWriter("audio");
+
 
   while (1) {
 
@@ -55,63 +62,59 @@ int main() {
       // Receive one sample.
       HAL_StatusTypeDef status =
           HAL_SAI_Receive(mic1, (uint8_t *)&sampleMic1, 1, 100);
-
-      HAL_StatusTypeDef status2 =
-          HAL_SAI_Receive(mic2, (uint8_t *)&sampleMic2, 1, 100);
-
-      HAL_StatusTypeDef status3 =
-          HAL_SAI_Receive(mic3, (uint8_t *)&sampleMic3, 1, 100);
-
-      HAL_StatusTypeDef status4 =
-          HAL_SAI_Receive(mic4, (uint8_t *)&sampleMic4, 1, 100);
+      //
+      // HAL_StatusTypeDef status2 =
+      //     HAL_SAI_Receive(mic2, (uint8_t *)&sampleMic2, 1, 100);
+      //
+      // HAL_StatusTypeDef status3 =
+      //     HAL_SAI_Receive(mic3, (uint8_t *)&sampleMic3, 1, 100);
+      //
+      // HAL_StatusTypeDef status4 =
+      //     HAL_SAI_Receive(mic4, (uint8_t *)&sampleMic4, 1, 100);
 
       if (status == HAL_OK) {
         // Sign-extend the 24-bit sample to a 32-bit signed integer
-        if (sampleMic1 & 0x00800000) {
-          waveform_buffer1[i] = sampleMic1 | 0xFF000000;
-        } else {
-          waveform_buffer1[i] = sampleMic1;
-        }
+        waveform_buffer1[i] = ((int32_t)(sampleMic1 & 0x00FFFFFF) << 8);
       } else {
         // If there's an error, just record a zero
         waveform_buffer1[i] = 0;
       }
 
-      if (status2 == HAL_OK) {
-        // Sign-extend the 24-bit sample to a 32-bit signed integer
-        if (sampleMic2 & 0x00800000) {
-          waveform_buffer2[i] = sampleMic2 | 0xFF000000;
-        } else {
-          waveform_buffer2[i] = sampleMic2;
-        }
-      } else {
-        // If there's an error, just record a zero
-        waveform_buffer2[i] = 0;
-      }
-
-      if (status3 == HAL_OK) {
-        // Sign-extend the 24-bit sample to a 32-bit signed integer
-        if (sampleMic3 & 0x00800000) {
-          waveform_buffer3[i] = sampleMic3 | 0xFF000000;
-        } else {
-          waveform_buffer3[i] = sampleMic3;
-        }
-      } else {
-        // If there's an error, just record a zero
-        waveform_buffer3[i] = 0;
-      }
-
-      if (status4 == HAL_OK) {
-        // Sign-extend the 24-bit sample to a 32-bit signed integer
-        if (sampleMic4 & 0x00800000) {
-          waveform_buffer4[i] = sampleMic4 | 0xFF000000;
-        } else {
-          waveform_buffer4[i] = sampleMic4;
-        }
-      } else {
-        // If there's an error, just record a zero
-        waveform_buffer4[i] = 0;
-      }
+      // if (status2 == HAL_OK) {
+      //   // Sign-extend the 24-bit sample to a 32-bit signed integer
+      //   if (sampleMic2 & 0x00800000) {
+      //     waveform_buffer2[i] = sampleMic2 | 0xFF000000;
+      //   } else {
+      //     waveform_buffer2[i] = sampleMic2;
+      //   }
+      // } else {
+      //   // If there's an error, just record a zero
+      //   waveform_buffer2[i] = 0;
+      // }
+      //
+      // if (status3 == HAL_OK) {
+      //   // Sign-extend the 24-bit sample to a 32-bit signed integer
+      //   if (sampleMic3 & 0x00800000) {
+      //     waveform_buffer3[i] = sampleMic3 | 0xFF000000;
+      //   } else {
+      //     waveform_buffer3[i] = sampleMic3;
+      //   }
+      // } else {
+      //   // If there's an error, just record a zero
+      //   waveform_buffer3[i] = 0;
+      // }
+      //
+      // if (status4 == HAL_OK) {
+      //   // Sign-extend the 24-bit sample to a 32-bit signed integer
+      //   if (sampleMic4 & 0x00800000) {
+      //     waveform_buffer4[i] = sampleMic4 | 0xFF000000;
+      //   } else {
+      //     waveform_buffer4[i] = sampleMic4;
+      //   }
+      // } else {
+      //   // If there's an error, just record a zero
+      //   waveform_buffer4[i] = 0;
+      // }
     }
 
     // 2. Print the captured waveform data to the serial console
@@ -169,7 +172,7 @@ int main() {
     printf("---END_WAVEFORM_DATA 4---\r\n");
 
     // Delay for a couple of seconds before capturing the next waveform
-    HAL_Delay(10000);
+    CDC_Transmit_FS((uint8_t*) waveform_buffer1, WAVEFORM_SAMPLES * 4);
 
 #endif
   }
