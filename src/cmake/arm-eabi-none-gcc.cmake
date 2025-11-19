@@ -170,6 +170,7 @@ set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
 
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/system
+        ${CMAKE_CURRENT_LIST_DIR}/../runtimes
 
         # Peripherals functions.
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc
