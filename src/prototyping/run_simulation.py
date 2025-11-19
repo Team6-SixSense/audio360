@@ -13,9 +13,9 @@ from simulation import (create_room,
                            add_microphone,
                            classify_audio,
                            analyze_doa_continuous,
-                           visualize_simulation_continuous,
                            capture_audio_from_source
                            )
+from visualization import visualize_glasses_continuous, init_glasses_gui
 
 import numpy as np
 import pyaudio
@@ -81,34 +81,56 @@ def main():
     # Will be used as the buffer for each of our microphones. BUffer will be CHUNK * BUFFER_SECONDS
     output_deques = [deque(maxlen=BUFFER_SECONDS * CHUNK) for _ in range(len(rirs))]
 
+    # Initialize glasses GUI before starting the main loop
+    print("Initializing glasses visualization...")
+    init_glasses_gui()
+    print("Glasses GUI ready. Starting audio processing...")
+
     while True:
         # Continuosly retrieved the audio stream of size chunk from device microphone.
         source_chunk = np.frombuffer(stream.read(CHUNK, exception_on_overflow=False), dtype=np.float32)
 
         # Skip sounds that are faint/quiet. 
         rms = np.sqrt(np.mean(source_chunk**2))
-        if rms < 0.005:
-            print("")
+        if rms < 0.001:  # Lowered threshold to be more sensitive
+            # Print RMS value for debugging (only occasionally to avoid spam)
+            if np.random.random() < 0.01:  # Print ~1% of the time
+                print(f"RMS: {rms:.6f} (too quiet)")
             continue
+        
+        print(f"Sound detected! RMS: {rms:.6f}")
 
         # Capture audio from source to all 4 microphones
         output_deques = capture_audio_from_source(source_chunk, rirs, output_deques, CHUNK)
 
         # Classify the audio retrieved from the first microphone
         mic1_input = np.array(output_deques[0], dtype=np.float32)
-        pred = classify_audio(mic1_input)
-        print(f"Prediction: {pred}")
+        try:
+            pred = classify_audio(mic1_input)
+            print(f"Prediction: {pred}")
+        except Exception as e:
+            print(f"Classification error: {e}")
+            pred = "Undetermined"
 
         # Calculate direction of audio
-        results = analyze_doa_continuous(
-            output_deques,
-            mic_positions=mic_positions,
-            true_source_position=true_source_pos,
-            algorithms=['frida', 'srp', 'music'] 
-        )
+        try:
+            results = analyze_doa_continuous(
+                output_deques,
+                mic_positions=mic_positions,
+                true_source_position=true_source_pos,
+                algorithms=['frida', 'srp', 'music'] 
+            )
+            # Print DOA results for debugging
+            for algo_name, doa_obj in results.items():
+                if doa_obj.azimuth_recon is not None and len(doa_obj.azimuth_recon) > 0:
+                    print(f"  {algo_name}: {np.rad2deg(doa_obj.azimuth_recon[0]):.1f}°")
+        except Exception as e:
+            print(f"DOA analysis error: {e}")
+            results = {}
 
-        # Update visualization arrows to point where the audio is coming from. 
-        visualize_simulation_continuous(results, mic_positions, pred, true_source_pos)
+        # Update glasses visualization with classification and direction
+        # Uses moving average for classification (4/5 threshold) and smoothing for direction
+        visualize_glasses_continuous(results, pred, mic_positions, true_source_pos)
 
 
 
