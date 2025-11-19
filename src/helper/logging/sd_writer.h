@@ -32,6 +32,13 @@ public:
    */
   int write(const char *text);
 
+  /**
+   * @brief Write int32 buffer to the file.
+   *
+   * @param buffer int32 buffer input.
+   * @param length Length of the buffer input
+   * @return int Status code. 0 for success, otherwise failure has occurred.
+   */
   int write_int32_buffer(int32_t *buffer, int length);
 
 private:
