@@ -10,7 +10,7 @@
 #include <math.h>
 
 // Project specific constants.
-constexpr inline int WINDOW_SIZE = 4096; // Must be power of 2.
+constexpr inline int WAVEFORM_SAMPLES = 4096; // Must be power of 2.
 constexpr inline int SAMPLE_FREQUENCY = 44100;
 
 // Math constants.

@@ -194,7 +194,6 @@ set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/Target
 
-
         CACHE INTERNAL ""
 )
 
