@@ -9,12 +9,12 @@ import sounddevice as sd
 # --- CONFIGURATION ---
 SERIAL_PORT = 'COM5'
 BAUD_RATE = 115200
-SAMPLE_RATE = 48000
+SAMPLE_RATE = 16000
 WINDOW_DURATION = 0.2
 
 # Volume Scaling
 # Since we are doing manual math now, we can push this up.
-VOLUME = 1.0
+VOLUME = 0.3
 
 STEREO_ON_SOURCE = False
 
