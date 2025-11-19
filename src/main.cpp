@@ -25,7 +25,6 @@
 #endif
 
 int main() {
-
 #ifdef STM_BUILD
   // Set-up peripherals. Must call before any hardware function calls.
   setupPeripherals();
@@ -45,4 +44,3 @@ int main() {
 
   return 0;
 }
-
