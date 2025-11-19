@@ -21,7 +21,7 @@ STEREO_ON_SOURCE = False
 # Constants
 INT32_SIZE = 4
 WINDOW_SAMPLES = int(SAMPLE_RATE * WINDOW_DURATION)
-Y_LIMIT = 2**31
+Y_LIMIT = 2 ** 31
 
 # ... (Keep Serial and Audio setup the same) ...
 
@@ -63,6 +63,8 @@ byte_buffer = bytearray()
 @brief Updates the plot based on received audio data over COM port.
 @param frame Unused parameter.
 """
+
+
 def update_plot(frame):
     global y_data, byte_buffer
 
@@ -128,6 +130,7 @@ def update_plot(frame):
         line.set_ydata(y_data)
 
     return line,
+
 
 ani = FuncAnimation(fig, update_plot, interval=1, blit=True, cache_frame_data=False)
 plt.show()

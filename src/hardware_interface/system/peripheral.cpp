@@ -6,6 +6,7 @@
  */
 #ifdef STM_BUILD
 #include "hardware_interface/system/peripheral.h"
+
 #include "fatfs.h"
 #include "usb_device.h"
 
@@ -31,7 +32,6 @@ static SAI_HandleTypeDef hsai_BlockB2;
 #define SD_CS_GPIO_Port GPIOA
 
 void setupPeripherals() {
-
   // Configure the system clock to 216 MHz
   SystemClock_Config();
   PeriphCommonClock_Config();
@@ -177,7 +177,6 @@ static void MX_SPI1_Init() {
 
 /** @brief Initializes SAI 1 bus. */
 static void MX_SAI_1_Init() {
-
   // SAI 1 has 2 subblocks: A and B. Set A with the master clock, so B can sync
   // with A.
 
@@ -230,7 +229,6 @@ static void MX_SAI_1_Init() {
 
 /** @brief Initializes SAI 2 bus. */
 static void MX_SAI_2_Init() {
-
   // Bot sub blocks (A and B) in SAI2 is synchronized with SAI 1 sub block A.
 
   // Block A initialization.
