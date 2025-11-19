@@ -115,6 +115,8 @@ set(HARDWARE_SRC_FILE
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/system/peripheral.cpp
 
@@ -142,17 +144,33 @@ set(HARDWARE_SRC_FILE
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.c
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.c
 
+        # USB functions
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usb_device.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usbd_cdc_if.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usbd_desc.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/Target/usbd_conf.c
+
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_core.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+
+        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c
+
         CACHE FILEPATH "UART printf source files"
 )
 
 # Export to parent CMakeLists.txt
 set(EXTRA_SOURCES ${STARTUP} ${SYSTEM} ${HARDWARE_SRC_FILE} CACHE INTERNAL "")
-set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD USE_HAL_DRIVER HAL_SAI_MODULE_ENABLED HAL_SPI_MODULE_ENABLED
+set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD USE_HAL_DRIVER HAL_SAI_MODULE_ENABLED HAL_SPI_MODULE_ENABLED HAL_USB_MODULE_ENABLED
+        HAL_PCD_MODULE_ENABLED USB_OTG_FS
         HAL_GPIO_MODULE_ENABLED CACHE INTERNAL "")
 set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
 
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/system
+        ${CMAKE_CURRENT_LIST_DIR}/../runtimes
 
         # Peripherals functions.
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc
@@ -169,6 +187,12 @@ set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Core/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Include
         ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/DSP_Lib_TestSuite/RefLibs/inc
+
+        #USB functions
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Class/CDC/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/Target
 
         CACHE INTERNAL ""
 )
