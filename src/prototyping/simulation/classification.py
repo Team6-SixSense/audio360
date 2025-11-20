@@ -21,7 +21,7 @@ def classify_audio(audio_path):
     prob = lda.predict_proba(feat_pca)[0]
 
     pred_prob = np.max(prob)
-    if (pred_prob < 0.9):
+    if (pred_prob < 0.8):
         return "Undetermined"
     else:     
         return pred
