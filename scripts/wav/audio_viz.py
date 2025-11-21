@@ -94,7 +94,7 @@ def update_plot(frame):
 
         # 4. Apply Gain (x256 to simulate the 8-bit shift)
         # We scale by 256 to restore the volume, then apply your VOLUME knob.
-        samples_scaled = samples_centered * 256.0
+        samples_scaled = samples_centered * 256.0 * VOLUME
 
         # 5. Hard Clip Limiter (Prevent wrapping noise)
         # We clamp values to the 32-bit valid range so they simply "flat top"
