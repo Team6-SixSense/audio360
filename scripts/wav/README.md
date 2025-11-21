@@ -1,4 +1,6 @@
-# WAV Converter
+# WAV Scripts
+
+## WAV Converter
 
 To see usage, run
 
@@ -6,27 +8,30 @@ To see usage, run
 python wav_converter.py -h
 ```
 
-## Input file format
+### Input file format
 
 Binary audio file where each audio sample is either 2 or 4 bytes across the entire file.
 
-# Audio Visualizer
+## Audio Visualizer
 
-Make sure dependencies are installed
+### Set-Up
 
-```bash
-python -m pip install -r requirements.txt
-```
+1. Make sure dependencies are installed
 
-Install the VCOM Port driver from: https://www.st.com/en/development-tools/stsw-stm32102.html#get-software
+    ```bash
+    python -m pip install -r requirements.txt
+    ```
 
-Near the top of the file, update this to the appropriate COM
-port for the STM USB connection:
+2. Install the VCOM Port driver from: https://www.st.com/en/development-tools/stsw-stm32102.html#get-software
 
-SERIAL_PORT = 'COM5'
+3. Near the top of the file, update this to the appropriate COM port for the STM USB connection:
 
-Run the script:
+    ```Python
+    SERIAL_PORT = 'COM5'
+    ```
 
-```bash
-python audio_viz.py
-```
+4. Run the script:
+
+    ```bash
+    python audio_viz.py
+    ```

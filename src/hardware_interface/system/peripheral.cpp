@@ -287,12 +287,12 @@ void Error_Handler() {
   }
 }
 
-SAI_HandleTypeDef *getSAI1A_Handle() { return &hsai_BlockA1; }
+SAI_HandleTypeDef* getSAI1A_Handle() { return &hsai_BlockA1; }
 
-SAI_HandleTypeDef *getSAI1B_Handle() { return &hsai_BlockB1; }
+SAI_HandleTypeDef* getSAI1B_Handle() { return &hsai_BlockB1; }
 
-SAI_HandleTypeDef *getSAI2A_Handle() { return &hsai_BlockA2; }
+SAI_HandleTypeDef* getSAI2A_Handle() { return &hsai_BlockA2; }
 
-SAI_HandleTypeDef *getSAI2B_Handle() { return &hsai_BlockB2; }
+SAI_HandleTypeDef* getSAI2B_Handle() { return &hsai_BlockB2; }
 
 #endif

@@ -23,8 +23,6 @@ INT32_SIZE = 4
 WINDOW_SAMPLES = int(SAMPLE_RATE * WINDOW_DURATION)
 Y_LIMIT = 2 ** 31
 
-# ... (Keep Serial and Audio setup the same) ...
-
 # Setup Serial
 try:
     ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=0)
@@ -42,7 +40,7 @@ except Exception as e:
     print(f"Audio error: {e}")
     sys.exit(1)
 
-# ... (Keep Plot setup the same) ...
+# --- PLOTTING ---
 
 # Setup Plot
 fig, ax = plt.subplots(figsize=(10, 4))
@@ -59,13 +57,13 @@ ax.grid(True, color='gray', linestyle='--', alpha=0.3)
 
 byte_buffer = bytearray()
 
-"""
-@brief Updates the plot based on received audio data over COM port.
-@param frame Unused parameter.
-"""
-
 
 def update_plot(frame):
+    """
+    @brief Updates the plot based on received audio data over COM port.
+    @param frame Unused parameter.
+    """
+
     global y_data, byte_buffer
 
     try:
@@ -87,33 +85,23 @@ def update_plot(frame):
         if STEREO_ON_SOURCE:
             raw_samples = raw_samples[::2]
 
-        # --- NEW ROBUST PROCESSING ---
-
-        # 2. Mask to 24-bit (Remove any top-byte garbage)
-        raw_samples = raw_samples & 0xFFFFFF
-
-        # 3. Convert to Float immediately for safe math
+        # 2. Convert to Float immediately for safe math
         samples_float = raw_samples.astype(np.float32)
 
-        # 4. Manual Sign Extension (24-bit to Signed Float)
-        # If the number is > 0x7FFFFF (half of 24-bit max), it is actually negative.
-        # We subtract 2^24 (16777216) to make it negative.
-        samples_float[samples_float > 0x7FFFFF] -= 16777216
-
-        # 5. DC Offset Removal (Safe now because we are in Float)
+        # 3. DC Offset Removal (Safe now because we are in Float)
         dc_offset = np.mean(samples_float)
         samples_centered = samples_float - dc_offset
 
-        # 6. Apply Gain (x256 to simulate the 8-bit shift)
+        # 4. Apply Gain (x256 to simulate the 8-bit shift)
         # We scale by 256 to restore the volume, then apply your VOLUME knob.
-        samples_scaled = samples_centered * 256.0 * VOLUME
+        samples_scaled = samples_centered * 256.0
 
-        # 7. Hard Clip Limiter (Prevent wrapping noise)
+        # 5. Hard Clip Limiter (Prevent wrapping noise)
         # We clamp values to the 32-bit valid range so they simply "flat top"
         # instead of wrapping around to static.
         np.clip(samples_scaled, -2147483647, 2147483647, out=samples_scaled)
 
-        # 8. Convert back to Int32 for the speakers
+        # 6. Convert back to Int32 for the speakers
         final_samples = samples_scaled.astype(np.int32)
 
         try:
