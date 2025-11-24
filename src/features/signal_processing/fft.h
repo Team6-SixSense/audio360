@@ -9,17 +9,22 @@
 
 #ifdef STM_BUILD
 // stm32f767xx include must be first include to use CMSIS library.
+#include "arm_math.h"
 #include "stm32f767xx.h"
 
-#include "arm_math.h"
 #else
-#define __USE_SQUARE_BRACKETS_FOR_ELEMENT_ACCESS_OPERATOR // Used by simple FFT
-#include "lib/simple_fft/include/simple_fft/fft.hpp"
+#define __USE_SQUARE_BRACKETS_FOR_ELEMENT_ACCESS_OPERATOR  // Used by simple FFT
 #include <complex>
+
+#include "lib/simple_fft/include/simple_fft/fft.hpp"
+
+typedef float float32_t;
 #endif
 
-#include "features/signal_processing/window.hpp"
 #include <vector>
+
+#include "features/signal_processing/window.hpp"
+
 
 /** @brief Struct for representing FFT output in the frequency domain. */
 struct FrequencyDomain {
@@ -49,8 +54,7 @@ struct FrequencyDomain {
 
 /** @brief Fast Fourier Transform (FFT) class. */
 class FFT {
-
-public:
+ public:
   /**
    * @brief Construct a new FFT object.
    *
@@ -71,25 +75,25 @@ public:
    * signal.
    * @return FrequencyDomain The signal represented in the frequency domain.
    */
-  FrequencyDomain
-  signalToFrequency(std::vector<float> &signal,
-                    WindowFunction windowFunction = WindowFunction::NONE);
+  FrequencyDomain signalToFrequency(
+      std::vector<float>& signal,
+      WindowFunction windowFunction = WindowFunction::NONE);
 
-private:
+ private:
   /**
    * @brief Applies the window function on the input signal.
    *
    * @param signal input signal.
    * @param windowFunction Window function.
    */
-  void applyWindow(std::vector<float> &signal, WindowFunction windowFunction);
+  void applyWindow(std::vector<float>& signal, WindowFunction windowFunction);
 
   /**
    * @brief Inserts signal to internal memory of this class.
    *
    * @param signal input signal.
    */
-  void insertSignal(std::vector<float> &signal);
+  void insertSignal(std::vector<float>& signal);
 
   /**
    * @brief Translate FFT algo's output to a portable output to return.
@@ -105,10 +109,10 @@ private:
   uint16_t outputSize;
 
   /** @brief input signal. This memory is shared with fttw_plan plan. */
-  float32_t *in;
+  float32_t* in;
 
   /** @brief output signal. This memory is shared with fttw_plan plan. */
-  float32_t *out;
+  float32_t* out;
 
 #ifdef STM_BUILD
   /** @brief Real FFT instance for using CMSIS DSP library */
@@ -116,6 +120,6 @@ private:
 #else
   /** @brief Complex output vector representing frequency domain when using the
    * Simple-FFT library. */
-  std::vector<std::complex<double>> complexOutput;
+  std::vector<std::complex<double> > complexOutput;
 #endif
 };
