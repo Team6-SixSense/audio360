@@ -11,7 +11,11 @@
 
 #include <stdio.h>
 
+#ifdef STM_BUILD
 #define RUNTIME_USB_TX
+#else
+#define RUNTIME_FFT
+#endif
 
 #if defined(STM_BUILD) && defined(RUNTIME_FFT)
 #error "The SimpleFFT runtime is not meant for the STM32 MCU".

@@ -8,7 +8,6 @@ set(SourceLib "Audio360Lib")
 file(GLOB_RECURSE SRC_FILES
     helper/*.cpp
     features/*.cpp
-    hardware_interface/*.*
 )
 
 set(LIB_SRC_FILES ${SRC_FILES})
