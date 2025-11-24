@@ -28,6 +28,9 @@
 
 ## Building
 
+Take a look at `.vscode/tasks.json` to view the configured VS Code build tasks.
+To run a task, press **Ctrl + Shift + P**, choose `Tasks: Run Task`, and then select the task you want to run.
+
 ### Building for STM32 MCU (target hardware)
 
 1. Ensure the path to ARM gcc compiler is included in `PATH` environment variable. Alternatively set `ARM_GCC_BIN` cmake variable manually.
