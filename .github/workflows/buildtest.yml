@@ -1,4 +1,4 @@
-name: Native MSVC Build
+name: Native MSVC Build & Test
 
 on:
   push:
@@ -27,7 +27,12 @@ jobs:
     - name: Configure (native x86_64 Visual Studio)
       run: |
         if (Test-Path build) { Remove-Item -Recurse -Force build }
-        cmake --preset native-x86_64-Visual-Studio
+        cmake --preset native-x86_64-Visual-Studio -DBUILD_TESTS=ON
 
     - name: Build
       run: cmake --build --preset build-x86_64-VS
+
+    - name: Run Tests
+      run: |
+        cd .\build\x86_64\src\Debug\
+        .\Audio360Tests.exe

@@ -1,7 +1,17 @@
+/**
+ ******************************************************************************
+ * @file    fft_test.cpp
+ * @brief   Unit tests for FFT (Fast Fourier Transform). Tests here uses a mock
+ *          as hardware acceleration method are not available for CI runs.
+ ******************************************************************************
+ */
+
 #include "features/signal_processing/fft.h"
+
+#include <gtest/gtest.h>
+
 #include "helper/constants.h"
 #include "helper/mp3/mp3.h"
-#include <gtest/gtest.h>
 
 /** @brief Given a 285 Hz sine audio signal, assert that the FFT has the largest
  * magnitude around 285 Hz. */
@@ -12,10 +22,10 @@ TEST(FFTTest, SignalToFrequency_285Hz) {
   // Choose an arbitray window in the middle of the mp3.
   const int OFFSET = 100000;
   std::vector<float> input(data.channel1.begin() + OFFSET,
-                           data.channel1.begin() + OFFSET + WINDOW_SIZE);
+                           data.channel1.begin() + OFFSET + WAVEFORM_SAMPLES);
 
   // Run FFT.
-  FFT fft = FFT(static_cast<uint16_t>(input.size()));
+  FFT fft = FFT(static_cast<uint16_t>(input.size()), 44100);
   FrequencyDomain frequencyDomain =
       fft.signalToFrequency(input, WindowFunction::HANN_WINDOW);
 

@@ -6,14 +6,18 @@
  */
 
 #include "features/signal_processing/fft.h"
-#include "helper/constants.h"
-#include "helper/logging/logging.hpp"
+
+#include <stdio.h>
+
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <stdio.h>
 
-FFT::FFT(uint16_t inputSize) : inputSize(inputSize) {
+#include "helper/constants.h"
+#include "helper/logging/logging.hpp"
+
+FFT::FFT(uint16_t inputSize, int sampleFrequency)
+    : inputSize(inputSize), sampleFrequency(sampleFrequency) {
   this->in = new float32_t[this->inputSize]();
 
 #ifdef STM_BUILD
@@ -44,43 +48,42 @@ FFT::~FFT() {
 #endif
 }
 
-FrequencyDomain FFT::signalToFrequency(std::vector<float> &signal,
+FrequencyDomain FFT::signalToFrequency(std::vector<float>& signal,
                                        WindowFunction windowFunction) {
   this->applyWindow(signal, windowFunction);
   this->insertSignal(signal);
 
 #ifdef STM_BUILD
-  uint8_t ARM_RFFT_FAST_FORWARD = 0U; // Discrete Fourier Transform.
+  uint8_t ARM_RFFT_FAST_FORWARD = 0U;  // Discrete Fourier Transform.
   arm_rfft_fast_f32(&rfft_instance, this->in, this->out, ARM_RFFT_FAST_FORWARD);
 #else
-  const char *error = NULL; // error description
+  const char* error = NULL;  // error description
   simple_fft::FFT(this->in, this->complexOutput, this->inputSize, error);
 #endif
 
   return this->createOutput();
 }
 
-void FFT::applyWindow(std::vector<float> &signal,
+void FFT::applyWindow(std::vector<float>& signal,
                       WindowFunction windowFunction) {
   switch (windowFunction) {
-  case WindowFunction::NONE:
-    INFO("No windowing function is applied.");
-    break;
-  case WindowFunction::HANN_WINDOW:
-    HannWindow<float>().applyWindow(signal);
-    break;
-  default:
-    WARN("Window function is not supported. Signal remain the same.");
+    case WindowFunction::NONE:
+      INFO("No windowing function is applied.");
+      break;
+    case WindowFunction::HANN_WINDOW:
+      HannWindow<float>().applyWindow(signal);
+      break;
+    default:
+      WARN("Window function is not supported. Signal remain the same.");
   }
 }
 
-void FFT::insertSignal(std::vector<float> &signal) {
+void FFT::insertSignal(std::vector<float>& signal) {
   assert(signal.size() == inputSize);
   std::copy(signal.begin(), signal.end(), this->in);
 }
 
 FrequencyDomain FFT::createOutput() {
-
   uint16_t N = (this->inputSize / 2) + 1;
   uint16_t lastIdx = N - 1;
   FrequencyDomain frequencyDomain(N);
@@ -99,7 +102,7 @@ FrequencyDomain FFT::createOutput() {
       real = this->out[2 * i];
       img = this->out[2 * i + 1];
     } else {
-      int idx = (i == lastIdx) ? 1 : 0; // idx takes 0 when i = 0.
+      int idx = (i == lastIdx) ? 1 : 0;  // idx takes 0 when i = 0.
       real = this->out[idx];
       img = 0.0f;
     }
@@ -110,7 +113,7 @@ FrequencyDomain FFT::createOutput() {
 #endif
 
     frequencyDomain.frequency[i] =
-        (i * SAMPLE_FREQUENCY) / static_cast<float>(this->inputSize);
+        (i * this->sampleFrequency) / static_cast<float>(this->inputSize);
     frequencyDomain.real[i] = real;
     frequencyDomain.img[i] = img;
     frequencyDomain.magnitude[i] = std::sqrt(real * real + img * img);

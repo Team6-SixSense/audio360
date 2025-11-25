@@ -59,4 +59,3 @@ endif()
 target_link_libraries(${SourceExecutable} PUBLIC
     ${SourceLib}
 )
-
