@@ -25,7 +25,6 @@ typedef float float32_t;
 
 #include "features/signal_processing/window.hpp"
 
-
 /** @brief Struct for representing FFT output in the frequency domain. */
 struct FrequencyDomain {
   /** @brief The number of the data in the FFT output. */
@@ -59,10 +58,11 @@ class FFT {
    * @brief Construct a new FFT object.
    *
    * @param inputSize The size of the input signal.
+   * @param sampleFrequency The sample frequency.
    * @param signal Sample signal of size inputSize. This is used to optimize to
    * find the best FFT algorithm.
    */
-  FFT(uint16_t inputSize);
+  FFT(uint16_t inputSize, int sampleFrequency);
 
   /** @brief Destroy the FFT object. */
   ~FFT();
@@ -104,6 +104,9 @@ class FFT {
 
   /** @brief The size of the input signal. */
   uint16_t inputSize{0U};
+
+  /** @brief The sample frequency. */
+  int sampleFrequency;
 
   /** @brief The size of the output signal. */
   uint16_t outputSize;

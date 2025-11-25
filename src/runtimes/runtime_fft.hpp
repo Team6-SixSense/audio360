@@ -8,11 +8,11 @@
 #pragma once
 
 #include "features/signal_processing/fft.h"
+#include "helper/constants.h"
 
 void main_runtime_fft() {
-
   std::vector<double> test_vec;
-  FFT fft_test(static_cast<uint16_t>(test_vec.size()));
+  FFT fft_test(static_cast<uint16_t>(test_vec.size()), SAMPLE_FREQUENCY);
 
   while (1) {
   }
