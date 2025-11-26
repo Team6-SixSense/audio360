@@ -10,6 +10,7 @@ on:
     branches: [ main ]
     paths:
       - 'src/**'
+      - '.github/workflows/code_static_analyzer.yml'
 
 jobs:
   analyze:
@@ -46,7 +47,7 @@ jobs:
           name: cppcheck-report
           path: cppcheck-results
 
-      - name: Fail job if cppcheck found issues
+      - name: Check Cppcheck issues
         run: |
           if [ -s cppcheck-results/errors.log ]; then
             echo "Cppcheck found issues! See uploaded artifact."

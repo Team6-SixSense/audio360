@@ -28,13 +28,7 @@
 #include "runtimes/runtime_fft.hpp"
 #endif
 
-int getZero() { return 0; }
-
 int main() {
-  int a = getZero();
-  int b = 10 / a;
-  int x;  // uninitialized
-  int y = x + 5;
 #ifdef STM_BUILD
   // Set-up peripherals. Must call before any hardware function calls.
   setupPeripherals();
