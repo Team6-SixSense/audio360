@@ -1,0 +1,57 @@
+name: C/C++ Static Analyzer
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'src/**'
+
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck
+
+      - name: Run cppcheck on selected folders
+        run: |
+          CPPCHECK_REPORT=cppcheck-results
+          mkdir -p $CPPCHECK_REPORT
+
+          cppcheck --enable=all --inconclusive --std=c++17 --force src \
+            -isrc/configs \
+            -isrc/hardware_interface \
+            -isrc/lib \
+            -isrc/prototyping \
+            -isrc/STM32CubeF7 \
+            2>> $CPPCHECK_REPORT/cppcheck.log || true
+
+          # Keep only errors in a separate file
+          grep -E 'error:|warning:' $CPPCHECK_REPORT/cppcheck.log > $CPPCHECK_REPORT/errors.log || true
+
+      - name: Upload cppcheck report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cppcheck-report
+          path: cppcheck-results
+
+      - name: Fail job if cppcheck found issues
+        run: |
+          if [ -s cppcheck-results/errors.log ]; then
+            echo "Cppcheck found issues! See uploaded artifact."
+            cat -n cppcheck-results/errors.log
+            exit 1
+          else
+            echo "No cppcheck issues found!"
+          fi
