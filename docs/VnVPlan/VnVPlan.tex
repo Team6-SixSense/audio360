@@ -48,6 +48,7 @@
 2025-10-31 & 2.4 & Defining success criteria for software validation \\
 2025-11-12 & 2.5 & Referencing SRS symbols table. \\
 2025-11-20 & 3.0 & Update extras \\
+2025-11-26 & 3.1 & Change Clang Static Analyzer to Cppcheck \\
 \hline
 \end{tabularx}
 
@@ -404,7 +405,7 @@ be developed in C/C++. The compiler used to build the source code will provide
 warnings of potential bugs. The team will resolve all warnings that is under the
 team's control, this excludes warnings from imported libraries. \newline
 
-The team will also employ Clang Static Analyzer \cite{clangStaticAnalyzer} as a
+The team will also employ Cppcheck \cite{Cppcheck} as a
 static analyzer tool. The static analyzer will be employed to detect bugs
 without running the source code on the hardware, and will be ran prior to
 merging PRs. It will block the PR from merging until all issues identified by
@@ -426,7 +427,7 @@ from the Development Plan document.
   \item 10.3: Linter, Static Analyzer and Formatting Tools
   \begin{itemize}
     \item Clangformat \cite{ClangFormat}
-    \item Clang Static Analyzer \cite{clangStaticAnalyzer}
+    \item Cppcheck \cite{Cppcheck}
   \end{itemize}
   \item 10.4: Testing Frameworks (section also includes code coverage)
   \begin{itemize}
@@ -438,6 +439,7 @@ from the Development Plan document.
   \begin{itemize}
     \item Run all unit tests (PR blocking)
     \item Build source code using compiler (PR blocking)
+    \item Run code static analyzer (PR blocking)
   \end{itemize}
 \end{itemize}
 

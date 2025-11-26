@@ -31,6 +31,7 @@
 2025-10-26 & Sathurshan & Updating Proof of Concept scope\\
 2025-11-01 & Nirmal & Update Team Member Technical Roles \\
 2025-11-18 & Sathurshan & Update Proof of Concept scope\\
+2025-11-26 & Sathurshan & Change Clang Static Analyzer to Cppcheck\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -441,12 +442,15 @@ for plotting data. \\ \hline
 \end{table}
 
 \subsection{Linter, Static Analyzer and Formatting Tools}
+\label{sec:linter}
+\label{sec:static_analyzer_tool}
 
 \href{https://clang.llvm.org/docs/ClangFormat.html}{ClangFormat} will be used
 for autoformatting C/C++ code, ensuring compliance with the
 \nameref{sec:coding_standards}.
-\href{https://clang-analyzer.llvm.org/}{Clang Static Analyzer} will be used as
-the static analyzer tool for C/C++ source code.
+\href{https://cppcheck.sourceforge.io/}{Cppcheck} will be used as
+the static analyzer tool for C/C++ source code. This is being used since
+it can analyze ARM code and is open source.
 Additionally, Microsoft’s
 \href{https://code.visualstudio.com/docs/languages/cpp}{C/C++ extension} in
 Visual Studio Code will be used as the C/C++ linter.
@@ -472,6 +476,9 @@ metrics will not be collected for Python tests if any are written.
   \item Run all unit tests (\textit{PR blocking}).
   \item Build source code using a compiler compatible with the target
   microcontroller (\textit{PR blocking}).
+  \item Run code static analyzer
+  \hyperref[sec:static_analyzer_tool]{(Cppcheck)}.
+  Any errors detected by the tool will block PR merges. (\textit{PR blocking})
 \end{enumerate}
 \textbf{CD} % Don't create a new line before here; else auto-indent.
 \begin{enumerate}
