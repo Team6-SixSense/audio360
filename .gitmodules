@@ -1,5 +1,5 @@
 [submodule "src/STM32CubeF7"]
-	path = src/STM32CubeF7
+	path = src/lib/STM32CubeF7
 	url = https://github.com/STMicroelectronics/STM32CubeF7.git
 [submodule "src/lib/CMSIS-DSP"]
 	path = src/lib/CMSIS-DSP

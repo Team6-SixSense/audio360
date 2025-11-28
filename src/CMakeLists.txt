@@ -13,7 +13,15 @@ file(GLOB_RECURSE SRC_FILES
 set(LIB_SRC_FILES ${SRC_FILES})
 list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp")
 
-if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+    file(GLOB_RECURSE ARM_SRC_FILES
+        hardware_interface/system/*.c
+        hardware_interface/system/*.cpp
+    )
+
+    list(APPEND LIB_SRC_FILES ${ARM_SRC_FILES})
+
+else()
     set(CMSIS_DSP_NON_ARM_SRC_FILES
         # FFT functions.
         ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_bitreversal2.c
@@ -27,7 +35,7 @@ if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
         ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/CommonTables/arm_common_tables.c
         ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/CommonTables/arm_const_structs.c
     )
-    
+
     list(APPEND LIB_SRC_FILES ${CMSIS_DSP_NON_ARM_SRC_FILES})
 endif()
 

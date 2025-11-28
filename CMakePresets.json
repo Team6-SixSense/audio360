@@ -19,6 +19,15 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
+    },
+    {
+      "name": "native-x86_64-Ninja",
+      "displayName": "Native x86_64-NINJA",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/x86_64",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     }
   ],
 
@@ -31,6 +40,11 @@
     {
       "name": "build-x86_64-VS",
       "configurePreset": "native-x86_64-Visual-Studio",
+      "jobs": 8
+    },
+    {
+      "name": "build-x86_64-NINJA",
+      "configurePreset": "native-x86_64-Ninja",
       "jobs": 8
     }
   ]
