@@ -5,7 +5,7 @@
  ******************************************************************************
  */
 
-#include "helper/mp3/realTimePolling.h"
+#include "realTimePolling.h"
 
 RealTimePolling::RealTimePolling(size_t windowSize, std::vector<double> data)
     : windowSize(windowSize), data(data) {

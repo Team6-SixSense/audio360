@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "helper/bit_operations.hpp"
-#include "helper/constants.h"
-#include "helper/logging/sd_writer.h"
+#include "bit_operations.hpp"
+#include "constants.h"
+#include "sd_writer.h"
 
 void main_sd_diag() {
   SDCardWriter* sdcardWriterPointer1 = new SDCardWriter("mic1");

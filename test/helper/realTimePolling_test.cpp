@@ -5,7 +5,7 @@
  ******************************************************************************
  */
 
-#include "helper/mp3/realTimePolling.h"
+#include "realTimePolling.h"
 
 #include <gtest/gtest.h>
 

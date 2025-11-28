@@ -13,8 +13,8 @@
 #include <cassert>
 #include <cmath>
 
-#include "helper/constants.h"
-#include "helper/logging/logging.hpp"
+#include "constants.h"
+#include "logging.hpp"
 
 FFT::FFT(uint16_t inputSize, int sampleFrequency)
     : inputSize(inputSize), sampleFrequency(sampleFrequency) {

@@ -5,7 +5,7 @@
  ******************************************************************************
  */
 #ifdef STM_BUILD
-#include "hardware_interface/system/peripheral.h"
+#include "peripheral.h"
 
 #include "fatfs.h"
 #include "usb_device.h"

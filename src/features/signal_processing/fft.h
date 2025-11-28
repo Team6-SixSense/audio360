@@ -16,7 +16,7 @@
 #endif
 #include <vector>
 
-#include "features/signal_processing/window.hpp"
+#include "window.hpp"
 
 /** @brief Struct for representing FFT output in the frequency domain. */
 struct FrequencyDomain {

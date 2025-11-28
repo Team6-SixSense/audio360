@@ -7,11 +7,11 @@
 
 #pragma once
 
-#include "helper/mp3/minimp3.h"
-#include "helper/mp3/minimp3_ex.h"
 #include <string>
 #include <vector>
 
+#include "minimp3.h"
+#include "minimp3_ex.h"
 
 /** @brief Classification of MP3 channels. */
 enum class Channel {
@@ -20,7 +20,6 @@ enum class Channel {
 };
 
 struct MP3Data {
-
   /** @brief The number of sample of MP3 data. */
   size_t numSamples;
 
@@ -58,7 +57,7 @@ std::vector<unsigned char> readRawMP3(std::string filepath);
  * @param info MP3 file info indentifies by minimp3 library.
  * @return MP3Data PCM of MP3 file data.
  */
-MP3Data handleMonoChannel(mp3dec_file_info_t &info);
+MP3Data handleMonoChannel(mp3dec_file_info_t& info);
 
 /**
  * @brief Handles stereo channel MP3 processing.
@@ -66,4 +65,4 @@ MP3Data handleMonoChannel(mp3dec_file_info_t &info);
  * @param info MP3 file info indentifies by minimp3 library.
  * @return MP3Data PCM of MP3 file data.
  */
-MP3Data handleStereoChannel(mp3dec_file_info_t &info);
+MP3Data handleStereoChannel(mp3dec_file_info_t& info);
