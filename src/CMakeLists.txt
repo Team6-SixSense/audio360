@@ -13,8 +13,26 @@ file(GLOB_RECURSE SRC_FILES
 set(LIB_SRC_FILES ${SRC_FILES})
 list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp")
 
+if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+    set(CMSIS_DSP_NON_ARM_SRC_FILES
+        # FFT functions.
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_bitreversal2.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_cfft_init_f32.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_rfft_fast_f32.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_rfft_fast_init_f32.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_cfft_f32.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_cfft_radix8_f32.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_rfft_init_q15.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_rfft_init_q31.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/CommonTables/arm_common_tables.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/CommonTables/arm_const_structs.c
+    )
+    
+    list(APPEND LIB_SRC_FILES ${CMSIS_DSP_NON_ARM_SRC_FILES})
+endif()
+
 # Create a library from source code.
-add_library(${SourceLib} STATIC ${LIB_SRC_FILES} )
+add_library(${SourceLib} STATIC ${LIB_SRC_FILES})
 target_sources(${SourceLib} PUBLIC ${LIB_SRC_FILES})
 
 # Define executable.
@@ -35,7 +53,17 @@ target_compile_definitions(${SourceLib} PRIVATE LOGGING_ENABLED=$<BOOL:${LOGGING
 set(INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/configs
+)
+
+if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
+    set(CMSIS_DSP_NON_ARM_INCLUDE_DIR
+        # FFT functions.
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Include
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/PrivateInclude
     )
+    
+    list(APPEND INCLUDE_DIRS ${CMSIS_DSP_NON_ARM_INCLUDE_DIR})
+endif()
 
 target_include_directories(${SourceExecutable} PUBLIC ${INCLUDE_DIRS} )
 target_include_directories(${SourceLib} PUBLIC ${INCLUDE_DIRS} )
@@ -44,17 +72,6 @@ if(DEFINED EXTRA_INCLUDES)
     target_include_directories(${SourceExecutable} PRIVATE ${EXTRA_INCLUDES})
     target_include_directories(${SourceLib} PRIVATE ${EXTRA_INCLUDES})
 endif()
-
-if(NOT CMAKE_CROSSCOMPILING)
-    # Attach include dirs to the target.
-    set(NON_PROD_LIB_INCLUDE_DIR
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/simple_fft/include/simple_fft
-    )
-
-    target_include_directories(${SourceExecutable} PRIVATE ${NON_PROD_LIB_INCLUDE_DIR})
-    target_include_directories(${SourceLib} PRIVATE ${NON_PROD_LIB_INCLUDE_DIR})
-endif()
-
 
 target_link_libraries(${SourceExecutable} PUBLIC
     ${SourceLib}

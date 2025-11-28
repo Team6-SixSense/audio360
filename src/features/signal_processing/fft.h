@@ -7,20 +7,13 @@
 
 #pragma once
 
+#include "arm_math.h"
+
 #ifdef STM_BUILD
 // stm32f767xx include must be first include to use CMSIS library.
-#include "arm_math.h"
 #include "stm32f767xx.h"
 
-#else
-#define __USE_SQUARE_BRACKETS_FOR_ELEMENT_ACCESS_OPERATOR  // Used by simple FFT
-#include <complex>
-
-#include "lib/simple_fft/include/simple_fft/fft.hpp"
-
-typedef float float32_t;
 #endif
-
 #include <vector>
 
 #include "features/signal_processing/window.hpp"
@@ -117,12 +110,6 @@ class FFT {
   /** @brief output signal. This memory is shared with fttw_plan plan. */
   float32_t* out;
 
-#ifdef STM_BUILD
   /** @brief Real FFT instance for using CMSIS DSP library */
   arm_rfft_fast_instance_f32 rfft_instance;
-#else
-  /** @brief Complex output vector representing frequency domain when using the
-   * Simple-FFT library. */
-  std::vector<std::complex<double> > complexOutput;
-#endif
 };
