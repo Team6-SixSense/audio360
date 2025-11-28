@@ -101,28 +101,28 @@ add_link_options(-T ${LINKER_SCRIPT})
 add_compile_definitions(__FPU_PRESENT=1 __FPU_USED=1)
 
 set(HARDWARE_SRC_FILE
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144/stm32f7xx_nucleo_144.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144/stm32f7xx_nucleo_144.c
 
         # Peripherals functions.
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_adc_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cortex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_dma.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pwr.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_rcc_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_spi.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal.c
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/system/peripheral.cpp
 
 
         # SAI peripheral
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sai.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_sai.c
 
         # FATFS
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/src/ff.c
@@ -134,15 +134,15 @@ set(HARDWARE_SRC_FILE
 
 
         # FFT functions.
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.S
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_init_f32.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_init_q15.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_init_q31.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.c
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_bitreversal2.S
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_f32.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_fast_init_f32.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_f32.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_cfft_radix8_f32.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_init_q15.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/TransformFunctions/arm_rfft_init_q31.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.c
 
         # USB functions
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usb_device.c
@@ -156,7 +156,7 @@ set(HARDWARE_SRC_FILE
 
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
 
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c
 
         CACHE FILEPATH "UART printf source files"
 )
@@ -167,15 +167,15 @@ set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD USE_HAL_DRIVER HAL_SAI
         HAL_PCD_MODULE_ENABLED USB_OTG_FS
         HAL_GPIO_MODULE_ENABLED CACHE INTERNAL "")
 set(EXTRA_INCLUDES
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
 
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/system
         ${CMAKE_CURRENT_LIST_DIR}/../runtimes
 
         # Peripherals functions.
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Include
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/Device/ST/STM32F7xx/Include
 
         # FATFS
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/src
@@ -183,10 +183,10 @@ set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/App
 
         # FFT functions.
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Include
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/Core/Include
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/Include
-        ${CMAKE_CURRENT_LIST_DIR}/../STM32CubeF7/Drivers/CMSIS/DSP/DSP_Lib_TestSuite/RefLibs/inc
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/Include
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/Core/Include
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/Include
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/CMSIS/DSP/DSP_Lib_TestSuite/RefLibs/inc
 
         #USB functions
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Inc

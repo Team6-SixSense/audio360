@@ -1,6 +1,6 @@
 [submodule "src/STM32CubeF7"]
-	path = src/STM32CubeF7
+	path = src/lib/STM32CubeF7
 	url = https://github.com/STMicroelectronics/STM32CubeF7.git
-[submodule "src/lib/simple_fft"]
-	path = src/lib/simple_fft
-	url = https://github.com/d1vanov/Simple-FFT
+[submodule "src/lib/CMSIS-DSP"]
+	path = src/lib/CMSIS-DSP
+	url = https://github.com/ARM-software/CMSIS-DSP

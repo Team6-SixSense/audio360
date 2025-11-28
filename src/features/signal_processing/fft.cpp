@@ -19,8 +19,6 @@
 FFT::FFT(uint16_t inputSize, int sampleFrequency)
     : inputSize(inputSize), sampleFrequency(sampleFrequency) {
   this->in = new float32_t[this->inputSize]();
-
-#ifdef STM_BUILD
   this->outputSize = this->inputSize;
   this->out = new float32_t[this->outputSize]();
 
@@ -30,22 +28,12 @@ FFT::FFT(uint16_t inputSize, int sampleFrequency)
   if (status != arm_status::ARM_MATH_SUCCESS) {
     ERROR("Error in initializing CMSIS DSP FFT. Error status code %d", status);
   }
-#else
-  // Simple FFT uses complex input only. Thus output is size N. However due to
-  // Hermitian symmetry, and input signal in our case being real values, we only
-  // care about the first half.
-  this->outputSize = (this->inputSize / 2) + 1;
-  this->complexOutput.resize(this->inputSize);
-
-#endif
 }
 
 FFT::~FFT() {
   // Free memory.
   delete[] this->in;
-#ifdef STM_BUILD
   delete[] this->out;
-#endif
 }
 
 FrequencyDomain FFT::signalToFrequency(std::vector<float>& signal,
@@ -53,13 +41,8 @@ FrequencyDomain FFT::signalToFrequency(std::vector<float>& signal,
   this->applyWindow(signal, windowFunction);
   this->insertSignal(signal);
 
-#ifdef STM_BUILD
   uint8_t ARM_RFFT_FAST_FORWARD = 0U;  // Discrete Fourier Transform.
   arm_rfft_fast_f32(&rfft_instance, this->in, this->out, ARM_RFFT_FAST_FORWARD);
-#else
-  const char* error = NULL;  // error description
-  simple_fft::FFT(this->in, this->complexOutput, this->inputSize, error);
-#endif
 
   return this->createOutput();
 }
@@ -89,7 +72,6 @@ FrequencyDomain FFT::createOutput() {
   FrequencyDomain frequencyDomain(N);
 
   for (int i = 0; i < N; i++) {
-#ifdef STM_BUILD
     // Since first FFT output is DC, there is no imaginary part. Thus CMSIS-DSP
     // library stores the last real value in the place of the first complex
     // value. Reference:
@@ -106,11 +88,6 @@ FrequencyDomain FFT::createOutput() {
       real = this->out[idx];
       img = 0.0f;
     }
-
-#else
-    float real = static_cast<float>(this->complexOutput[i].real());
-    float img = static_cast<float>(this->complexOutput[i].imag());
-#endif
 
     frequencyDomain.frequency[i] =
         (i * this->sampleFrequency) / static_cast<float>(this->inputSize);
