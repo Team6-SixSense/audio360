@@ -8,7 +8,8 @@
       "binaryDir": "${sourceDir}/build/arm",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/src/cmake/arm-eabi-none-gcc.cmake",
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ARM_BUILD": "ON"
       }
     },
     {

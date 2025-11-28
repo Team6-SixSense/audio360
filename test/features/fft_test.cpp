@@ -6,12 +6,12 @@
  ******************************************************************************
  */
 
-#include "features/signal_processing/fft.h"
+#include "fft.h"
 
 #include <gtest/gtest.h>
 
-#include "helper/constants.h"
-#include "helper/mp3/mp3.h"
+#include "constants.h"
+#include "mp3.h"
 
 /** @brief Given a 285 Hz sine audio signal, assert that the FFT has the largest
  * magnitude around 285 Hz. */

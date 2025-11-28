@@ -6,23 +6,22 @@
  */
 #ifdef STM_BUILD
 
-#include "helper/logging/sd_writer.h"
-#include "hardware_interface/system/peripheral.h"
-#include "helper/logging/logging.hpp"
+#include "sd_writer.h"
+
+#include "logging.hpp"
+#include "peripheral.h"
 #include "string.h"
 
 SDCardWriter::SDCardWriter(std::string filename) {
-
   // Open the file system.
-  this->fres = f_mount(&this->FatFs, "", 1); // 1 = mount now
+  this->fres = f_mount(&this->FatFs, "", 1);  // 1 = mount now
   if (this->fres != FR_OK) {
     ERROR("f_mount error (%i)\r\n", fres);
     Error_Handler();
   }
 
-  const char *filePath = (filename + ".txt").c_str();
-
-  this->fres = f_open(&this->fil, filePath,
+  std::string filePath = filename + ".txt";
+  this->fres = f_open(&this->fil, filePath.c_str(),
                       FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
 
   if (this->fres == FR_OK) {
@@ -37,10 +36,10 @@ SDCardWriter::~SDCardWriter() {
   f_mount(NULL, "", 0);
 }
 
-int SDCardWriter::write_int32_buffer(int32_t *buffer, int length)
-{
+int SDCardWriter::write_int32_buffer(int32_t* buffer, int length) {
   UINT bytesWritten;
-  this->fres = f_write(&this->fil, buffer, length * sizeof(int32_t), &bytesWritten);
+  this->fres =
+      f_write(&this->fil, buffer, length * sizeof(int32_t), &bytesWritten);
 
   if (this->fres == FR_OK) {
     INFO("Wrote %i bytes to SD Card!\r\n", bytesWritten);
@@ -53,12 +52,10 @@ int SDCardWriter::write_int32_buffer(int32_t *buffer, int length)
   return this->fres;
 }
 
-
-int SDCardWriter::write(const char *text) {
-
+int SDCardWriter::write(const char* text) {
   UINT textSize = strlen(text);
   BYTE buffer[256];
-  strncpy((char *)buffer, text, textSize);
+  strncpy((char*)buffer, text, textSize);
 
   UINT bytesWrote;
   this->fres = f_write(&this->fil, buffer, textSize, &bytesWrote);

@@ -7,19 +7,21 @@
 
 #define MINIMP3_IMPLEMENTATION
 
-#include "helper/mp3/mp3.h"
-#include <algorithm>
-#include <fstream>
+#include "mp3.h"
+
 #include <stdio.h>
 
-MP3Data readMP3File(std::string filepath) {
+#include <algorithm>
+#include <fstream>
 
+
+MP3Data readMP3File(std::string filepath) {
   std::vector<unsigned char> rawMp3Data = readRawMP3(filepath);
 
   // Decode MP3 bnary to Pulse Code Modulation (PCM).
   // PCM allows to represent analog signals digitally.
   mp3dec_t dec;
-  mp3dec_file_info_t info; // PCM will be stored here
+  mp3dec_file_info_t info;  // PCM will be stored here
 
   mp3dec_init(&dec);
   int statusCode = mp3dec_load_buf(&dec, rawMp3Data.data(), rawMp3Data.size(),
@@ -76,7 +78,7 @@ std::vector<unsigned char> readRawMP3(std::string filepath) {
   return rawMp3Data;
 }
 
-MP3Data handleMonoChannel(mp3dec_file_info_t &info) {
+MP3Data handleMonoChannel(mp3dec_file_info_t& info) {
   printf("[INFO] Mono Channel\n");
 
   std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
@@ -92,7 +94,7 @@ MP3Data handleMonoChannel(mp3dec_file_info_t &info) {
   return data;
 }
 
-MP3Data handleStereoChannel(mp3dec_file_info_t &info) {
+MP3Data handleStereoChannel(mp3dec_file_info_t& info) {
   printf("[INFO] Stereo Channel\n");
 
   std::vector<int16_t> pcm(info.buffer, info.buffer + info.samples);
