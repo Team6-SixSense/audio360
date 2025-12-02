@@ -21,17 +21,11 @@ arm_status matrix_add_f32(const matrix* pSrcA, const matrix* pSrcB,
                           matrix* pDst)
 
 {
-  if (pSrcA->numRows != pSrcB->numRows || pSrcA->numCols != pSrcB->numCols) {
-    return ARM_MATH_SIZE_MISMATCH;
-  }
   return arm_mat_add_f32(pSrcA, pSrcB, pDst);
 }
 
 arm_status matrix_sub_f32(const matrix* pSrcA, const matrix* pSrcB,
                           matrix* pDst) {
-  if (pSrcA->numRows != pSrcB->numRows || pSrcA->numCols != pSrcB->numCols) {
-    return ARM_MATH_SIZE_MISMATCH;
-  }
   return arm_mat_sub_f32(pSrcA, pSrcB, pDst);
 }
 

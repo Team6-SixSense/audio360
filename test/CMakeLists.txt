@@ -18,9 +18,6 @@ set(BUILD_GMOCK ON CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# Collect test source files
-file(GLOB_RECURSE TEST_SOURCES *.cpp)
-
 # Create test executable
 add_executable(${TestExecutable})
 add_dependencies(${TestExecutable} Audio360Lib)
@@ -31,6 +28,11 @@ add_subdirectory(helper)
 target_link_libraries(${TestExecutable} PRIVATE
     Audio360Lib
     GTest::gtest_main
+)
+
+# Link compile definitions.
+target_compile_definitions(${TestExecutable} PUBLIC
+    ARM_MATH_MATRIX_CHECK
 )
 
 # Register tests with CTest

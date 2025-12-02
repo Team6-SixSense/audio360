@@ -13,6 +13,10 @@
 #include "matrix.h"
 #include "test_helper.h"
 
+// Defining new precision error for matrix multiplication as this operation
+// introduces more errors.
+extern const float MATRIX_MULT_PRECISION;
+
 /**
  * @brief Create a Identity Matrix object
  *

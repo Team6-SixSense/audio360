@@ -7,6 +7,8 @@
 
 #include "matrix_test.h"
 
+const float MATRIX_MULT_PRECISION = 0.1f;
+
 void createIdentityMatrix(int n, matrix* M) {
   int size = n * n;
   float32_t* pData = (float32_t*)calloc(size, sizeof(float32_t));
@@ -24,7 +26,7 @@ void createRandomMatrix(int numRows, int numCols, matrix* M, float32_t minVal,
   float32_t* pData = (float32_t*)calloc(size, sizeof(float32_t));
 
   for (int i = 0; i < size; i++) {
-    pData[i] = generateRandomFloat32();
+    pData[i] = generateRandomFloat32(minVal, maxVal);
   }
 
   matrix_init_f32(M, numRows, numCols, pData);

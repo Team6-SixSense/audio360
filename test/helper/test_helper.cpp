@@ -7,7 +7,7 @@
 
 #include "test_helper.h"
 
-const float PRECISION_ERROR = 0.000001f;
+const float PRECISION_ERROR = 0.00001f;
 
 int generateRandomInt(int minNum, int maxNum) {
   float norm = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);

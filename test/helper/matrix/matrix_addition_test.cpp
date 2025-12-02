@@ -10,7 +10,7 @@
 #include "matrix_test.h"
 
 /**
- * @brief Tests matrix commutative property.
+ * @brief Tests matrix additive commutative property.
  * Property: A + B = B + A.
  */
 TEST(MatrixAddition, Commutativity) {
@@ -37,8 +37,8 @@ TEST(MatrixAddition, Commutativity) {
 }
 
 /**
- * @brief Tests matrix associativitiy property holds.
- * Property: ((A + B) + C = A + (B + C)).
+ * @brief Tests matrix additive associativitiy property holds.
+ * Property: (A + B) + C = A + (B + C).
  */
 TEST(MatrixAddition, Associativity) {
   const int numRows = 4, numCols = 4;
@@ -73,9 +73,9 @@ TEST(MatrixAddition, Associativity) {
 
 /**
  *  @brief Tests matrix additive identity property holds.
- * Property: (A + 0 = A).
+ * Property: A + 0 = A.
  */
-TEST(MatrixAddition, AdditiveIdentity) {
+TEST(MatrixAddition, Identity) {
   const int numRows = 5, numCols = 5;
   matrix A, Zero, Result;
 
@@ -99,9 +99,9 @@ TEST(MatrixAddition, AdditiveIdentity) {
 
 /**
  *  @brief Tests matrix additive inverse property holds.
- * Property: (A + (−A) = 0).
+ * Property: A + (−A) = 0.
  */
-TEST(MatrixAddition, AdditiveInverse) {
+TEST(MatrixAddition, Inverse) {
   const int numRows = 4, numCols = 4;
   matrix A, NegA, Result;
 
@@ -120,13 +120,13 @@ TEST(MatrixAddition, AdditiveInverse) {
   // Add matrices.
   matrix_add_f32(&A, &NegA, &Result);
 
-  // Assert that the matric inverse property holds.
+  // Assert that the matrix inverse property holds.
   for (int i = 0; i < numRows * numCols; i++) {
     ASSERT_NEAR(Result.pData[i], 0.0f, PRECISION_ERROR);
   }
 }
 
-/** @brief Test that matrix addtiion failes when matrices size are not
+/** @brief Test that matrix addition fails when matrices size are not
  * compatible. */
 TEST(MatrixAddition, DimensionMismatch) {
   matrix A, B, C;
