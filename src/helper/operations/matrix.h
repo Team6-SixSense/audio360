@@ -1,8 +1,8 @@
 /**
  ******************************************************************************
- * @file    matrix.hpp
- * @brief   Matrix operations wrapper code. This file is created to keep all
- *          implementation for ARM and non-ARM builds in one place.
+ * @file    matrix.h
+ * @brief   Matrix operations wrapper header. This file is created to keep all
+ * implementation for ARM and non-ARM builds in one place.
  ******************************************************************************
  */
 
@@ -30,9 +30,7 @@ typedef arm_matrix_instance_f32 matrix;
  * pData[i*numCols + j]
  */
 void matrix_init_f32(matrix* M, uint16_t nRows, uint16_t nColumns,
-                     float32_t* pData) {
-  arm_mat_init_f32(M, nRows, nColumns, pData);
-}
+                     float32_t* pData);
 
 /**
  * @brief Add two matrices. A + B = C
@@ -43,11 +41,7 @@ void matrix_init_f32(matrix* M, uint16_t nRows, uint16_t nColumns,
  * @return arm_status The status of the operation.
  */
 arm_status matrix_add_f32(const matrix* pSrcA, const matrix* pSrcB,
-                          matrix* pDst)
-
-{
-  return arm_mat_add_f32(pSrcA, pSrcB, pDst);
-}
+                          matrix* pDst);
 
 /**
  * @brief Subtracts two matrices. A - B = C.
@@ -58,9 +52,7 @@ arm_status matrix_add_f32(const matrix* pSrcA, const matrix* pSrcB,
  * @return arm_status The status of the operation.
  */
 arm_status matrix_sub_f32(const matrix* pSrcA, const matrix* pSrcB,
-                          matrix* pDst) {
-  return arm_mat_sub_f32(pSrcA, pSrcB, pDst);
-}
+                          matrix* pDst);
 
 /**
  * @brief Scales matrix by amplitude c. cA = B
@@ -70,9 +62,7 @@ arm_status matrix_sub_f32(const matrix* pSrcA, const matrix* pSrcB,
  * @param[out] pDst Matrix B.
  * @return arm_status The status of the operation.
  */
-arm_status matrix_scale_f32(const matrix* pSrc, float32_t scale, matrix* pDst) {
-  return arm_mat_scale_f32(pSrc, scale, pDst);
-}
+arm_status matrix_scale_f32(const matrix* pSrc, float32_t scale, matrix* pDst);
 
 /**
  * @brief Multiplies two matrices. A * B = C
@@ -83,9 +73,7 @@ arm_status matrix_scale_f32(const matrix* pSrc, float32_t scale, matrix* pDst) {
  * @return arm_status The status of the operation.
  */
 arm_status matrix_mult_f32(const matrix* pSrcA, const matrix* pSrcB,
-                           matrix* pDst) {
-  return arm_mat_mult_f32(pSrcA, pSrcB, pDst);
-}
+                           matrix* pDst);
 
 /**
  * @brief Transposes the input matrix.
@@ -94,9 +82,7 @@ arm_status matrix_mult_f32(const matrix* pSrcA, const matrix* pSrcB,
  * @param[out] pDst Transposed matrix.
  * @return arm_status The status of the operation.
  */
-arm_status matrix_transpose_f32(const matrix* pSrc, matrix* pDst) {
-  return arm_mat_trans_f32(pSrc, pDst);
-}
+arm_status matrix_transpose_f32(const matrix* pSrc, matrix* pDst);
 
 /**
  * @brief Determines the inverse of input matrix.
@@ -105,6 +91,4 @@ arm_status matrix_transpose_f32(const matrix* pSrc, matrix* pDst) {
  * @param[out] pDst Inversed matrix.
  * @return arm_status The status of the operation.
  */
-arm_status matrix_inverse_f32(const matrix* pSrc, matrix* pDst) {
-  return arm_mat_inverse_f32(pSrc, pDst);
-}
+arm_status matrix_inverse_f32(const matrix* pSrc, matrix* pDst);

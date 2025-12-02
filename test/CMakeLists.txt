@@ -22,8 +22,10 @@ FetchContent_MakeAvailable(googletest)
 file(GLOB_RECURSE TEST_SOURCES *.cpp)
 
 # Create test executable
-add_executable(${TestExecutable} ${TEST_SOURCES})
+add_executable(${TestExecutable})
 add_dependencies(${TestExecutable} Audio360Lib)
+add_subdirectory(features)
+add_subdirectory(helper)
 
 # Link test executable against your library + gtest
 target_link_libraries(${TestExecutable} PRIVATE
