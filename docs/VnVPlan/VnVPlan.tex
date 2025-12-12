@@ -1075,9 +1075,8 @@ Mock audio data from the audio filtering module with no error flags.
 
 \textbf{Output:}
 All components in the system are expected to log important events for debugging
-purposes. The Audio360 Engine module starts the processing pipeline by notifying
-the dependent components to begin processing the new audio data. The sent
-notification and received acknowledgment from dependent components should be
+purposes. The notification sent by the Audio360 engine to dependent components
+and the received acknowledgment from dependent components should be
 logged in the debugging logs for verification of pipeline integrity. 
 
 \textbf{Test Case Derivation:}
@@ -1107,8 +1106,7 @@ Mock audio data from the audio filtering module with no error flags.
 The Audio360 Engine module manages the flow of data through the processing
 pipeline. It ensures that each component processes the data in the correct order
 and that the output of one component is correctly passed as input to the next
-component. The flow of data through the pipeline should be logged for
-verification. Every dependent component in the pipeline is executed correctly
+component. Every dependent component in the pipeline is executed correctly
 and in order.
 
 \textbf{Test Case Derivation:}
@@ -1191,7 +1189,11 @@ sample with a class level accuracy of at least 90\%.
 \textbf{Test Case Derivation:}
 The Frequency Analysis module is responsible for classifying audio sources based
 on their frequency-domain characteristics. By providing known samples, the
-module's classification accuracy can be evaluated.
+module's classification accuracy can be evaluated. The 90\% accuracy requirement
+is chosen since it is an achievable metric given the compute resolution 
+constraints. This accuracy requirement strikes a balance between computational
+load and user benefit. 100\% accuracy is unlikely to be achieved without
+significant control of the user's surrounding environment. 
 
 \textbf{How test will be performed:}
 The test will be performed automatically by feeding the frequency domain data of
@@ -1236,7 +1238,9 @@ sample.
 The Frequency Analysis module is responsible for estimating the direction of
 audio sources based on the frequency-domain characteristics captured by the
 microphone array. By providing samples from known directions, the module's
-direction estimation accuracy can be evaluated.
+direction estimation accuracy can be evaluated. The +/- 45 degrees metric
+ensures that the localization is accurate to at-least half an euclidean space
+quadrant which is approximately the range of motion of human eyes \cite{Eye_Hang_Woo}. 
 
 \textbf{How test will be performed:}
 The test will be performed automatically by feeding the frequency domain data of
