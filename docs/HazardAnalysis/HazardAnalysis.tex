@@ -59,6 +59,7 @@
 2025-10-26 & Sathurshan & Update sampling rate requirement\\
 2025-11-06 & Sathurshan & Provided rationale for roadmap\\
 2025-11-06 & Sathurshan & Traceability of safety requirements to SRS\\
+2025-12-12 & Omar & Add linking between FMEA table and safety requirements.\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -271,7 +272,7 @@ and detection ratings:
     \midrule
     \endhead
 
-
+    \label{fmea:microphone}
     1 & Microphone &  Unresponsive / Distorted Microphone. & Not able to
     effectively localize audio. \cellrule Unable to provide warnings to user. &
     Microphone circuit failure. \cellrule Microphone damage. \cellrule Excessive
@@ -281,6 +282,7 @@ and detection ratings:
     thereof) and notify user. & FR1.4, FR2.3, FR3.5, FR7.2, NFR2.1  \\
 
     \midrule
+    \label{fmea:visualization_controller}
     2 & Visualization Controller & Disconnection from display. & Unable to
     provide visual notifications to user. & Depending on connection type: cable,
     wireless interference, dropped connection. & 3 & 2 & Loss of connection
@@ -289,7 +291,7 @@ and detection ratings:
 
     \midrule
 
-
+    \label{fmea:embedded_firmware}
     3 & Embedded Firmware & System crashes and freezes. & The system remains
     unusable until it is restarted. \cellrule Unable to provide notifications to
     user. & Software bugs. \cellrule Insufficient Error Handling \cellrule
@@ -299,7 +301,7 @@ and detection ratings:
     of firmware failure during post-mortem. \cellrule Robust testing and error
     handling. & FR1.3, FR4.1, FR4.4 \\
     \midrule
-
+    \label{fmea:sound_detection}
     4 & Sound Detection (Audio360 Engine)& Failure to detect important sounds. &
     Failure to notify user of critical sounds. & Insufficient microphone
     quality. \cellrule Poor classification algorithm. \cellrule Excessive
@@ -309,7 +311,7 @@ and detection ratings:
     microphone performance on sound library. & FR3.5, FR4.4, FR5.1, FR6.1  \\
 
     \midrule
-
+    \label{fmea:sound_classifier}
     5 & Sound Classifier (Audio360 Engine) & Misclassification of sounds. &
     Notify the user of the wrong sounds. & Insufficient classification algorithm
     \cellrule Insufficient microphone quality. & 3 & 2 & This is difficult to
@@ -320,7 +322,7 @@ and detection ratings:
 
 
     \midrule
-
+    \label{fmea:sound_localizer}
     6 & Sound Localizer (Audio360 Engine) & Inaccurate direction determination
     for sounds. & Misinform the user of the direction of important sounds. &
     Incorrect localization algorithm. \cellrule Insufficient microphone quality.
@@ -338,21 +340,22 @@ and detection ratings:
 
 \subsection{Out of Scope Failure Modes}
 The project involves off the shelf hardware components with their own possible
-failure modes and possible mitigations. Since the hardware and electrical
-components are not being designed as part of the project, these failure modes
-are considered out of scope:
+failure modes and possible mitigations. Since the hardware (micro-controller, 
+microphones, glasses) and electrical components are not being designed as 
+part of the project, these failure modes are considered out of scope:
 \begin{itemize}
     \item Battery failure / damage.
     \item Physical display damage.
     \item Power supply issues.
     \item Physical damage to the glasses.
+    \item Comfort issues resulting from usage of the glasses.
 \end{itemize}
 
 
 \section{Safety and Security Requirements}
 
 \begin{itemize}
-    \item \label{SR1}\textbf{SR1:} The microcontroller shall run the main
+    \item \label{SR1}\textbf{SR1:} The micro-controller shall run the main
     \progname ~software in a closed environment. No external devices other than
     the microphones and output display shall be able to connect to it. This
     ensures protection against unauthorized access.
@@ -406,23 +409,23 @@ are considered out of scope:
 \begin{table}[h!]
 \centering
 
-\begin{tabular}{ll}
+\begin{tabular}{lll}
 \toprule
-\textbf{Safety Requirement} & \textbf{Requirement from SRS} \\
+\textbf{Safety Requirement} & \textbf{Requirement from SRS} & \textbf{Failure Mode}\\
 \midrule
-\hyperref[SR1]{SR1} & \hyperref[SRS-FR9_1]{FR9.1} \\
-\hyperref[SR2]{SR2} & \hyperref[SRS-NFR4_3]{FR4.3} \\
-\hyperref[SR3]{SR3} & \hyperref[SRS-FR3_5]{FR3.5} \\
-\hyperref[SR4]{SR4} & \hyperref[SRS-FR4_4]{FR4.4} \\
-\hyperref[SR5]{SR5} & \hyperref[SRS-NFR6_2]{NFR6.2} \\
-\hyperref[SR6]{SR6} & \hyperref[SRS-FR6_2]{FR6.2} \\
-\hyperref[SR7]{SR7} & \hyperref[SRS-NFR3_3]{FR3.3} \\
-\hyperref[SR8]{SR8} & \hyperref[SRS-FR5_4]{FR5.4} \\
-\hyperref[SR9]{SR9} & \hyperref[SRS-NFR5_3]{NFR5.3} \\
-\hyperref[SR10]{SR10} & \hyperref[SRS-FR1_4]{FR1.4} \\
+\hyperref[SR1]{SR1} & \hyperref[SRS-FR9_1]{FR9.1} & \textbf{N/A}\\
+\hyperref[SR2]{SR2} & \hyperref[SRS-NFR4_3]{FR4.3} & \textbf{N/A}\\
+\hyperref[SR3]{SR3} & \hyperref[SRS-FR3_5]{FR3.5} & \hyperref[fmea:microphone]{Microphone failures}\\
+\hyperref[SR4]{SR4} & \hyperref[SRS-FR4_4]{FR4.4} & \hyperref[fmea:microphone]{Microphone failures}\\
+\hyperref[SR5]{SR5} & \hyperref[SRS-NFR6_2]{NFR6.2} & \hyperref[fmea:visualization_controller]{Visualization controller failures}\\
+\hyperref[SR6]{SR6} & \hyperref[SRS-FR6_2]{FR6.2} & \hyperref[fmea:microphone]{Microphone failures} and \hyperref[fmea:embedded_firmware]{embedded firmware}\\
+\hyperref[SR7]{SR7} & \hyperref[SRS-NFR3_3]{FR3.3} & \hyperref[fmea:sound_classifier]{Audio360 Engine} \\
+\hyperref[SR8]{SR8} & \hyperref[SRS-FR5_4]{FR5.4} & \hyperref[fmea:sound_classifier]{Sound classifier}\\
+\hyperref[SR9]{SR9} & \hyperref[SRS-NFR5_3]{NFR5.3} & \hyperref[fmea:sound_localizer]{Sound localizer}\\
+\hyperref[SR10]{SR10} & \hyperref[SRS-FR1_4]{FR1.4} & \hyperref[fmea:embedded_firmware]{Embedded firmware}\\
 \bottomrule
 \end{tabular}
-\caption{Safety requirements traceability to SRS requirements.}
+\caption{Safety requirements traceability to SRS requirements and FMEA table.}
 \end{table}
 
 \section{Roadmap}
