@@ -1,8 +1,8 @@
 # User Guide
 
-The user guide could also include video introductions and tutorials.
-
 The folders and files for this folder are as follows:
 
-Describe ...
-
+    .
+    ├── Makefile        # Make file for building pdfs in this folder.
+    ├── UserGuide.pdf   # User Guide report.
+    └── UserGuide.tex   # User Guide tex file.
