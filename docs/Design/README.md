@@ -2,4 +2,6 @@
 
 The folders and files for this folder are as follows:
 
-Describe ...
+    .
+    ├── SoftArchitecture    # Software Architecture.
+    └── SoftDetailedDes     # Software Detailed Design documentation.

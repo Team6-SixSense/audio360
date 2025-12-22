@@ -2,27 +2,29 @@
 
 The folders and files for this folder are as follows:
 
-The document `DevelopmentPlan.pdf` contains the information about the project development plan, and team charter. 
+    .
+    ├── Makefile                # Make file for building pdfs in this folder.
+    ├── DevelopmentPlan.pdf     # Development Plan report.
+    └── DevelopmentPlan.tex     # Development Plan tex file.
 
-The sections for each below:
+## Development Plan Document Outline
 
-**Project Development Plan**
+### Project Development Plan
 
-- Confidential Information
-- IP to Protect
-- Copyright License
-- Team Meeting Plan
-- Team Communication Plan
-- Team Member Roles
-- Workflow Plan
-- Project Decomposition and Scheduling
-- Proof of Concept Demonstration Plan
-- Expected Technology
-- Coding Standard
+1. Confidential Information
+2. IP to Protect
+3. Copyright License
+4. Team Meeting Plan
+5. Team Communication Plan
+6. Team Member Roles
+7. Workflow Plan
+8. Project Decomposition and Scheduling
+9. Proof of Concept Demonstration Plan
+10. Expected Technology
+11. Coding Standard
 
-**Team Charter**
+### Team Charter
 
-- External Goals
-- Attendance
-- Accountability and Teamwork
-
+1. External Goals
+2. Attendance
+3. Accountability and Teamwork
