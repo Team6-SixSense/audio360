@@ -1,0 +1,11 @@
+# src/hardware_interface CMakeLists.txt
+
+# Add subdirectories (each adds sources/includes).
+if(ARM_BUILD)
+    add_subdirectory(system)
+endif()
+
+# Add include directories.
+target_include_directories(${SourceLib} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)

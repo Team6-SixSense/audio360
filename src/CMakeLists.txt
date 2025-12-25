@@ -4,49 +4,17 @@ enable_language(ASM)
 set(SourceExecutable "Audio360.elf")
 set(SourceLib "Audio360Lib")
 
-# Collect source files.
-file(GLOB_RECURSE SRC_FILES
-    helper/*.cpp
-    features/*.cpp
-)
-
-set(LIB_SRC_FILES ${SRC_FILES})
-list(FILTER LIB_SRC_FILES EXCLUDE REGEX "main.cpp")
-
-if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
-    file(GLOB_RECURSE ARM_SRC_FILES
-        hardware_interface/system/*.c
-        hardware_interface/system/*.cpp
-    )
-
-    list(APPEND LIB_SRC_FILES ${ARM_SRC_FILES})
-
-else()
-    set(CMSIS_DSP_NON_ARM_SRC_FILES
-        # FFT functions.
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_bitreversal2.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_cfft_init_f32.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_rfft_fast_f32.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_rfft_fast_init_f32.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_cfft_f32.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_cfft_radix8_f32.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_rfft_init_q15.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/TransformFunctions/arm_rfft_init_q31.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/CommonTables/arm_common_tables.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Source/CommonTables/arm_const_structs.c
-    )
-
-    list(APPEND LIB_SRC_FILES ${CMSIS_DSP_NON_ARM_SRC_FILES})
-endif()
-
-# Create a library from source code.
-add_library(${SourceLib} STATIC ${LIB_SRC_FILES})
-target_sources(${SourceLib} PUBLIC ${LIB_SRC_FILES})
-
 # Define executable.
+add_library(${SourceLib} STATIC)
+
 add_executable(${SourceExecutable}
     main.cpp
     ${EXTRA_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/peripheral.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/stm32f7xx_hal_msp.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/stm32f7xx_it.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/syscall.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/sysmem.c
 )
 
 # Add definitions/includes if cross-compiling (toolchain sets them)
@@ -63,16 +31,6 @@ set(INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/configs
 )
 
-if(NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm")
-    set(CMSIS_DSP_NON_ARM_INCLUDE_DIR
-        # FFT functions.
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/Include
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/CMSIS-DSP/PrivateInclude
-    )
-    
-    list(APPEND INCLUDE_DIRS ${CMSIS_DSP_NON_ARM_INCLUDE_DIR})
-endif()
-
 target_include_directories(${SourceExecutable} PUBLIC ${INCLUDE_DIRS} )
 target_include_directories(${SourceLib} PUBLIC ${INCLUDE_DIRS} )
 
@@ -81,6 +39,11 @@ if(DEFINED EXTRA_INCLUDES)
     target_include_directories(${SourceLib} PRIVATE ${EXTRA_INCLUDES})
 endif()
 
-target_link_libraries(${SourceExecutable} PUBLIC
-    ${SourceLib}
-)
+# Add subdirectories (each adds sources/includes).
+add_subdirectory(features)
+add_subdirectory(hardware_interface)
+add_subdirectory(helper)
+add_subdirectory(lib)
+add_subdirectory(runtimes)
+
+target_link_libraries(${SourceExecutable} PUBLIC ${SourceLib})
