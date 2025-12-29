@@ -7,10 +7,11 @@
 
 #pragma once
 
-#include "hardware_interface/system/peripheral.h"
-#include "helper/bit_operations.hpp"
-#include "helper/constants.h"
+#include "bit_operations.hpp"
+#include "constants.h"
+#include "peripheral.h"
 #include "usbd_cdc_if.h"
+
 
 void main_usb_tx() {
   int32_t waveform_buffer1[WAVEFORM_SAMPLES];

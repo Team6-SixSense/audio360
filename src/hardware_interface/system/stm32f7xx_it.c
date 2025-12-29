@@ -18,9 +18,8 @@
 #ifdef STM_BUILD
 
 /* Includes ------------------------------------------------------------------*/
-#include "hardware_interface/system/stm32f7xx_it.h"
 #include "stm32f7xx_hal.h"
-
+#include "stm32f7xx_it.h"
 
 /******************************************************************************/
 /*           Cortex-M7 Processor Interruption and Exception Handlers          */
@@ -95,10 +94,9 @@ void SysTick_Handler(void) { HAL_IncTick(); }
 /******************************************************************************/
 
 /**
-  * @brief This function handles USB On The Go FS global interrupt.
-  */
-void OTG_FS_IRQHandler(void)
-{
+ * @brief This function handles USB On The Go FS global interrupt.
+ */
+void OTG_FS_IRQHandler(void) {
   /* USER CODE BEGIN OTG_FS_IRQn 0 */
 
   /* USER CODE END OTG_FS_IRQn 0 */
@@ -109,10 +107,9 @@ void OTG_FS_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles SAI1 global interrupt.
-  */
-void SAI1_IRQHandler(void)
-{
+ * @brief This function handles SAI1 global interrupt.
+ */
+void SAI1_IRQHandler(void) {
   /* USER CODE BEGIN SAI1_IRQn 0 */
 
   /* USER CODE END SAI1_IRQn 0 */

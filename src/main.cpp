@@ -6,7 +6,7 @@
  */
 
 #ifdef STM_BUILD
-#include "hardware_interface/system/peripheral.h"
+#include "peripheral.h"
 #endif
 
 #include <stdio.h>
