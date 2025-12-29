@@ -2,6 +2,7 @@
 
 # Add subdirectories (each adds sources/includes).
 add_subdirectory(logging)
+add_subdirectory(operations)
 
 if(NOT ARM_BUILD)
     add_subdirectory(mp3)
