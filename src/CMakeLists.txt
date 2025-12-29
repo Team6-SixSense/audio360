@@ -10,11 +10,6 @@ add_library(${SourceLib} STATIC)
 add_executable(${SourceExecutable}
     main.cpp
     ${EXTRA_SOURCES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/peripheral.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/stm32f7xx_hal_msp.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/stm32f7xx_it.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/syscall.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/hardware_interface/system/sysmem.c
 )
 
 # Add definitions/includes if cross-compiling (toolchain sets them)
