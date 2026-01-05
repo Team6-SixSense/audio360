@@ -69,6 +69,37 @@
             "presentation": {
                 "reveal": "always"
             }
-        }
+        },
+        {
+            "label": "Build x86 64 Preset Ninja",
+            "type": "shell",
+            "command": "cmake --preset native-x86_64-Ninja",
+            "detail": "Configures the project using the native-x86_64-Ninja preset, setting up all toolchains, options, and build files.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Ninja",
+            "type": "shell",
+            "command": "cmake --build --preset build-x86_64-NINJA",
+            "detail": "Builds (compiles) the project using the build-x86_64-Ninja preset based on the previously generated configuration.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 All Ninja",
+            "dependsOn": [
+                
+                "Build x86 64 Preset Ninja",
+                "Build x86 64 Ninja"
+            ],
+            "dependsOrder": "sequence",
+            "detail": "Configures and builds the project using the build-x86_64-NINJA preset.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
     ]
 }
