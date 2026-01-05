@@ -8,12 +8,14 @@
 #pragma once
 
 #ifdef STM_BUILD
-#include "hardware_interface/sd_logger/FatFs/App/fatfs.h"
 #include <string>
+
+#include "fatfs.h"
+
 
 /** @brief Class for writing to a SD card on the microcontroller. */
 class SDCardWriter {
-public:
+ public:
   /**
    * @brief Construct a new SDCardWriter object.
    *
@@ -30,7 +32,7 @@ public:
    * @param text The text to write to the file.
    * @return int Status code. 0 for success, otherwise failure has occurred.
    */
-  int write(const char *text);
+  int write(const char* text);
 
   /**
    * @brief Write int32 buffer to the file.
@@ -39,9 +41,9 @@ public:
    * @param length Length of the buffer input
    * @return int Status code. 0 for success, otherwise failure has occurred.
    */
-  int write_int32_buffer(int32_t *buffer, int length);
+  int write_int32_buffer(int32_t* buffer, int length);
 
-private:
+ private:
   /** @brief FAT Filesystem handle. */
   FATFS FatFs;
 
