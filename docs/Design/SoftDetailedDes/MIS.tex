@@ -2377,9 +2377,14 @@ None
   also be able to design PCBs that are optimized for reducing trace lengths
   between the microphones and the microcontroller, improving signal integrity. 
   
-  \textbf{Sathurshan:} The limitation of the solution is compute and memory
-  power. Given further time, the team would be able to design a system that is
-  more low level and is optimized in accomplishing the tasks that are required.
+  \textbf{Sathurshan:} The limitations of the solution is the dependency on
+  hardware. This project relies on hardware, and our team has done
+  a good job abstracting the software design from the hardware design. This
+  allows the team ensure the software is portable and scalable. However, it
+  makes testing and developing the software much difficult as the team only has
+  budget for 2 cheap microcontrollers. This forces the team to optimize the
+  software as much as possible, while making debugging efforts simple, both are
+  difficult to acheive at the same time.
 
   \textbf{Kalp:} I think the biggest limitation that we can see right now is the
   hardware limitations. The software that we're using for this project is good
@@ -2415,11 +2420,15 @@ None
   learning algorithms for audio classification, but ultimately chose not to due
   to simplicity and compute resource constraints
 
-  \textbf{Sathurshan:} Personally, there was not a lot of time to think about
-  other designs. The team has been implementing the software before this
-  document was created since the proof of concept is one week after this
-  document is due. Thus, the team already considered and analyzed high level
-  designs months ago and is too far back to document them.
+  \textbf{Sathurshan:} Initially, having a abstracted hardware layer was not
+  really considered. At the beginning of the project, we did not realize the
+  risk of how difficult it is to get the right hardware for our problem at
+  an affordable cost. Initial thoughts of the design was to couple the software
+  tightly with the hardware to make our lives easier (faster development time).
+  However due to the risk, the team benefits more of an abstracted layer.
+  This de-risks having the re-write a lot of code in the case where hardware
+  needed to be changed midway in the project. It ultimately made our current
+  design portable and scalable.
 
   \textbf{Kalp:} I know for the software side, specifically the audio
   classification, we considered using a neural network for the classification.
