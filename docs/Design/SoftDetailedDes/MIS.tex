@@ -57,6 +57,7 @@ urlcolor=cyan          % color of external links
 & {\bf Notes}\\
 \midrule
 2025-11-13 & 1.0 & Initial write-up\\
+2026-01-06 & 2.0 & Clearer MIS assumptions.\\
 \bottomrule
 \end{tabularx}
 
@@ -535,7 +536,8 @@ None.
 \end{itemize}
 
 \subsubsection{Assumptions}
-None.
+System may or may not have valid USART target port connection at the time of
+initialization.
 
 \subsubsection{Access Routine Semantics}
 \noindent initUSART():
@@ -617,7 +619,9 @@ None.
 \subsubsection{Environment Variables}
 None.
 \subsubsection{Assumptions}
-None.
+
+System may or may not have connected and/or working SD card at the time of
+initialization.
 
 \subsubsection{Access Routine Semantics}
 \noindent initSDCard():
@@ -688,7 +692,9 @@ subscribeDiagnostics & callback: \(\mathbb{N} \rightarrow \text{void}\) & - & -
 \end{itemize}
 
 \subsubsection{Assumptions}
-None.
+
+System may or may not have connected and/or working microphones at the time of
+initialization.
 
 \subsubsection{Access Routine Semantics}
 \noindent initMicDiagnostics():
@@ -847,7 +853,7 @@ None.
 
 \subsubsection{Assumptions}
 
-None.
+Angle inputs are represented in radians.
 
 \subsubsection{Access Routine Semantics}
 
@@ -1004,7 +1010,13 @@ None
 
 \subsubsection{Assumptions}
 
-None
+\begin{itemize}
+  \item Audio input source provides raw data.
+  \item To ensure the correct ordering of data, input sources may provide
+    audio samples with associated timestamps. When timestamps are not provided, 
+    the data is assumed to be in the order received.
+\end{itemize}
+
 
 \subsubsection{Access Routine Semantics}
 
@@ -1212,7 +1224,9 @@ AnomalyDetectorInitFailure \\
 \end{itemize}
 
 \subsection{Assumptions}
-None.
+
+Input audio data may have anomalies that occur within a short time that may
+not be possible to identify as an anomaly.
 
 \subsubsection{Access Routine Semantics}
 \noindent initAnomalyDetector():
@@ -1330,7 +1344,8 @@ None
 
 \subsubsection{Assumptions}
 
-None
+Module will have access to hardware acceleration methods on supported hardware
+devices that it is running on.
 
 \subsubsection{Access Routine Semantics}
 
@@ -1400,7 +1415,11 @@ None
 
 \subsubsection{Assumptions}
 
-None
+\begin{itemize}
+  \item Logs are provided in chronological order in terms of time of log
+    occurrence.
+  \item Log source file and line number are always provided for traceability.
+\end{itemize}
 
 \subsubsection{Access Routine Semantics}
 
@@ -1472,7 +1491,9 @@ runFaultAnalysis & - & - & - \\
 
 \subsubsection{Assumptions}
 
-Fault Manager module itself does not run into any critical faults.
+Fault Manager module runs all the time unless there is a critical system fault
+that prevents the module from running at all. The module will only run once
+after system set-up (pheripherals) is successful.
 
 \subsubsection{Access Routine Semantics}
 
