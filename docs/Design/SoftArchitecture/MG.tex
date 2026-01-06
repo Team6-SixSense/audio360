@@ -613,11 +613,11 @@ array hardware and its connections to the microcontroller.
   transformations.
 \item[Services:] Analyzes four synchronized microphone audio streams to estimate
   the direction of arrival of a sound source. Takes as input four time-domain or
-  frequency-domain audio signals and outputs an angle (in degrees) representing
+  frequency-domain audio signals and outputs an angle (in radians) representing
   the estimated direction of the sound source relative to the microphone array's
   reference axis. Provides real-time directional audio analysis with target
-  accuracy of 45 degrees as specified in the SRS
-  (\hyperref[SRS-NFR5_3]{NFR5.3}).
+  accuracy of \hyperref[SRS-symbol:theta_e]{$\theta_e$} radian as specified in
+  the SRS (\hyperref[SRS-NFR5_3]{NFR5.3}).
 \item[Implemented By:] \progname{} (Python for prototyping, C/C++ for embedded
   implementation)
 \item[Type of Module:] Abstract Data Type
