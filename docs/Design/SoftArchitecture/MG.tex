@@ -48,8 +48,9 @@
 & {\bf Notes}\\
 \midrule
 2025-11-13 & 1.0 & Initial write-up\\
-2026-01-03 & 2.0 & Module type definitions \& formatting section Module
+2026-01-06 & 2.0 & Module type definitions \& formatting section Module
                    Decomposition.\\
+2025-01-06 & 1.0 & Detailed timeline Rev0. \\
 \bottomrule
 \end{tabularx}
 
@@ -997,15 +998,59 @@ roadmap}. It is organized by milestones corresponding to the major phases of the
 project timeline (Rev 0, Rev 1).
 
 Major implementation for the following modules have been completed as of the
-writing of this document:
+Proof of Concept deadline:
 \begin{itemize}
-\item Audio Generation Module (\mref{mAudioGen})
-\item Logging Module (\mref{mLogging})
-\item Fast Fourier Transform Module (\mref{mFFT})
-\item SD Card Interface Module (\mref{mSDInterface})
+\item Microphone Input Module (\mref{mMicInput})
 \item USART Communication Module (\mref{mUSART})
-\end{itemize} 
-No tasks are thus generated for these modules in the project roadmap.
+\item SD Card Interface Module (\mref{mSDInterface})
+\item Audio Generation Module (\mref{mAudioGen})
+\item Audio Spectral Leakage Prevention Module (\mref{mAudioSpectralLeakage})
+\item Fast Fourier Transform Module (\mref{mFFT})
+\item Logging Module (\mref{mLogging})
+\end{itemize}
+
+For Revision 0, the team will complete the implementation of the
+following modules listed in table \ref{table:rev0_timeline}.
+These modules are required for Rev 0 because they support the core features of
+the project which are audio classification and audio directional analysis.
+Deadlines were assigned to ensure there is enough time for integration
+verification with the hardware while respecting module dependencies.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Module} & \textbf{Deadline} \\ \hline
+        DOA (Direction of Arrival) Processor Module (\mref{mDOA})
+          & Jan 23, 2026 \\ 
+        Audio360 Engine Module (\mref{mAudio360Engine}) & Jan 23, 2026 \\
+        Audio Sampling Module (\mref{mAudioSampling}) & Jan 9, 2026 \\
+        Audio Normalizer Module (\mref{mAudioNormalizer}) & Jan 9, 2026 \\
+        Audio Anomaly Detection Module (\mref{mAudioAnomaly}) & Jan 23, 2026 \\
+        Mel Filter Module (\mref{mMelFilter}) & Jan 9, 2026 \\
+        Discrete Cosine Transform Module (\mref{mDCT}) & Jan 9, 2026 \\
+        Principle Component Analysis Module (\mref{mPCA}) & Jan 16, 2026 \\
+        Linear Discriminant Analysis Module (\mref{mLDA}) & Jan 16, 2026 \\
+        Classification Module (\mref{mClassification}) & Jan 16, 2026 \\
+        Visualization Module (\mref{mVisualization}) & Jan 16, 2026 \\
+        \hline
+    \end{tabular}
+    \caption{Rev 0 module development timeline.}
+    \label{table:rev0_timeline}
+\end{table}
+
+Github issue $\#361$ to $\#375$ are created to track the implementation of 
+modules. Note that modules implemented before POC may not explicity mention
+"module" in the issue name as implementation finished before this document was
+created. All issues have been assigned to team members based on their skills and
+domain knowledge.
+
+In parallel, the team will be writing unit tests for each module that is
+written. This is to ensure that the software is being developed correctly as
+there are limited number of microcontroller available to do full hardware
+integration testing. Omar Alam and Sathurshan Arulmohan will be taking main
+responsibility in verifying core features such as audio classification and
+audio direction analysis on hardware.
 
 \newpage
 \bibliographystyle{IEEEtran}
