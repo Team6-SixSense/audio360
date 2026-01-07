@@ -71,6 +71,7 @@ This section records information for easy reference.
     \textbf{symbol} & \textbf{description}\\
     \midrule 
     AC & Anticipated Change\\
+    ADC & Analog to Digital Converter\\
     \progname & 360 Audio analysis system on smart glasses\\
     DAG & Directed Acyclic Graph \\
     DOA & Direction of Arrival \\
@@ -240,7 +241,8 @@ adapted here is called design for change.
   \textbf{Rationale:} According to \hyperref[SRS-FR5_4]{FR5.4}, the system shall
   notify user when results from classification is low confidence. However, this
   may be disregarded if the accuracy of the classification module is near
-  perfect. 
+  perfect, or the visualization during low confidence may be change to better
+  accommodate the user. 
 
 \item[\refstepcounter{acnum} \actheacnum \label{acAudioGen}:] The method of
   generating simulated microphone array input for testing and proof of concept.
@@ -294,6 +296,8 @@ decisions will be changed.
  \textbf{Rationale:} Adheres to user \hyperref[SRS-goal:user_safety]{Goal 7},
  user safety and privacy, as well as \hyperref[SRS-FR9_1]{FR9.1}.
  \acref{acHardware} will be considered if additional compute power is required.
+ \acref{acSDCardLogging} mentions about SD connected for logging during
+ development only, however this unlikely change focuses on the final product.
 
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucMicSych}:]
   Microphones must always be synchronized at each sample.\\
@@ -410,7 +414,8 @@ between requirements and modules is listed in Table~\ref{TblRT}.
 the system shall detect and propagate faults to the embedded firmware layer for
 appropriate handling. A software fault manager module, \mref{mFaultManager}, is
 responsible for monitoring and reacting to software error states. In addition,
-the \mref{mMicDiag} module monitors the microphone array for hardware faults.
+the microphone diagnostic module \mref{mMicDiag} monitors the microphone array
+for hardware faults.
 
 \item \hyperref[SRS-NFR3_3]{NFR3.2} specifies that the system shall support
   different audio sample sizes. Sample size directly affects both the speed and
@@ -443,8 +448,8 @@ clipping or dropouts.
   features from the Mel-Frequency domain and performing Linear Discriminant
   Analysis (LDA) on components to predict the classification. Since this is a
   multi-step process, specific computational tasks are encapsulated within
-  de-coupled modules that will be called individually. This design affects
-  \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and
+  de-coupled modules that will be called individually. This design choice
+  affects \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and
   \mref{mClassification}. 
 
 \item \hyperref[SRS-FR5_2]{FR5.2}, \hyperref[SRS-NFR5_3]{NFR5.3} requires
@@ -557,7 +562,7 @@ card module connected to the microcontroller via SPI.
 \subsubsection{Microphone Diagnostic Module \mref{mMicDiag}}
 \begin{description}[labelindent=0.5cm]
 \item [Secrets: ] The internal logic used to perform diagnostic tests on the
-microphone array hardware using hardware ADC converters. 
+microphone array hardware using hardware ADC. 
 \item [Services: ] Provides diagnostic state information about the microphone
 array hardware and its connections to the microcontroller. 
 \item [Implemented By: ] Driver Layer
@@ -593,8 +598,7 @@ array hardware and its connections to the microcontroller.
   \item[Services:] Accepts classification labels and direction angles (in
   radians) from the Audio360 Engine, formats this information according to
   display constraints and prioritization rules, and renders visual indicators on
-  the smart glasses display. The module ensures non-intrusive presentation while
-  maintaining a minimum update rate of 30 frames per second. It also handles
+  the smart glasses display. It also handles
   display of error states and safety feature failure alerts.
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Data Type 
@@ -637,8 +641,7 @@ array hardware and its connections to the microcontroller.
   reference axis. Provides real-time directional audio analysis with target
   accuracy of \hyperref[SRS-symbol:theta_e]{$\theta_e$} radian as specified in
   the SRS (\hyperref[SRS-NFR5_3]{NFR5.3}).
-\item[Implemented By:] \progname{} (Python for prototyping, C/C++ for embedded
-  implementation)
+\item[Implemented By:] \progname{}
 \item[Type of Module:] Abstract Data Type
 \item[Notes:] This module is core to the system's primary functionality of
   providing directional awareness. It implements one or more DOA algorithms and
@@ -810,10 +813,7 @@ maintain core functionality when possible.
   \item[Services:] Accepts multi-channel audio signals from the microphone array
   and separates them into individual independent audio source components. Takes
   as input mixed audio signals from multiple microphones and outputs separated
-  audio streams, each representing an individual sound source. This enables
-  improved classification and direction estimation when multiple sound sources
-  are present simultaneously. The module may be conditionally invoked by the
-  Audio360 Engine when multiple sources are detected.
+  audio streams, each representing an individual sound source.
   \item[Implemented By:] \progname
   \item[Type of Module] Abstract Object
   \item[Notes:] This module is a stretch goal and may or may not be implemented
@@ -957,7 +957,7 @@ frame.
 
 \section{User Interfaces}
 
-The user interface for \progname is primarily visual, displayed through smart
+The user interface for \progname~is primarily visual, displayed through smart
 glasses in a heads-up display (HUD) format. The interface provides real-time
 visual indicators showing sound source classification and direction of arrival
 information.
