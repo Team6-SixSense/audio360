@@ -101,5 +101,36 @@
                 "reveal": "always"
             }
         },
+        {
+            "label": "Build x86 64 Preset Tests Ninja",
+            "type": "shell",
+            "command": "cmake --preset native-x86_64-Ninja-Tests -DBUILD_TESTS=ON",
+            "detail": "Configures the project using the native-x86_64-Ninja-Tests preset, setting up all toolchains, options, and build files.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Tests Ninja",
+            "type": "shell",
+            "command": "cmake --build --preset build-x86_64-NINJA-TESTS",
+            "detail": "Builds (compiles) the tests using the build-x86_64-NINJA-TESTS preset",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Tests All Ninja",
+            "dependsOn": [
+                
+                "Build x86 64 Preset Tests Ninja",
+                "Build x86 64 Tests Ninja"
+            ],
+            "dependsOrder": "sequence",
+            "detail": "Configures and builds the project using the build-x86_64-NINJA-TESTS preset.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
     ]
 }
