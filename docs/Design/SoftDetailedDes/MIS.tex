@@ -367,18 +367,18 @@ project.
 \subsection{Data Structures}
 \subsubsection{FrequencyDomain}\label{struct:FrequencyDomain}
 \begin{enumerate}
-  \item N [\hyperref[generic:uint16]{uint16}]: \label{state:FrequencyDomain:N}
+  \item N (\hyperref[generic:uint16]{uint16}): \label{state:FrequencyDomain:N}
     The number of data points.
-  \item frequency [\hyperref[generic:float32]{float32}[]]:
+  \item frequency (\hyperref[generic:float32]{float32}[]):
     \label{state:FrequencyDomain:frequency}
     The frequency represented in Hz.
-  \item real [\hyperref[generic:float32]{float32}[]]:
+  \item real (\hyperref[generic:float32]{float32}[]):
     \label{state:FrequencyDomain:real}
     The real component of the frequency contribution.
-  \item img [\hyperref[generic:float32]{float32}[]]:
+  \item img (\hyperref[generic:float32]{float32}[]):
     \label{state:FrequencyDomain:img}
     The imaginary component of the frequency contribution.
-  \item magnitude [\hyperref[generic:float32]{float32}[]]:
+  \item magnitude (\hyperref[generic:float32]{float32}[]):
     \label{state:FrequencyDomain:magnitude}
     The magnitude of the frequency component.
 \end{enumerate}
@@ -1200,7 +1200,7 @@ Normalization factor is pre-determined and known for all given sources.
     \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
     $\dfrac{sampleWindow[i]}{F_{source}})$ \\
     such that $N = $ size of sampleWindow and $F_{source}$ is normalization
-    factor of a the sampleWindow source.
+    factor of the sampleWindow source.
   \end{enumerate}
 \item exception: None
 \end{itemize}
