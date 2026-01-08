@@ -11,7 +11,7 @@
 #include "constants.h"
 #include "sd_writer.h"
 
-void main_sd_diag() {
+void mainSDDiag() {
   SDCardWriter* sdcardWriterPointer1 = new SDCardWriter("mic1");
   SDCardWriter* sdcardWriterPointer2 = new SDCardWriter("mic2");
   SDCardWriter* sdcardWriterPointer3 = new SDCardWriter("mic3");

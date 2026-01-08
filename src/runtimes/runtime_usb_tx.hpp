@@ -12,8 +12,7 @@
 #include "peripheral.h"
 #include "usbd_cdc_if.h"
 
-
-void main_usb_tx() {
+void mainUSB_TX() {
   int32_t waveform_buffer1[WAVEFORM_SAMPLES];
 
   SAI_HandleTypeDef* mic1 = getSAI1A_Handle();

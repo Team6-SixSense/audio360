@@ -6,3 +6,5 @@ Each file behaves similarly to a main.cpp, but is included as a selectable runti
 These modules are conditionally compiled using `#ifdef` directives in the parent main.cpp.
 This setup allows the team to easily switch between different runtime implementations, such as debugging runtimes versus production runtimes,without modifying large portions of code.
 Switching only requires defining the appropriate `#ifdef` macro at compile time.
+
+`runtime_audio360.hpp` is the main runtime code for production.
