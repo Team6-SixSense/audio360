@@ -30,6 +30,22 @@ typedef enum PeripheralError {
   INVALID_USB_SPEED,               // Invalid USB speed.
 } PeripheralError;
 
+static const char* peripheralErrorStrings[] = {"HAL_RCC_OSCILLATOR_INIT_FAIL",
+                                               "HAL_PWR_ENABLE_OVERDRIVE_FAIL",
+                                               "HAL_RCC_CLOCK_CONFIG_FAIL",
+                                               "HAL_RCC_PERI_CLOCK_CONFIG_FAIL",
+                                               "HAL_SPI_INIT_FAIL",
+                                               "HAL_SAI_A1_INIT_FAIL",
+                                               "HAL_SAI_B1_INIT_FAIL",
+                                               "HAL_SAI_A2_INIT_FAIL",
+                                               "HAL_SAI_B2_INIT_FAIL",
+                                               "HAL_UART_INIT_FAIL",
+                                               "HAL_PCD_INIT",
+                                               "SD_MOUNT_FAIL",
+                                               "USB_DEVICE_INIT_FAIL",
+                                               "USB_DEVICE_START_FAIL",
+                                               "INVALID_USB_SPEED"};
+
 /**
  * @brief Report when an error related to pheripheral has occured.
  *
