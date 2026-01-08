@@ -11,6 +11,7 @@
 \usepackage{xr}
 \usepackage{cite}
 \usepackage{pdflscape}
+\usepackage{enumitem}
 \hypersetup{ colorlinks, citecolor=blue, filecolor=black, linkcolor=red,
     urlcolor=blue }
 
@@ -47,6 +48,9 @@
 & {\bf Notes}\\
 \midrule
 2025-11-13 & 1.0 & Initial write-up\\
+2026-01-06 & 2.0 & Module type definitions \& formatting section Module
+                   Decomposition.\\
+2025-01-06 & 1.0 & Detailed timeline Rev0. \\
 \bottomrule
 \end{tabularx}
 
@@ -67,6 +71,7 @@ This section records information for easy reference.
     \textbf{symbol} & \textbf{description}\\
     \midrule 
     AC & Anticipated Change\\
+    ADC & Analog to Digital Converter\\
     \progname & 360 Audio analysis system on smart glasses\\
     DAG & Directed Acyclic Graph \\
     DOA & Direction of Arrival \\
@@ -236,7 +241,8 @@ adapted here is called design for change.
   \textbf{Rationale:} According to \hyperref[SRS-FR5_4]{FR5.4}, the system shall
   notify user when results from classification is low confidence. However, this
   may be disregarded if the accuracy of the classification module is near
-  perfect. 
+  perfect, or the visualization during low confidence may be change to better
+  accommodate the user. 
 
 \item[\refstepcounter{acnum} \actheacnum \label{acAudioGen}:] The method of
   generating simulated microphone array input for testing and proof of concept.
@@ -290,6 +296,8 @@ decisions will be changed.
  \textbf{Rationale:} Adheres to user \hyperref[SRS-goal:user_safety]{Goal 7},
  user safety and privacy, as well as \hyperref[SRS-FR9_1]{FR9.1}.
  \acref{acHardware} will be considered if additional compute power is required.
+ \acref{acSDCardLogging} mentions about SD connected for logging during
+ development only, however this unlikely change focuses on the final product.
 
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucMicSych}:]
   Microphones must always be synchronized at each sample.\\
@@ -406,7 +414,8 @@ between requirements and modules is listed in Table~\ref{TblRT}.
 the system shall detect and propagate faults to the embedded firmware layer for
 appropriate handling. A software fault manager module, \mref{mFaultManager}, is
 responsible for monitoring and reacting to software error states. In addition,
-the \mref{mMicDiag} module monitors the microphone array for hardware faults.
+the microphone diagnostic module \mref{mMicDiag} monitors the microphone array
+for hardware faults.
 
 \item \hyperref[SRS-NFR3_3]{NFR3.2} specifies that the system shall support
   different audio sample sizes. Sample size directly affects both the speed and
@@ -439,8 +448,8 @@ clipping or dropouts.
   features from the Mel-Frequency domain and performing Linear Discriminant
   Analysis (LDA) on components to predict the classification. Since this is a
   multi-step process, specific computational tasks are encapsulated within
-  de-coupled modules that will be called individually. This design affects
-  \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and
+  de-coupled modules that will be called individually. This design choice
+  affects \mref{mMelFilter}, \mref{mDCT}, \mref{mPCA}, \mref{mLDA} and
   \mref{mClassification}. 
 
 \item \hyperref[SRS-FR5_2]{FR5.2}, \hyperref[SRS-NFR5_3]{NFR5.3} requires
@@ -492,6 +501,21 @@ entry is \emph{Driver Layer}, this means that the module is provided by the
 \hyperref[SRS-def:stm32]{STM32} or by standard programming language libraries.
 \emph{\progname{}} means the module will be implemented by the \progname{}
 software.
+\newline
+\newline
+\noindent The \emph{type of module} field can be the following:
+\begin{description}[before=\small, labelindent=0.5cm]
+  \item [Library: ] Only export access programs, but do not have state
+    variables.
+  \item [Abstract Data Type: ] Modules that have both state and behaviour.
+  \item [Abstract Object: ] Modules that have both state and behaviour but there
+    can only be one instance.
+  \item [Generic Modules: ] Modules that are either abstract data types or
+    abstract objects and are parameterized by type.
+  \item [Interface Modules: ] Modules that provides synteax of specification
+    without implementation.
+\end{description}
+
 
 Only the leaf modules in the hierarchy have to be implemented. If a dash
 (\emph{--}) is shown, this means that the module is not a leaf and will not have
@@ -501,7 +525,7 @@ to be implemented.
 
 %% MICROPHONE INPUT MODULE.
 \subsubsection{Microphone Input Module \mref{mMicInput}}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item [Secrets: ] The configuration and initialization of the hardware
 peripherals required to read data from the microphone array. 
 \item [Services: ] Provides a driver interface to read audio sample data from
@@ -512,7 +536,7 @@ the microphone array as a buffered stream.
 
 %% USART COMMUNICATION MODULE.
 \subsubsection{USART Communication Module \mref{mUSART}}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item [Secrets: ] The configuration and initialization of the hardware
 peripherals required for USART serial communication with external devices.
 \item [Services: ] Provides an interface for sending and receiving serial data
@@ -523,7 +547,7 @@ using the USART protocol on the serial pins of the microcontroller.
 
 %% SD CARD INTERFACE MODULE.
 \subsubsection{SD Card Interface Module \mref{mSDInterface}}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item [Secrets:] The configuration and initialization of the SPI hardware
 peripherals and clocks required for SD card communication. This module also
 hides the SD card file system management and driver used to send commands to the
@@ -536,13 +560,13 @@ card module connected to the microcontroller via SPI.
 
 %% MICROPHONE DIAGNOSTIC MODULE.
 \subsubsection{Microphone Diagnostic Module \mref{mMicDiag}}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item [Secrets: ] The internal logic used to perform diagnostic tests on the
-microphone array hardware using hardware ADC converters. 
+microphone array hardware using hardware ADC. 
 \item [Services: ] Provides diagnostic state information about the microphone
 array hardware and its connections to the microcontroller. 
 \item [Implemented By: ] Driver Layer
-\item [Type of Module:] Abstract Data Type
+\item [Type of Module:] Abstract Object
 \end{description}
 
 
@@ -551,19 +575,19 @@ array hardware and its connections to the microcontroller.
 % AUDIO360 ENGINE MODULE.
 \subsubsection{Audio360 Engine Module (\mref{mAudio360Engine})}
 
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The internal coordination logic that determines the execution
   order and timing of core audio processing features. Also, the mechanisms that
   manage data flow between hardware interfaces and the software modules.
 \item[Services:] Orchestrates the overall audio processing by receiving raw
   input data and managing module communication.
 \item[Implemented By:] \progname
-\item[Type of Module:] Abstract Data Type 
+\item[Type of Module:] Abstract Object
 \end{description}
 
 % VISUALIZATION MODULE.
 \subsubsection{Visualization Module (\mref{mVisualization})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
   \item[Secrets:] The algorithms and data structures used to format and render
   visual information on the smart glasses display. This includes the layout
   strategy for HUD elements, prioritization logic for safety-critical
@@ -574,8 +598,7 @@ array hardware and its connections to the microcontroller.
   \item[Services:] Accepts classification labels and direction angles (in
   radians) from the Audio360 Engine, formats this information according to
   display constraints and prioritization rules, and renders visual indicators on
-  the smart glasses display. The module ensures non-intrusive presentation while
-  maintaining a minimum update rate of 30 frames per second. It also handles
+  the smart glasses display. It also handles
   display of error states and safety feature failure alerts.
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Data Type 
@@ -586,7 +609,7 @@ array hardware and its connections to the microcontroller.
 % AUDIO GENERATION MODULE.
 \subsubsection{Audio Generation Module (\mref{mAudioGen})}
 
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The algorithm for simulating room acoustics and generating
   synthetic microphone array data from a given audio source and position. This
   includes room response calculations and spatial audio propagation models. 
@@ -606,20 +629,19 @@ array hardware and its connections to the microcontroller.
 % DOA PROCESSOR MODULE
 \subsubsection{DOA (Directional of Arrival) Processor Module (\mref{mDOA})}
 
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The specific direction of arrival estimation algorithm and its
   implementation details, including signal processing techniques (MUSIC,
   SRP-PHAT, or FRIDA), frequency analysis methods, and coordinate system
   transformations.
 \item[Services:] Analyzes four synchronized microphone audio streams to estimate
   the direction of arrival of a sound source. Takes as input four time-domain or
-  frequency-domain audio signals and outputs an angle (in degrees) representing
+  frequency-domain audio signals and outputs an angle (in radians) representing
   the estimated direction of the sound source relative to the microphone array's
   reference axis. Provides real-time directional audio analysis with target
-  accuracy of 45 degrees as specified in the SRS
-  (\hyperref[SRS-NFR5_3]{NFR5.3}).
-\item[Implemented By:] \progname{} (Python for prototyping, C/C++ for embedded
-  implementation)
+  accuracy of \hyperref[SRS-symbol:theta_e]{$\theta_e$} radian as specified in
+  the SRS (\hyperref[SRS-NFR5_3]{NFR5.3}).
+\item[Implemented By:] \progname{}
 \item[Type of Module:] Abstract Data Type
 \item[Notes:] This module is core to the system's primary functionality of
   providing directional awareness. It implements one or more DOA algorithms and
@@ -632,7 +654,7 @@ array hardware and its connections to the microcontroller.
 
 % AUDIO SAMPLING MODULE.
 \subsubsection{Audio Sampling Module (\mref{mAudioSampling})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The data structure used to store sampled audio data, the
   scheduling of sampling times, and the memory optimization strategy for
   acquiring and storing samples.
@@ -645,7 +667,7 @@ array hardware and its connections to the microcontroller.
 % AUDIO SPECTRAL LEAKAGE PREVENTION MODULE.
 \subsubsection{Audio Spectral Leakage Prevention Module
   (\mref{mAudioSpectralLeakage})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] Windowing function strategy (Windowing is the method to minimize
   spectral leakage).
 \item[Services:] Applying windowing on audio signal to reduce
@@ -657,7 +679,7 @@ array hardware and its connections to the microcontroller.
 
 % AUDIO NORMALIZER MODULE.
 \subsubsection{Audio Normalizer Module (\mref{mAudioNormalizer})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The normalization algorithm.
 \item[Services:] Processes audio signals to maintain consistent amplitude across
   different sources.
@@ -667,7 +689,7 @@ array hardware and its connections to the microcontroller.
 
 % AUDIO ANOMALY DETECTION MODULE.
 \subsubsection{Audio Anomaly Detection Module (\mref{mAudioAnomaly})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The detection algorithms used to identify anomalies in the audio
   stream. Also includes the list of dependent modules that must be notified upon
   specific anomaly occurrences.
@@ -679,7 +701,7 @@ array hardware and its connections to the microcontroller.
 
 % FAST FOURIER TRANSFORM MODULE.
 \subsubsection{Fast Fourier Transform Module (\mref{mFFT})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The specific algorithm to compute the fourier transform,
   potentially including
   \hyperref[SRS-def:hardware_acceleration]{hardware acceleraion}
@@ -693,7 +715,7 @@ array hardware and its connections to the microcontroller.
 
 % LOGGING MODULE.
 \subsubsection{Logging Module (\mref{mLogging})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The method used to route character streams to output sources,
   and the internal log formatting strategy, including time-stamping and file
   source information.
@@ -705,18 +727,18 @@ array hardware and its connections to the microcontroller.
 
 % SOFTWARE FAULT MANAGER MODULE.
 \subsubsection{Software Fault Manager Module (\mref{mFaultManager})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
 \item[Secrets:] The internal mechanisms and decision logic used to detect,
   manage, and recover from software system faults.
 \item[Services:] Monitors system error states and manages critical faults to
 maintain core functionality when possible.
 \item[Implemented By:] \progname
-\item[Type of Module:] Abstract Data Type
+\item[Type of Module:] Abstract Object
 \end{description}
 
 % MEL FILTER MODULE.
 \subsubsection{Mel Filter Module (\mref{mMelFilter})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
   \item[Secrets:] The specific algorithm for converting a signal from the
   spectral domain to the mel spectral domain. 
   \item[Services:] Accepts a time-frequency domain signal and outputs the
@@ -728,7 +750,7 @@ maintain core functionality when possible.
 
 % DISCRETE COSINE TRANSFORM MODULE.
 \subsubsection{Discrete Cosine Transform Module (\mref{mDCT})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
   \item[Secrets:] The specific algorithm for computing the Discrete Cosine
   Transform (DCT) from a signal in the mel spectral domain.
   \item[Services:] Accepts a time-mel-frequency signal, and runs the algorithm
@@ -741,7 +763,7 @@ maintain core functionality when possible.
 
 % PRINCIPLE COMPONENT ANALYSIS MODULE.
 \subsubsection{Principle Component Analysis Module (\mref{mPCA})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
   \item[Secrets:] The specific algorithm for transforming the MFCC feature
   vector into a lower-dimensional space by extracting only the most significant
   variance. Also includes the projection matrix and mean feature matrix learned
@@ -750,12 +772,12 @@ maintain core functionality when possible.
   that preserves only the most significant variance from the original MFCC
   vector. This reduces the computational load for the LDA (\mref{mLDA}) module. 
   \item[Implemented By:] \progname
-  \item[Type of Module:] Abstract Data Type
+  \item[Type of Module:] Abstract Object
 \end{description}
 
 % LINEAR DISCRIMINANT ANALYSIS MODULE.
 \subsubsection{Linear Discriminant Analysis Module (\mref{mLDA})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
   \item[Secrets:] The specific algorithm for applying Linear Discriminant
   Analysis (LDA) to determine which class the sound most likely belongs to and
   the probability. Also includes the project matrix and class-specific weight
@@ -764,12 +786,12 @@ maintain core functionality when possible.
   module and performs linear discriminant classification to output the
   classification label corresponding to the detected sound category. 
   \item[Implemented By:] \progname
-  \item[Type of Module:] Abstract Data Type
+  \item[Type of Module:] Abstract Object
 \end{description}
 
 % CLASSIFICATION MODULE.
 \subsubsection{Classification Module (\mref{mClassification})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
   \item[Secrets:] The modules and the order to call them in to get the most
   probable classification using raw input audio. It also contains heuristics for
   determining when a classification is considered low-confidence. 
@@ -778,12 +800,12 @@ maintain core functionality when possible.
   Internally determines whether the classification is considered low confidence
   and outputs the classification with a flag if the confidence is low. 
   \item[Implemented By:] \progname
-  \item[Type of Module:] Abstract Data Type
+  \item[Type of Module:] Abstract Object
 \end{description}
 
 % ICA MODULE.
 \subsubsection{Independent Component Analysis (ICA) Module (\mref{mICA})}
-\begin{description}
+\begin{description}[labelindent=0.5cm]
   \item[Secrets:] The specific ICA algorithm implementation (e.g., FastICA) and
   its parameters for blind source separation. This includes the statistical
   independence criteria, optimization methods, and convergence thresholds used
@@ -791,10 +813,7 @@ maintain core functionality when possible.
   \item[Services:] Accepts multi-channel audio signals from the microphone array
   and separates them into individual independent audio source components. Takes
   as input mixed audio signals from multiple microphones and outputs separated
-  audio streams, each representing an individual sound source. This enables
-  improved classification and direction estimation when multiple sound sources
-  are present simultaneously. The module may be conditionally invoked by the
-  Audio360 Engine when multiple sources are detected.
+  audio streams, each representing an individual sound source.
   \item[Implemented By:] \progname
   \item[Type of Module] Abstract Object
   \item[Notes:] This module is a stretch goal and may or may not be implemented
@@ -938,7 +957,7 @@ frame.
 
 \section{User Interfaces}
 
-The user interface for \progname is primarily visual, displayed through smart
+The user interface for \progname~is primarily visual, displayed through smart
 glasses in a heads-up display (HUD) format. The interface provides real-time
 visual indicators showing sound source classification and direction of arrival
 information.
@@ -979,15 +998,59 @@ roadmap}. It is organized by milestones corresponding to the major phases of the
 project timeline (Rev 0, Rev 1).
 
 Major implementation for the following modules have been completed as of the
-writing of this document:
+Proof of Concept deadline:
 \begin{itemize}
-\item Audio Generation Module (\mref{mAudioGen})
-\item Logging Module (\mref{mLogging})
-\item Fast Fourier Transform Module (\mref{mFFT})
-\item SD Card Interface Module (\mref{mSDInterface})
+\item Microphone Input Module (\mref{mMicInput})
 \item USART Communication Module (\mref{mUSART})
-\end{itemize} 
-No tasks are thus generated for these modules in the project roadmap.
+\item SD Card Interface Module (\mref{mSDInterface})
+\item Audio Generation Module (\mref{mAudioGen})
+\item Audio Spectral Leakage Prevention Module (\mref{mAudioSpectralLeakage})
+\item Fast Fourier Transform Module (\mref{mFFT})
+\item Logging Module (\mref{mLogging})
+\end{itemize}
+
+For Revision 0, the team will complete the implementation of the
+following modules listed in table \ref{table:rev0_timeline}.
+These modules are required for Rev 0 because they support the core features of
+the project which are audio classification and audio directional analysis.
+Deadlines were assigned to ensure there is enough time for integration
+verification with the hardware while respecting module dependencies.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Module} & \textbf{Deadline} \\ \hline
+        DOA (Direction of Arrival) Processor Module (\mref{mDOA})
+          & Jan 23, 2026 \\ 
+        Audio360 Engine Module (\mref{mAudio360Engine}) & Jan 23, 2026 \\
+        Audio Sampling Module (\mref{mAudioSampling}) & Jan 9, 2026 \\
+        Audio Normalizer Module (\mref{mAudioNormalizer}) & Jan 9, 2026 \\
+        Audio Anomaly Detection Module (\mref{mAudioAnomaly}) & Jan 23, 2026 \\
+        Mel Filter Module (\mref{mMelFilter}) & Jan 9, 2026 \\
+        Discrete Cosine Transform Module (\mref{mDCT}) & Jan 9, 2026 \\
+        Principle Component Analysis Module (\mref{mPCA}) & Jan 16, 2026 \\
+        Linear Discriminant Analysis Module (\mref{mLDA}) & Jan 16, 2026 \\
+        Classification Module (\mref{mClassification}) & Jan 16, 2026 \\
+        Visualization Module (\mref{mVisualization}) & Jan 16, 2026 \\
+        \hline
+    \end{tabular}
+    \caption{Rev 0 module development timeline.}
+    \label{table:rev0_timeline}
+\end{table}
+
+Github issue $\#361$ to $\#375$ are created to track the implementation of 
+modules. Note that modules implemented before POC may not explicity mention
+"module" in the issue name as implementation finished before this document was
+created. All issues have been assigned to team members based on their skills and
+domain knowledge.
+
+In parallel, the team will be writing unit tests for each module that is
+written. This is to ensure that the software is being developed correctly as
+there are limited number of microcontroller available to do full hardware
+integration testing. Omar Alam and Sathurshan Arulmohan will be taking main
+responsibility in verifying core features such as audio classification and
+audio direction analysis on hardware.
 
 \newpage
 \bibliographystyle{IEEEtran}

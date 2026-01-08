@@ -51,6 +51,7 @@
 2025-11-26 & 3.1 & Change Clang Static Analyzer to Cppcheck \\
 2025-12-12 & 3.2 & Remove some unnecessary test details and add reference for 
 eye movement\\
+2025-01-06 & 3.3 & Update angle units from degrees to radians. \\
 \hline
 \end{tabularx}
 
@@ -1233,14 +1234,15 @@ originating from known directions relative to the microphone array.
 \textbf{Output:}
 The Frequency Analysis module processes input samples from the four microphone
 array and outputs the estimated direction of each audio source. The estimated
-direction should be within +/- 45 degrees of the known direction for each
-sample.
+direction should be within \hyperref[SRS-symbol:theta_e]{$\theta_e$} radians of
+the known direction for each sample.
 
 \textbf{Test Case Derivation:}
 The Frequency Analysis module is responsible for estimating the direction of
 audio sources based on the frequency-domain characteristics captured by the
 microphone array. By providing samples from known directions, the module's
-direction estimation accuracy can be evaluated. The +/- 45 degrees metric
+direction estimation accuracy can be evaluated. The
+\hyperref[SRS-symbol:theta_e]{$\theta_e$} metric
 ensures that the localization is accurate to at-least half an euclidean space
 quadrant which is approximately the range of motion of human eyes \cite{Eye_Hang_Woo}. 
 
@@ -1248,11 +1250,12 @@ quadrant which is approximately the range of motion of human eyes \cite{Eye_Hang
 The test will be performed automatically by feeding the frequency domain data of
 the known direction samples to the Frequency Analysis module. The estimated
 directions will be compared against the known directions to calculate the
-estimation accuracy. All estimated directions must be within the +/- 45 degree
+estimation accuracy. All estimated directions must be within the 
+\hyperref[SRS-symbol:theta_e]{$\theta_e$} 
 threshold of the known directions. In addition, the Mean Absolute Error (MAE)
 will be calculated to quantify the average direction estimation error across all
-samples. The MAE will need to be below 22.5 degrees for the test to pass using
-the formula:
+samples. The MAE will need to be below $\frac{\theta_e}{2}$ for the test to pass
+using the formula:
 
 \[
 \text{MAE} = \frac{1}{N} \sum_{i=1}^{N} | \text{Estimated Direction}_i - 
@@ -1347,7 +1350,7 @@ the microcontroller is connected to the output display.
 \textbf{Input:}
 A mock audio source direction input, represented as the object taken by the
 Visualization Controller module. The object will include an angle parameter in
-degrees (0 to 360°), indicating the direction of the audio source relative to
+radians (0 to $2\pi$), indicating the direction of the audio source relative to
 the user. This can be an arbitrary angle, such as 0°, 90°, 180°, 270°. 
 					
 \textbf{Output:}
@@ -1828,7 +1831,7 @@ the microcontroller is connected to the output display.
 \textbf{Input/Condition:} 
 A series of mock audio source direction inputs, represented as the object taken
 by the Visualization Controller module. The object will include an angle
-parameter in degrees (0 to 360°), indicating the direction of the audio source
+parameter in radians (0 to $2\pi$), indicating the direction of the audio source
 relative to the user. These can be an arbitrary angles.
 					
 \textbf{Output/Result:} 

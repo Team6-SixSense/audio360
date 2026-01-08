@@ -32,12 +32,46 @@ urlcolor=cyan          % color of external links
 
 \usepackage{array}
 
+% Used to wrap words to next row in tables when they don't fit.
+\usepackage{ragged2e}
+\renewcommand\tabularxcolumn[1]{>{\RaggedRight\arraybackslash\hspace{0pt}}p{#1}}
+
+% Document references
 \externaldocument[SRS-]{../../SRS/SRS}
 \externaldocument[MG-]{../SoftArchitecture/MG}
 \newcommand{\mref}[1]{M\ref{#1}}
 
 \input{../../Comments}
 \input{../../Common}
+
+% Custom commands
+\newenvironment{apitable}{%
+\begin{center}
+\begin{longtable}{|p{0.3\linewidth}|p{0.7\linewidth}|} 
+\hline
+\textbf{Name} & \textbf{Details} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Name} & \textbf{Details} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+}{%
+\end{longtable}
+\end{center}
+}
+
+\newcommand{\apifunc}[4]{%
+#1 & 
+\textbf{In:} #2 \newline
+\textbf{Out:} #3 \newline
+\textbf{Exceptions:} #4 \\
+\hline
+}
 
 \begin{document}
 
@@ -57,6 +91,9 @@ urlcolor=cyan          % color of external links
 & {\bf Notes}\\
 \midrule
 2025-11-13 & 1.0 & Initial write-up\\
+2026-01-06 & 2.0 & Clearer MIS assumptions.\\
+2026-01-06 & 2.1 & Reformatting exported access programs tables.\\
+2026-01-06 & 2.2 & Classfication module enums defined.\\
 \bottomrule
 \end{tabularx}
 
@@ -136,6 +173,7 @@ natural number & $\mathbb{N}$ & a number without a fractional component in [1,
   $\infty$) \\
 real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
 array/list & x[] & Ordered list of type x. \\
+2D array/list & x[][] & Ordered 2D list of type x. \\
 negate & $\neg$ & Logical math NOT.\\
 and & $\wedge$ & Logical math AND \\
 or & $\vee$ & Logical math OR \\
@@ -295,21 +333,52 @@ project.
   \item Loud = 2: \label{enum:AudioAnomalyStatus:Loud} Received audio is loud.
 \end{enumerate}
 
+\subsubsection{Classification}\label{enum:Classification}
+\begin{enumerate}
+  \item NONE = 0: \label{enum:Classification:None} No classification.
+  \item CAR = 1: \label{enum:Classification:Car} Classified car. 
+  \item CLAP = 2: \label{enum:Classification:Clap} Classified clapping. 
+  \item KETTLE = 3: \label{enum:Classification:Kettle} Classified kettle.
+\end{enumerate}
+
+\subsubsection{ConfidenceLevel}\label{enum:ConfidenceLevel}
+\begin{enumerate}
+  \item NO\_CONFIDENCE = 0: \label{enum:ConfidenceLevel:Noconfidence} No
+    confidence. 
+  \item LOW = 1: \label{enum:ConfidenceLevel:Low} Low confidence. 
+  \item MEDIUM = 2: \label{enum:ConfidenceLevel:Medium} Medium confidence.
+  \item HIGH = 3: \label{enum:ConfidenceLevel:High} High confidence.
+\end{enumerate}
+
+\subsubsection{ClassificationStatus}\label{enum:ClassificationStatus}
+\begin{enumerate}
+  \item Uninitialized = 0: \label{enum:ClassificationStatus:Uninitialized}
+    Classifcation module is not initialized.
+  \item Initialized = 1: \label{enum:ClassificationStatus:Initialized}
+    Classifcation module is initialized, but not ready.
+  \item Ready = 2: \label{enum:ClassificationStatus:Ready}
+    Classifcation module ready for requests.
+  \item Running = 3: \label{enum:ClassificationStatus:Running}
+    Classifcation module is running. Can not accept new requests.
+  \item Error = 4: \label{enum:Audio360ClassificationStatusStatus:Error}
+    Classifcation module is stuck at an unhandled error.
+\end{enumerate}
+
 \subsection{Data Structures}
 \subsubsection{FrequencyDomain}\label{struct:FrequencyDomain}
 \begin{enumerate}
-  \item N [\hyperref[generic:uint16]{uint16}]: \label{state:FrequencyDomain:N}
+  \item N (\hyperref[generic:uint16]{uint16}): \label{state:FrequencyDomain:N}
     The number of data points.
-  \item frequency [\hyperref[generic:float32]{float32}[]]:
+  \item frequency (\hyperref[generic:float32]{float32}[]):
     \label{state:FrequencyDomain:frequency}
     The frequency represented in Hz.
-  \item real [\hyperref[generic:float32]{float32}[]]:
+  \item real (\hyperref[generic:float32]{float32}[]):
     \label{state:FrequencyDomain:real}
     The real component of the frequency contribution.
-  \item img [\hyperref[generic:float32]{float32}[]]:
+  \item img (\hyperref[generic:float32]{float32}[]):
     \label{state:FrequencyDomain:img}
     The imaginary component of the frequency contribution.
-  \item magnitude [\hyperref[generic:float32]{float32}[]]:
+  \item magnitude (\hyperref[generic:float32]{float32}[]):
     \label{state:FrequencyDomain:magnitude}
     The magnitude of the frequency component.
 \end{enumerate}
@@ -376,26 +445,23 @@ stream to modules fetching the stream.
 
 \subsubsection{Exported Access Programs}
 
+\begin{apitable}
+  \apifunc{initMicInput}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {MicInputInitFailure}
+  \apifunc{subscribeMicInput}
+    {callback: \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA}}
+    {subscriptionCB: \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK}}
+    {MicInputSubscriptionFailure}
+  \apifunc{unsubscribeMicInput}
+    {subscriptionID: \(\mathbb{N}\)}
+    {-}
+    {MicInputUnsubscriptionFailure}
+  \apifunc{micInput\_DMA\_Rx}{handle: SAI\_HandleTypeDef*}{-}{-}
+  \apifunc{micInput\_diagnostic\_error}{errorCode: \(\mathbb{N}\)}{-}{-}
+\end{apitable}
 
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-initMicInput & - & \hyperref[generic:uint8]{uint8} & MicInputInitFailure \\
-\hline
-subscribeMicInput & callback: \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA} &
-subscriptionCB: \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK} &
-MicInputSubscriptionFailure \\
-\hline
-unsubscribeMicInput & subscriptionID: \(\mathbb{N}\) & - &
-MicInputUnsubscriptionFailure \\
-\hline
-micInput\_DMA\_Rx & handle: SAI\_HandleTypeDef* & - & - \\
-\hline
-micInput\_diagnostic\_error & errorCode: \(\mathbb{N}\) & - & - \\
-\end{tabularx}
-\end{center}
 
 \subsection{Semantics}
 
@@ -509,20 +575,20 @@ external device.
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-initUSART & - & \hyperref[generic:uint8]{uint8} & USARTInitFailure \\
-\hline
-transmitData & data: sequence of \hyperref[generic:uint8]{uint8} & - &
-USARTTxFailure \\
-\hline
-receiveData & length: \(\mathbb{N}\) & data: sequence of
-\hyperref[generic:uint8]{uint8} & USARTRxFailure \\
-
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{initUSART}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {USARTInitFailure}
+  \apifunc{transmitData}
+    {data: sequence of \hyperref[generic:uint8]{uint8}}
+    {-}
+    {USARTTxFailure}
+  \apifunc{receiveData}
+    {length: \(\mathbb{N}\)}
+    {data: sequence of \hyperref[generic:uint8]{uint8}}
+    {USARTRxFailure}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -535,7 +601,8 @@ None.
 \end{itemize}
 
 \subsubsection{Assumptions}
-None.
+System may or may not have valid USART target port connection at the time of
+initialization.
 
 \subsubsection{Access Routine Semantics}
 \noindent initUSART():
@@ -599,17 +666,16 @@ microcontroller via the SPI interface.
 None.
 
 \subsubsection{Exported Access Programs}
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-initSDCard & - & \hyperref[generic:uint8]{uint8} & SDCardInitFailure \\
-\hline
-writeLog & data: \hyperref[generic:string]{string} & - & SDCardWriteFailure \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{initSDCard}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {SDCardInitFailure}
+  \apifunc{writeLog}
+    {data: \hyperref[generic:string]{string}}
+    {-}
+    {SDCardWriteFailure}
+\end{apitable}
 
 \subsection{Semantics}
 \subsubsection{State Variables}
@@ -617,7 +683,9 @@ None.
 \subsubsection{Environment Variables}
 None.
 \subsubsection{Assumptions}
-None.
+
+System may or may not have connected and/or working SD card at the time of
+initialization.
 
 \subsubsection{Access Routine Semantics}
 \noindent initSDCard():
@@ -660,24 +728,23 @@ errors.
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-initMicDiagnostics & - & \hyperref[generic:uint8]{uint8} & MicDiagInitFailure \\
-\hline
-runMicDiagnostics & - & \hyperref[generic:uint8]{uint8} & MicDiagFailure \\
-\hline
-subscribeDiagnostics & callback: \(\mathbb{N} \rightarrow \text{void}\) & - & -
-\\
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{initMicDiagnostics}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {MicDiagInitFailure}
+  \apifunc{runMicDiagnostics}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {MicDiagFailure}
+  \apifunc{subscribeDiagnostics}
+    {callback: \(\mathbb{N} \rightarrow \text{void}\)}{-}{-}
+\end{apitable}
 
 \subsection{Semantics}
 \subsubsection{State Variables}
 \begin{itemize}
-  \item diagStatus : \(\mathbb{N}\)
+  \item diagStatus: \(\mathbb{N}\)
   \item callbacks: sequence of (\(\mathbb{N} \rightarrow \text{void}\))
 \end{itemize}
 
@@ -688,7 +755,9 @@ subscribeDiagnostics & callback: \(\mathbb{N} \rightarrow \text{void}\) & - & -
 \end{itemize}
 
 \subsubsection{Assumptions}
-None.
+
+System may or may not have connected and/or working microphones at the time of
+initialization.
 
 \subsubsection{Access Routine Semantics}
 \noindent initMicDiagnostics():
@@ -751,19 +820,14 @@ includes room response calculations and spatial audio propagation models.
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-generateAudio & audioSource: \hyperref[generic:float32]{float32}[], position:
-\hyperref[generic:float32]{float32}[], outputFile:
-\hyperref[generic:string]{string} & microphoneData[][]:
-[][\hyperref[generic:float32]{float32}] & AudioGenerationFailure \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{generateAudio}
+    {audioSource: \hyperref[generic:float32]{float32}[],
+    position: \hyperref[generic:float32]{float32}[],
+    outputFile: \hyperref[generic:string]{string}}
+    {microphoneData: \hyperref[generic:float32]{float32}[]}
+    {AudioGenerationFailure}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -823,17 +887,12 @@ direction estimation algorithms.
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-calculateDirection & audioData[][]: [][\hyperref[generic:float32]{float32}] &
-direction: \hyperref[generic:float32]{float32} & AudioProcessingFailure \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{calculateDirection}
+    {audioData: \hyperref[generic:float32]{float32}[]}
+    {direction: \hyperref[generic:float32]{float32}}
+    {AudioProcessingFailure}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -847,7 +906,7 @@ None.
 
 \subsubsection{Assumptions}
 
-None.
+Angle inputs are represented in radians.
 
 \subsubsection{Access Routine Semantics}
 
@@ -888,23 +947,16 @@ managing \hyperref[mod:Audio360Engine_Uses]{module} communication.
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-runProgram & - & - & ProgramStartFailure, ProgramRunTimeFailure \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{runProgram}{-}{-}{ProgramStartFailure, ProgramRunTimeFailure}
+\end{apitable}
 
 \subsection{Semantics}
 
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item state [\hyperref[enum:Audio360State]{Audio360State}]: Determines the
+  \item state (\hyperref[enum:Audio360State]{Audio360State}): Determines the
     current state of the the Audio360 engine. Each state will run a specific
     module in \hyperref[mod:Audio360Engine_Uses]{used modules}.
 \end{itemize}
@@ -912,7 +964,7 @@ runProgram & - & - & ProgramStartFailure, ProgramRunTimeFailure \\
 \subsubsection{Environment Variables}
 
 \begin{itemize}
-  \item status [\hyperref[enum:Audio360Status]{Audio360Status}]: Status of the
+  \item status (\hyperref[enum:Audio360Status]{Audio360Status}): Status of the
     module. This encapsulates initialization, running, ready, or errored.
 \end{itemize}
 
@@ -965,34 +1017,30 @@ of individual samples.
 \subsubsection{Exported Constants}
 
 \begin{itemize}
-  \item sampleWindowSize [\hyperref[generic:uint16]{uint16}]:
+  \item sampleWindowSize (\hyperref[generic:uint16]{uint16}):
     \label{var:sampleWindowSize}
     The number of samples in a window. The value is a power of 2.
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-sample & inputSource: \hyperref[generic:string]{string} & - & InputSourceError \\
-getSampledData & - & \hyperref[var:sampleData]{sampleData} & - \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{sample}
+    {inputSource: \hyperref[generic:string]{string}}
+    {-}
+    {InputSourceError}
+  \apifunc{getSampledData}{-}{\hyperref[var:sampleData]{sampleData}}{-}
+\end{apitable}
 
 \subsection{Semantics}
 
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item sampledData [\hyperref[generic:uint32]{uint32}[]]:
+  \item sampledData (\hyperref[generic:uint32]{uint32}[]):
     \label{var:sampleData}  
     A cyclic array of size \hyperref[var:sampleWindowSize]{sampleWindowSize}
     that stored the sampled data.
-  \item windowPosition [\hyperref[generic:uint32]{uint32}]:
+  \item windowPosition (\hyperref[generic:uint32]{uint32}):
     \label{var:windowPosition}  
     The current reference index position of the array storing sampled data. This
     denotes the starting point of the cyclic array. 
@@ -1004,7 +1052,13 @@ None
 
 \subsubsection{Assumptions}
 
-None
+\begin{itemize}
+  \item Audio input source provides raw data.
+  \item To ensure the correct ordering of data, input sources may provide
+    audio samples with associated timestamps. When timestamps are not provided, 
+    the data is assumed to be in the order received.
+\end{itemize}
+
 
 \subsubsection{Access Routine Semantics}
 
@@ -1025,7 +1079,7 @@ None
 \noindent getSampledData():
 \begin{itemize}
 \item transition: None 
-\item output: \hyperref[var:sampleData]{sampleData}
+\item output: \hyperref[var:sampleData]{sampledData}
 \item exception: None
 \end{itemize}
 
@@ -1054,17 +1108,12 @@ None
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-applyFilter & sampleWindow:\hyperref[generic:float32]{float32[]} &
-filteredWindow: \hyperref[generic:float32]{float32[]} & - \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{applyFilter}
+    {sampleWindow: \hyperref[generic:float32]{float32}[]}
+    {filteredWindow: \hyperref[generic:float32]{float32}[]}
+    {-}
+\end{apitable}
 
 \subsection{Semantics}
 \subsubsection{State Variables}
@@ -1119,18 +1168,13 @@ None
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-normalize & sampleWindow: \hyperref[generic:int32]{int32[]}, source:
-\hyperref[generic:string]{string} & filteredWindow:
-\hyperref[generic:float32]{float32[]} & - \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{normalize}
+    {sampleWindow: \hyperref[generic:int32]{int32}[],
+    source: \hyperref[generic:string]{string}}
+    {filteredWindow: \hyperref[generic:float32]{float32}[]}
+    {-}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -1156,7 +1200,7 @@ Normalization factor is pre-determined and known for all given sources.
     \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
     $\dfrac{sampleWindow[i]}{F_{source}})$ \\
     such that $N = $ size of sampleWindow and $F_{source}$ is normalization
-    factor of a the sampleWindow source.
+    factor of the sampleWindow source.
   \end{enumerate}
 \item exception: None
 \end{itemize}
@@ -1188,16 +1232,12 @@ patterns.
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-initAnomalyDetector & - & \hyperref[generic:uint8]{uint8} &
-AnomalyDetectorInitFailure \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{initAnomalyDetector}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {AnomalyDetectorInitFailure}
+\end{apitable}
 
 \subsection{Semantics}
 \subsubsection{State Variables}
@@ -1212,7 +1252,9 @@ AnomalyDetectorInitFailure \\
 \end{itemize}
 
 \subsection{Assumptions}
-None.
+
+Input audio data may have anomalies that occur within a short time that may
+not be possible to identify as an anomaly.
 
 \subsubsection{Access Routine Semantics}
 \noindent initAnomalyDetector():
@@ -1302,17 +1344,12 @@ Computes the discrete Fourier transform of the input signal to obtain its
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-signalToFrequency & signal: \hyperref[generic:int32]{int32[]} & frequency
-\hyperref[generic:float32]{float32[]} & - \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{signalToFrequency}
+    {signal: \hyperref[generic:int32]{int32}[]}
+    {frequency: \hyperref[generic:float32]{float32}[]}
+    {-}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -1323,14 +1360,16 @@ None
 \subsubsection{Environment Variables}
 
 \begin{itemize}
-  \item inputsize [uint32]: The size of the signal input, as in number of
+  \item inputsize (\hyperref[generic:uint32]{uint32}):
+    The size of the signal input, as in number of
      samples. This is required to interface with hardware acceleration methods
      on the microcontroller.
 \end{itemize}
 
 \subsubsection{Assumptions}
 
-None
+Module will have access to hardware acceleration methods on supported hardware
+devices that it is running on.
 
 \subsubsection{Access Routine Semantics}
 
@@ -1377,16 +1416,9 @@ for debugging and monitoring.
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-log & text: \hyperref[generic:string]{string} & - & - \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{log}{text: \hyperref[generic:string]{string}}{-}{-}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -1400,7 +1432,11 @@ None
 
 \subsubsection{Assumptions}
 
-None
+\begin{itemize}
+  \item Logs are provided in chronological order in terms of time of log
+    occurrence.
+  \item Log source file and line number are always provided for traceability.
+\end{itemize}
 
 \subsubsection{Access Routine Semantics}
 
@@ -1442,23 +1478,16 @@ functionality.
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-runFaultAnalysis & - & - & - \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{runFaultAnalysis}{-}{-}{-}
+\end{apitable}
 
 \subsection{Semantics}
 
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item faultState [\hyperref[enum:FaultState]{FaultState}]:
+  \item faultState (\hyperref[enum:FaultState]{FaultState}):
     \label{faultState}
     The current fault state of the overall software system.
 \end{itemize}
@@ -1472,7 +1501,9 @@ runFaultAnalysis & - & - & - \\
 
 \subsubsection{Assumptions}
 
-Fault Manager module itself does not run into any critical faults.
+Fault Manager module runs all the time unless there is a critical system fault
+that prevents the module from running at all. The module will only run once
+after system set-up (pheripherals) is successful.
 
 \subsubsection{Access Routine Semantics}
 
@@ -1508,17 +1539,12 @@ None
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-applyMelFilterBank & spectrogram: 2D real array & mel-spectrogram: 2D real array
-& invalidSpectrogramDimension \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{applyMelFilterBank}
+    {spectrogram: \hyperref[generic:float32]{float32}[][]}
+    {mel-spectrogram: \hyperref[generic:float32]{float32}[][]}
+    {invalidSpectrogramDimension}
+\end{apitable}
 
 \subsection{Semantics}
 \subsubsection{State Variables}
@@ -1599,17 +1625,12 @@ None
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-applyDCT & mel-spectrogram: 2D real array & mfcc: 2D real array &
-invalidDimensions \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{applyDCT}
+    {mel-spectrogram: \hyperref[generic:float32]{float32}[][]}
+    {mfcc: \hyperref[generic:float32]{float32}[][]}
+    {invalidDimensions}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -1694,17 +1715,12 @@ Non
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-applyPCA & mfcc: 2D real array & pcaFeatures: 2D real array & invalidDimensions
-\\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{applyPCA}
+    {mfcc: \hyperref[generic:float32]{float32}[][]}
+    {pcaFeatures: \hyperref[generic:float32]{float32}[][]}
+    {invalidDimensions}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -1798,17 +1814,12 @@ None
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-applyLDA & pcaFeatures: 2D real array & classLabels: 1D real array &
-invalidDimensions \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{applyLDA}
+    {pcaFeatures: \hyperref[generic:float32]{float32}[][]}
+    {classLabels: \hyperref[generic:float32]{float32}[]}
+    {invalidDimensions}
+\end{apitable}
 
 \subsection{Semantics}
 
@@ -1917,34 +1928,31 @@ involved.
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-classify & spectrogram: 2D real array & - & ClassificationStartFailure,
-ClassificationRunTimeFailure \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{classify}
+    {spectrogram: \hyperref[generic:float32]{float32}[][]}
+    {-}
+    {ClassificationStartFailure, ClassificationRunTimeFailure}
+\end{apitable}
 
 \subsection{Semantics}
 
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item state[classificationState]: Stores the current classification. Will
+  \item classification (\hyperref[enum:Classification]{Classification}):
+  Stores the current classification. Will
   continuously be updated at runtime after receiving continuous audio signals. 
-  \item state[classificationStatus]: Stores the confidence of the classification
+  \item ConfidenceLevel (\hyperref[enum:ConfidenceLevel]{ConfidenceLevel}):
+  Stores the confidence of the classification
   that was done. Values for status include high, medium or low confidence. 
 \end{itemize}
 
 \subsubsection{Environment Variables}
 
 \begin{itemize}
-  \item state[status]: Encapsulates initialization, running, ready or errored
-  status of the module.  
+  \item state (\hyperref[enum:ClassificationStatus]{ClassificationStatus}):
+  Encapsulates initialization, running, ready or errored status of the module.  
 \end{itemize}
 
 \subsubsection{Assumptions}
@@ -2001,41 +2009,38 @@ failure alerts.
 \subsubsection{Exported Constants}
 
 \begin{itemize}
-  \item minUpdateRate [\hyperref[generic:uint16]{uint16}]: 
+  \item minUpdateRate (\hyperref[generic:uint16]{uint16}): 
     \label{var:minUpdateRate}
     The minimum display update rate in frames per second. The value is 30 FPS as
     specified by \hyperref[SRS-NFR8_1]{NFR8.1}.
 \end{itemize}
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-updateDisplay & classificationLabel: \hyperref[generic:string]{string},
-  directionAngle: \hyperref[generic:float32]{float32}, priority:
-  \hyperref[generic:uint8]{uint8} & - & DisplayUpdateFailure, InvalidInputError
-  \\
-\hline
-displayError & errorType: \hyperref[generic:string]{string}, errorMessage:
-  \hyperref[generic:string]{string} & - & DisplayUpdateFailure \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{updateDisplay}
+    {classificationLabel: \hyperref[generic:string]{string},
+    directionAngle: \hyperref[generic:float32]{float32}, 
+    priority: \hyperref[generic:uint8]{uint8}}
+    {-}
+    {DisplayUpdateFailure, InvalidInputError}
+  \apifunc{displayError}
+    {errorType: \hyperref[generic:string]{string},
+    errorMessage: \hyperref[generic:string]{string}}
+    {-}
+    {DisplayUpdateFailure}
+\end{apitable}
 
 \subsection{Semantics}
 
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item currentDisplayState [\hyperref[ds:dict]{dict}]: 
+  \item currentDisplayState (\hyperref[ds:dict]{dict}): 
     \label{var:currentDisplayState}
     Stores the current state of the display, including active visual indicators,
     their positions, and priorities. This state is continuously updated at
     runtime as new classification and direction data is received.
-  \item displayQueue [\hyperref[ds:list]{list}]: 
+  \item displayQueue (\hyperref[ds:list]{list}): 
     \label{var:displayQueue}
     A priority queue that stores pending display updates. Items are ordered by
     priority to ensure safety-critical information is displayed first, as
@@ -2144,25 +2149,19 @@ operate with or without this capability.
 None
 
 \subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabularx}{\linewidth}{l X X X}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-separateSources & mixedAudio: [][\hyperref[generic:float32]{float32}] &
-  separatedSources: [][\hyperref[generic:float32]{float32}] &
-  ICASeparationFailure, InvalidInputError \\
-\hline
-\end{tabularx}
-\end{center}
+\begin{apitable}
+  \apifunc{separateSources}
+    {mixedAudio: \hyperref[generic:float32]{float32}[]}
+    {separatedSources: \hyperref[generic:float32]{float32}[]}
+    {ICASeparationFailure, InvalidInputError}
+\end{apitable}
 
 \subsection{Semantics}
 
 \subsubsection{State Variables}
 
 \begin{itemize}
-  \item separationModel [\hyperref[ds:dict]{dict}]: 
+  \item separationModel (\hyperref[ds:dict]{dict}): 
     \label{var:separationModel}
     Stores the ICA separation model parameters and learned mixing matrix. This
     state may be updated during the separation process to adapt to the input
@@ -2211,13 +2210,13 @@ None
 
 \begin{itemize}
   \item estimateMixingMatrix(mixedAudio:
-    [][\hyperref[generic:float32]{float32}]) $\rightarrow$
+    \hyperref[generic:float32]{float32}[]) $\rightarrow$
     \hyperref[ds:dict]{dict}: Estimates the mixing matrix that describes how the
     independent sources are combined in the mixed signals. This is a core step
     in the ICA algorithm.
-  \item applySeparation(mixedAudio: [][\hyperref[generic:float32]{float32}],
+  \item applySeparation(mixedAudio: \hyperref[generic:float32]{float32}[],
     mixingMatrix: \hyperref[ds:dict]{dict}) $\rightarrow$
-    [][\hyperref[generic:float32]{float32}]: Applies the inverse of the
+    \hyperref[generic:float32]{float32}[]: Applies the inverse of the
     estimated mixing matrix to separate the mixed signals into independent
     source components.
   \item checkConvergence(previousModel: \hyperref[ds:dict]{dict}, currentModel:
@@ -2377,9 +2376,14 @@ None
   also be able to design PCBs that are optimized for reducing trace lengths
   between the microphones and the microcontroller, improving signal integrity. 
   
-  \textbf{Sathurshan:} The limitation of the solution is compute and memory
-  power. Given further time, the team would be able to design a system that is
-  more low level and is optimized in accomplishing the tasks that are required.
+  \textbf{Sathurshan:} The limitations of the solution is the dependency on
+  hardware. This project relies on hardware, and our team has done
+  a good job abstracting the software design from the hardware design. This
+  allows the team ensure the software is portable and scalable. However, it
+  makes testing and developing the software much difficult as the team only has
+  budget for 2 cheap microcontrollers. This forces the team to optimize the
+  software as much as possible, while making debugging efforts simple, both are
+  difficult to acheive at the same time.
 
   \textbf{Kalp:} I think the biggest limitation that we can see right now is the
   hardware limitations. The software that we're using for this project is good
@@ -2415,11 +2419,15 @@ None
   learning algorithms for audio classification, but ultimately chose not to due
   to simplicity and compute resource constraints
 
-  \textbf{Sathurshan:} Personally, there was not a lot of time to think about
-  other designs. The team has been implementing the software before this
-  document was created since the proof of concept is one week after this
-  document is due. Thus, the team already considered and analyzed high level
-  designs months ago and is too far back to document them.
+  \textbf{Sathurshan:} Initially, having a abstracted hardware layer was not
+  really considered. At the beginning of the project, we did not realize the
+  risk of how difficult it is to get the right hardware for our problem at
+  an affordable cost. Initial thoughts of the design was to couple the software
+  tightly with the hardware to make our lives easier (faster development time).
+  However due to the risk, the team benefits more of an abstracted layer.
+  This de-risks having the re-write a lot of code in the case where hardware
+  needed to be changed midway in the project. It ultimately made our current
+  design portable and scalable.
 
   \textbf{Kalp:} I know for the software side, specifically the audio
   classification, we considered using a neural network for the classification.

@@ -99,6 +99,7 @@ defining specific metrics.\\
 2025-11-07 & 4.0 & Added requirements for software layer abstraction (FR4.5) \\
 2025-11-12 & 4.1 & Added a symbols, abbreviations, and acronyms table \\
 2025-12-12 & 4.2 & Added source for +/- 45 degree accuracy requirement.\\
+2026-01-06 & 4.3 & All angles represented in radians.\\
 \bottomrule
 \end{tabularx}
 
@@ -424,8 +425,9 @@ laboratory testing to validate technical approaches and refine requirements.
   \item \textbf{Euclidean Quadrants:}\label{def:euclidean_quadrant}
   The four regions of a 2D Cartesian plane, divided by the x and y axes,
   numbered 1 to 4 in a counterclockwise direction starting from the top-right.
-  The ranges of the quadrants are (0°–90°), (90°–180°), (180°–270°), and
-  (270°–360°) degrees.
+  The ranges of the quadrants are (0, $\frac{\pi}{2}$),
+  ($\frac{\pi}{2}$, $\pi$), ($\pi$, $\frac{3\pi}{2}$), and
+  ($\frac{3\pi}{2}$, $2\pi$) radians.
 
   \item \textbf{Frequency Domain:}\label{def:frequency_domain}
   A way to represent periodic or sinusoidal signals based on their frequency
@@ -478,8 +480,9 @@ laboratory testing to validate technical approaches and refine requirements.
     \hline
     \textbf{Symbol} & \textbf{Value} & \textbf{Description} \\
     \hline
-    $\theta_e$ \label{symbol:theta_e} & ±45° & 
-    Angle error threshold. 45 threshold is selected to indicate the sound
+    $\theta_e$ \label{symbol:theta_e} & ±$\frac{\pi}{4}$ rad & 
+    Angle error threshold. $\frac{\pi}{4}$ threshold is selected to indicate the
+    sound
     source direction within half-quadrant resolution. This is also approximately
     equal to the horizontal movement possible by human eyes \cite{Eye_Hang_Woo} \\
     \hline
@@ -509,6 +512,7 @@ laboratory testing to validate technical approaches and refine requirements.
     \textbf{symbol} & \textbf{description}\\
     \hline
     AC & Anticipated Change\\ \hline
+    ADC & Analog to Digital Converter\\ \hline
     \progname & 360 Audio analysis system on smart glasses\\ \hline
     DAG & Directed Acyclic Graph \\ \hline
     DOA & Direction of Arrival \\ \hline
@@ -946,7 +950,7 @@ Non-Functional Requirements
 
   \item \label{NFR5_3}\textbf{NFR5.3:} The component shall estimate the
   direction of arrival of an audio source with a maximum error of
-  \hyperref[symbol:theta_e]{$\theta_e$} degrees. This requirement ensures that
+  \hyperref[symbol:theta_e]{$\theta_e$} radians. This requirement ensures that
   the system can correctly notify users of sound sources within their
   respective \hyperref[def:euclidean_quadrant]{Euclidean quadrants}.
 \end{itemize}
@@ -1209,7 +1213,8 @@ Estimated deadline: February 9th, 2026 \\
 \begin{itemize}
     \item \hyperref[FR5_2]{FR5.2} - Direction of arrival estimation
     \item \hyperref[FR5_3]{FR5.3} - Angular representation in radians
-    \item \hyperref[NFR5_3]{NFR5.3} - Maximum 45 degrees DoA error
+    \item \hyperref[NFR5_3]{NFR5.3} - Maximum 
+      \hyperref[symbol:theta_e]{$\theta_e$} radian DoA error
 \end{itemize}
 
 \textbf{Advanced Audio Processing:}
@@ -1343,7 +1348,7 @@ controlled environment, the system shall estimate the direction of arrival with
 an angular error of less than or equal to \hyperref[symbol:theta_e]{$\theta_e$}
 in all test cases, verified through testing with known sound source positions
 at various angles, $\theta$, that are multiples of $\theta_e$ and satisfies
-$0 \leq \theta \leq 360$\textdegree.
+$0 \leq \theta \leq 2\pi$ rad.
 
 \item \textbf{VC-2.2 Processing latency:} The DoA estimation algorithm shall
 complete processing and output a direction estimate within
