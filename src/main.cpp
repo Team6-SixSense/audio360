@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #ifdef STM_BUILD
-#define RUNTIME_USB_TX
+#define RUNTIME_AUDIO360
 #else
 #define RUNTIME_FFT
 #endif
@@ -22,6 +22,7 @@
 #endif
 
 #ifdef STM_BUILD
+#include "runtimes/runtime_audio360.hpp"
 #include "runtimes/runtime_sd_diag.hpp"
 #include "runtimes/runtime_usb_tx.hpp"
 #else
@@ -34,16 +35,20 @@ int main() {
   setupPeripherals();
 #endif
 
+#ifdef RUNTIME_AUDIO360
+  mainAudio360();
+#endif
+
 #ifdef RUNTIME_USB_TX
-  main_usb_tx();
+  mainUSB_TX();
 #endif
 
 #ifdef RUNTIME_SD_DIAG
-  main_sd_diag();
+  mainSDDiag();
 #endif
 
 #ifdef RUNTIME_FFT
-  main_runtime_fft();
+  mainRuntimeFFT();
 #endif
 
   return 0;
