@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file    runtime_fft.hpp
+ * @file    runtime.hpp
  * @brief   FFT runtime code.
  ******************************************************************************
  */
@@ -10,7 +10,8 @@
 #include "constants.h"
 #include "fft.h"
 
-void mainRuntimeFFT() {
+
+void main_runtime_fft() {
   std::vector<double> test_vec;
   FFT fft_test(static_cast<uint16_t>(test_vec.size()), SAMPLE_FREQUENCY);
 
