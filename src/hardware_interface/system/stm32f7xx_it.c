@@ -14,12 +14,14 @@
  *
  ******************************************************************************
  */
-#include "peripheral.h"
+
 #ifdef STM_BUILD
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx_it.h"
+#include "embedded_mic.h"
+
 
 /******************************************************************************/
 /*           Cortex-M7 Processor Interruption and Exception Handlers          */
@@ -113,7 +115,7 @@ void SAI1_IRQHandler(void) {
   /* USER CODE BEGIN SAI1_IRQn 0 */
 
   /* USER CODE END SAI1_IRQn 0 */
-  HAL_SAI_IRQHandler(getSAI1A_Handle());
+  HAL_SAI_IRQHandler(&embedded_mic_get(MIC_A1)->hsai_block);
   /* USER CODE BEGIN SAI1_IRQn 1 */
 
   /* USER CODE END SAI1_IRQn 1 */
