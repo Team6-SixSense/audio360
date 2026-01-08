@@ -9,6 +9,7 @@
 
 #include "bit_operations.hpp"
 #include "constants.h"
+#include "embedded_mic.h"
 #include "sd_writer.h"
 
 void main_sd_diag() {
@@ -22,10 +23,10 @@ void main_sd_diag() {
   int32_t waveform_buffer3[WAVEFORM_SAMPLES];
   int32_t waveform_buffer4[WAVEFORM_SAMPLES];
 
-  SAI_HandleTypeDef* mic1 = getSAI1A_Handle();
-  SAI_HandleTypeDef* mic2 = getSAI1B_Handle();
-  SAI_HandleTypeDef* mic3 = getSAI2A_Handle();
-  SAI_HandleTypeDef* mic4 = getSAI2B_Handle();
+  SAI_HandleTypeDef* mic1 = &embedded_mic_get(MIC_A1)->hsai_block;
+  SAI_HandleTypeDef* mic2 = &embedded_mic_get(MIC_B1)->hsai_block;
+  SAI_HandleTypeDef* mic3 = &embedded_mic_get(MIC_A2)->hsai_block;
+  SAI_HandleTypeDef* mic4 = &embedded_mic_get(MIC_B2)->hsai_block;
 
   while (1) {
     for (int i = 0; i < WAVEFORM_SAMPLES; i++) {

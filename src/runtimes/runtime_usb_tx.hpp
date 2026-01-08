@@ -11,12 +11,13 @@
 #include "constants.h"
 #include "peripheral.h"
 #include "usbd_cdc_if.h"
+#include "embedded_mic.h"
 
 
 void main_usb_tx() {
   int32_t waveform_buffer1[WAVEFORM_SAMPLES];
 
-  SAI_HandleTypeDef* mic1 = getSAI1A_Handle();
+  SAI_HandleTypeDef* mic1 = &embedded_mic_get(MIC_A1)->hsai_block;
 
   while (1) {
     for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
