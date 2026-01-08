@@ -21,6 +21,9 @@ void mainAndroidComm() {
   vizPacket.direction = DirectionLabel::North;
   vizPacket.priority = 3U;
 
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+
   // Send packet over USB CDC.
   float angle_rad = 0.0;
   while (1) {

@@ -9,9 +9,11 @@
 
 #ifdef STM_BUILD
 
+#include <stdio.h>
+
+#include "peripheral_error.h"
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx_nucleo_144.h"
-#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,14 +26,7 @@ extern "C" {
  */
 void setupPeripherals();
 
-/**
- * @brief Output for when errors occurs. Will output LED3. @ref setupPeripherals
- * must be called before calling this function
- */
-void Error_Handler();
-
 void SystemClock_Config(void);
-
 
 #ifdef __cplusplus
 }

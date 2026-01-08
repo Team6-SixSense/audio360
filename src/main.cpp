@@ -6,7 +6,7 @@
  */
 
 #ifdef STM_BUILD
-#include "peripheral.h"
+#include "peripheral_error.hpp"
 #endif
 
 #include <stdio.h>
@@ -34,7 +34,6 @@ int main() {
 #ifdef STM_BUILD
   // Set-up peripherals. Must call before any hardware function calls.
   setupPeripherals();
-
 #endif
 
 #ifdef RUNTIME_AUDIO360

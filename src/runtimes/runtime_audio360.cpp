@@ -21,6 +21,7 @@
 #include "usbh_aoa.h"
 #endif
 
+
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;
 static embedded_mic_t* micB1 = nullptr;
@@ -65,6 +66,9 @@ void mainAudio360() {
   vizPacket.classification = ClassificationLabel::CarHorn;
   vizPacket.direction = DirectionLabel::North;
   vizPacket.priority = 3U;
+
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
 
   while (1) {
 #ifdef BUILD_GLASSES_HOST

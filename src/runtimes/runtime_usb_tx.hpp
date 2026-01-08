@@ -27,6 +27,9 @@ inline void main_usb_tx() {
   embedded_mic_start(mic_b2);
   embedded_mic_start(mic_a1);
 
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+
   while (1) {
     // The data collection now happens in the background.
 
