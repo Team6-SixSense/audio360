@@ -13,6 +13,8 @@
 #include "embedded_mic.h"
 #include "logging.hpp"
 #include "peripheral.h"
+#include "peripheral_error.hpp"
+#include "system_fault_manager.h"
 #include "usbd_cdc_if.h"
 
 // Microphone definitions.
@@ -32,9 +34,15 @@ static uint8_t micMainHalf{0}, micMainFull{0}, micDummyHalf{0}, micDummyFull{0};
 
 // Audio360 features.
 static DOA doa{DOA_SAMPLES};
+static SystemFaultManager systemFaultManager{};
 
 void mainAudio360() {
   INFO("Running Audio360.");
+
+  INFO("Setting up Peripherals.");
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+  systemFaultManager.handlePeripheralSetupFaults(getPeripheralErrors());
 
   INFO("Initializing microphones.");
   micA1 = embedded_mic_get(MIC_A1);
