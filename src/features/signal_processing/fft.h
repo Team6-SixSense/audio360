@@ -14,6 +14,7 @@
 #include "stm32f767xx.h"
 
 #endif
+#include <cmath>
 #include <vector>
 
 #include "window.hpp"
@@ -35,13 +36,21 @@ struct FrequencyDomain {
   /** @brief The magnitude of the frequency component. */
   std::vector<float> magnitude;
 
+  /** @brief The magnitude squared of the frequency component. */
+  std::vector<float> powerMagnitude;
+
   /**
    * @brief Construct a new Frequency Domain struct.
    *
    * @param size The number of data points.
    */
   FrequencyDomain(uint16_t size)
-      : N(size), frequency(size), real(size), img(size), magnitude(size) {}
+      : N(size),
+        frequency(size),
+        real(size),
+        img(size),
+        magnitude(size),
+        powerMagnitude(size) {}
 };
 
 /** @brief Fast Fourier Transform (FFT) class. */
@@ -87,6 +96,16 @@ class FFT {
    * @param signal input signal.
    */
   void insertSignal(std::vector<float>& signal);
+
+  inline void insertFrequencyEntry(FrequencyDomain& frequencyDomain, size_t pos,
+                                   float frequency, float real, float img) {
+    frequencyDomain.frequency[pos] = frequency;
+    frequencyDomain.real[pos] = real;
+    frequencyDomain.img[pos] = img;
+    frequencyDomain.magnitude[pos] = std::sqrt(real * real + img * img);
+    frequencyDomain.powerMagnitude[pos] =
+        frequencyDomain.magnitude[pos] * frequencyDomain.magnitude[pos];
+  }
 
   /**
    * @brief Translate FFT algo's output to a portable output to return.

@@ -70,30 +70,30 @@ FrequencyDomain FFT::createOutput() {
   uint16_t N = (this->inputSize / 2) + 1;
   uint16_t lastIdx = N - 1;
   FrequencyDomain frequencyDomain(N);
+  float frequency = 0.0f;
+  float frequencyBinSize =
+      this->sampleFrequency / static_cast<float>(this->inputSize);
+  float real;
+  float img;
 
-  for (int i = 0; i < N; i++) {
-    // Since first FFT output is DC, there is no imaginary part. Thus CMSIS-DSP
-    // library stores the last real value in the place of the first complex
-    // value. Reference:
-    // https://arm-software.github.io/CMSIS-DSP/main/group__RealFFT.html
+  // Since first FFT output is DC, there is no imaginary part. Thus CMSIS-DSP
+  // library stores the last real value in the place of the first complex value.
+  // Reference:
+  // https://arm-software.github.io/CMSIS-DSP/main/group__RealFFT.html
 
-    float real;
-    float img;
+  // DC.
+  insertFrequencyEntry(frequencyDomain, 0, frequency, this->out[0], 0.0f);
+  frequency += frequencyBinSize;
 
-    if (i != 0 && i != lastIdx) {
-      real = this->out[2 * i];
-      img = this->out[2 * i + 1];
-    } else {
-      int idx = (i == lastIdx) ? 1 : 0;  // idx takes 0 when i = 0.
-      real = this->out[idx];
-      img = 0.0f;
-    }
-
-    frequencyDomain.frequency[i] =
-        (i * this->sampleFrequency) / static_cast<float>(this->inputSize);
-    frequencyDomain.real[i] = real;
-    frequencyDomain.img[i] = img;
-    frequencyDomain.magnitude[i] = std::sqrt(real * real + img * img);
+  // Middle real and complex values.
+  for (int i = 1; i < lastIdx; i++) {
+    insertFrequencyEntry(frequencyDomain, i, frequency, this->out[2 * i],
+                         this->out[2 * i + 1]);
+    frequency += frequencyBinSize;
   }
+
+  // Last real.
+  insertFrequencyEntry(frequencyDomain, lastIdx, frequency, this->out[1], 0.0f);
+
   return frequencyDomain;
 }
