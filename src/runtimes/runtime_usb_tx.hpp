@@ -13,6 +13,9 @@
 #include "usbd_cdc_if.h"
 
 void mainUSB_TX() {
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+
   int32_t waveform_buffer1[WAVEFORM_SAMPLES];
 
   SAI_HandleTypeDef* mic1 = getSAI1A_Handle();
