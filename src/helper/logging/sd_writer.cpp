@@ -9,7 +9,7 @@
 #include "sd_writer.h"
 
 #include "logging.hpp"
-#include "peripheral.h"
+#include "peripheral_error.h"
 #include "string.h"
 
 SDCardWriter::SDCardWriter(std::string filename) {
@@ -17,7 +17,7 @@ SDCardWriter::SDCardWriter(std::string filename) {
   this->fres = f_mount(&this->FatFs, "", 1);  // 1 = mount now
   if (this->fres != FR_OK) {
     ERROR("f_mount error (%i)\r\n", fres);
-    Error_Handler();
+    Report_Error(SD_MOUNT_FAIL);
   }
 
   std::string filePath = filename + ".txt";

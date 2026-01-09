@@ -9,9 +9,14 @@
 
 #include "bit_operations.hpp"
 #include "constants.h"
+#include "peripheral.h"
 #include "sd_writer.h"
 
+
 void mainSDDiag() {
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+
   SDCardWriter* sdcardWriterPointer1 = new SDCardWriter("mic1");
   SDCardWriter* sdcardWriterPointer2 = new SDCardWriter("mic2");
   SDCardWriter* sdcardWriterPointer3 = new SDCardWriter("mic3");
