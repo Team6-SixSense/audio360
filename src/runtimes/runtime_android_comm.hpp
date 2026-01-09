@@ -16,6 +16,9 @@
 #include "usbh_aoa.h"
 
 void mainAndroidComm() {
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+
   VisualizationPacket vizPacket{};
   vizPacket.classification = ClassificationLabel::CarHorn;
   vizPacket.direction = DirectionLabel::North;

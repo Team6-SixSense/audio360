@@ -16,6 +16,9 @@
 static int32_t debug_buffer[WAVEFORM_SAMPLES * 4];
 
 inline void main_usb_tx() {
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+
   embedded_mic_t* mic_a1 = embedded_mic_get(MIC_A1);
   embedded_mic_t* mic_a2 = embedded_mic_get(MIC_A2);
   embedded_mic_t* mic_b1 = embedded_mic_get(MIC_B1);

@@ -56,6 +56,6 @@ void SystemFaultManager::enterUnrecoverableState(std::string error) {
   ERROR("Entering unrecoverable state due to %s", error);
 
   // Enter infinite loop to prevent any further execution.
-  while (1) {
+  while (true) {
   }
 }
