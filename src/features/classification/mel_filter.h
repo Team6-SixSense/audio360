@@ -16,30 +16,31 @@ struct ShortTimeFourierTransformDomain {
    *
    * @param size The number of frames being stored.
    */
-  ShortTimeFourierTransformDomain(uint16_t size)
-      : numFrames(size), stft(size) {}
+  ShortTimeFourierTransformDomain(uint16_t size) : numFrames(size), stft() {}
 };
 
-struct MelSpectrogramDomain {
-  /** @brief The number of frames in the Mel spectrogram */
-  uint16_t numFrames;
+// TODO: Determine if this struct is needed
 
-  /** @brief The number of Mel filters applied */
-  uint16_t numFilters;
+// struct MelSpectrogramDomain {
+//   /** @brief The number of frames in the Mel spectrogram */
+//   uint16_t numFrames;
 
-  /** @brief The tranformed Mel spectrogram object */
-  std::vector<std::vector<float>> mel;
+//   /** @brief The number of Mel filters applied */
+//   uint16_t numFilters;
 
-  MelSpectrogramDomain(uint16_t size)
-      : numFrames(size),
-        numFilters(size),
-        mel(size, std::vector<float>(size)) {}
-};
+//   /** @brief The tranformed Mel spectrogram object */
+//   std::vector<std::vector<float>> mel;
+
+//   MelSpectrogramDomain(uint16_t size)
+//       : numFrames(size),
+//         numFilters(size),
+//         mel(size, std::vector<float>(size)) {}
+// };
 
 class MelFilter {
  public:
   /** @brief Construct a MelFilter object. */
-  MelFilter(uint16_t numFilters, uint16_t fftSize, int sampleFrequency);
+  MelFilter(uint16_t numFilters, uint16_t fftSize, uint16_t sampleFrequency);
 
   /** @brief Destroy the MelFilter object. */
   ~MelFilter();
@@ -51,13 +52,13 @@ class MelFilter {
    * (fftSize/2 + 1) [nyquist].
    * @param melSpectrogram Output Mel filter bank energies.
    */
-  void Apply(const ShortTimeFourierTransformDomain& stftPowerSpectrogram,
+  void Apply(ShortTimeFourierTransformDomain& stftPowerSpectrogram,
              std::vector<std::vector<float>>& melSpectrogram) const;
 
  private:
   uint16_t numFilters_;
   uint16_t fftSize_;
-  int sampleFrequency_;
+  uint16_t sampleFrequency_;
   std::vector<std::vector<float>> filterBank_;
 
   /**

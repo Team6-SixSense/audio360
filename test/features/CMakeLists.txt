@@ -2,3 +2,5 @@
 
 # Add subdirectories (each adds sources/includes).
 add_subdirectory(signal_processing)
+add_subdirectory(classification)
+
