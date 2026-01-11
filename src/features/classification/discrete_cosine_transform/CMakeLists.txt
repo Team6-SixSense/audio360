@@ -1,7 +1,7 @@
 # src/features/classification CMakeLists.txt
 
-add_subdirectory(mel_filter)
-add_subdirectory(discrete_cosine_transform)
+# Add individual source files.
+
 
 # Add include directories.
 target_include_directories(${SourceLib} PUBLIC

@@ -1,4 +1,4 @@
-#include "features/classification/mel_filter.h"
+#include "mel_filter.h"
 
 #include <stdio.h>
 
