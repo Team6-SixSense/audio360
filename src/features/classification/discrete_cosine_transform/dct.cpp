@@ -12,7 +12,7 @@ void DiscreteCosineTransform::CreateDCTMatrix() {
   }
 
   const double scale = std::sqrt(2.0f / this->numMelFilters_);
-  for (int i = 0; i < this->numCoefficients_; ++i) {
+  for (int i = 1; i < this->numCoefficients_; ++i) {
     for (int j = 0; j < this->numMelFilters_; ++j) {
       this->dctMatrix_.matrix[i][j] = std::cos((i * M_PI * (2.0f * j + 1.0f)) /
                                                (2.0f * this->numMelFilters_)) *
@@ -35,19 +35,21 @@ DiscreteCosineTransform::~DiscreteCosineTransform() {}
 
 void DiscreteCosineTransform::Apply(
     const std::vector<std::vector<float>>& melSpectrogram,
-    std::vector<std::vector<float>>& dctCoefficients) const {
+    std::vector<std::vector<float>>& mfccSpectrogram) const {
   uint16_t numFrames = melSpectrogram.size();
-  dctCoefficients.resize(numFrames,
+
+  mfccSpectrogram.resize(numFrames,
                          std::vector<float>(this->numCoefficients_, 0.0f));
 
   for (int frame = 0; frame < numFrames; ++frame) {
     for (int coeff = 0; coeff < this->numCoefficients_; ++coeff) {
       float dctValue = 0.0f;
       for (int melBin = 0; melBin < this->numMelFilters_; ++melBin) {
-        dctValue += melSpectrogram[frame][melBin] *
+        dctValue += std::log(melSpectrogram[frame][melBin] + 1e-10f) *
                     this->dctMatrix_.matrix[coeff][melBin];
       }
-      dctCoefficients[frame][coeff] = dctValue;
+
+      mfccSpectrogram[frame][coeff] = dctValue;
     }
   }
 }

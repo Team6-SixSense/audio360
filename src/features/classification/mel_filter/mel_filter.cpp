@@ -16,7 +16,7 @@ void MelFilter::CreateFilterBank() {
                            std::vector<float>(numFreq, 0.0f));
 
   double fmin = 0;
-  int fmax = this->sampleFrequency_ / 2;
+  double fmax = this->sampleFrequency_ / 2;
 
   double mel_min = hz_to_mel(fmin);
   double mel_max = hz_to_mel(fmax);
@@ -40,9 +40,9 @@ void MelFilter::CreateFilterBank() {
   }
 
   for (int i = 0; i < this->numFilters_; ++i) {
-    int leftBin = bins[i];
-    int centerBin = bins[i + 1];
-    int rightBin = bins[i + 2];
+    double leftBin = bins[i];
+    double centerBin = bins[i + 1];
+    double rightBin = bins[i + 2];
 
     if (centerBin <= leftBin || centerBin >= rightBin) {
       continue;
@@ -90,8 +90,12 @@ void MelFilter::Apply(ShortTimeFourierTransformDomain& stftPowerSpectrogram,
     for (int melBin = 0; melBin < this->numFilters_; ++melBin) {
       float melEnergy = 0.0f;
       for (int freqBin = 0; freqBin < (this->fftSize_ / 2 + 1); ++freqBin) {
-        melEnergy += stftPowerSpectrogram.stft[frame].magnitude[freqBin] *
-                     this->filterBank_[melBin][freqBin];
+        // TODO: Check if Sathurshan adds a power spectrum, and remove pow if
+        // thats the case.
+        melEnergy +=
+            std::pow(stftPowerSpectrogram.stft[frame].magnitude[freqBin],
+                     2.0f) *
+            this->filterBank_[melBin][freqBin];
       }
       melSpectrogram[frame][melBin] = melEnergy;
     }
