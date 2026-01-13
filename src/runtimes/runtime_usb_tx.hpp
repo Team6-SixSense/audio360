@@ -13,29 +13,59 @@
 #include "usbd_cdc_if.h"
 #include "embedded_mic.h"
 
+inline void main_usb_tx() {
 
-void main_usb_tx() {
-  int32_t waveform_buffer1[WAVEFORM_SAMPLES];
 
-  SAI_HandleTypeDef* mic1 = &embedded_mic_get(MIC_A1)->hsai_block;
+  embedded_mic_t * mic_a1 = embedded_mic_get(MIC_A1);
+
+  // 3. Start DMA (Non-blocking). The DMA will now fill waveform_buffer1 automatically.
+  embedded_mic_start(mic_a1);
+
+
 
   while (1) {
-    for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
-      uint32_t sampleMic1 = 0;
+    // The data collection now happens in the background.
+    // You should process data inside HAL_SAI_RxCpltCallback / HAL_SAI_RxHalfCpltCallback
+    // or set a flag there and process it here.
 
-      // Receive one sample.
-      HAL_StatusTypeDef status =
-          HAL_SAI_Receive(mic1, (uint8_t*)&sampleMic1, 1, 100);
+    // Note: The raw DMA data needs 'reorderMicData' applied during processing.
+    uint8_t mic_a1_half = 0;
+    uint8_t mic_a1_full = 0;
 
-      if (status == HAL_OK) {
-        // Re-order mic data so it can be interpreted correctly.
-        waveform_buffer1[i] = reorderMicData(sampleMic1);
-      } else {
-        // If there's an error, just record a zero
-        waveform_buffer1[i] = 0;
-      }
+    __disable_irq();
+
+    if (mic_a1->half_rx_compl) {
+      mic_a1_half = 1;
+      mic_a1->half_rx_compl = 0;
     }
 
-    CDC_Transmit_FS((uint8_t*)waveform_buffer1, WAVEFORM_SAMPLES * 4);
+    if (mic_a1->full_rx_compl) {
+      mic_a1_full = 1;
+      mic_a1->full_rx_compl = 0;
+    }
+
+    __enable_irq();
+
+    int32_t* pDataToProcess = nullptr;
+
+    uint32_t samplesProcess = WAVEFORM_SAMPLES / 2;
+
+    if (mic_a1_half) {
+      pDataToProcess = &mic_a1->pBuffer[0];
+    }
+
+    if (mic_a1_full) {
+      pDataToProcess = &mic_a1->pBuffer[WAVEFORM_SAMPLES / 2];
+    }
+
+    if (pDataToProcess != nullptr) {
+      for (uint32_t i = 0; i < samplesProcess; i++) {
+        pDataToProcess[i] = reorderMicData(pDataToProcess[i]);
+      }
+
+      CDC_Transmit_FS((uint8_t*)pDataToProcess, samplesProcess * 4);
+    }
+
+
   }
 }

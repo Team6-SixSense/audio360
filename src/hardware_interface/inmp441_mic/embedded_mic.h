@@ -20,10 +20,10 @@ typedef struct embedded_mic_t {
   SAI_HandleTypeDef hsai_block;
   IRQn_Type irq;
   DMA_HandleTypeDef* hdma_sai;
-  void* pBuffer;
+  int32_t* pBuffer;
   uint32_t BufferSize;
-  void (*received_callback)(void*);
-  void (*error_callback)(void*);
+  volatile uint8_t half_rx_compl;
+  volatile uint8_t full_rx_compl;
 } embedded_mic_t;
 
 void embedded_mic_init();
