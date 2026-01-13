@@ -7,7 +7,7 @@ import sys
 import sounddevice as sd
 
 # --- CONFIGURATION ---
-SERIAL_PORT = 'COM5'
+SERIAL_PORT = 'COM6'
 BAUD_RATE = 115200
 SAMPLE_RATE = 16000
 WINDOW_DURATION = 0.2

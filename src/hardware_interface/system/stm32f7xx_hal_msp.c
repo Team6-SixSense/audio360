@@ -104,8 +104,9 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     /* Peripheral clock enable */
     if (SAI1_client == 0) {
       __HAL_RCC_SAI1_CLK_ENABLE();
-      SAI1_client++;
     }
+
+    SAI1_client++;
 
     /**SAI1_A_Block_A GPIO Configuration
     PE4     ------> SAI1_FS_A
@@ -126,9 +127,12 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     hdma_sai1_a.Init.MemInc = DMA_MINC_ENABLE;
     hdma_sai1_a.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
     hdma_sai1_a.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-    hdma_sai1_a.Init.Mode = DMA_NORMAL;
+    hdma_sai1_a.Init.Mode = DMA_CIRCULAR;
     hdma_sai1_a.Init.Priority = DMA_PRIORITY_HIGH;
-    hdma_sai1_a.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    hdma_sai1_a.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
+    hdma_sai1_a.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+    hdma_sai1_a.Init.MemBurst = DMA_MBURST_SINGLE;
+    hdma_sai1_a.Init.PeriphBurst = DMA_PBURST_SINGLE;
     if (HAL_DMA_Init(&hdma_sai1_a) != HAL_OK)
     {
       Error_Handler();
@@ -146,8 +150,9 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     /* Peripheral clock enable */
     if (SAI1_client == 0) {
       __HAL_RCC_SAI1_CLK_ENABLE();
-      SAI1_client++;
     }
+
+    SAI1_client++;
 
     /**SAI1_B_Block_B GPIO Configuration
      * PE3     ------> SAI1_SD_B
@@ -166,9 +171,12 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     hdma_sai1_b.Init.MemInc = DMA_MINC_ENABLE;
     hdma_sai1_b.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
     hdma_sai1_b.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-    hdma_sai1_b.Init.Mode = DMA_NORMAL;
+    hdma_sai1_b.Init.Mode = DMA_CIRCULAR;
     hdma_sai1_b.Init.Priority = DMA_PRIORITY_HIGH;
-    hdma_sai1_b.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    hdma_sai1_b.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
+    hdma_sai1_b.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+    hdma_sai1_b.Init.MemBurst = DMA_MBURST_SINGLE;
+    hdma_sai1_b.Init.PeriphBurst = DMA_PBURST_SINGLE;
     if (HAL_DMA_Init(&hdma_sai1_b) != HAL_OK)
     {
       Error_Handler();
@@ -185,8 +193,9 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     /* Peripheral clock enable */
     if (SAI2_client == 0) {
       __HAL_RCC_SAI2_CLK_ENABLE();
-      SAI2_client++;
     }
+
+    SAI2_client++;
 
     /**SAI2_A_Block_A GPIO Configuration
      * PD11     ------> SAI2_SD_A
@@ -205,9 +214,12 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     hdma_sai2_a.Init.MemInc = DMA_MINC_ENABLE;
     hdma_sai2_a.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
     hdma_sai2_a.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-    hdma_sai2_a.Init.Mode = DMA_NORMAL;
+    hdma_sai2_a.Init.Mode = DMA_CIRCULAR;
     hdma_sai2_a.Init.Priority = DMA_PRIORITY_LOW;
-    hdma_sai2_a.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    hdma_sai2_a.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
+    hdma_sai2_a.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+    hdma_sai2_a.Init.MemBurst = DMA_MBURST_SINGLE;
+    hdma_sai2_a.Init.PeriphBurst = DMA_PBURST_SINGLE;
     if (HAL_DMA_Init(&hdma_sai2_a) != HAL_OK)
     {
       Error_Handler();
@@ -225,8 +237,9 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     /* Peripheral clock enable */
     if (SAI2_client == 0) {
       __HAL_RCC_SAI2_CLK_ENABLE();
-      SAI2_client++;
     }
+
+    SAI2_client++;
 
     /**SAI2_B_Block_B GPIO Configuration
      * PA0/WKUP     ------> SAI2_SD_B
@@ -245,9 +258,12 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     hdma_sai2_b.Init.MemInc = DMA_MINC_ENABLE;
     hdma_sai2_b.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
     hdma_sai2_b.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-    hdma_sai2_b.Init.Mode = DMA_NORMAL;
+    hdma_sai2_b.Init.Mode = DMA_CIRCULAR;
     hdma_sai2_b.Init.Priority = DMA_PRIORITY_LOW;
-    hdma_sai2_b.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+    hdma_sai2_b.Init.FIFOMode = DMA_FIFOMODE_ENABLE;
+    hdma_sai2_b.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+    hdma_sai2_b.Init.MemBurst = DMA_MBURST_SINGLE;
+    hdma_sai2_b.Init.PeriphBurst = DMA_PBURST_SINGLE;
     if (HAL_DMA_Init(&hdma_sai2_b) != HAL_OK)
     {
       Error_Handler();
