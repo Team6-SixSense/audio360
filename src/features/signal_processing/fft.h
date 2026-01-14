@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "frequencyDomain.h"
+#include "logging.hpp"
 #include "window.hpp"
 
 /** @brief Fast Fourier Transform (FFT) class. */
@@ -30,6 +31,12 @@ class FFT {
    * @param sampleFrequency The sample frequency.
    */
   FFT(uint16_t inputSize, int sampleFrequency);
+
+  /** @brief Copy constructor. */
+  FFT(const FFT& other);
+
+  /** @brief Copy assignment operator. */
+  FFT& operator=(const FFT& other);
 
   /** @brief Destroy the FFT object. */
   ~FFT();
@@ -47,6 +54,16 @@ class FFT {
       WindowFunction windowFunction = WindowFunction::NONE);
 
  private:
+  /** @brief Initializes FFT instance from CMSIS-DSP lib. */
+  inline void initializeFFTInstance() {
+    arm_status status = arm_rfft_fast_init_f32(&rfft_instance, this->inputSize);
+
+    if (status != arm_status::ARM_MATH_SUCCESS) {
+      ERROR("Error in initializing CMSIS DSP FFT. Error status code %d",
+            status);
+    }
+  }
+
   /**
    * @brief Applies the window function on the input signal.
    *

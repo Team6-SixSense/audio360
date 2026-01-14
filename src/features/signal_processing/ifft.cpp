@@ -14,18 +14,42 @@
 #include <cmath>
 
 #include "constants.h"
-#include "logging.hpp"
 
 IFFT::IFFT(uint16_t numSamples) : numSamples(numSamples) {
   this->in = new float32_t[this->numSamples]();
   this->out = new float32_t[this->numSamples]();
 
-  // Initialize the IFFT instance when using CMSIS DSP library.
-  arm_status status = arm_rfft_fast_init_f32(&rfft_instance, numSamples);
+  this->initializeFFTInstance();
+}
 
-  if (status != arm_status::ARM_MATH_SUCCESS) {
-    ERROR("Error in initializing CMSIS DSP IFFT. Error status code %d", status);
+IFFT::IFFT(const IFFT& other) : numSamples(other.numSamples) {
+  this->in = new float32_t[this->numSamples];
+  this->out = new float32_t[this->numSamples];
+  std::copy(other.in, other.in + this->numSamples, this->in);
+  std::copy(other.out, other.out + this->numSamples, this->out);
+
+  this->initializeFFTInstance();
+}
+
+IFFT& IFFT::operator=(const IFFT& other) {
+  if (this == &other) {
+    return *this;
   }
+
+  // Reallocate if sizes differ
+  if (this->numSamples != other.numSamples) {
+    delete[] this->in;
+    delete[] this->out;
+
+    this->numSamples = other.numSamples;
+    this->in = new float32_t[this->numSamples];
+    this->out = new float32_t[this->numSamples];
+  }
+
+  std::copy(other.in, other.in + this->numSamples, this->in);
+  std::copy(other.out, other.out + this->numSamples, this->out);
+
+  this->initializeFFTInstance();
 }
 
 IFFT::~IFFT() {

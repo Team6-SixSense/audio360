@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "frequencyDomain.h"
+#include "logging.hpp"
 
 /** @brief Inverse Fast Fourier Transform (IFFT) class. */
 class IFFT {
@@ -29,6 +30,12 @@ class IFFT {
    * (N - 1) * 2 where N is the number of elements in frequency domain.
    */
   IFFT(uint16_t numSamples);
+
+  /** @brief Copy constructor. */
+  IFFT(const IFFT& other);
+
+  /** @brief Copy assignment operator. */
+  IFFT& operator=(const IFFT& other);
 
   /** @brief Destroy the IFFT object. */
   ~IFFT();
@@ -43,6 +50,17 @@ class IFFT {
   std::vector<float> frequencyToTime(const FrequencyDomain& frequencyDomain);
 
  private:
+  /** @brief Initializes FFT instance from CMSIS-DSP lib. */
+  inline void initializeFFTInstance() {
+    arm_status status =
+        arm_rfft_fast_init_f32(&rfft_instance, this->numSamples);
+
+    if (status != arm_status::ARM_MATH_SUCCESS) {
+      ERROR("Error in initializing CMSIS DSP FFT. Error status code %d",
+            status);
+    }
+  }
+
   /**
    * @brief Inserts the frequency to internal memory of this class.
    *
