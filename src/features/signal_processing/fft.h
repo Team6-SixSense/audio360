@@ -17,41 +17,8 @@
 #include <cmath>
 #include <vector>
 
+#include "frequencyDomain.h"
 #include "window.hpp"
-
-/** @brief Struct for representing FFT output in the frequency domain. */
-struct FrequencyDomain {
-  /** @brief The number of the data in the FFT output. */
-  uint16_t N;
-
-  /** @brief The frequency (Hz) */
-  std::vector<float> frequency;
-
-  /** @brief The real component of the frequency contribution. */
-  std::vector<float> real;
-
-  /** @brief The imaginary component of the frequency contribution. */
-  std::vector<float> img;
-
-  /** @brief The magnitude of the frequency component. */
-  std::vector<float> magnitude;
-
-  /** @brief The magnitude squared of the frequency component. */
-  std::vector<float> powerMagnitude;
-
-  /**
-   * @brief Construct a new Frequency Domain struct.
-   *
-   * @param size The number of data points.
-   */
-  FrequencyDomain(uint16_t size)
-      : N(size),
-        frequency(size),
-        real(size),
-        img(size),
-        magnitude(size),
-        powerMagnitude(size) {}
-};
 
 /** @brief Fast Fourier Transform (FFT) class. */
 class FFT {
@@ -61,8 +28,6 @@ class FFT {
    *
    * @param inputSize The size of the input signal.
    * @param sampleFrequency The sample frequency.
-   * @param signal Sample signal of size inputSize. This is used to optimize to
-   * find the best FFT algorithm.
    */
   FFT(uint16_t inputSize, int sampleFrequency);
 

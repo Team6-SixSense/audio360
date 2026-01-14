@@ -5,7 +5,7 @@
  ******************************************************************************
  */
 
-#include "features/signal_processing/fft.h"
+#include "fft.h"
 
 #include <stdio.h>
 
