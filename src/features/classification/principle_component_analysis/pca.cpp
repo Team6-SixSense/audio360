@@ -50,7 +50,6 @@ void PrincipleComponentAnalysis::Apply(
   pcaFeatureVector.resize(numFrames,
                           std::vector<float>(this->numEigenvectors_, 0.0f));
 
-  printf("PCA FEATURE Vector resized\n");
   // Center the input feature vector by subtracting the mean vector.
   std::vector<std::vector<float>> centeredVector(
 

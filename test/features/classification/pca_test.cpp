@@ -82,13 +82,13 @@ TEST(PCA, ApplyPCA) {
   std::vector<std::vector<float>> mfccFeatureVector =
       Make3FrameMFCCSpecFromMP3(data, SAMPLE_FREQUENCY, offset0);
 
-  printf("MFCC Feature Vector:\n");
-  for (const auto& frame : mfccFeatureVector) {
-    for (const auto& value : frame) {
-      printf("%f ", value);
-    }
-    printf("\n");
-  }
+  // printf("MFCC Feature Vector:\n");
+  // for (const auto& frame : mfccFeatureVector) {
+  //   for (const auto& value : frame) {
+  //     printf("%f ", value);
+  //   }
+  //   printf("\n");
+  // }
 
   std::vector<std::vector<float>> pcaFeatureVector;
   pca.Apply(mfccFeatureVector, pcaFeatureVector);

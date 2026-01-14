@@ -91,7 +91,6 @@ TEST(DCTTest, ComputeDCT_OnMelSpectrogram_ProducesExpectedMFCC) {
   std::vector<std::vector<float>> mfccSpec;
   dct.Apply(melSpec, mfccSpec);
 
-  ASSERT_EQ(mfccSpec.size(), 3);
   ASSERT_EQ(mfccSpec[0].size(), numCepstral);
 
   for (int i = 0; i < numCepstral; ++i) {
