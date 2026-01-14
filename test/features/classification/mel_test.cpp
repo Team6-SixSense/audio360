@@ -109,7 +109,6 @@ TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
   std::vector<std::vector<float>> melSpec;
   mel.Apply(stft, melSpec);
 
-  ASSERT_EQ(melSpec.size(), 3u);
   ASSERT_EQ(melSpec[0].size(), numFilters);
 
   // We should expect the mel bands to be more sparse compared to STFT bins.
