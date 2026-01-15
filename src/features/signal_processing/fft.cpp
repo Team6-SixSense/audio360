@@ -5,7 +5,7 @@
  ******************************************************************************
  */
 
-#include "features/signal_processing/fft.h"
+#include "fft.h"
 
 #include <stdio.h>
 
@@ -14,20 +14,51 @@
 #include <cmath>
 
 #include "constants.h"
-#include "logging.hpp"
 
 FFT::FFT(uint16_t inputSize, int sampleFrequency)
-    : inputSize(inputSize), sampleFrequency(sampleFrequency) {
+    : inputSize(inputSize),
+      sampleFrequency(sampleFrequency),
+      outputSize(inputSize) {
   this->in = new float32_t[this->inputSize]();
-  this->outputSize = this->inputSize;
   this->out = new float32_t[this->outputSize]();
 
-  // Initialize the FFT instance when using CMSIS DSP library.
-  arm_status status = arm_rfft_fast_init_f32(&rfft_instance, inputSize);
+  this->initializeFFTInstance();
+}
 
-  if (status != arm_status::ARM_MATH_SUCCESS) {
-    ERROR("Error in initializing CMSIS DSP FFT. Error status code %d", status);
+FFT::FFT(const FFT& other)
+    : inputSize(other.inputSize),
+      sampleFrequency(other.sampleFrequency),
+      outputSize(other.sampleFrequency) {
+  this->in = new float32_t[this->inputSize];
+  this->out = new float32_t[this->outputSize];
+  std::copy(other.in, other.in + this->inputSize, this->in);
+  std::copy(other.out, other.out + this->outputSize, this->out);
+
+  this->initializeFFTInstance();
+}
+
+FFT& FFT::operator=(const FFT& other) {
+  if (this == &other) {
+    return *this;
   }
+
+  // Reallocate if sizes differ
+  if (this->inputSize != other.inputSize) {
+    delete[] this->in;
+    delete[] this->out;
+
+    this->inputSize = other.inputSize;
+    this->outputSize = other.outputSize;
+    this->in = new float32_t[this->inputSize];
+    this->out = new float32_t[this->outputSize];
+  }
+
+  this->sampleFrequency = other.sampleFrequency;
+
+  std::copy(other.in, other.in + this->inputSize, this->in);
+  std::copy(other.out, other.out + this->outputSize, this->out);
+
+  this->initializeFFTInstance();
 }
 
 FFT::~FFT() {
