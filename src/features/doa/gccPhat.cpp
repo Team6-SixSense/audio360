@@ -64,10 +64,11 @@ float GCCPhaT::computeTimeDelay2Source(const FrequencyDomain& freqA,
 void GCCPhaT::computeGCCPhaT(const FrequencyDomain& freqA,
                              const FrequencyDomain& freqB) {
   for (size_t i = 0; i < this->gccPhatFreqDomain.N; i++) {
-    // PhaT: removes magnitude information and keeps only phase.
+    // PhaT: removes magnitude information and keeps only phase. This will tell
+    // the timing offset of certain frequencies and remove any noise/echoes.
     float scale = 1 / (freqA.magnitude[i] * freqB.magnitude[i]);
 
-    // GCC.
+    // GCC: cross correlation of frequencies.
     float real = freqA.real[i] * freqB.real[i] * scale;
     float img = freqA.img[i] * (-1.0 * freqB.img[i]) * scale;
 
@@ -86,7 +87,8 @@ float GCCPhaT::calculateTimeDelay(const std::vector<float>& timeDomain,
   float touMax = 0.0f;
   const float totMaxDelay_s = std::min(maxDelay_s + FLOAT_EPS, FLOAT_MAX);
 
-  // Peak detection.
+  // Find the peak value of the GCC-PhaT time domain representation. Peaks
+  // indicate likely time delays between the signals.
   for (float timeVal : timeDomain) {
     if (std::abs(timeVal) > touMax &&
         std::abs(timeVal / sampleFrequency) <= totMaxDelay_s) {
@@ -94,16 +96,20 @@ float GCCPhaT::calculateTimeDelay(const std::vector<float>& timeDomain,
     }
   }
 
+  // Compute and return the time delay.
   return touMax / sampleFrequency;
 }
 
 float GCCPhaT::estimateAngle(float timeDelayX1, float timeDelayX2,
                              float timeDelayY1, float timeDelayY2) {
-  // Calculate average time delays.
+  // Calculate average time delays on each axis.
   float avgTimeDelayX_s = (timeDelayX1 + timeDelayX2) / 2.0;
   float avgTimeDelayY_s = (timeDelayY1 + timeDelayY2) / 2.0;
 
-  // Compute angle and transform to correct coordinate system (FR5.3).
+  // Compute angle and transform to correct coordinate system (FR5.3). We get
+  // the below equation since:
+  // avgTimeDelayX_s = (distance between mics) * cos(angle) / (speed of sound) &
+  // avgTimeDelayY_s = (distance between mics) * sine(angle) / (speed of sound)
   float angle = std::atan2(avgTimeDelayY_s, avgTimeDelayX_s);
 
   // Rotate pi/2 counterclock wise so that angle of 0 faces towards the front of
