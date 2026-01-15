@@ -1,9 +1,11 @@
 #include <vector>
 
+#include "matrix.h"
+
 struct ldaProjectionData {
   uint16_t numComponents;
 
-  std::vector<std::vector<float>> classWeights;
+  matrix classWeights;
   std::vector<float> classBiases;
 
   ldaProjectionData(uint16_t components)
@@ -25,7 +27,8 @@ class LinearDiscriminantAnalysis {
    * @param ldaFrame Output LDA frame, of size numComponents.
    */
   // TODO: Update this to return enum class type.
-  std::string PredictFrameClass(const std::vector<float>& pcaFrame) const;
+  std::string PredictFrameClass(const matrix& pcaFeatureVector,
+                                uint16_t frameIndex) const;
 
   /**
    * @brief Apply LDA to the input feature vector.
@@ -33,8 +36,7 @@ class LinearDiscriminantAnalysis {
    * @param inputFeatureVector Input feature vector, of size featureLength.
    * @param ldaFeatureVector Output LDA feature vector, of size numComponents.
    */
-  std::string Apply(
-      const std::vector<std::vector<float>>& pcaFeatureVector) const;
+  std::string Apply(const matrix& pcaFeatureVector) const;
 
  private:
   uint16_t numEigenvectors_;

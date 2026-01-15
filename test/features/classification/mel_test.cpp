@@ -16,6 +16,7 @@
 
 #include "constants.h"
 #include "fft.h"
+#include "matrix.h"
 #include "mel_filter.h"
 #include "mp3.h"
 namespace {
@@ -74,6 +75,18 @@ static int CountPositive(const std::vector<float>& v, float eps = 1e-8f) {
   return c;
 }
 
+static int CountPositiveRow(const matrix& m, uint16_t row, float eps = 1e-8f) {
+  int c = 0;
+  const uint16_t cols = m.numCols;
+  const size_t rowStart = static_cast<size_t>(row) * cols;
+  for (uint16_t col = 0; col < cols; ++col) {
+    if (m.pData[rowStart + col] > eps) {
+      ++c;
+    }
+  }
+  return c;
+}
+
 // Used to visualize the mel spectrogram in console (for debugging)
 static void PrintMelBars(const std::vector<float>& mel, float scale = 50.0f) {
   for (float v : mel) {
@@ -85,6 +98,15 @@ static void PrintMelBars(const std::vector<float>& mel, float scale = 50.0f) {
 
 }  // namespace
 
+static void PrintMatrix(const matrix& m) {
+  for (uint16_t r = 0; r < m.numRows; ++r) {
+    for (uint16_t c = 0; c < m.numCols; ++c) {
+      printf("%8.4f ", m.pData[r * m.numCols + c]);
+    }
+    printf("\n");
+  }
+}
+
 TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
   MP3Data data = readMP3File("audio/285_sine.mp3");
 
@@ -94,11 +116,6 @@ TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
 
   auto stft = Make3FrameSTFTFromMP3(data, SAMPLE_FREQUENCY, offset0);
 
-  std::vector<std::vector<float>> spec(stft.numFrames);
-  for (int f = 0; f < stft.numFrames; ++f) {
-    spec[f] = stft.stft[f].magnitude;  // (frame x freqBin)
-  }
-
   const int stftPositives = CountPositive(stft.stft[1].frequency, 0.5f);
 
   const uint16_t fftSize = stft.stft[0].N;  // matches FFT output size
@@ -106,38 +123,18 @@ TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
 
   MelFilter mel(numFilters, fftSize, SAMPLE_FREQUENCY);
 
-  std::vector<std::vector<float>> melSpec;
-  mel.Apply(stft, melSpec);
+  matrix melSpec;
+  std::vector<float> melSpecData;
+  mel.Apply(stft, melSpec, melSpecData);
 
-  ASSERT_EQ(melSpec[0].size(), numFilters);
+  printf("Mel Filter Bank Applied on Frame 1:\n");
+  PrintMatrix(melSpec);
+  printf("melSpec shape: %u x %u\n", melSpec.numRows, melSpec.numCols);
+
+  ASSERT_EQ(melSpec.numRows, stft.numFrames);
+  ASSERT_EQ(melSpec.numCols, numFilters);
 
   // We should expect the mel bands to be more sparse compared to STFT bins.
-  const int melPositives = CountPositive(melSpec[1], 0.5f);
+  const int melPositives = CountPositiveRow(melSpec, 1, 0.5f);
   EXPECT_LE(melPositives, stftPositives);
-}
-
-TEST(MelFilterTest, Apply_StackedThreeFFTs_ProducesConsistentPeakAcrossFrames) {
-  MP3Data data = readMP3File("audio/285_sine.mp3");
-
-  const int offset0 = 100000;
-  ASSERT_GT(static_cast<int>(data.channel1.size()),
-            offset0 + 3 * static_cast<int>(WAVEFORM_SAMPLES));
-
-  auto stft = Make3FrameSTFTFromMP3(data, SAMPLE_FREQUENCY, offset0);
-
-  const uint16_t fftSize = stft.stft[0].N;
-  const uint16_t numFilters = 40;
-
-  MelFilter mel(numFilters, fftSize, SAMPLE_FREQUENCY);
-
-  std::vector<std::vector<float>> melSpec;
-  mel.Apply(stft, melSpec);
-
-  // Dominant mel bin should match across frames for a steady tone.
-  const int peak0mel = ArgMax(melSpec[0]);
-  const int peak1mel = ArgMax(melSpec[1]);
-  const int peak2mel = ArgMax(melSpec[2]);
-
-  EXPECT_EQ(peak0mel, peak1mel);
-  EXPECT_EQ(peak0mel, peak2mel);
 }

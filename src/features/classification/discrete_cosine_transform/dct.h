@@ -1,11 +1,14 @@
 #include <vector>
 
+#include "matrix.h"
+
 struct dctMatrix {
   uint16_t numCoefficients;
 
-  std::vector<std::vector<float>> matrix;
+  std::vector<float> data;
+  matrix mat;
 
-  dctMatrix(uint16_t coeffs) : numCoefficients(coeffs), matrix() {}
+  dctMatrix(uint16_t coeffs) : numCoefficients(coeffs), data(), mat() {}
 };
 
 class DiscreteCosineTransform {
@@ -24,8 +27,9 @@ class DiscreteCosineTransform {
    * @param dctCoefficients Output DCT coefficients, of size frames x
    * numCoefficients.
    */
-  void Apply(const std::vector<std::vector<float>>& melSpectrogram,
-             std::vector<std::vector<float>>& dctCoefficients) const;
+  void Apply(const matrix& melSpectrogram,
+             matrix& mfccSpectrogram,
+             std::vector<float>& mfccSpectrogramData) const;
 
  private:
   uint16_t numCoefficients_;

@@ -2,39 +2,24 @@
 
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <cmath>
 #include <cstdint>
-#include <fstream>
 #include <vector>
 #include <window.hpp>
 
 #include "constants.h"
 #include "dct.h"
 #include "fft.h"
+#include "matrix.h"
 #include "mel_filter.h"
 #include "mp3.h"
 
-static int ArgMax(const std::vector<float>& v) {
-  int idx = 0;
-  float best = v.empty() ? 0.0f : v[0];
-  for (int i = 1; i < static_cast<int>(v.size()); ++i) {
-    if (v[i] > best) {
-      best = v[i];
-      idx = i;
-    }
-  }
-  return idx;
-}
-
-// Build a 3-frame STFT-domain by computing 3 FFTs from 3 windows of the MP3.
-static std::vector<std::vector<float>> Make3FrameMFCCSpecFromMP3(
-    const MP3Data& data, int sampleRate, int offset0) {
+static void Make3FrameMFCCSpecFromMP3(const MP3Data& data, int sampleRate,
+                                      int offset0, matrix& mfccSpec,
+                                      std::vector<float>& mfccSpecData) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
   const uint16_t numFilters = 40;
   const uint16_t numCepstral = 13;
 
-  // Extract 3 windows at different offsets.
   std::vector<float> in0(data.channel1.begin() + offset0,
                          data.channel1.begin() + offset0 + frameSize);
   std::vector<float> in1(data.channel1.begin() + offset0 + frameSize,
@@ -58,54 +43,34 @@ static std::vector<std::vector<float>> Make3FrameMFCCSpecFromMP3(
 
   MelFilter melFilter(numFilters, frameSize, sampleRate);
 
-  std::vector<std::vector<float>> melSpec;
-  melFilter.Apply(dom, melSpec);
+  matrix melSpec;
+  std::vector<float> melSpecData;
+  melFilter.Apply(dom, melSpec, melSpecData);
 
   DiscreteCosineTransform dct(numCepstral, numFilters);
-  std::vector<std::vector<float>> mfccSpec;
-  dct.Apply(melSpec, mfccSpec);
-
-  return mfccSpec;
+  dct.Apply(melSpec, mfccSpec, mfccSpecData);
 }
 
 TEST(PCA, ApplyPCA) {
-  // Load MP3 data from file.
   MP3Data data = readMP3File("audio/285_sine.mp3");
   const int offset0 = 100000;
   const uint16_t numCepstral = 13;
   const uint16_t numPCAComponents = 13;
 
-  // Apply PCA to the MFCC feature vector.
+  ASSERT_GT(static_cast<int>(data.channel1.size()),
+            offset0 + 3 * static_cast<int>(WAVEFORM_SAMPLES));
+
   PrincipleComponentAnalysis pca(numPCAComponents, numCepstral);
 
-  // Create MFCC feature vector from MP3 data.
-  std::vector<std::vector<float>> mfccFeatureVector =
-      Make3FrameMFCCSpecFromMP3(data, SAMPLE_FREQUENCY, offset0);
+  matrix mfccSpec;
+  std::vector<float> mfccSpecData;
+  Make3FrameMFCCSpecFromMP3(data, SAMPLE_FREQUENCY, offset0, mfccSpec,
+                            mfccSpecData);
 
-  // printf("MFCC Feature Vector:\n");
-  // for (const auto& frame : mfccFeatureVector) {
-  //   for (const auto& value : frame) {
-  //     printf("%f ", value);
-  //   }
-  //   printf("\n");
-  // }
+  matrix pcaSpec;
+  std::vector<float> pcaSpecData;
+  pca.Apply(mfccSpec, pcaSpec, pcaSpecData);
 
-  std::vector<std::vector<float>> pcaFeatureVector;
-  pca.Apply(mfccFeatureVector, pcaFeatureVector);
-
-  // Visualize the PCA feature vector.
-
-  // printf("PCA Feature Vector:\n");
-  // for (const auto& frame : pcaFeatureVector) {
-  //   for (const auto& value : frame) {
-  //     printf("%f ", value);
-  //   }
-  //   printf("\n");
-  // }
-
-  // Verify the size of the output PCA feature vector.
-  ASSERT_EQ(pcaFeatureVector.size(), mfccFeatureVector.size());
-  for (const auto& frame : pcaFeatureVector) {
-    ASSERT_EQ(frame.size(), numPCAComponents);
-  }
+  ASSERT_EQ(pcaSpec.numRows, mfccSpec.numRows);
+  ASSERT_EQ(pcaSpec.numCols, numPCAComponents);
 }
