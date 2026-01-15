@@ -18,7 +18,8 @@
       "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build/x86_64",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON"
       }
     },
     {

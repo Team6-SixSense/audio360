@@ -11,6 +11,7 @@
 #include <cmath>
 #include <limits>
 
+#include "angles.hpp"
 #include "constants.h"
 
 constexpr inline float MAX_DELAY_MIC1_2 = MIC1_2_DISTANCE_m / SOUND_AIR_mps;
@@ -18,10 +19,11 @@ constexpr inline float MAX_DELAY_MIC2_3 = MIC2_3_DISTANCE_m / SOUND_AIR_mps;
 constexpr inline float MAX_DELAY_MIC3_4 = MIC3_4_DISTANCE_m / SOUND_AIR_mps;
 constexpr inline float MAX_DELAY_MIC4_1 = MIC4_1_DISTANCE_m / SOUND_AIR_mps;
 
-GCCPhaT::GCCPhaT(size_t numSamples)
+GCCPhaT::GCCPhaT(size_t numSamples, int sampleFrequency)
     : numSamples(numSamples),
+      sampleFrequency(sampleFrequency),
       gccPhatFreqDomain(numSamples / 2 + 1),
-      fft(numSamples, SAMPLE_FREQUENCY),
+      fft(numSamples, sampleFrequency),
       ifft(numSamples) {}
 
 float GCCPhaT::calculateDirection(std::vector<float>& mic1Data,
@@ -38,14 +40,14 @@ float GCCPhaT::calculateDirection(std::vector<float>& mic1Data,
   // from each other.
   float timeDelay1_2_s = this->computeTimeDelay2Source(
       mic1FreqDomain, mic2FreqDomain, MAX_DELAY_MIC1_2);  // Horizontal.
-  float timeDelay2_3_s = this->computeTimeDelay2Source(
-      mic2FreqDomain, mic3FreqDomain, MAX_DELAY_MIC2_3);  // Vertical.
-  float timeDelay3_4_s = this->computeTimeDelay2Source(
-      mic3FreqDomain, mic4FreqDomain, MAX_DELAY_MIC3_4);  // Horizontal.
+  float timeDelay3_2_s = this->computeTimeDelay2Source(
+      mic3FreqDomain, mic2FreqDomain, MAX_DELAY_MIC2_3);  // Vertical.
+  float timeDelay4_3_s = this->computeTimeDelay2Source(
+      mic4FreqDomain, mic3FreqDomain, MAX_DELAY_MIC3_4);  // Horizontal.
   float timeDelay4_1_s = this->computeTimeDelay2Source(
       mic4FreqDomain, mic1FreqDomain, MAX_DELAY_MIC4_1);  // Vertical.
 
-  return this->estimateAngle(timeDelay1_2_s, timeDelay3_4_s, timeDelay2_3_s,
+  return this->estimateAngle(timeDelay1_2_s, timeDelay4_3_s, timeDelay3_2_s,
                              timeDelay4_1_s);
 }
 
@@ -54,7 +56,7 @@ float GCCPhaT::computeTimeDelay2Source(const FrequencyDomain& freqA,
                                        float maxDelay_s) {
   this->computeGCCPhaT(freqA, freqB);
   std::vector<float> gccPhatTimeDomain =
-      ifft.frequencyToTime(gccPhatFreqDomain);
+      ifft.frequencyToTime(this->gccPhatFreqDomain);
 
   return this->calculateTimeDelay(gccPhatTimeDomain, maxDelay_s);
 }
@@ -87,12 +89,12 @@ float GCCPhaT::calculateTimeDelay(const std::vector<float>& timeDomain,
   // Peak detection.
   for (float timeVal : timeDomain) {
     if (std::abs(timeVal) > touMax &&
-        std::abs(timeVal / SAMPLE_FREQUENCY) <= totMaxDelay_s) {
-      touMax = std::abs(timeVal);
+        std::abs(timeVal / sampleFrequency) <= totMaxDelay_s) {
+      touMax = timeVal;
     }
   }
 
-  return touMax / SAMPLE_FREQUENCY;
+  return touMax / sampleFrequency;
 }
 
 float GCCPhaT::estimateAngle(float timeDelayX1, float timeDelayX2,
@@ -109,9 +111,7 @@ float GCCPhaT::estimateAngle(float timeDelayX1, float timeDelayX2,
   angle -= PI_32 / 2.0;
 
   // Convert angle to be in range of 0 and 2pi.
-  if (angle < 0 || angle > TWO_PI_32) {
-    angle -= TWO_PI_32 * std::floor(angle / TWO_PI_32);
-  }
+  angle = normalizeAngleRad(angle);
 
-  return 0.0;
+  return angle;
 }

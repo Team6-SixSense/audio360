@@ -23,8 +23,9 @@ class GCCPhaT : DoAAlgo {
    *
    * @param numSamples Number of samples that will be processed from each input
    * source.
+   * @param sampleFrequency The sample frequency of the audio inputs (Hz).
    */
-  GCCPhaT(size_t numSamples);
+  GCCPhaT(size_t numSamples, int sampleFrequency = SAMPLE_FREQUENCY);
 
   /**
    * @brief Calculate the direction of the audio source.
@@ -89,6 +90,9 @@ class GCCPhaT : DoAAlgo {
 
   /** @brief The number of samples of input audio source data. */
   size_t numSamples{0};
+
+  /** @brief Sampling frequency of the audio inputs (Hz).  */
+  int sampleFrequency{SAMPLE_FREQUENCY};
 
   /** @brief GCC PhaT frequency domain. */
   FrequencyDomain gccPhatFreqDomain;
