@@ -61,7 +61,6 @@ void setupPeripherals() {
   USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_PWRDWN;
 
   /* 2. Disable VBUS sensing (tells the PHY to ignore the VBUS pin) */
-  /* Try NOVBUSSENS if VBDEN doesn't compile */
   USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBDEN;
 
   /* 3. Force B-Device Session (Ignore the physical ID pin grounded by the adapter) */
