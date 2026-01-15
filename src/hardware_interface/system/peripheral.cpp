@@ -25,7 +25,7 @@ SPI_HandleTypeDef SD_SPI_HANDLE;
 
 #define SD_CS_Pin GPIO_PIN_4
 #define SD_CS_GPIO_Port GPIOA
-
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 void setupPeripherals() {
   // Configure the system clock to 216 MHz
   SystemClock_Config();
@@ -55,7 +55,24 @@ void setupPeripherals() {
   MX_SPI1_Init();
   MX_FATFS_Init();
 
+  USB_OTG_FS->GUSBCFG |= USB_OTG_GUSBCFG_FDMOD;
+
+  /* 1. Power up the transceiver (1 = Power On, 0 = Power Down) */
+  USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_PWRDWN;
+
+  /* 2. Disable VBUS sensing (tells the PHY to ignore the VBUS pin) */
+  /* Try NOVBUSSENS if VBDEN doesn't compile */
+  USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBDEN;
+
+  /* 3. Force B-Device Session (Ignore the physical ID pin grounded by the adapter) */
+  USB_OTG_FS->GOTGCTL |= USB_OTG_GOTGCTL_BVALOVAL;
+  USB_OTG_FS->GOTGCTL |= USB_OTG_GOTGCTL_BVALOEN;
+
   MX_USB_DEVICE_Init();
+
+  HAL_PCD_DevConnect(&hpcd_USB_OTG_FS);
+
+
 }
 
 /** @brief Sets up clock for the entire system. */
