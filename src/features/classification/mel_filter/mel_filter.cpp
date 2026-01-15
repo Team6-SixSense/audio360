@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include "matrix.h"
+
 inline double hz_to_mel(double hz) {
   return 2595.0 * std::log10(1.0 + hz / 700.0);
 }
@@ -12,8 +14,9 @@ inline double mel_to_hz(double mel) {
 
 void MelFilter::CreateFilterBank() {
   int numFreq = this->fftSize_ / 2 + 1;
-  this->filterBank_.resize(this->numFilters_,
-                           std::vector<float>(numFreq, 0.0f));
+  this->filterBankData_.assign(this->numFilters_ * numFreq, 0.0f);
+  matrix_init_f32(&this->filterBank_, this->numFilters_, numFreq,
+                  this->filterBankData_.data());
 
   double fmin = 0;
   double fmax = this->sampleFrequency_ / 2;
@@ -53,7 +56,8 @@ void MelFilter::CreateFilterBank() {
     int centerIdx = static_cast<int>(std::ceil(centerBin));
     for (int j = leftIdx; j < centerIdx; ++j) {
       if (j >= 0 && j < numFreq) {
-        this->filterBank_[i][j] = (j - leftBin) / (centerBin - leftBin);
+        this->filterBank_.pData[i * numFreq + j] =
+            (j - leftBin) / (centerBin - leftBin);
       }
     }
 
@@ -62,7 +66,8 @@ void MelFilter::CreateFilterBank() {
     int rightIdx = static_cast<int>(std::ceil(rightBin));
     for (int j = centerIdx; j < rightIdx; ++j) {
       if (j >= 0 && j < numFreq) {
-        this->filterBank_[i][j] = (rightBin - j) / (rightBin - centerBin);
+        this->filterBank_.pData[i * numFreq + j] =
+            (rightBin - j) / (rightBin - centerBin);
       }
     }
   }
@@ -82,22 +87,43 @@ MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize,
 MelFilter::~MelFilter() {}
 
 void MelFilter::Apply(ShortTimeFourierTransformDomain& stftPowerSpectrogram,
-                      std::vector<std::vector<float>>& melSpectrogram) const {
+                      matrix& melSpectrogram,
+                      std::vector<float>& melSpectrogramData) const {
   uint16_t numFrames = stftPowerSpectrogram.numFrames;
-  melSpectrogram.resize(numFrames, std::vector<float>(this->numFilters_, 0.0f));
+  const int numFreq = this->fftSize_ / 2 + 1;
 
+  std::vector<float> stftData(numFrames * numFreq, 0.0f);
+  matrix stftMatrix;
+  matrix_init_f32(&stftMatrix, numFrames, numFreq, stftData.data());
   for (int frame = 0; frame < numFrames; ++frame) {
-    for (int melBin = 0; melBin < this->numFilters_; ++melBin) {
-      float melEnergy = 0.0f;
-      for (int freqBin = 0; freqBin < (this->fftSize_ / 2 + 1); ++freqBin) {
-        // TODO: Check if Sathurshan adds a power spectrum, and remove pow if
-        // thats the case.
-        melEnergy +=
-            std::pow(stftPowerSpectrogram.stft[frame].magnitude[freqBin],
-                     2.0f) *
-            this->filterBank_[melBin][freqBin];
-      }
-      melSpectrogram[frame][melBin] = melEnergy;
+    for (int freqBin = 0; freqBin < numFreq; ++freqBin) {
+      stftMatrix.pData[frame * numFreq + freqBin] =
+          std::pow(stftPowerSpectrogram.stft[frame].magnitude[freqBin], 2.0f);
     }
   }
+
+  matrix filterBankT;
+  std::vector<float> filterBankTData(numFreq * this->numFilters_, 0.0f);
+  matrix_init_f32(&filterBankT, numFreq, this->numFilters_,
+                  filterBankTData.data());
+  matrix_transpose_f32(&this->filterBank_, &filterBankT);
+
+  melSpectrogramData.assign(numFrames * this->numFilters_, 0.0f);
+  matrix_init_f32(&melSpectrogram, numFrames, this->numFilters_,
+                  melSpectrogramData.data());
+
+  matrix_mult_f32(&stftMatrix, &filterBankT, &melSpectrogram);
+
+  // for (int frame = 0; frame < numFrames; ++frame) {
+  //   for (int melBin = 0; melBin < this->numFilters_; ++melBin) {
+  //     float melEnergy = 0.0f;
+  //     for (int freqBin = 0; freqBin < numFreq; ++freqBin) {
+  //       // TODO: Check if Sathurshan adds a power spectrum, and remove pow if
+  //       // thats the case.
+  //       melEnergy += stftMatrix.pData[frame * numFreq + freqBin] *
+  //                    this->filterBank_.pData[melBin * numFreq + freqBin];
+  //     }
+  //     melSpectrogram[frame][melBin] = melEnergy;
+  //   }
+  // }
 }

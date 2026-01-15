@@ -1,9 +1,11 @@
 #include <vector>
 
+#include "matrix.h"
+
 struct pcaProjectionData {
   uint16_t numEigenvectors;
 
-  std::vector<std::vector<float>> matrix;
+  matrix matrix;
   std::vector<float> meanVector;
 
   pcaProjectionData(uint16_t eigenvectors)
@@ -36,6 +38,10 @@ class PrincipleComponentAnalysis {
    */
   void Apply(const std::vector<std::vector<float>>& mfccFeatureVector,
              std::vector<std::vector<float>>& pcaFeatureVector) const;
+
+  void Apply(const matrix& mfccFeatureVector,
+             matrix& pcaFeatureVector,
+             std::vector<float>& pcaFeatureVectorData) const;
 
  private:
   uint16_t numEigenvectors_;

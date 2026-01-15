@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "fft.h"
+#include "matrix.h"
 
 struct ShortTimeFourierTransformDomain {
   /** @brief The number of frames stacked to create the stft */
@@ -53,13 +54,15 @@ class MelFilter {
    * @param melSpectrogram Output Mel filter bank energies.
    */
   void Apply(ShortTimeFourierTransformDomain& stftPowerSpectrogram,
-             std::vector<std::vector<float>>& melSpectrogram) const;
+             matrix& melSpectrogram,
+             std::vector<float>& melSpectrogramData) const;
 
- private:
+ private: 
   uint16_t numFilters_;
   uint16_t fftSize_;
   uint16_t sampleFrequency_;
-  std::vector<std::vector<float>> filterBank_;
+  std::vector<float> filterBankData_;
+  matrix filterBank_;
 
   /**
    * @brief Create the Mel filter bank.

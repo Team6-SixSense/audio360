@@ -11,6 +11,7 @@
 
 #include "constants.h"
 #include "fft.h"
+#include "matrix.h"
 #include "mel_filter.h"
 #include "mp3.h"
 
@@ -27,8 +28,9 @@ static int ArgMax(const std::vector<float>& v) {
 }
 
 // Build a 3-frame STFT-domain by computing 3 FFTs from 3 windows of the MP3.
-static std::vector<std::vector<float>> Make3FrameMelSpecFromMP3(
-    const MP3Data& data, int sampleRate, int offset0) {
+static void Make3FrameMelSpecFromMP3(const MP3Data& data, int sampleRate,
+                                    int offset0, matrix& melSpec,
+                                    std::vector<float>& melSpecData) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
   const uint16_t numFilters = 40;
 
@@ -56,14 +58,11 @@ static std::vector<std::vector<float>> Make3FrameMelSpecFromMP3(
 
   MelFilter melFilter(numFilters, frameSize, sampleRate);
 
-  std::vector<std::vector<float>> melSpec;
-  melFilter.Apply(dom, melSpec);
-
-  return melSpec;
+  melFilter.Apply(dom, melSpec, melSpecData);
 }
 
 TEST(DCTTest, ComputeDCT_OnMelSpectrogram_ProducesExpectedMFCC) {
-  // These were validated experiementally using Python to see if relatively the
+  // These were validated experimentally using Python to see if relatively the
   // MFCC are obtained.
   std::vector<float> actualFrame1 = {
       -56.664089, 20.234943, 20.820616, 15.136596, 10.813884,
@@ -86,19 +85,22 @@ TEST(DCTTest, ComputeDCT_OnMelSpectrogram_ProducesExpectedMFCC) {
 
   DiscreteCosineTransform dct(numCepstral, numFilters);
 
-  std::vector<std::vector<float>> melSpec =
-      Make3FrameMelSpecFromMP3(data, SAMPLE_FREQUENCY, offset0);
-  std::vector<std::vector<float>> mfccSpec;
-  dct.Apply(melSpec, mfccSpec);
+  matrix melSpec;
+  std::vector<float> melSpecData;
+  Make3FrameMelSpecFromMP3(data, SAMPLE_FREQUENCY, offset0, melSpec,
+                           melSpecData);
+  matrix mfccSpec;
+  std::vector<float> mfccSpecData;
+  dct.Apply(melSpec, mfccSpec, mfccSpecData);
 
-  ASSERT_EQ(mfccSpec[0].size(), numCepstral);
+  ASSERT_EQ(mfccSpec.numCols, numCepstral);
 
   for (int i = 0; i < numCepstral; ++i) {
-    EXPECT_NEAR(mfccSpec[0][i], actualFrame1[i], 1e-3f)
+    EXPECT_NEAR(mfccSpec.pData[i], actualFrame1[i], 1e-3f)
         << "Mismatch at frame 0, coeff " << i;
-    EXPECT_NEAR(mfccSpec[1][i], actualFrame2[i], 1e-3f)
+    EXPECT_NEAR(mfccSpec.pData[numCepstral + i], actualFrame2[i], 1e-3f)
         << "Mismatch at frame 1, coeff " << i;
-    EXPECT_NEAR(mfccSpec[2][i], actualFrame3[i], 1e-3f)
+    EXPECT_NEAR(mfccSpec.pData[2 * numCepstral + i], actualFrame3[i], 1e-3f)
         << "Mismatch at frame 2, coeff " << i;
   }
 }
