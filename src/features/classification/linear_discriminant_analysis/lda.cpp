@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "constants.h"
+
 void LinearDiscriminantAnalysis::InitializeLDAData() {
   this->ldaProjectionData_.classWeights = LDA_CLASS_WEIGHTS;
   this->ldaProjectionData_.classBiases = LDA_CLASS_BIASES;
@@ -52,13 +53,13 @@ std::string LinearDiscriminantAnalysis::PredictFrameClass(
       predictedClassIndex = i;
     }
   }
-  // Debug: Print class predictions.
-  printf("LDA Class Predictions: ");
-  for (int i = 0; i < this->numClasses_; ++i) {
-    printf("%s: %f, ", this->classTypes_[i].c_str(), classPredictions[i]);
-  }
-  printf("Predicted Class: %s with score: %f\n",
-         this->classTypes_[predictedClassIndex].c_str(), maxScore);
+  // // Debug: Print class predictions.
+  // printf("LDA Class Predictions: ");
+  // for (int i = 0; i < this->numClasses_; ++i) {
+  //   printf("%s: %f, ", this->classTypes_[i].c_str(), classPredictions[i]);
+  // }
+  // printf("Predicted Class: %s with score: %f\n",
+  //        this->classTypes_[predictedClassIndex].c_str(), maxScore);
 
   return this->classTypes_[predictedClassIndex];
 }

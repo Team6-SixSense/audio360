@@ -20,24 +20,6 @@ struct ShortTimeFourierTransformDomain {
   ShortTimeFourierTransformDomain(uint16_t size) : numFrames(size), stft() {}
 };
 
-// TODO: Determine if this struct is needed
-
-// struct MelSpectrogramDomain {
-//   /** @brief The number of frames in the Mel spectrogram */
-//   uint16_t numFrames;
-
-//   /** @brief The number of Mel filters applied */
-//   uint16_t numFilters;
-
-//   /** @brief The tranformed Mel spectrogram object */
-//   std::vector<std::vector<float>> mel;
-
-//   MelSpectrogramDomain(uint16_t size)
-//       : numFrames(size),
-//         numFilters(size),
-//         mel(size, std::vector<float>(size)) {}
-// };
-
 class MelFilter {
  public:
   /** @brief Construct a MelFilter object. */
@@ -53,11 +35,10 @@ class MelFilter {
    * (fftSize/2 + 1) [nyquist].
    * @param melSpectrogram Output Mel filter bank energies.
    */
-  void Apply(ShortTimeFourierTransformDomain& stftPowerSpectrogram,
-             matrix& melSpectrogram,
-             std::vector<float>& melSpectrogramData) const;
+  void Apply(matrix& stftPowerSpectrogram, matrix& melSpectrogram,
+             std::vector<float>& melSpectrogramVector) const;
 
- private: 
+ private:
   uint16_t numFilters_;
   uint16_t fftSize_;
   uint16_t sampleFrequency_;

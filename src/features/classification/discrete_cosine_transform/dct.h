@@ -27,9 +27,8 @@ class DiscreteCosineTransform {
    * @param dctCoefficients Output DCT coefficients, of size frames x
    * numCoefficients.
    */
-  void Apply(const matrix& melSpectrogram,
-             matrix& mfccSpectrogram,
-             std::vector<float>& mfccSpectrogramData) const;
+  void Apply(const matrix& melSpectrogram, matrix& mfccSpectrogram,
+             std::vector<float>& mfccSpectrogramVector) const;
 
  private:
   uint16_t numCoefficients_;

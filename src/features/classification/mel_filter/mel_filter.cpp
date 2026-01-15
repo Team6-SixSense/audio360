@@ -86,21 +86,10 @@ MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize,
 
 MelFilter::~MelFilter() {}
 
-void MelFilter::Apply(ShortTimeFourierTransformDomain& stftPowerSpectrogram,
-                      matrix& melSpectrogram,
-                      std::vector<float>& melSpectrogramData) const {
-  uint16_t numFrames = stftPowerSpectrogram.numFrames;
+void MelFilter::Apply(matrix& stftMatrix, matrix& melSpectrogram,
+                      std::vector<float>& melSpectrogramVector) const {
+  uint16_t numFrames = stftMatrix.numRows;
   const int numFreq = this->fftSize_ / 2 + 1;
-
-  std::vector<float> stftData(numFrames * numFreq, 0.0f);
-  matrix stftMatrix;
-  matrix_init_f32(&stftMatrix, numFrames, numFreq, stftData.data());
-  for (int frame = 0; frame < numFrames; ++frame) {
-    for (int freqBin = 0; freqBin < numFreq; ++freqBin) {
-      stftMatrix.pData[frame * numFreq + freqBin] =
-          std::pow(stftPowerSpectrogram.stft[frame].magnitude[freqBin], 2.0f);
-    }
-  }
 
   matrix filterBankT;
   std::vector<float> filterBankTData(numFreq * this->numFilters_, 0.0f);
@@ -108,22 +97,9 @@ void MelFilter::Apply(ShortTimeFourierTransformDomain& stftPowerSpectrogram,
                   filterBankTData.data());
   matrix_transpose_f32(&this->filterBank_, &filterBankT);
 
-  melSpectrogramData.assign(numFrames * this->numFilters_, 0.0f);
+  melSpectrogramVector.assign(numFrames * this->numFilters_, 0.0f);
   matrix_init_f32(&melSpectrogram, numFrames, this->numFilters_,
-                  melSpectrogramData.data());
+                  melSpectrogramVector.data());
 
   matrix_mult_f32(&stftMatrix, &filterBankT, &melSpectrogram);
-
-  // for (int frame = 0; frame < numFrames; ++frame) {
-  //   for (int melBin = 0; melBin < this->numFilters_; ++melBin) {
-  //     float melEnergy = 0.0f;
-  //     for (int freqBin = 0; freqBin < numFreq; ++freqBin) {
-  //       // TODO: Check if Sathurshan adds a power spectrum, and remove pow if
-  //       // thats the case.
-  //       melEnergy += stftMatrix.pData[frame * numFreq + freqBin] *
-  //                    this->filterBank_.pData[melBin * numFreq + freqBin];
-  //     }
-  //     melSpectrogram[frame][melBin] = melEnergy;
-  //   }
-  // }
 }
