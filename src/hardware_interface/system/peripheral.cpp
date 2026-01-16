@@ -7,9 +7,9 @@
 #ifdef STM_BUILD
 #include "peripheral.h"
 
+#include "embedded_mic.h"
 #include "fatfs.h"
 #include "usb_device.h"
-#include "embedded_mic.h"
 
 static void PeriphCommonClock_Config();
 static void MX_GPIO_Init();
@@ -20,8 +20,6 @@ static void MX_DMA_Init();
 
 UART_HandleTypeDef huart3;
 SPI_HandleTypeDef SD_SPI_HANDLE;
-
-
 
 #define SD_CS_Pin GPIO_PIN_4
 #define SD_CS_GPIO_Port GPIOA
@@ -63,15 +61,14 @@ void setupPeripherals() {
   /* 2. Disable VBUS sensing (tells the PHY to ignore the VBUS pin) */
   USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBDEN;
 
-  /* 3. Force B-Device Session (Ignore the physical ID pin grounded by the adapter) */
+  /* 3. Force B-Device Session (Ignore the physical ID pin grounded by the
+   * adapter) */
   USB_OTG_FS->GOTGCTL |= USB_OTG_GOTGCTL_BVALOVAL;
   USB_OTG_FS->GOTGCTL |= USB_OTG_GOTGCTL_BVALOEN;
 
   MX_USB_DEVICE_Init();
 
   HAL_PCD_DevConnect(&hpcd_USB_OTG_FS);
-
-
 }
 
 /** @brief Sets up clock for the entire system. */
@@ -165,11 +162,9 @@ static void MX_GPIO_Init() {
 }
 
 /**
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void)
-{
-
+ * Enable DMA controller clock
+ */
+static void MX_DMA_Init(void) {
   /* DMA controller clock enable */
   __HAL_RCC_DMA2_CLK_ENABLE();
 
@@ -186,7 +181,6 @@ static void MX_DMA_Init(void)
   /* DMA2_Stream6_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
-
 }
 
 /** @brief Initializes SPI 1 bus. */
@@ -210,8 +204,6 @@ static void MX_SPI1_Init() {
     Error_Handler();
   }
 }
-
-
 
 /** @brief Initializes USART3. */
 static void MX_USART3_UART_Init() {
@@ -237,7 +229,5 @@ void Error_Handler() {
   while (1) {
   }
 }
-
-
 
 #endif

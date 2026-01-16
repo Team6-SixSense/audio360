@@ -1,8 +1,8 @@
 #include "embedded_mic.h"
 #include "peripheral.h"
 #include <string.h>
+#include "constants.h"
 
-#define WAVEFORM_SAMPLES 4096
 
 #ifdef STM_BUILD
 
