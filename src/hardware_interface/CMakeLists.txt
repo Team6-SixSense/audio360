@@ -4,7 +4,6 @@
 if(ARM_BUILD)
     add_subdirectory(inmp441_mic)
     add_subdirectory(system)
-    add_subdirectory(inmp441_mic)
 endif()
 
 # Add include directories.
