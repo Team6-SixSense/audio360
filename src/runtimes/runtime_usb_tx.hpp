@@ -15,23 +15,6 @@
 
 static int32_t debug_buffer[WAVEFORM_SAMPLES * 4];
 
-inline void check_mic_buffers(embedded_mic_t* mic, uint8_t* half_full,
-                              uint8_t* full) {
-  __disable_irq();
-
-  if (mic->half_rx_compl) {
-    *half_full = 1;
-    mic->half_rx_compl = 0;
-  }
-
-  if (mic->full_rx_compl) {
-    *full = 1;
-    mic->full_rx_compl = 0;
-  }
-
-  __enable_irq();
-}
-
 inline void main_usb_tx() {
   embedded_mic_t* mic_a1 = embedded_mic_get(MIC_A1);
   embedded_mic_t* mic_a2 = embedded_mic_get(MIC_A2);

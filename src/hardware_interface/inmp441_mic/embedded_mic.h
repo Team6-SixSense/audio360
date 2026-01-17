@@ -82,6 +82,31 @@ void embedded_mic_start(embedded_mic_t* mic_handle);
  */
 embedded_mic_t* embedded_mic_get(embedded_mic_index index);
 
+/**
+ * @brief Checks that the microphone bufferes are free.
+ *
+ * @param mic Microphone to check.
+ * @param half_full 1 if first half of dynamic memory buffer is full. 0
+ * otherwise.
+ * @param full 1 if second half of dynamic memory buffer is full. 0 otherwise.
+ */
+inline void check_mic_buffers(embedded_mic_t* mic, uint8_t* half_full,
+                              uint8_t* full) {
+  __disable_irq();
+
+  if (mic->half_rx_compl) {
+    *half_full = 1;
+    mic->half_rx_compl = 0;
+  }
+
+  if (mic->full_rx_compl) {
+    *full = 1;
+    mic->full_rx_compl = 0;
+  }
+
+  __enable_irq();
+}
+
 #ifdef __cplusplus
 }
 #endif
