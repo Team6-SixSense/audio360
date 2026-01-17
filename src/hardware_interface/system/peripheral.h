@@ -32,17 +32,6 @@ void Error_Handler();
 
 void SystemClock_Config(void);
 
-/** @brief Get handle to SAI 1 module block A. */
-SAI_HandleTypeDef *getSAI1A_Handle();
-
-/** @brief Get handle to SAI 1 module block B. */
-SAI_HandleTypeDef *getSAI1B_Handle();
-
-/** @brief Get handle to SAI 2 module block A. */
-SAI_HandleTypeDef *getSAI2A_Handle();
-
-/** @brief Get handle to SAI 2 module block B. */
-SAI_HandleTypeDef *getSAI2B_Handle();
 
 #ifdef __cplusplus
 }
