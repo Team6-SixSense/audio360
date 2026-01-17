@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #ifdef STM_BUILD
-#define RUNTIME_AUDIO360
+#define RUNTIME_USB_TX
 #else
 #define RUNTIME_FFT
 #endif
@@ -40,7 +40,7 @@ int main() {
 #endif
 
 #ifdef RUNTIME_USB_TX
-  mainUSB_TX();
+  main_usb_tx();
 #endif
 
 #ifdef RUNTIME_SD_DIAG
