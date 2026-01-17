@@ -1,3 +1,5 @@
+/// Classification by the classification module.
+/// Must be in sync with src/features/classifcation/classifcationLabel.h
 enum Classification {
   UnKnown,
   Siren,
@@ -5,6 +7,8 @@ enum Classification {
   CarHorn
 }
 
+/// Classification by the DoA module.
+/// Must be in sync with src/features/doa/directionLabel.h
 enum Quadrant {
   None,
   North,
