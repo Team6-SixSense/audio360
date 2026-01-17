@@ -11,10 +11,10 @@
 
 DOA::DOA(size_t numSamples) : numSamples(numSamples), gccPhaT(numSamples) {}
 
-float DOA::calculateDirection(std::vector<float> mic1Data,
-                              std::vector<float> mic2Data,
-                              std::vector<float> mic3Data,
-                              std::vector<float> mic4Data,
+float DOA::calculateDirection(std::vector<float>& mic1Data,
+                              std::vector<float>& mic2Data,
+                              std::vector<float>& mic3Data,
+                              std::vector<float>& mic4Data,
                               DOA_Algorithms algo) {
   if (!this->checkInputSize(mic1Data, mic2Data, mic3Data, mic4Data)) {
     // TODO: throw AudioProcessingFailure.
