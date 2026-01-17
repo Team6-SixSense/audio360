@@ -7,6 +7,7 @@ This directory contains the source code for Audio360.
 The folders and files for this project are as follows:
 
     .
+    ├── android             # Android application to deploy to glasses.
     ├── cmake               # Cmake specific to hardware build.
     ├── configs             # Configuration files.
     ├── features            # Audio360 software features.
