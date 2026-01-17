@@ -1,8 +1,17 @@
-#include "embedded_mic.h"
-#include "peripheral.h"
-#include <string.h>
-#include "constants.h"
+/**
+******************************************************************************
+* @file    embedded_mic.cpp
+* @brief   This file implements the embedded INMP441/ICSC 442 microphone.
+* @author  Omar Alam
+******************************************************************************
+*/
 
+#include "embedded_mic.h"
+
+#include <string.h>
+
+#include "constants.h"
+#include "peripheral.h"
 
 #ifdef STM_BUILD
 
@@ -18,12 +27,10 @@ DMA_HandleTypeDef hdma_sai1_b;
 DMA_HandleTypeDef hdma_sai2_a;
 DMA_HandleTypeDef hdma_sai2_b;
 
-
 void init_mic_a1();
 void init_mic_a2();
 void init_mic_b1();
 void init_mic_b2();
-
 
 void embedded_mic_init() {
   memset(mics, 0, sizeof(mics));
@@ -32,16 +39,16 @@ void embedded_mic_init() {
   init_mic_a2();
   init_mic_b1();
   init_mic_b2();
-
 }
 
 embedded_mic_t* embedded_mic_get(const embedded_mic_index index) {
-    return &mics[index];
+  return &mics[index];
 }
 
 void embedded_mic_start(embedded_mic_t* mic_handle) {
   if (mic_handle != NULL && mic_handle->pBuffer != NULL) {
-    HAL_SAI_Receive_DMA(&mic_handle->hsai_block, (uint8_t*)mic_handle->pBuffer, mic_handle->BufferSize);
+    HAL_SAI_Receive_DMA(&mic_handle->hsai_block, (uint8_t*)mic_handle->pBuffer,
+                        mic_handle->BufferSize);
   }
 }
 
@@ -52,8 +59,7 @@ void init_mic_a1() {
   mics[MIC_A1].pBuffer = mic_buffer_a1;
   mics[MIC_A1].BufferSize = WAVEFORM_SAMPLES;
 
-
-  //we use DMA2 Stream 1
+  // we use DMA2 Stream 1
   mics[MIC_A1].irq = DMA2_Stream1_IRQn;
   mics[MIC_A1].hdma_sai = &hdma_sai1_a;
   SAI_HandleTypeDef& hsai_BlockA1 = mics[MIC_A1].hsai_block;
@@ -89,17 +95,14 @@ void init_mic_a1() {
   if (HAL_SAI_Init(&hsai_BlockA1) != HAL_OK) {
     Error_Handler();
   }
-
 }
 
 void init_mic_b1() {
-
   mics[MIC_B1] = embedded_mic_t();
   mics[MIC_B1].index = MIC_B1;
 
   mics[MIC_B1].pBuffer = mic_buffer_b1;
   mics[MIC_B1].BufferSize = WAVEFORM_SAMPLES;
-
 
   // we use dma 2 stream 0
   mics[MIC_B1].hdma_sai = &hdma_sai1_b;
@@ -141,7 +144,6 @@ void init_mic_a2() {
 
   mics[MIC_A2].pBuffer = mic_buffer_a2;
   mics[MIC_A2].BufferSize = WAVEFORM_SAMPLES;
-
 
   // we use dma2 stream 2
   mics[MIC_A2].hdma_sai = &hdma_sai2_a;
@@ -224,7 +226,7 @@ extern "C" {
  *               the configuration information for SAI module.
  * @retval None
  */
-void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef *hsai) {
+void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef* hsai) {
   if (hsai->Instance == SAI1_Block_A) {
     mics[MIC_A1].full_rx_compl = 1;
   } else if (hsai->Instance == SAI1_Block_B) {
@@ -242,7 +244,7 @@ void HAL_SAI_RxCpltCallback(SAI_HandleTypeDef *hsai) {
  *               the configuration information for SAI module.
  * @retval None
  */
-void HAL_SAI_RxHalfCpltCallback(SAI_HandleTypeDef *hsai) {
+void HAL_SAI_RxHalfCpltCallback(SAI_HandleTypeDef* hsai) {
   if (hsai->Instance == SAI1_Block_A) {
     mics[MIC_A1].half_rx_compl = 1;
   } else if (hsai->Instance == SAI1_Block_B) {

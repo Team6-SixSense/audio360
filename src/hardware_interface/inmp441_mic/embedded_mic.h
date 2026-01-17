@@ -1,11 +1,12 @@
 /**
 ******************************************************************************
- * @file    embedded_mic.h
- * @brief   This file defines the structs and functions used to
- * define an embedded INMP441/ICSC 442 microphone.
- * @author  Omar Alam
- ******************************************************************************
- */
+* @file    embedded_mic.h
+* @brief   This file defines the structs and functions used to
+* define an embedded INMP441/ICSC 442 microphone.
+* @author  Omar Alam
+******************************************************************************
+*/
+
 #ifndef EMBEDDED_MIC_H
 #define EMBEDDED_MIC_H
 
@@ -22,7 +23,10 @@ extern "C" {
  * MIC_{SAI_BLOCK}{SAI_NUMBER}
  */
 typedef enum embedded_mic_index {
-  MIC_A1, MIC_A2, MIC_B1, MIC_B2
+  MIC_A1,
+  MIC_A2,
+  MIC_B1,
+  MIC_B2
 } embedded_mic_index;
 
 /**
@@ -30,14 +34,29 @@ typedef enum embedded_mic_index {
  * flags.
  */
 typedef struct embedded_mic_t {
-  embedded_mic_index index; // Embedded mic identifier from embedded_mic_index enum
-  SAI_HandleTypeDef hsai_block; // Handle to the serial audio interface block
-  IRQn_Type irq; // Interrupt request number
-  DMA_HandleTypeDef* hdma_sai; // Handle for DMA channel / stream associated with this mic
-  int32_t* pBuffer; // Buffer to store streamed microphone data
-  uint32_t BufferSize; // Size of the buffer in samples
-  volatile uint8_t half_rx_compl; // if DMA is finished writing to the first half of the buffer
-  volatile uint8_t full_rx_compl; // if DMA is finished writing to the second half of the buffer
+  /** @brief  Embedded mic identifier from embedded_mic_index enum. */
+  embedded_mic_index index;
+
+  /** @brief Handle to the serial audio interface block. */
+  SAI_HandleTypeDef hsai_block;
+
+  /** @brief Interrupt request number. */
+  IRQn_Type irq;
+
+  /** @brief Handle for DMA channel/stream associated with this mic. */
+  DMA_HandleTypeDef* hdma_sai;
+
+  /** @brief Buffer to store streamed microphone data.  */
+  int32_t* pBuffer;
+
+  /** @brief  Size of the buffer in samples. */
+  uint32_t BufferSize;
+
+  /** @brief if DMA is finished writing to the first half of the buffer */
+  volatile uint8_t half_rx_compl;
+
+  /** @brief if DMA is finished writing to the second half of the buffer */
+  volatile uint8_t full_rx_compl;
 } embedded_mic_t;
 
 /**
@@ -48,11 +67,12 @@ typedef struct embedded_mic_t {
 void embedded_mic_init();
 
 /**
-* @brief Start the streaming DMA process for a specific microphone.
-* Once this function is called, streaming will be activated for this microphone.
-* @param mic_handle pointer to struct for embedded mic.
-* @return None
-*/
+ * @brief Start the streaming DMA process for a specific microphone.
+ * Once this function is called, streaming will be activated for this
+ * microphone.
+ * @param mic_handle pointer to struct for embedded mic.
+ * @return None
+ */
 void embedded_mic_start(embedded_mic_t* mic_handle);
 
 /**
@@ -66,4 +86,4 @@ embedded_mic_t* embedded_mic_get(embedded_mic_index index);
 }
 #endif
 
-#endif //EMBEDDED_MIC_H
+#endif  // EMBEDDED_MIC_H
