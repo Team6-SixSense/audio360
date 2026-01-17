@@ -22,8 +22,8 @@
 #endif
 
 #ifdef STM_BUILD
+#include "runtimes/runtime_android_comm.hpp"
 #include "runtimes/runtime_audio360.hpp"
-#include "runtimes/runtime_sd_diag.hpp"
 #include "runtimes/runtime_usb_tx.hpp"
 #else
 #include "runtimes/runtime_fft.hpp"
@@ -43,8 +43,8 @@ int main() {
   main_usb_tx();
 #endif
 
-#ifdef RUNTIME_SD_DIAG
-  mainSDDiag();
+#ifdef RUNTIME_ANDROID_COMM
+  mainAndroidComm();
 #endif
 
 #ifdef RUNTIME_FFT
