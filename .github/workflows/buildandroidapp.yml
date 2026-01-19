@@ -1,0 +1,44 @@
+name: Android Build
+
+on:
+  pull_request:
+    paths:
+      - "src/audio360_viz/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/audio360_viz/**"
+
+jobs:
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.38.7"
+          cache: true
+
+      - name: Flutter pub get
+        working-directory: src/audio360_viz
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: src/audio360_viz
+        run: flutter analyze
+
+      - name: Build Android 
+        working-directory: src/audio360_viz
+        run: flutter build apk --release

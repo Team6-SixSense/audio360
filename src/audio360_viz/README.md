@@ -17,3 +17,4 @@ To build and run, connect your android device and run the following commands:
 flutter pub get
 flutter run
 ```
+
