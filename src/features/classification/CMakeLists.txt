@@ -1,9 +1,23 @@
 # src/features/classification CMakeLists.txt
+target_sources(${SourceLib} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/classification.cpp
+)
 
-add_subdirectory(mel_filter)
-add_subdirectory(discrete_cosine_transform)
-add_subdirectory(principle_component_analysis)
-add_subdirectory(linear_discriminant_analysis)
+target_sources(${SourceLib} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/dct.cpp
+)
+
+target_sources(${SourceLib} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/lda.cpp
+)
+
+target_sources(${SourceLib} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/mel_filter.cpp
+)
+
+target_sources(${SourceLib} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/pca.cpp
+)
 
 # Add include directories.
 target_include_directories(${SourceLib} PUBLIC
