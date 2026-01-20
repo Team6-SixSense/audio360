@@ -101,13 +101,13 @@ std::string LinearDiscriminantAnalysis::apply(
       }
     }
     framePredictions[frame] = this->classTypes[predictedClassIndex];
-    printf("LDA Frame %u: ", frame);
-    for (uint16_t classType = 0; classType < this->numClasses; ++classType) {
-      printf("%s: %f, ", this->classTypes[classType].c_str(),
-             scores.pData[rowStart + classType]);
-    }
-    printf("Predicted Class: %s\n",
-           this->classTypes[predictedClassIndex].c_str());
+    // printf("LDA Frame %u: ", frame);
+    // for (uint16_t classType = 0; classType < this->numClasses; ++classType) {
+    //   printf("%s: %f, ", this->classTypes[classType].c_str(),
+    //          scores.pData[rowStart + classType]);
+    // }
+    // printf("Predicted Class: %s\n",
+    //        this->classTypes[predictedClassIndex].c_str());
   }
 
   // Find the most frequent class prediction across all frames.
