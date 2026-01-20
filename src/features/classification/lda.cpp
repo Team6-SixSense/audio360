@@ -5,15 +5,15 @@
 #include "classification_constants.h"
 
 void LinearDiscriminantAnalysis::initializeLDAData() {
-  this->ldaProjectionData.classWeights = LDA_CLASS_WEIGHTS;
-  this->ldaProjectionData.classBiases = LDA_CLASS_BIASES;
+  this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
+  this->ldaProjection.classBiases = LDA_CLASS_BIASES;
   this->classTypes = CLASSIFICATION_CLASSES;
 }
 LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
                                                        uint16_t numClasses)
     : numEigenvectors(numEigenvectors),
       numClasses(numClasses),
-      ldaProjectionData(numEigenvectors) {
+      ldaProjection(numEigenvectors) {
   this->numEigenvectors = numEigenvectors;
   this->numClasses = numClasses;
   this->initializeLDAData();
@@ -37,10 +37,10 @@ std::string LinearDiscriminantAnalysis::predictFrameClass(
     for (int i = 0; i < this->numEigenvectors; ++i) {
       currClassScore +=
           pcaFeatureVector.pData[frameStart + i] *
-          this->ldaProjectionData.classWeights.pData[weightStart + i];
+          this->ldaProjection.classWeights.pData[weightStart + i];
     }
     classPredictions[classType] =
-        currClassScore + this->ldaProjectionData.classBiases[classType];
+        currClassScore + this->ldaProjection.classBiases[classType];
   }
 
   // Find the class with the maximum prediction score.
@@ -67,7 +67,7 @@ std::string LinearDiscriminantAnalysis::apply(
   matrix classWeightsT;
   matrix_init_f32(&classWeightsT, this->numEigenvectors, this->numClasses,
                   classWeightsTData.data());
-  if (matrix_transpose_f32(&this->ldaProjectionData.classWeights,
+  if (matrix_transpose_f32(&this->ldaProjection.classWeights,
                            &classWeightsT) != ARM_MATH_SUCCESS) {
     return {};
   }
@@ -84,7 +84,7 @@ std::string LinearDiscriminantAnalysis::apply(
     const size_t rowStart = static_cast<size_t>(frame) * this->numClasses;
     for (uint16_t classType = 0; classType < this->numClasses; ++classType) {
       scores.pData[rowStart + classType] +=
-          this->ldaProjectionData.classBiases[classType];
+          this->ldaProjection.classBiases[classType];
     }
   }
 

@@ -54,7 +54,7 @@ class LinearDiscriminantAnalysis {
   /** @brief Class label strings aligned with LDA outputs. */
   std::vector<std::string> classTypes;
   /** @brief Cached projection weights and biases for LDA. */
-  ldaProjectionData ldaProjectionData;
+  ldaProjectionData ldaProjection;
 
   void initializeLDAData();
 };

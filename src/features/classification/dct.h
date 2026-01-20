@@ -39,7 +39,7 @@ class DiscreteCosineTransform {
   /** @brief Number of mel filterbank bins used as input. */
   uint16_t numMelFilters;
   /** @brief Precomputed DCT transformation matrix storage. */
-  dctMatrix dctMatrix;
+  dctMatrix dctMatrixData;
 
   /**
    * @brief Create the DCT transfo
