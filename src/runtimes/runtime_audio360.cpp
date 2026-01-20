@@ -22,10 +22,10 @@ static embedded_mic_t* micA2 = nullptr;
 static embedded_mic_t* micB2 = nullptr;
 
 // Larger buffer to hold microphone audio data for post-processing.
-static uint32_t micA1Buffer[MIC_BUFFER_SIZE];
-static uint32_t micB1Buffer[MIC_BUFFER_SIZE];
-static uint32_t micA2Buffer[MIC_BUFFER_SIZE];
-static uint32_t micB2Buffer[MIC_BUFFER_SIZE];
+static int32_t micA1Buffer[MIC_BUFFER_SIZE];
+static int32_t micB1Buffer[MIC_BUFFER_SIZE];
+static int32_t micA2Buffer[MIC_BUFFER_SIZE];
+static int32_t micB2Buffer[MIC_BUFFER_SIZE];
 
 static int micBufferStartPos{0};
 static uint8_t micMainHalf{0}, micMainFull{0}, micDummyHalf{0}, micDummyFull{0};
@@ -108,10 +108,10 @@ bool extractMicData() {
       SCB_InvalidateDCache_by_Addr((uint32_t*)B2Data, numBytes);
 
       // Copy audio data from dynamic memory buffer to larger audio buffer.
-      memcpy(&micA1Buffer[startPos], &A1Data, numBytes);
-      memcpy(&micB1Buffer[startPos], &B1Data, numBytes);
-      memcpy(&micA2Buffer[startPos], &A2Data, numBytes);
-      memcpy(&micB2Buffer[startPos], &B2Data, numBytes);
+      memcpy(&micA1Buffer[startPos], A1Data, numBytes);
+      memcpy(&micB1Buffer[startPos], B1Data, numBytes);
+      memcpy(&micA2Buffer[startPos], A2Data, numBytes);
+      memcpy(&micB2Buffer[startPos], B2Data, numBytes);
 
       // Clean Destination Cache (USB DMA reads from RAM updated by CPU). Ensure
       // the data we just wrote to larger audio buffer is flushed from Cache to
@@ -147,9 +147,9 @@ float runDoA(bool newData) {
 
   for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; i++) {
     mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
-    mic2Data[i] = static_cast<float>(micB1Buffer[start + i]);
-    mic3Data[i] = static_cast<float>(micA2Buffer[start + i]);
-    mic4Data[i] = static_cast<float>(micB2Buffer[start + i]);
+    mic2Data[i] = static_cast<float>(micA2Buffer[start + i]);
+    mic3Data[i] = static_cast<float>(micB2Buffer[start + i]);
+    mic4Data[i] = static_cast<float>(micB1Buffer[start + i]);
   }
 
   float angle = doa.calculateDirection(mic1Data, mic2Data, mic3Data, mic4Data,

@@ -51,8 +51,8 @@ class GCCPhaT : DoAAlgo {
    * audio sources.
    * @return float The time delay of audio signal in seconds.
    */
-  float computeTimeDelay2Source(const FrequencyDomain& freqA,
-                                const FrequencyDomain& freqB, float maxDelay_s);
+  float estimateInterMicDelay(const FrequencyDomain& freqA,
+                              const FrequencyDomain& freqB, float maxDelay_s);
 
   /**
    * @brief Compute the GCC PhaT frequency domain.
@@ -60,18 +60,18 @@ class GCCPhaT : DoAAlgo {
    * @param freqA Frequency domain of an audio source.
    * @param freqB Frequency domain of a different audio source.
    */
-  void computeGCCPhaT(const FrequencyDomain& freqA,
-                      const FrequencyDomain& freqB);
+  void computeGccPhatSpectrum(const FrequencyDomain& freqA,
+                              const FrequencyDomain& freqB);
 
   /**
    * @brief Calculate the time delay from the peaks of the GCC PhaT time domain.
    *
-   * @param timeDomain The GCC PhaT in the time domain.
+   * @param correlation The GCC PhaT cross-correlation in time domain.
    * @param maxDelay_s The maximum physically allowed time delay between the two
    * audio sources.
    * @return float The time delay of audio signal in seconds.
    */
-  float calculateTimeDelay(const std::vector<float>& timeDomain,
+  float calculateTimeDelay(const std::vector<float>& correlation,
                            float maxDelay_s);
 
   /**
@@ -94,8 +94,8 @@ class GCCPhaT : DoAAlgo {
   /** @brief Sampling frequency of the audio inputs (Hz).  */
   int sampleFrequency{SAMPLE_FREQUENCY};
 
-  /** @brief GCC PhaT frequency domain. */
-  FrequencyDomain gccPhatFreqDomain;
+  /** @brief GCC PhaT cross correlation frequency domain. */
+  FrequencyDomain phatCrossSpectrum;
 
   /** @brief Fast Fourier Transform (FFT) instance. */
   FFT fft;

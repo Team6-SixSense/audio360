@@ -22,7 +22,7 @@ constexpr inline float MAX_DELAY_MIC4_1 = MIC4_1_DISTANCE_m / SOUND_AIR_mps;
 GCCPhaT::GCCPhaT(size_t numSamples, int sampleFrequency)
     : numSamples(numSamples),
       sampleFrequency(sampleFrequency),
-      gccPhatFreqDomain(numSamples / 2 + 1),
+      phatCrossSpectrum(numSamples / 2 + 1),
       fft(numSamples, sampleFrequency),
       ifft(numSamples) {}
 
@@ -31,73 +31,86 @@ float GCCPhaT::calculateDirection(std::vector<float>& mic1Data,
                                   std::vector<float>& mic3Data,
                                   std::vector<float>& mic4Data) {
   // Compute FT for each input source.
-  FrequencyDomain mic1FreqDomain = fft.signalToFrequency(mic1Data);
-  FrequencyDomain mic2FreqDomain = fft.signalToFrequency(mic2Data);
-  FrequencyDomain mic3FreqDomain = fft.signalToFrequency(mic3Data);
-  FrequencyDomain mic4FreqDomain = fft.signalToFrequency(mic4Data);
+  FrequencyDomain mic1FreqDomain =
+      fft.signalToFrequency(mic1Data, WindowFunction::HANN_WINDOW);
+  FrequencyDomain mic2FreqDomain =
+      fft.signalToFrequency(mic2Data, WindowFunction::HANN_WINDOW);
+  FrequencyDomain mic3FreqDomain =
+      fft.signalToFrequency(mic3Data, WindowFunction::HANN_WINDOW);
+  FrequencyDomain mic4FreqDomain =
+      fft.signalToFrequency(mic4Data, WindowFunction::HANN_WINDOW);
 
   // Compute time delay between each microphone. Exclude mics that are diagonal
   // from each other.
-  float timeDelay1_2_s = this->computeTimeDelay2Source(
+  float timeDelay1_2_s = this->estimateInterMicDelay(
       mic1FreqDomain, mic2FreqDomain, MAX_DELAY_MIC1_2);  // Horizontal.
-  float timeDelay3_2_s = this->computeTimeDelay2Source(
+  float timeDelay3_2_s = this->estimateInterMicDelay(
       mic3FreqDomain, mic2FreqDomain, MAX_DELAY_MIC2_3);  // Vertical.
-  float timeDelay4_3_s = this->computeTimeDelay2Source(
+  float timeDelay4_3_s = this->estimateInterMicDelay(
       mic4FreqDomain, mic3FreqDomain, MAX_DELAY_MIC3_4);  // Horizontal.
-  float timeDelay4_1_s = this->computeTimeDelay2Source(
+  float timeDelay4_1_s = this->estimateInterMicDelay(
       mic4FreqDomain, mic1FreqDomain, MAX_DELAY_MIC4_1);  // Vertical.
 
   return this->estimateAngle(timeDelay1_2_s, timeDelay4_3_s, timeDelay3_2_s,
                              timeDelay4_1_s);
 }
 
-float GCCPhaT::computeTimeDelay2Source(const FrequencyDomain& freqA,
-                                       const FrequencyDomain& freqB,
-                                       float maxDelay_s) {
-  this->computeGCCPhaT(freqA, freqB);
-  std::vector<float> gccPhatTimeDomain =
-      ifft.frequencyToTime(this->gccPhatFreqDomain);
+float GCCPhaT::estimateInterMicDelay(const FrequencyDomain& freqA,
+                                     const FrequencyDomain& freqB,
+                                     float maxDelay_s) {
+  this->computeGccPhatSpectrum(freqA, freqB);
+  std::vector<float> gccPhatCorrelation =
+      ifft.frequencyToTime(this->phatCrossSpectrum);
 
-  return this->calculateTimeDelay(gccPhatTimeDomain, maxDelay_s);
+  return this->calculateTimeDelay(gccPhatCorrelation, maxDelay_s);
 }
 
-void GCCPhaT::computeGCCPhaT(const FrequencyDomain& freqA,
-                             const FrequencyDomain& freqB) {
-  for (size_t i = 0; i < this->gccPhatFreqDomain.N; i++) {
+void GCCPhaT::computeGccPhatSpectrum(const FrequencyDomain& freqA,
+                                     const FrequencyDomain& freqB) {
+  for (size_t i = 0; i < this->phatCrossSpectrum.N; i++) {
+    // GCC: cross correlation of frequencies.
+    float real = freqA.real[i] * freqB.real[i] + freqA.img[i] * freqB.img[i];
+    float img = freqA.img[i] * freqB.real[i] - freqA.real[i] * freqB.img[i];
+
     // PhaT: removes magnitude information and keeps only phase. This will tell
     // the timing offset of certain frequencies and remove any noise/echoes.
-    float scale = 1 / (freqA.magnitude[i] * freqB.magnitude[i]);
-
-    // GCC: cross correlation of frequencies.
-    float real = freqA.real[i] * freqB.real[i] * scale;
-    float img = freqA.img[i] * (-1.0 * freqB.img[i]) * scale;
-
     float magnitude = std::sqrt(real * real + img * img);
+    if (magnitude < FLOAT_EPS) {
+      magnitude = FLOAT_EPS;
+    }
 
     // Store in a frequency domain struct to be processed later.
-    this->gccPhatFreqDomain.real[i] = real;
-    this->gccPhatFreqDomain.img[i] = img;
-    this->gccPhatFreqDomain.magnitude[i] = magnitude;
-    this->gccPhatFreqDomain.powerMagnitude[i] = magnitude * magnitude;
+    this->phatCrossSpectrum.real[i] = real / magnitude;
+    this->phatCrossSpectrum.img[i] = img / magnitude;
+    this->phatCrossSpectrum.magnitude[i] = magnitude;
+    this->phatCrossSpectrum.powerMagnitude[i] = magnitude * magnitude;
   }
 }
 
-float GCCPhaT::calculateTimeDelay(const std::vector<float>& timeDomain,
+float GCCPhaT::calculateTimeDelay(const std::vector<float>& correlation,
                                   float maxDelay_s) {
-  float touMax = 0.0f;
-  const float totMaxDelay_s = std::min(maxDelay_s + FLOAT_EPS, FLOAT_MAX);
+  const int N = static_cast<int>(correlation.size());
+  const int maxLagSamples =
+      static_cast<int>(std::ceil(maxDelay_s * sampleFrequency));
+  const int searchRange = std::min(maxLagSamples, N / 2 - 1);
 
-  // Find the peak value of the GCC-PhaT time domain representation. Peaks
-  // indicate likely time delays between the signals.
-  for (float timeVal : timeDomain) {
-    if (std::abs(timeVal) > touMax &&
-        std::abs(timeVal / sampleFrequency) <= totMaxDelay_s) {
-      touMax = timeVal;
+  int bestLag = 0;
+  float bestVal = -std::numeric_limits<float>::infinity();
+
+  // Search for the strongest positive correlation peak within physical limits.
+  // correlation is circularly indexed:
+  // [0 .. +lags] and [N - lags .. N - 1] correspond to +/- physical delays
+  for (int lag = -searchRange; lag <= searchRange; ++lag) {
+    int idx = (lag >= 0) ? lag : (lag + N);
+    float val = correlation[idx];
+
+    if (val > bestVal) {
+      bestVal = val;
+      bestLag = lag;
     }
   }
 
-  // Compute and return the time delay.
-  return touMax / sampleFrequency;
+  return static_cast<float>(bestLag) / static_cast<float>(sampleFrequency);
 }
 
 float GCCPhaT::estimateAngle(float timeDelayX1, float timeDelayX2,
@@ -106,11 +119,14 @@ float GCCPhaT::estimateAngle(float timeDelayX1, float timeDelayX2,
   float avgTimeDelayX_s = (timeDelayX1 + timeDelayX2) / 2.0;
   float avgTimeDelayY_s = (timeDelayY1 + timeDelayY2) / 2.0;
 
+  // Normalize average time by distange betweeen mics (equivalently max time
+  // delay) since microphone array are not in a perfect square.
+  float dx = avgTimeDelayX_s / MAX_DELAY_MIC1_2;
+  float dy = avgTimeDelayY_s / MAX_DELAY_MIC2_3;
+
   // Compute angle and transform to correct coordinate system (FR5.3). We get
   // the below equation since:
-  // avgTimeDelayX_s = (distance between mics) * cos(angle) / (speed of sound) &
-  // avgTimeDelayY_s = (distance between mics) * sine(angle) / (speed of sound)
-  float angle = std::atan2(avgTimeDelayY_s, avgTimeDelayX_s);
+  float angle = std::atan2(dy, dx);
 
   // Rotate pi/2 counterclock wise so that angle of 0 faces towards the front of
   // the glasses frame.

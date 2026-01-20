@@ -9,7 +9,7 @@
 
 #include "constants.h"
 
-const int MIC_BUFFER_SIZE = 16384;
+const int MIC_BUFFER_SIZE = 4096;
 const int MIC_HALF_BUFFER_SIZE = WAVEFORM_SAMPLES / 2;
 
 /** @brief Main entry code. */
