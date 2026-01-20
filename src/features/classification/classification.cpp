@@ -31,13 +31,44 @@ Classification::Classification(uint16_t n_fft, uint16_t numMelFilters,
       numDCTCoeff(numDCTCoeff),
       numPCAComponents(numPCAComponents),
       numClasses(numClasses),
+      fft(n_fft, SAMPLE_FREQUENCY),
       melFilter(numMelFilters, n_fft, SAMPLE_FREQUENCY),
       dct(numDCTCoeff, numMelFilters),
       pca(numPCAComponents, numDCTCoeff),
       lda(numPCAComponents, numClasses),
       currClassification(ClassificationClass::Unknown) {}
 
-void Classification::Classify(std::vector<FrequencyDomain> fftData) {
+void Classification::Classify(std::vector<float> rawAudio) {
+
+  // Currently there is fixed logic that there will be 4 frames of fft of size n_fft to run 
+  // classification on.
+  // However, this is subject to change based on hyperparameter tuning that will happen later on. 
+  if (rawAudio.size() < static_cast<size_t>(4 * this->n_fft)) {
+    return;
+  }
+
+  std::vector<FrequencyDomain> fftData;
+  std::vector<float> frame1(rawAudio.begin(), rawAudio.begin() + this->n_fft);
+  std::vector<float> frame2(rawAudio.begin() + this->n_fft,
+                            rawAudio.begin() + 2 * this->n_fft);
+  std::vector<float> frame3(rawAudio.begin() + 2 * this->n_fft,
+                            rawAudio.begin() + 3 * this->n_fft);
+  std::vector<float> frame4(rawAudio.begin() + 3 * this->n_fft,
+                            rawAudio.begin() + 4 * this->n_fft);
+
+  FrequencyDomain fd1 =
+      this->fft.signalToFrequency(frame1, WindowFunction::HANN_WINDOW);
+  FrequencyDomain fd2 =
+      this->fft.signalToFrequency(frame2, WindowFunction::HANN_WINDOW);
+  FrequencyDomain fd3 =
+      this->fft.signalToFrequency(frame3, WindowFunction::HANN_WINDOW);
+  FrequencyDomain fd4 =
+      this->fft.signalToFrequency(frame4, WindowFunction::HANN_WINDOW);
+  fftData.push_back(fd1);
+  fftData.push_back(fd2);
+  fftData.push_back(fd3);
+  fftData.push_back(fd4);
+
   matrix stftSpec;
   std::vector<float> stftDataVector;
   this->GenerateSTFT(fftData, stftSpec, stftDataVector);

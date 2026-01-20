@@ -75,9 +75,6 @@ class Classification {
   Classification(uint16_t n_fft, uint16_t numMelFilters, uint16_t numDCTCoeff,
                  uint16_t numPCAComponents, uint16_t numClasses);
 
-  /** @brief Destroy the Classification object and release resources. */
-  ~Classification();
-
   /**
    * @brief Runs the end-to-end classification pipeline on FFT frames.
    *
@@ -86,7 +83,7 @@ class Classification {
    * @param fftData Input vector of FFT frames, of size frames x
    * (fftSize/2 + 1) [nyquist].
    */
-  void Classify(std::vector<FrequencyDomain> fftData);
+  void Classify(std::vector<float> rawAudio);
 
  private:
   /** @brief FFT size used for frequency-domain processing. */
@@ -100,6 +97,8 @@ class Classification {
   /** @brief Number of supported output classes. */
   uint16_t numClasses;
 
+  /** @brief FFT module. */
+  FFT fft;
   /** @brief Mel filterbank processor. */
   MelFilter melFilter;
   /** @brief DCT processor for cepstral features. */
