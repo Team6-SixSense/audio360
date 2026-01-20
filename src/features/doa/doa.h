@@ -33,10 +33,10 @@ class DOA {
    * @param algo DOA algorithm to use.
    * @return float Direction of audio source in radians.
    */
-  float calculateDirection(std::vector<float> mic1Data,
-                           std::vector<float> mic2Data,
-                           std::vector<float> mic3Data,
-                           std::vector<float> mic4Data,
+  float calculateDirection(std::vector<float>& mic1Data,
+                           std::vector<float>& mic2Data,
+                           std::vector<float>& mic3Data,
+                           std::vector<float>& mic4Data,
                            DOA_Algorithms algo = DOA_Algorithms::GCC_PHAT);
 
  private:

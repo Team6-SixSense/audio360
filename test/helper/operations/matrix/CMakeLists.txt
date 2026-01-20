@@ -1,4 +1,4 @@
-# test/helper/matrix CMakeLists.txt
+# test/helper/operations/matrix CMakeLists.txt
 
 # Define test executable files.
 target_sources(${TestExecutable} PRIVATE
