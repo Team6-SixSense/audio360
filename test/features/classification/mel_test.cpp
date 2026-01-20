@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file    mel_filter_test.cpp
- * @brief   Unit tests for MelFilter::CreateFilterBank() and MelFilter::Apply()
+ * @file    mel_test.cpp
+ * @brief   Unit tests for MelFilter creation and application.
  ******************************************************************************
  */
 
@@ -19,8 +19,8 @@
 #include "matrix.h"
 #include "mel_filter.h"
 #include "mp3.h"
-namespace {
 
+/** @brief Returns the index of the largest value (0 if empty). */
 static int ArgMax(const std::vector<float>& v) {
   int idx = 0;
   float best = v.empty() ? 0.0f : v[0];
@@ -33,13 +33,14 @@ static int ArgMax(const std::vector<float>& v) {
   return idx;
 }
 
+/** @brief Returns the maximum value in the vector (0 if empty). */
 static float MaxVal(const std::vector<float>& v) {
   return v.empty() ? 0.0f : *std::max_element(v.begin(), v.end());
 }
 
+/** @brief Builds a power STFT matrix from FFT frames. */
 void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
-                  matrix& stftData,
-                  std::vector<float>& stftDataVector) {
+                  matrix& stftData, std::vector<float>& stftDataVector) {
   const uint16_t numFrames = static_cast<uint16_t>(audioSignal.size());
   const uint16_t numFreqBins = WAVEFORM_SAMPLES / 2 + 1;
 
@@ -55,7 +56,7 @@ void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
   }
 }
 
-// Build a 3-frame STFT-domain by computing 3 FFTs from 3 windows of the MP3.
+/** @brief Builds a 3-frame STFT matrix from an MP3 channel segment. */
 static void Make3FrameSTFTFromMP3(const MP3Data& data, int sampleRate,
                                   int offset0, matrix& stftMatrix,
                                   std::vector<float>& stftDataVector) {
@@ -83,7 +84,7 @@ static void Make3FrameSTFTFromMP3(const MP3Data& data, int sampleRate,
   GenerateSTFT(dom, stftMatrix, stftDataVector);
 }
 
-// Count values > eps
+/** @brief Counts values greater than eps in a vector. */
 static int CountPositive(const std::vector<float>& v, float eps = 1e-8f) {
   int c = 0;
   for (float x : v)
@@ -91,6 +92,7 @@ static int CountPositive(const std::vector<float>& v, float eps = 1e-8f) {
   return c;
 }
 
+/** @brief Counts values greater than eps in a matrix row. */
 static int CountPositiveRow(const matrix& m, uint16_t row, float eps = 1e-8f) {
   int c = 0;
   const uint16_t cols = m.numCols;
@@ -103,26 +105,7 @@ static int CountPositiveRow(const matrix& m, uint16_t row, float eps = 1e-8f) {
   return c;
 }
 
-// Used to visualize the mel spectrogram in console (for debugging)
-static void PrintMelBars(const std::vector<float>& mel, float scale = 50.0f) {
-  for (float v : mel) {
-    int bars = static_cast<int>(v * scale);
-    for (int i = 0; i < bars; ++i) printf("#");
-    printf("\n");
-  }
-}
-
-}  // namespace
-
-static void PrintMatrix(const matrix& m) {
-  for (uint16_t r = 0; r < m.numRows; ++r) {
-    for (uint16_t c = 0; c < m.numCols; ++c) {
-      printf("%8.4f ", m.pData[r * m.numCols + c]);
-    }
-    printf("\n");
-  }
-}
-
+/** @brief Verifies mel filter responses are sparse per impulse bin. */
 TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
   MP3Data data = readMP3File("audio/285_sine.mp3");
 
@@ -132,8 +115,7 @@ TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
 
   matrix stft;
   std::vector<float> stftDataVector;
-  Make3FrameSTFTFromMP3(data, SAMPLE_FREQUENCY, offset0, stft,
-                        stftDataVector);
+  Make3FrameSTFTFromMP3(data, SAMPLE_FREQUENCY, offset0, stft, stftDataVector);
 
   const int stftPositives = CountPositiveRow(stft, 1, 0.5f);
   ;
@@ -145,11 +127,7 @@ TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
 
   matrix melSpec;
   std::vector<float> melSpectrogramVector;
-  mel.Apply(stft, melSpec, melSpectrogramVector);
-
-  printf("Mel Filter Bank Applied on Frame 1:\n");
-  PrintMatrix(melSpec);
-  printf("melSpec shape: %u x %u\n", melSpec.numRows, melSpec.numCols);
+  mel.apply(stft, melSpec, melSpectrogramVector);
 
   ASSERT_EQ(melSpec.numRows, stft.numRows);
   ASSERT_EQ(melSpec.numCols, numFilters);

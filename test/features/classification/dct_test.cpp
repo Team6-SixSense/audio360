@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @file    dct_test.cpp
+ * @brief   Unit tests for DiscreteCosineTransform behavior and outputs.
+ ******************************************************************************
+ */
+
 #include "dct.h"
 
 #include <gtest/gtest.h>
@@ -15,6 +22,7 @@
 #include "mel_filter.h"
 #include "mp3.h"
 
+/** @brief Returns the index of the largest value (0 if empty). */
 static int ArgMax(const std::vector<float>& v) {
   int idx = 0;
   float best = v.empty() ? 0.0f : v[0];
@@ -27,15 +35,7 @@ static int ArgMax(const std::vector<float>& v) {
   return idx;
 }
 
-static void PrintMatrix(const matrix& m) {
-  for (uint16_t r = 0; r < m.numRows; ++r) {
-    for (uint16_t c = 0; c < m.numCols; ++c) {
-      printf("%8.4f ", m.pData[r * m.numCols + c]);
-    }
-    printf("\n");
-  }
-}
-
+/** @brief Builds a power STFT matrix from FFT frames. */
 static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
                          matrix& stftData, std::vector<float>& stftDataVector) {
   const uint16_t numFrames = static_cast<uint16_t>(audioSignal.size());
@@ -53,27 +53,7 @@ static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
   }
 }
 
-static void PrintSTFTMagnitude(const std::vector<FrequencyDomain>& dom) {
-  if (dom.empty()) {
-    printf("(empty)\n");
-    return;
-  }
-
-  const size_t numFrames = dom.size();
-  const size_t numBins = dom[0].magnitude.size();
-
-  for (size_t frame = 0; frame < numFrames; ++frame) {
-    // Optional: sanity check bin size per frame
-    // if (dom[frame].magnitude.size() != numBins) continue;
-
-    for (size_t bin = 0; bin < numBins; ++bin) {
-      printf("%8.4f ", dom[frame].magnitude[bin]);
-    }
-    printf("\n");
-  }
-}
-
-// Build a 3-frame STFT-domain by computing 3 FFTs from 3 windows of the MP3.
+/** @brief Builds a 3-frame mel spectrogram from an MP3 segment. */
 static void Make3FrameMelSpecFromMP3(const MP3Data& data, int sampleRate,
                                      int offset0, matrix& melSpec,
                                      std::vector<float>& melSpectrogramVector) {
@@ -105,9 +85,10 @@ static void Make3FrameMelSpecFromMP3(const MP3Data& data, int sampleRate,
 
   MelFilter melFilter(numFilters, frameSize, sampleRate);
 
-  melFilter.Apply(stftMatrix, melSpec, melSpectrogramVector);
+  melFilter.apply(stftMatrix, melSpec, melSpectrogramVector);
 }
 
+/** @brief Checks DCT output against known MFCC reference values. */
 TEST(DCTTest, ComputeDCT_OnMelSpectrogram_ProducesExpectedMFCC) {
   // These were validated experimentally using Python to see if relatively the
   // MFCC are obtained.
@@ -134,15 +115,9 @@ TEST(DCTTest, ComputeDCT_OnMelSpectrogram_ProducesExpectedMFCC) {
   Make3FrameMelSpecFromMP3(data, SAMPLE_FREQUENCY, offset0, melSpec,
                            melSpectrogramVector);
 
-  printf("MelSpec\n");
-  PrintMatrix(melSpec);
-
   matrix mfccSpec;
   std::vector<float> mfccSpectrogramVector;
-  dct.Apply(melSpec, mfccSpec, mfccSpectrogramVector);
-
-  printf("MFCCSpec\n");
-  PrintMatrix(mfccSpec);
+  dct.apply(melSpec, mfccSpec, mfccSpectrogramVector);
 
   ASSERT_EQ(mfccSpec.numCols, numCepstral);
 

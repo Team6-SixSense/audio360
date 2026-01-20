@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @file    lda_test.cpp
+ * @brief   Unit tests for LinearDiscriminantAnalysis classification.
+ ******************************************************************************
+ */
+
 #include "lda.h"
 
 #include <gtest/gtest.h>
@@ -17,6 +24,7 @@
 #include "mp3.h"
 #include "pca.h"
 
+/** @brief Returns the index of the largest value (0 if empty). */
 static int ArgMax(const std::vector<float>& v) {
   int idx = 0;
   float best = v.empty() ? 0.0f : v[0];
@@ -29,15 +37,7 @@ static int ArgMax(const std::vector<float>& v) {
   return idx;
 }
 
-static void PrintMatrix(const matrix& m) {
-  for (uint16_t r = 0; r < m.numRows; ++r) {
-    for (uint16_t c = 0; c < m.numCols; ++c) {
-      printf("%8.4f ", m.pData[r * m.numCols + c]);
-    }
-    printf("\n");
-  }
-}
-
+/** @brief Builds a power STFT matrix from FFT frames. */
 static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
                          matrix& stftData, std::vector<float>& stftDataVector) {
   const uint16_t numFrames = static_cast<uint16_t>(audioSignal.size());
@@ -55,7 +55,7 @@ static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
   }
 }
 
-// Build a 3-frame STFT-domain by computing 3 FFTs from 3 windows of the MP3.
+/** @brief Builds a PCA feature matrix from an MP3 segment. */
 static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
                                matrix& pcaSpec,
                                std::vector<float>& pcaFeatureVector) {
@@ -94,19 +94,19 @@ static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
 
   matrix melSpec;
   std::vector<float> melSpectrogramVector;
-  melFilter.Apply(stftMatrix, melSpec, melSpectrogramVector);
+  melFilter.apply(stftMatrix, melSpec, melSpectrogramVector);
 
   DiscreteCosineTransform dct(numCepstral, numFilters);
   matrix mfccSpec;
   std::vector<float> mfccSpectrogramVector;
-  dct.Apply(melSpec, mfccSpec, mfccSpectrogramVector);
+  dct.apply(melSpec, mfccSpec, mfccSpectrogramVector);
 
   PrincipleComponentAnalysis pca(numPCAComponents, numCepstral);
 
-  pca.Apply(mfccSpec, pcaSpec, pcaFeatureVector);
-  printf("PCA Spec Shape: %u x %u\n", pcaSpec.numRows, pcaSpec.numCols);
+  pca.apply(mfccSpec, pcaSpec, pcaFeatureVector);
 }
 
+/** @brief Runs LDA classification on PCA features from an MP3 file. */
 TEST(LDA, ApplyLDA) {
   // Load MP3 data from file.
   MP3Data data = readMP3File("audio/jackhammer.mp3");
@@ -124,6 +124,5 @@ TEST(LDA, ApplyLDA) {
   MakePCASpecFromMP3(data, SAMPLE_FREQUENCY, offset0, pcaFeature,
                      pcaFeatureVector);
 
-  std::string predictedClass = lda.Apply(pcaFeature);
-  printf("Predicted Class from LDA: %s\n", predictedClass.c_str());
+  std::string predictedClass = lda.apply(pcaFeature);
 }

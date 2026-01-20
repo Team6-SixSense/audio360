@@ -5,14 +5,18 @@
  ******************************************************************************
  */
 
+#include <string>
 #include <vector>
 
 #include "matrix.h"
 
 struct ldaProjectionData {
+  /** @brief Number of LDA components retained. */
   uint16_t numComponents;
 
+  /** @brief LDA class weight matrix. */
   matrix classWeights;
+  /** @brief Per-class bias terms for LDA. */
   std::vector<float> classBiases;
 
   ldaProjectionData(uint16_t components)
@@ -24,9 +28,6 @@ class LinearDiscriminantAnalysis {
   /** @brief Construct a LinearDiscriminantAnalysis object. */
   LinearDiscriminantAnalysis(uint16_t numEigenvectors, uint16_t numClasses);
 
-  /** @brief Destroy the LinearDiscriminantAnalysis object. */
-  ~LinearDiscriminantAnalysis();
-
   /**
    * @brief Project a PCA frame onto the LDA projection matrix.
    *
@@ -34,7 +35,7 @@ class LinearDiscriminantAnalysis {
    * @param ldaFrame Output LDA frame, of size numComponents.
    */
   // TODO: Update this to return enum class type.
-  std::string PredictFrameClass(const matrix& pcaFeatureVector,
+  std::string predictFrameClass(const matrix& pcaFeatureVector,
                                 uint16_t frameIndex) const;
 
   /**
@@ -43,13 +44,17 @@ class LinearDiscriminantAnalysis {
    * @param inputFeatureVector Input feature vector, of size featureLength.
    * @param ldaFeatureVector Output LDA feature vector, of size numComponents.
    */
-  std::string Apply(const matrix& pcaFeatureVector) const;
+  std::string apply(const matrix& pcaFeatureVector) const;
 
  private:
-  uint16_t numEigenvectors_;
-  uint16_t numClasses_;
-  std::vector<std::string> classTypes_;
-  ldaProjectionData ldaProjectionData_;
+  /** @brief Number of PCA eigenvectors expected as input. */
+  uint16_t numEigenvectors;
+  /** @brief Number of classes supported by the model. */
+  uint16_t numClasses;
+  /** @brief Class label strings aligned with LDA outputs. */
+  std::vector<std::string> classTypes;
+  /** @brief Cached projection weights and biases for LDA. */
+  ldaProjectionData ldaProjectionData;
 
-  void InitializeLDAData();
+  void initializeLDAData();
 };

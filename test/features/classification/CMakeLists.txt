@@ -1,4 +1,4 @@
-# test/features/signal_processing CMakeLists.txt
+# test/features/classification CMakeLists.txt
 
 # Define test executable files.
 target_sources(${TestExecutable} PRIVATE

@@ -5,23 +5,23 @@
 #include <cmath>
 
 void DiscreteCosineTransform::CreateDCTMatrix() {
-  this->dctMatrix_.data.assign(this->numMelFilters_ * this->numCoefficients_,
-                               0.0f);
-  matrix_init_f32(&this->dctMatrix_.mat, this->numMelFilters_,
-                  this->numCoefficients_, this->dctMatrix_.data.data());
+  this->dctMatrix.data.assign(this->numMelFilters * this->numCoefficients,
+                              0.0f);
+  matrix_init_f32(&this->dctMatrix.mat, this->numMelFilters,
+                  this->numCoefficients, this->dctMatrix.data.data());
 
-  const double scale0 = 1.0f / std::sqrt(this->numMelFilters_);
-  for (int i = 0; i < this->numMelFilters_; ++i) {
-    this->dctMatrix_.mat.pData[i * this->numCoefficients_] =
+  const float scale0 = 1.0f / std::sqrt(this->numMelFilters);
+  for (int i = 0; i < this->numMelFilters; ++i) {
+    this->dctMatrix.mat.pData[i * this->numCoefficients] =
         static_cast<float>(scale0);
   }
 
-  const double scale = std::sqrt(2.0f / this->numMelFilters_);
-  for (int i = 1; i < this->numCoefficients_; ++i) {
-    for (int j = 0; j < this->numMelFilters_; ++j) {
-      this->dctMatrix_.mat.pData[j * this->numCoefficients_ + i] =
+  const float scale = std::sqrt(2.0f / this->numMelFilters);
+  for (int i = 1; i < this->numCoefficients; ++i) {
+    for (int j = 0; j < this->numMelFilters; ++j) {
+      this->dctMatrix.mat.pData[j * this->numCoefficients + i] =
           std::cos((i * M_PI * (2.0f * j + 1.0f)) /
-                   (2.0f * this->numMelFilters_)) *
+                   (2.0f * this->numMelFilters)) *
           scale;
     }
   }
@@ -29,22 +29,20 @@ void DiscreteCosineTransform::CreateDCTMatrix() {
 
 DiscreteCosineTransform::DiscreteCosineTransform(uint16_t numCoefficients,
                                                  uint16_t numMelFilters)
-    : numCoefficients_(numCoefficients),
-      numMelFilters_(numMelFilters),
-      dctMatrix_(numCoefficients) {
-  this->numCoefficients_ = numCoefficients;
-  this->numMelFilters_ = numMelFilters;
+    : numCoefficients(numCoefficients),
+      numMelFilters(numMelFilters),
+      dctMatrix(numCoefficients) {
+  this->numCoefficients = numCoefficients;
+  this->numMelFilters = numMelFilters;
   this->CreateDCTMatrix();
 }
 
-DiscreteCosineTransform::~DiscreteCosineTransform() {}
-
-void DiscreteCosineTransform::Apply(
+void DiscreteCosineTransform::apply(
     const matrix& melSpectrogram, matrix& mfccSpectrogram,
     std::vector<float>& mfccSpectrogramVector) const {
   const uint16_t numFrames = melSpectrogram.numRows;
   const uint16_t numMelFilters = melSpectrogram.numCols;
-  if (numMelFilters != this->numMelFilters_) {
+  if (numMelFilters != this->numMelFilters) {
     return;
   }
 
@@ -59,11 +57,11 @@ void DiscreteCosineTransform::Apply(
     }
   }
 
-  mfccSpectrogramVector.assign(numFrames * this->numCoefficients_, 0.0f);
-  matrix_init_f32(&mfccSpectrogram, numFrames, this->numCoefficients_,
+  mfccSpectrogramVector.assign(numFrames * this->numCoefficients, 0.0f);
+  matrix_init_f32(&mfccSpectrogram, numFrames, this->numCoefficients,
                   mfccSpectrogramVector.data());
 
-  matrix_mult_f32(&logMel, &this->dctMatrix_.mat, &mfccSpectrogram);
+  matrix_mult_f32(&logMel, &this->dctMatrix.mat, &mfccSpectrogram);
   printf("DCT Applied: mfccSpectrogram shape: %u x %u\n",
          mfccSpectrogram.numRows, mfccSpectrogram.numCols);
 }

@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @file    pca_test.cpp
+ * @brief   Unit tests for PrincipleComponentAnalysis feature projection.
+ ******************************************************************************
+ */
+
 #include "pca.h"
 
 #include <gtest/gtest.h>
@@ -13,6 +20,7 @@
 #include "mel_filter.h"
 #include "mp3.h"
 
+/** @brief Builds a power STFT matrix from FFT frames. */
 static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
                          matrix& stftData,
                          std::vector<float>& stftDataVector) {
@@ -31,6 +39,7 @@ static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
   }
 }
 
+/** @brief Builds a 3-frame MFCC spectrogram from an MP3 segment. */
 static void Make3FrameMFCCSpecFromMP3(
     const MP3Data& data, int sampleRate, int offset0, matrix& mfccSpec,
     std::vector<float>& mfccSpectrogramVector) {
@@ -64,12 +73,13 @@ static void Make3FrameMFCCSpecFromMP3(
 
   matrix melSpec;
   std::vector<float> melSpectrogramVector;
-  melFilter.Apply(stftMatrix, melSpec, melSpectrogramVector);
+  melFilter.apply(stftMatrix, melSpec, melSpectrogramVector);
 
   DiscreteCosineTransform dct(numCepstral, numFilters);
-  dct.Apply(melSpec, mfccSpec, mfccSpectrogramVector);
+  dct.apply(melSpec, mfccSpec, mfccSpectrogramVector);
 }
 
+/** @brief Verifies PCA output dimensions match the requested components. */
 TEST(PCA, ApplyPCA) {
   MP3Data data = readMP3File("audio/285_sine.mp3");
   const int offset0 = 100000;
@@ -88,7 +98,7 @@ TEST(PCA, ApplyPCA) {
 
   matrix pcaSpec;
   std::vector<float> pcaFeatureVector;
-  pca.Apply(mfccSpec, pcaSpec, pcaFeatureVector);
+  pca.apply(mfccSpec, pcaSpec, pcaFeatureVector);
 
   ASSERT_EQ(pcaSpec.numRows, mfccSpec.numRows);
   ASSERT_EQ(pcaSpec.numCols, numPCAComponents);

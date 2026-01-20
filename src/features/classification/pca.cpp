@@ -3,49 +3,33 @@
 
 #include <stdio.h>
 
-#include "constants.h"
+#include "classification_constants.h"
 
-void PrincipleComponentAnalysis::InitializePCAData() {
+void PrincipleComponentAnalysis::initializePCAData() {
   // Initialize the PCA projection matrix and mean vector with predefined
   // values.
-  this->pcaProjectionData_.matrix = PCA_PROJECTION_MATRIX;
-  this->pcaProjectionData_.meanVector = PCA_MEAN_VECTOR;
+  this->pcaProjectionData.matrix = PCA_PROJECTION_MATRIX;
+  this->pcaProjectionData.meanVector = PCA_MEAN_VECTOR;
 }
 
 PrincipleComponentAnalysis::PrincipleComponentAnalysis(uint16_t numEigenvectors,
                                                        uint16_t numMFCCCoeffs)
-    : numEigenvectors_(numEigenvectors),
-      numMFCCCoeffs_(numMFCCCoeffs),
-      pcaProjectionData_(numEigenvectors) {
+    : numEigenvectors(numEigenvectors),
+      numMFCCCoeffs(numMFCCCoeffs),
+      pcaProjectionData(numEigenvectors) {
   // Initialize the PCA projection matrix and mean vector with predefined
   // values.
-  this->numEigenvectors_ = numEigenvectors;
-  this->numMFCCCoeffs_ = numMFCCCoeffs;
-  this->InitializePCAData();
+  this->numEigenvectors = numEigenvectors;
+  this->numMFCCCoeffs = numMFCCCoeffs;
+  this->initializePCAData();
 }
 
-PrincipleComponentAnalysis::~PrincipleComponentAnalysis() {}
-
-// void PrincipleComponentAnalysis::ProjectFrame(
-//     const std::vector<float>& centeredFrame,
-//     std::vector<float>& pcaFrame) const {
-//   for (int i = 0; i < this->numEigenvectors_; ++i) {
-//     float projectionValue = 0.0f;
-//     const size_t rowStart = static_cast<size_t>(i) * this->numMFCCCoeffs_;
-//     for (int j = 0; j < this->numMFCCCoeffs_; ++j) {
-//       projectionValue += centeredFrame[j] *
-//                          this->pcaProjectionData_.matrix.pData[rowStart + j];
-//     }
-//     pcaFrame[i] = projectionValue;
-//   }
-// }
-
-void PrincipleComponentAnalysis::Apply(
+void PrincipleComponentAnalysis::apply(
     const matrix& mfccFeatureVector, matrix& pcaFeature,
     std::vector<float>& pcaFeatureVector) const {
   const uint16_t numFrames = mfccFeatureVector.numRows;
   const uint16_t numCoeffs = mfccFeatureVector.numCols;
-  if (numCoeffs != this->numMFCCCoeffs_) {
+  if (numCoeffs != this->numMFCCCoeffs) {
     return;
   }
 
@@ -57,21 +41,21 @@ void PrincipleComponentAnalysis::Apply(
     for (uint16_t coeff = 0; coeff < numCoeffs; ++coeff) {
       centeredMatrix.pData[rowStart + coeff] =
           mfccFeatureVector.pData[rowStart + coeff] -
-          this->pcaProjectionData_.meanVector[coeff];
+          this->pcaProjectionData.meanVector[coeff];
     }
   }
 
   matrix projectionT;
-  std::vector<float> projectionTData(numCoeffs * this->numEigenvectors_, 0.0f);
-  matrix_init_f32(&projectionT, numCoeffs, this->numEigenvectors_,
+  std::vector<float> projectionTData(numCoeffs * this->numEigenvectors, 0.0f);
+  matrix_init_f32(&projectionT, numCoeffs, this->numEigenvectors,
                   projectionTData.data());
-  matrix_transpose_f32(&this->pcaProjectionData_.matrix, &projectionT);
+  matrix_transpose_f32(&this->pcaProjectionData.matrix, &projectionT);
 
-  pcaFeatureVector.assign(numFrames * this->numEigenvectors_, 0.0f);
-  matrix_init_f32(&pcaFeature, numFrames, this->numEigenvectors_,
+  pcaFeatureVector.assign(numFrames * this->numEigenvectors, 0.0f);
+  matrix_init_f32(&pcaFeature, numFrames, this->numEigenvectors,
                   pcaFeatureVector.data());
 
   matrix_mult_f32(&centeredMatrix, &projectionT, &pcaFeature);
   printf("PCA Apply: numFrames=%u, numEigenvectors=%u\n", numFrames,
-         this->numEigenvectors_);
+         this->numEigenvectors);
 }

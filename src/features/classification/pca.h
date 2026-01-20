@@ -9,9 +9,12 @@
 #include "matrix.h"
 
 struct pcaProjectionData {
+  /** @brief Number of eigenvectors retained in the projection. */
   uint16_t numEigenvectors;
 
+  /** @brief Projection matrix for PCA. */
   matrix matrix;
+  /** @brief Mean vector used to center input features. */
   std::vector<float> meanVector;
 
   pcaProjectionData(uint16_t eigenvectors)
@@ -23,16 +26,13 @@ class PrincipleComponentAnalysis {
   /** @brief Construct a PrincipleComponentAnalysis object. */
   PrincipleComponentAnalysis(uint16_t numEigenvectors, uint16_t numMFCCCoeffs);
 
-  /** @brief Destroy the PrincipleComponentAnalysis object. */
-  ~PrincipleComponentAnalysis();
-
   /**
    * @brief Project a centered frame onto the PCA projection matrix.
    *
    * @param centeredFrame Input centered frame, of size numMFCCCoeffs.
    * @param pcaFrame Output PCA frame, of size numEigenvectors.
    */
-  void ProjectFrame(const std::vector<float>& centeredFrame,
+  void projectFrame(const std::vector<float>& centeredFrame,
                     std::vector<float>& pcaFrame,
                     std::vector<float>& pcaFeatureVector) const;
 
@@ -43,13 +43,16 @@ class PrincipleComponentAnalysis {
    * @param pcaFeature Output PCA feature vector, of size
    * numEigenvectors.
    */
-  void Apply(const matrix& mfccFeatureVector, matrix& pcaFeature,
+  void apply(const matrix& mfccFeatureVector, matrix& pcaFeature,
              std::vector<float>& pcaFeatureVector) const;
 
  private:
-  uint16_t numEigenvectors_;
-  uint16_t numMFCCCoeffs_;
-  pcaProjectionData pcaProjectionData_;
+  /** @brief Number of PCA eigenvectors to keep. */
+  uint16_t numEigenvectors;
+  /** @brief Number of MFCC coefficients per frame. */
+  uint16_t numMFCCCoeffs;
+  /** @brief Cached PCA projection data (matrix + mean). */
+  pcaProjectionData pcaProjectionData;
 
-  void InitializePCAData();
+  void initializePCAData();
 };

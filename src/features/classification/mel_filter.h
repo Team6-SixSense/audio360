@@ -31,9 +31,6 @@ class MelFilter {
   /** @brief Construct a MelFilter object. */
   MelFilter(uint16_t numFilters, uint16_t fftSize, uint16_t sampleFrequency);
 
-  /** @brief Destroy the MelFilter object. */
-  ~MelFilter();
-
   /**
    * @brief Apply the Mel filter bank to the input power spectrum.
    *
@@ -41,15 +38,20 @@ class MelFilter {
    * (fftSize/2 + 1) [nyquist].
    * @param melSpectrogram Output Mel filter bank energies.
    */
-  void Apply(matrix& stftPowerSpectrogram, matrix& melSpectrogram,
+  void apply(matrix& stftPowerSpectrogram, matrix& melSpectrogram,
              std::vector<float>& melSpectrogramVector) const;
 
  private:
-  uint16_t numFilters_;
-  uint16_t fftSize_;
-  uint16_t sampleFrequency_;
-  std::vector<float> filterBankData_;
-  matrix filterBank_;
+  /** @brief Number of mel filters in the bank. */
+  uint16_t numFilters;
+  /** @brief FFT size used to derive frequency bins. */
+  uint16_t fftSize;
+  /** @brief Sample rate of the input signal (Hz). */
+  uint16_t sampleFrequency;
+  /** @brief Backing storage for the filter bank matrix. */
+  std::vector<float> filterBankData;
+  /** @brief Filter bank matrix of size numFilters x (fftSize/2 + 1). */
+  matrix filterBank;
 
   /**
    * @brief Create the Mel filter bank.

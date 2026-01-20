@@ -22,9 +22,6 @@ class DiscreteCosineTransform {
   /** @brief Construct a DiscreteCosineTransform object. */
   DiscreteCosineTransform(uint16_t numCoefficients, uint16_t numMelFilters);
 
-  /** @brief Destroy the DiscreteCosineTransform object. */
-  ~DiscreteCosineTransform();
-
   /**
    * @brief Apply the DCT to the input Mel spectrogram.
    *
@@ -33,16 +30,20 @@ class DiscreteCosineTransform {
    * @param dctCoefficients Output DCT coefficients, of size frames x
    * numCoefficients.
    */
-  void Apply(const matrix& melSpectrogram, matrix& mfccSpectrogram,
+  void apply(const matrix& melSpectrogram, matrix& mfccSpectrogram,
              std::vector<float>& mfccSpectrogramVector) const;
 
  private:
-  uint16_t numCoefficients_;
-  uint16_t numMelFilters_;
-  dctMatrix dctMatrix_;
+  /** @brief Number of DCT coefficients to compute. */
+  uint16_t numCoefficients;
+  /** @brief Number of mel filterbank bins used as input. */
+  uint16_t numMelFilters;
+  /** @brief Precomputed DCT transformation matrix storage. */
+  dctMatrix dctMatrix;
 
   /**
-   * @brief Create the DCT transformation matrix.
+   * @brief Create the DCT transfo
+   * rmation matrix.
    */
   void CreateDCTMatrix();
 };

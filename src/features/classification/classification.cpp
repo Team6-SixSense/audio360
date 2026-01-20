@@ -44,15 +44,15 @@ void Classification::Classify(std::vector<FrequencyDomain> fftData) {
 
   matrix melSpec;
   std::vector<float> melSpectrogramVector;
-  this->melFilter.Apply(stftSpec, melSpec, melSpectrogramVector);
+  this->melFilter.apply(stftSpec, melSpec, melSpectrogramVector);
 
   matrix mfccSpec;
   std::vector<float> mfccSpectrogramVector;
-  this->dct.Apply(melSpec, mfccSpec, mfccSpectrogramVector);
+  this->dct.apply(melSpec, mfccSpec, mfccSpectrogramVector);
 
   matrix pcaSpec;
   std::vector<float> pcaFeatureVector;
-  this->pca.Apply(mfccSpec, pcaSpec, pcaFeatureVector);
+  this->pca.apply(mfccSpec, pcaSpec, pcaFeatureVector);
 
-  this->currClassification = StringToClassification(this->lda.Apply(pcaSpec));
+  this->currClassification = StringToClassification(this->lda.apply(pcaSpec));
 }
