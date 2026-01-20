@@ -27,21 +27,18 @@ class PrincipleComponentAnalysis {
    * @param pcaFrame Output PCA frame, of size numEigenvectors.
    */
   void ProjectFrame(const std::vector<float>& centeredFrame,
-                    std::vector<float>& pcaFrame) const;
+                    std::vector<float>& pcaFrame,
+                    std::vector<float>& pcaFeatureVector) const;
 
   /**
-   * @brief Apply PCA to the input feature vector.
+   * @brief Apply PCA to the input feature matrix.
    *
-   * @param inputFeatureVector Input feature vector, of size featureLength.
-   * @param pcaFeatureVector Output PCA feature vector, of size
+   * @param mfccFeatureVector Input feature matrix, of size featureLength.
+   * @param pcaFeature Output PCA feature vector, of size
    * numEigenvectors.
    */
-  void Apply(const std::vector<std::vector<float>>& mfccFeatureVector,
-             std::vector<std::vector<float>>& pcaFeatureVector) const;
-
-  void Apply(const matrix& mfccFeatureVector,
-             matrix& pcaFeatureVector,
-             std::vector<float>& pcaFeatureVectorData) const;
+  void Apply(const matrix& mfccFeatureVector, matrix& pcaFeature,
+             std::vector<float>& pcaFeatureVector) const;
 
  private:
   uint16_t numEigenvectors_;

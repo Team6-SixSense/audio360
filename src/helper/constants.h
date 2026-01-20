@@ -10,6 +10,7 @@
 #include <math.h>
 
 #include <limits>
+#include <string>
 #include <vector>
 
 #include "matrix.h"
@@ -99,5 +100,5 @@ inline matrix LDA_CLASS_WEIGHTS = {3, 13, LDA_CLASS_WEIGHTS_DATA.data()};
 inline std::vector<float> LDA_CLASS_BIASES = {-3.2175527, -1.7967649,
                                               -1.7004313};
 
-inline std::vector<std::string> CLASSIFICATION_CLASSES = {"siren", "jackhammer",
-                                                          "car_horn"};
+inline std::vector<std::string> CLASSIFICATION_CLASSES = {
+    "car_horn", "jackhammer", "siren"};

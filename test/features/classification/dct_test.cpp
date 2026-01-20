@@ -27,10 +27,56 @@ static int ArgMax(const std::vector<float>& v) {
   return idx;
 }
 
+static void PrintMatrix(const matrix& m) {
+  for (uint16_t r = 0; r < m.numRows; ++r) {
+    for (uint16_t c = 0; c < m.numCols; ++c) {
+      printf("%8.4f ", m.pData[r * m.numCols + c]);
+    }
+    printf("\n");
+  }
+}
+
+static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
+                         matrix& stftData, std::vector<float>& stftDataVector) {
+  const uint16_t numFrames = static_cast<uint16_t>(audioSignal.size());
+  const uint16_t numFreqBins = WAVEFORM_SAMPLES / 2 + 1;
+
+  stftDataVector.assign(numFrames * numFreqBins, 0.0f);
+  matrix_init_f32(&stftData, numFrames, numFreqBins, stftDataVector.data());
+
+  for (uint16_t frame = 0; frame < numFrames; ++frame) {
+    const size_t rowStart = static_cast<size_t>(frame) * numFreqBins;
+    for (uint16_t bin = 0; bin < numFreqBins; ++bin) {
+      stftData.pData[rowStart + bin] =
+          std::pow(audioSignal[frame].magnitude[bin], 2.0f);
+    }
+  }
+}
+
+static void PrintSTFTMagnitude(const std::vector<FrequencyDomain>& dom) {
+  if (dom.empty()) {
+    printf("(empty)\n");
+    return;
+  }
+
+  const size_t numFrames = dom.size();
+  const size_t numBins = dom[0].magnitude.size();
+
+  for (size_t frame = 0; frame < numFrames; ++frame) {
+    // Optional: sanity check bin size per frame
+    // if (dom[frame].magnitude.size() != numBins) continue;
+
+    for (size_t bin = 0; bin < numBins; ++bin) {
+      printf("%8.4f ", dom[frame].magnitude[bin]);
+    }
+    printf("\n");
+  }
+}
+
 // Build a 3-frame STFT-domain by computing 3 FFTs from 3 windows of the MP3.
 static void Make3FrameMelSpecFromMP3(const MP3Data& data, int sampleRate,
-                                    int offset0, matrix& melSpec,
-                                    std::vector<float>& melSpecData) {
+                                     int offset0, matrix& melSpec,
+                                     std::vector<float>& melSpectrogramVector) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
   const uint16_t numFilters = 40;
 
@@ -48,34 +94,32 @@ static void Make3FrameMelSpecFromMP3(const MP3Data& data, int sampleRate,
   FrequencyDomain fd1 = fft.signalToFrequency(in1, WindowFunction::HANN_WINDOW);
   FrequencyDomain fd2 = fft.signalToFrequency(in2, WindowFunction::HANN_WINDOW);
 
-  // Stack into STFT-domain object (IMPORTANT: avoid resize() on
-  // vector<FrequencyDomain>)
-  ShortTimeFourierTransformDomain dom(3);
-  dom.stft.reserve(3);
-  dom.stft.emplace_back(fd0);
-  dom.stft.emplace_back(fd1);
-  dom.stft.emplace_back(fd2);
+  std::vector<FrequencyDomain> dom;
+  dom.push_back(fd0);
+  dom.push_back(fd1);
+  dom.push_back(fd2);
+
+  matrix stftMatrix;
+  std::vector<float> stftDataVector;
+  GenerateSTFT(dom, stftMatrix, stftDataVector);
 
   MelFilter melFilter(numFilters, frameSize, sampleRate);
 
-  melFilter.Apply(dom, melSpec, melSpecData);
+  melFilter.Apply(stftMatrix, melSpec, melSpectrogramVector);
 }
 
 TEST(DCTTest, ComputeDCT_OnMelSpectrogram_ProducesExpectedMFCC) {
   // These were validated experimentally using Python to see if relatively the
   // MFCC are obtained.
   std::vector<float> actualFrame1 = {
-      -56.664089, 20.234943, 20.820616, 15.136596, 10.813884,
-      7.194543,   4.375194,  3.017802,  1.415762,  0.722789,
-      -0.017400,  -1.636255, -2.012286};
+      -56.6641, 20.2349, 20.8206, 15.1366, 10.8139, 7.1945, 4.3752,
+      3.0178,   1.4158,  0.7228,  -0.0174, -1.6363, -2.0123};
   std::vector<float> actualFrame2 = {
-      -56.810131, 20.132694, 20.845602, 15.574163, 11.382054,
-      7.304311,   4.406040,  2.479850,  0.932914,  0.119076,
-      0.361818,   -1.280813, -2.317297};
+      -56.8101, 20.1327, 20.8456, 15.5742, 11.3821, 7.3043, 4.4060,
+      2.4799,   0.9329,  0.1191,  0.3618,  -1.2808, -2.3173};
   std::vector<float> actualFrame3 = {
-      -56.273273, 20.881832, 21.420116, 15.734683, 10.550714,
-      6.176596,   3.137521,  2.407498,  1.427548,  0.890962,
-      0.609775,   -0.923622, -2.015059};
+      -56.2733, 20.8818, 21.4201, 15.7347, 10.5507, 6.1766, 3.1375,
+      2.4075,   1.4275,  0.8910,  0.6098,  -0.9236, -2.0151};
 
   MP3Data data = readMP3File("audio/285_sine.mp3");
   const int offset0 = 100000;  // same style as fft_test.cpp
@@ -86,12 +130,19 @@ TEST(DCTTest, ComputeDCT_OnMelSpectrogram_ProducesExpectedMFCC) {
   DiscreteCosineTransform dct(numCepstral, numFilters);
 
   matrix melSpec;
-  std::vector<float> melSpecData;
+  std::vector<float> melSpectrogramVector;
   Make3FrameMelSpecFromMP3(data, SAMPLE_FREQUENCY, offset0, melSpec,
-                           melSpecData);
+                           melSpectrogramVector);
+
+  printf("MelSpec\n");
+  PrintMatrix(melSpec);
+
   matrix mfccSpec;
-  std::vector<float> mfccSpecData;
-  dct.Apply(melSpec, mfccSpec, mfccSpecData);
+  std::vector<float> mfccSpectrogramVector;
+  dct.Apply(melSpec, mfccSpec, mfccSpectrogramVector);
+
+  printf("MFCCSpec\n");
+  PrintMatrix(mfccSpec);
 
   ASSERT_EQ(mfccSpec.numCols, numCepstral);
 

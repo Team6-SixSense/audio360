@@ -26,58 +26,23 @@ PrincipleComponentAnalysis::PrincipleComponentAnalysis(uint16_t numEigenvectors,
 
 PrincipleComponentAnalysis::~PrincipleComponentAnalysis() {}
 
-void PrincipleComponentAnalysis::ProjectFrame(
-    const std::vector<float>& centeredFrame,
-    std::vector<float>& pcaFrame) const {
-  for (int i = 0; i < this->numEigenvectors_; ++i) {
-    float projectionValue = 0.0f;
-    const size_t rowStart = static_cast<size_t>(i) * this->numMFCCCoeffs_;
-    for (int j = 0; j < this->numMFCCCoeffs_; ++j) {
-      projectionValue += centeredFrame[j] *
-                         this->pcaProjectionData_.matrix.pData[rowStart + j];
-    }
-    pcaFrame[i] = projectionValue;
-  }
-}
+// void PrincipleComponentAnalysis::ProjectFrame(
+//     const std::vector<float>& centeredFrame,
+//     std::vector<float>& pcaFrame) const {
+//   for (int i = 0; i < this->numEigenvectors_; ++i) {
+//     float projectionValue = 0.0f;
+//     const size_t rowStart = static_cast<size_t>(i) * this->numMFCCCoeffs_;
+//     for (int j = 0; j < this->numMFCCCoeffs_; ++j) {
+//       projectionValue += centeredFrame[j] *
+//                          this->pcaProjectionData_.matrix.pData[rowStart + j];
+//     }
+//     pcaFrame[i] = projectionValue;
+//   }
+// }
 
 void PrincipleComponentAnalysis::Apply(
-    const std::vector<std::vector<float>>& mfccFeatureVector,
-    std::vector<std::vector<float>>& pcaFeatureVector) const {
-  const uint16_t numFrames = mfccFeatureVector.size();
-  if (numFrames == 0) {
-    pcaFeatureVector.clear();
-    return;
-  }
-
-  std::vector<float> mfccData(numFrames * this->numMFCCCoeffs_, 0.0f);
-  for (uint16_t frame = 0; frame < numFrames; ++frame) {
-    const size_t rowStart = static_cast<size_t>(frame) * this->numMFCCCoeffs_;
-    for (uint16_t coeff = 0; coeff < this->numMFCCCoeffs_; ++coeff) {
-      mfccData[rowStart + coeff] = mfccFeatureVector[frame][coeff];
-    }
-  }
-
-  matrix mfccMatrix;
-  matrix_init_f32(&mfccMatrix, numFrames, this->numMFCCCoeffs_,
-                  mfccData.data());
-
-  matrix pcaMatrix;
-  std::vector<float> pcaData;
-  this->Apply(mfccMatrix, pcaMatrix, pcaData);
-
-  pcaFeatureVector.resize(numFrames,
-                          std::vector<float>(this->numEigenvectors_, 0.0f));
-  for (uint16_t frame = 0; frame < numFrames; ++frame) {
-    const size_t rowStart = static_cast<size_t>(frame) * this->numEigenvectors_;
-    for (uint16_t coeff = 0; coeff < this->numEigenvectors_; ++coeff) {
-      pcaFeatureVector[frame][coeff] = pcaData[rowStart + coeff];
-    }
-  }
-}
-
-void PrincipleComponentAnalysis::Apply(
-    const matrix& mfccFeatureVector, matrix& pcaFeatureVector,
-    std::vector<float>& pcaFeatureVectorData) const {
+    const matrix& mfccFeatureVector, matrix& pcaFeature,
+    std::vector<float>& pcaFeatureVector) const {
   const uint16_t numFrames = mfccFeatureVector.numRows;
   const uint16_t numCoeffs = mfccFeatureVector.numCols;
   if (numCoeffs != this->numMFCCCoeffs_) {
@@ -102,11 +67,11 @@ void PrincipleComponentAnalysis::Apply(
                   projectionTData.data());
   matrix_transpose_f32(&this->pcaProjectionData_.matrix, &projectionT);
 
-  pcaFeatureVectorData.assign(numFrames * this->numEigenvectors_, 0.0f);
-  matrix_init_f32(&pcaFeatureVector, numFrames, this->numEigenvectors_,
-                  pcaFeatureVectorData.data());
+  pcaFeatureVector.assign(numFrames * this->numEigenvectors_, 0.0f);
+  matrix_init_f32(&pcaFeature, numFrames, this->numEigenvectors_,
+                  pcaFeatureVector.data());
 
-  matrix_mult_f32(&centeredMatrix, &projectionT, &pcaFeatureVector);
+  matrix_mult_f32(&centeredMatrix, &projectionT, &pcaFeature);
   printf("PCA Apply: numFrames=%u, numEigenvectors=%u\n", numFrames,
          this->numEigenvectors_);
 }

@@ -41,7 +41,7 @@ DiscreteCosineTransform::~DiscreteCosineTransform() {}
 
 void DiscreteCosineTransform::Apply(
     const matrix& melSpectrogram, matrix& mfccSpectrogram,
-    std::vector<float>& mfccSpectrogramData) const {
+    std::vector<float>& mfccSpectrogramVector) const {
   const uint16_t numFrames = melSpectrogram.numRows;
   const uint16_t numMelFilters = melSpectrogram.numCols;
   if (numMelFilters != this->numMelFilters_) {
@@ -59,9 +59,9 @@ void DiscreteCosineTransform::Apply(
     }
   }
 
-  mfccSpectrogramData.assign(numFrames * this->numCoefficients_, 0.0f);
+  mfccSpectrogramVector.assign(numFrames * this->numCoefficients_, 0.0f);
   matrix_init_f32(&mfccSpectrogram, numFrames, this->numCoefficients_,
-                  mfccSpectrogramData.data());
+                  mfccSpectrogramVector.data());
 
   matrix_mult_f32(&logMel, &this->dctMatrix_.mat, &mfccSpectrogram);
   printf("DCT Applied: mfccSpectrogram shape: %u x %u\n",

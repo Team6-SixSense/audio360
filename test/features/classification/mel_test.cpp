@@ -37,9 +37,28 @@ static float MaxVal(const std::vector<float>& v) {
   return v.empty() ? 0.0f : *std::max_element(v.begin(), v.end());
 }
 
+void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
+                  matrix& stftData,
+                  std::vector<float>& stftDataVector) {
+  const uint16_t numFrames = static_cast<uint16_t>(audioSignal.size());
+  const uint16_t numFreqBins = WAVEFORM_SAMPLES / 2 + 1;
+
+  stftDataVector.assign(numFrames * numFreqBins, 0.0f);
+  matrix_init_f32(&stftData, numFrames, numFreqBins, stftDataVector.data());
+
+  for (uint16_t frame = 0; frame < numFrames; ++frame) {
+    const size_t rowStart = static_cast<size_t>(frame) * numFreqBins;
+    for (uint16_t bin = 0; bin < numFreqBins; ++bin) {
+      stftData.pData[rowStart + bin] =
+          std::pow(audioSignal[frame].magnitude[bin], 2.0f);
+    }
+  }
+}
+
 // Build a 3-frame STFT-domain by computing 3 FFTs from 3 windows of the MP3.
-static ShortTimeFourierTransformDomain Make3FrameSTFTFromMP3(
-    const MP3Data& data, int sampleRate, int offset0) {
+static void Make3FrameSTFTFromMP3(const MP3Data& data, int sampleRate,
+                                  int offset0, matrix& stftMatrix,
+                                  std::vector<float>& stftDataVector) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
 
   // Extract 3 windows at different offsets.
@@ -56,15 +75,12 @@ static ShortTimeFourierTransformDomain Make3FrameSTFTFromMP3(
   FrequencyDomain fd1 = fft.signalToFrequency(in1, WindowFunction::HANN_WINDOW);
   FrequencyDomain fd2 = fft.signalToFrequency(in2, WindowFunction::HANN_WINDOW);
 
-  // Stack into STFT-domain object (IMPORTANT: avoid resize() on
-  // vector<FrequencyDomain>)
-  ShortTimeFourierTransformDomain dom(3);
-  dom.stft.reserve(3);
-  dom.stft.emplace_back(fd0);
-  dom.stft.emplace_back(fd1);
-  dom.stft.emplace_back(fd2);
+  std::vector<FrequencyDomain> dom;
+  dom.push_back(fd0);
+  dom.push_back(fd1);
+  dom.push_back(fd2);
 
-  return dom;
+  GenerateSTFT(dom, stftMatrix, stftDataVector);
 }
 
 // Count values > eps
@@ -114,24 +130,28 @@ TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
   ASSERT_GT(static_cast<int>(data.channel1.size()),
             offset0 + 3 * static_cast<int>(WAVEFORM_SAMPLES));
 
-  auto stft = Make3FrameSTFTFromMP3(data, SAMPLE_FREQUENCY, offset0);
+  matrix stft;
+  std::vector<float> stftDataVector;
+  Make3FrameSTFTFromMP3(data, SAMPLE_FREQUENCY, offset0, stft,
+                        stftDataVector);
 
-  const int stftPositives = CountPositive(stft.stft[1].frequency, 0.5f);
+  const int stftPositives = CountPositiveRow(stft, 1, 0.5f);
+  ;
 
-  const uint16_t fftSize = stft.stft[0].N;  // matches FFT output size
+  const uint16_t fftSize = WAVEFORM_SAMPLES;  // matches FFT output size
   const uint16_t numFilters = 40;
 
   MelFilter mel(numFilters, fftSize, SAMPLE_FREQUENCY);
 
   matrix melSpec;
-  std::vector<float> melSpecData;
-  mel.Apply(stft, melSpec, melSpecData);
+  std::vector<float> melSpectrogramVector;
+  mel.Apply(stft, melSpec, melSpectrogramVector);
 
   printf("Mel Filter Bank Applied on Frame 1:\n");
   PrintMatrix(melSpec);
   printf("melSpec shape: %u x %u\n", melSpec.numRows, melSpec.numCols);
 
-  ASSERT_EQ(melSpec.numRows, stft.numFrames);
+  ASSERT_EQ(melSpec.numRows, stft.numRows);
   ASSERT_EQ(melSpec.numCols, numFilters);
 
   // We should expect the mel bands to be more sparse compared to STFT bins.
