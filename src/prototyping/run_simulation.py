@@ -7,19 +7,15 @@ pyroomacoustics.
 import warnings
 warnings.filterwarnings("ignore")
 
-from collections import deque
 import os
+import math
 from simulation import (create_room,
-                           add_microphone,
-                           classify_audio,
-                           analyze_doa_continuous,
-                           visualize_simulation_continuous,
-                           capture_audio_from_source
+                           add_microphone
                            )
 
 import numpy as np
-import pyaudio
 import soundfile as sf
+import scipy.signal
 
 
 
@@ -40,75 +36,59 @@ def main():
 
     # Simulation parameters
     CHUNK = 1024
-    BUFFER_SECONDS = 4
-    FORMAT = pyaudio.paFloat32
-    CHANNELS = 1
+    CAPTURE_SECONDS = 2
     RATE = 16000
 
+    # Ensure output directory exists
+    if not os.path.exists("mic_recordings"):
+        os.makedirs("mic_recordings")
 
-    print("Creating room")
-    room = create_room(10, 10, 3, RATE)
+    # Mic array center and rotation parameters
+    center_x = 5.0
+    center_y = 5.05
+    radius = 3.0
+    source_z = 1.0
 
-    print("Adding microphones")
-    add_microphone(room, [4.95, 5.10, 1.75]) # Front-left
-    add_microphone(room, [5.05, 5.10, 1.75]) # Front-right
-    add_microphone(room, [4.95, 5.00, 1.75]) # Back-left
-    add_microphone(room, [5.05, 5.00, 1.75]) # Back-right
+    # Generate 440Hz sine wave source
+    t = np.arange(RATE * CAPTURE_SECONDS) / RATE
+    source_signal = 0.5 * np.sin(2 * np.pi * 440 * t).astype(np.float32)
 
-    mic_positions = np.array([
-        [4.95, 5.05, 4.95, 5.05],  # x coordinates (meters)
-        [5.10, 5.10, 5.00, 5.00],  # y coordinates (meters)
-        [1.75, 1.75, 1.75, 1.75]   # z coordinates (meters)
-    ])
+    print("Starting 360 degree simulation...")
 
-    true_source_pos = np.array([1.0, 6.0, 1.0])
-    print(f"Adding source at {true_source_pos}")
-    room.add_source(true_source_pos) 
+    for angle in range(0,361,45):
+        # Calculate source position
+        rad = math.radians(angle)
+        src_x = center_x + radius * math.cos(rad)
+        src_y = center_y + radius * math.sin(rad)
+        true_source_pos = [src_x, src_y, source_z]
+        
+        print(f"Angle: {angle}, Source: {true_source_pos}")
 
-    # Compute RIR for each microphone that is defined. 
-    # rir is a length of 4 microphones in this case. 
-    room.compute_rir()
-    rirs = room.rir
+        # Create room for this angle
+        room = create_room(10, 10, 3, RATE)
 
-    # This is just initializing how we will stream the microphone data. 
-    p = pyaudio.PyAudio()
-    stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE,
-                input=True, frames_per_buffer=CHUNK)
+        # Add microphones
+        add_microphone(room, [4.95, 5.10, 1.75]) # Front-left
+        add_microphone(room, [5.05, 5.10, 1.75]) # Front-right
+        add_microphone(room, [4.95, 5.00, 1.75]) # Back-left
+        add_microphone(room, [5.05, 5.00, 1.75]) # Back-right
 
-    # Initialize the first audio source chunk
-    source_chunk = np.frombuffer(stream.read(CHUNK), dtype=np.float32)
+        # Add source
+        room.add_source(true_source_pos)
 
-    # Will be used as the buffer for each of our microphones. BUffer will be CHUNK * BUFFER_SECONDS
-    output_deques = [deque(maxlen=BUFFER_SECONDS * CHUNK) for _ in range(len(rirs))]
+        # Compute RIR for each microphone that is defined. 
+        room.compute_rir()
+        rirs = room.rir
 
-    while True:
-        # Continuosly retrieved the audio stream of size chunk from device microphone.
-        source_chunk = np.frombuffer(stream.read(CHUNK, exception_on_overflow=False), dtype=np.float32)
-
-        # Skip sounds that are faint/quiet. 
-        rms = np.sqrt(np.mean(source_chunk**2))
-        if rms < 0.005:
-            print("")
-            continue
-
-        # Capture audio from source to all 4 microphones
-        output_deques = capture_audio_from_source(source_chunk, rirs, output_deques, CHUNK)
-
-        # Classify the audio retrieved from the first microphone
-        mic1_input = np.array(output_deques[0], dtype=np.float32)
-        pred = classify_audio(mic1_input)
-        print(f"Prediction: {pred}")
-
-        # Calculate direction of audio
-        results = analyze_doa_continuous(
-            output_deques,
-            mic_positions=mic_positions,
-            true_source_position=true_source_pos,
-            algorithms=['frida', 'srp', 'music'] 
-        )
-
-        # Update visualization arrows to point where the audio is coming from. 
-        visualize_simulation_continuous(results, mic_positions, pred, true_source_pos)
+        # Convolve source signal with RIRs
+        mic_outputs = []
+        for m_rirs in rirs:
+            # Convolve with the first source's RIR
+            convolved = scipy.signal.fftconvolve(source_signal, m_rirs[0], mode='full')
+            # Trim to original signal length
+            mic_outputs.append(convolved[:len(source_signal)])
+            
+        outputAudioToFile(mic_outputs, angle, RATE)
 
 
 
