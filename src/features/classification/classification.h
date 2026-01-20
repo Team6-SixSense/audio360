@@ -39,6 +39,7 @@ inline const char* ClassificationClassToString(
     case ClassificationClass::Unknown:
       return "unknown";
   }
+  return "unknown"
 }
 
 /**
