@@ -43,7 +43,7 @@ Classification::Classification(uint16_t n_fft, uint16_t numMelFilters,
       dct(numDCTCoeff, numMelFilters),
       pca(numPCAComponents, numDCTCoeff),
       lda(numPCAComponents, numClasses),
-      currClassification(ClassificationClass::Unknown) {}
+      currClassification(ClassificationLabel::Unknown) {}
 
 void Classification::Classify(std::vector<float> rawAudio) {
   // Currently there is fixed logic that there will be 4 frames of fft of size
