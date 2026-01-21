@@ -49,10 +49,13 @@ class LinearDiscriminantAnalysis {
  private:
   /** @brief Number of PCA eigenvectors expected as input. */
   uint16_t numEigenvectors;
+
   /** @brief Number of classes supported by the model. */
   uint16_t numClasses;
+
   /** @brief Class label strings aligned with LDA outputs. */
   std::vector<std::string> classTypes;
+
   /** @brief Cached projection weights and biases for LDA. */
   ldaProjectionData ldaProjection;
 

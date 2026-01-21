@@ -44,17 +44,19 @@ class MelFilter {
  private:
   /** @brief Number of mel filters in the bank. */
   uint16_t numFilters;
+
   /** @brief FFT size used to derive frequency bins. */
   uint16_t fftSize;
+
   /** @brief Sample rate of the input signal (Hz). */
   uint16_t sampleFrequency;
+
   /** @brief Backing storage for the filter bank matrix. */
   std::vector<float> filterBankData;
+
   /** @brief Filter bank matrix of size numFilters x (fftSize/2 + 1). */
   matrix filterBank;
 
-  /**
-   * @brief Create the Mel filter bank.
-   */
+  /** @brief Create the Mel filter bank. */
   void CreateFilterBank();
 };

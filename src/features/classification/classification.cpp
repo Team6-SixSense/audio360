@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @file    classification_constants.cpp
+ * @brief   Classification-specific constants for PCA and LDA source code.
+ ******************************************************************************
+ */
+
 #include "classification.h"
 
 #include <stdio.h>
@@ -39,10 +46,9 @@ Classification::Classification(uint16_t n_fft, uint16_t numMelFilters,
       currClassification(ClassificationClass::Unknown) {}
 
 void Classification::Classify(std::vector<float> rawAudio) {
-
-  // Currently there is fixed logic that there will be 4 frames of fft of size n_fft to run 
-  // classification on.
-  // However, this is subject to change based on hyperparameter tuning that will happen later on. 
+  // Currently there is fixed logic that there will be 4 frames of fft of size
+  // n_fft to run classification on. However, this is subject to change based on
+  // hyperparameter tuning that will happen later on.
   if (rawAudio.size() < static_cast<size_t>(4 * this->n_fft)) {
     return;
   }

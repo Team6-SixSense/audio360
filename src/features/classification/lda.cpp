@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @file    lda.cpp
+ * @brief   Linear Discriminant Analysis (LDA) souce code.
+ ******************************************************************************
+ */
+
 #include "lda.h"
 
 #include <stdio.h>
@@ -19,7 +26,6 @@ LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
   this->initializeLDAData();
 }
 
-
 std::string LinearDiscriminantAnalysis::predictFrameClass(
     const matrix& pcaFeatureVector, uint16_t frameIndex) const {
   if (pcaFeatureVector.numCols != this->numEigenvectors ||
@@ -35,9 +41,8 @@ std::string LinearDiscriminantAnalysis::predictFrameClass(
     const size_t weightStart =
         static_cast<size_t>(classType) * this->numEigenvectors;
     for (int i = 0; i < this->numEigenvectors; ++i) {
-      currClassScore +=
-          pcaFeatureVector.pData[frameStart + i] *
-          this->ldaProjection.classWeights.pData[weightStart + i];
+      currClassScore += pcaFeatureVector.pData[frameStart + i] *
+                        this->ldaProjection.classWeights.pData[weightStart + i];
     }
     classPredictions[classType] =
         currClassScore + this->ldaProjection.classBiases[classType];
@@ -67,8 +72,8 @@ std::string LinearDiscriminantAnalysis::apply(
   matrix classWeightsT;
   matrix_init_f32(&classWeightsT, this->numEigenvectors, this->numClasses,
                   classWeightsTData.data());
-  if (matrix_transpose_f32(&this->ldaProjection.classWeights,
-                           &classWeightsT) != ARM_MATH_SUCCESS) {
+  if (matrix_transpose_f32(&this->ldaProjection.classWeights, &classWeightsT) !=
+      ARM_MATH_SUCCESS) {
     return {};
   }
 

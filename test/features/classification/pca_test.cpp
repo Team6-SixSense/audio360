@@ -22,8 +22,7 @@
 
 /** @brief Builds a power STFT matrix from FFT frames. */
 static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
-                         matrix& stftData,
-                         std::vector<float>& stftDataVector) {
+                         matrix& stftData, std::vector<float>& stftDataVector) {
   const uint16_t numFrames = static_cast<uint16_t>(audioSignal.size());
   const uint16_t numFreqBins = WAVEFORM_SAMPLES / 2 + 1;
 

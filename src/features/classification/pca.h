@@ -14,6 +14,7 @@ struct pcaProjectionData {
 
   /** @brief Projection matrix for PCA. */
   matrix projectionMatrix;
+
   /** @brief Mean vector used to center input features. */
   std::vector<float> meanVector;
 
@@ -49,8 +50,10 @@ class PrincipleComponentAnalysis {
  private:
   /** @brief Number of PCA eigenvectors to keep. */
   uint16_t numEigenvectors;
+
   /** @brief Number of MFCC coefficients per frame. */
   uint16_t numMFCCCoeffs;
+
   /** @brief Cached PCA projection data (matrix + mean). */
   pcaProjectionData pcaProjection;
 

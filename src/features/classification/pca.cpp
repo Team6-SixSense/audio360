@@ -1,3 +1,9 @@
+/**
+ ******************************************************************************
+ * @file    pca.cpp
+ * @brief   Principle Component Analysis (PCA) source code.
+ ******************************************************************************
+ */
 
 #include "pca.h"
 
@@ -49,8 +55,7 @@ void PrincipleComponentAnalysis::apply(
   std::vector<float> projectionTData(numCoeffs * this->numEigenvectors, 0.0f);
   matrix_init_f32(&projectionT, numCoeffs, this->numEigenvectors,
                   projectionTData.data());
-  matrix_transpose_f32(&this->pcaProjection.projectionMatrix,
-                       &projectionT);
+  matrix_transpose_f32(&this->pcaProjection.projectionMatrix, &projectionT);
 
   pcaFeatureVector.assign(numFrames * this->numEigenvectors, 0.0f);
   matrix_init_f32(&pcaFeature, numFrames, this->numEigenvectors,

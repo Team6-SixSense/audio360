@@ -88,25 +88,34 @@ class Classification {
  private:
   /** @brief FFT size used for frequency-domain processing. */
   uint16_t n_fft;
+
   /** @brief Number of mel filters applied to the spectrum. */
   uint16_t numMelFilters;
+
   /** @brief Number of DCT coefficients retained after mel filtering. */
   uint16_t numDCTCoeff;
+
   /** @brief Number of PCA components retained for classification. */
   uint16_t numPCAComponents;
+
   /** @brief Number of supported output classes. */
   uint16_t numClasses;
 
   /** @brief FFT module. */
   FFT fft;
+
   /** @brief Mel filterbank processor. */
   MelFilter melFilter;
+
   /** @brief DCT processor for cepstral features. */
   DiscreteCosineTransform dct;
+
   /** @brief PCA processor for dimensionality reduction. */
   PrincipleComponentAnalysis pca;
+
   /** @brief LDA processor for classification. */
   LinearDiscriminantAnalysis lda;
+
   /** @brief Last inferred classification result. */
   ClassificationClass currClassification;
 

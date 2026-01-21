@@ -1,9 +1,18 @@
-#include "constants.h"
+/**
+ ******************************************************************************
+ * @file    dct.cpp
+ * @brief   Discrete Cosine Transform (DCT) souce code.
+ ******************************************************************************
+ */
+
 #include "dct.h"
 
 #include <stdio.h>
 
 #include <cmath>
+
+#include "constants.h"
+
 
 void DiscreteCosineTransform::CreateDCTMatrix() {
   this->dctMatrixData.data.assign(this->numMelFilters * this->numCoefficients,
