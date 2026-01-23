@@ -13,7 +13,7 @@
 #include "embedded_mic.h"
 #include "logging.hpp"
 #include "peripheral.h"
-#include "usbd_cdc_if.h"
+
 
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;

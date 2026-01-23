@@ -6,7 +6,7 @@
  */
 
 #pragma once
-
+#ifndef BUILD_GLASSES_HOST
 #include "bit_operations.hpp"
 #include "constants.h"
 #include "embedded_mic.h"
@@ -118,3 +118,4 @@ inline void main_usb_tx() {
     }
   }
 }
+#endif

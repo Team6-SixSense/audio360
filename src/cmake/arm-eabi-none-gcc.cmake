@@ -131,27 +131,65 @@ set(HARDWARE_SRC_FILE
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/Target/user_diskio.c
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/Target/user_diskio_spi.c
 
-        # USB functions
-        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usb_device.c
-        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usbd_cdc_if.c
-        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usbd_desc.c
-        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/Target/usbd_conf.c
 
-        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_core.c
-        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
-        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
-        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
 
         ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c
 
         CACHE FILEPATH "UART printf source files"
 )
 
+if(NOT BUILD_GLASSES_HOST)
+
+    set(HARDWARE_SRC_FILE
+    ${HARDWARE_SRC_FILE}
+    # USB functions
+    ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usb_device.c
+    ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usbd_cdc_if.c
+    ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/usbd_desc.c
+    ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/Target/usbd_conf.c
+
+    ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_core.c
+    ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+    ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+    ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
+    )
+else ()
+    set (EXTRA_DEFS ${EXTRA_DEFS} BUILD_GLASSES_HOST HAL_HCD_MODULE_ENABLED)
+
+    set(HARDWARE_SRC_FILE
+        ${HARDWARE_SRC_FILE}
+        # USB functions
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_HOST/App/usb_host.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_HOST/Target/usbh_conf.c
+
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Core/Src/usbh_core.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Core/Src/usbh_ioreq.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Core/Src/usbh_pipes.c
+
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/HID/Src/usbh_hid.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_keybd.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_mouse.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_parser.c
+
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_bot.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/MSC/Src/usbh_msc_scsi.c
+
+        ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_hcd.c
+
+
+    )
+endif ()
+
+
+
 # Export to parent CMakeLists.txt
 set(EXTRA_SOURCES ${STARTUP} ${SYSTEM} ${HARDWARE_SRC_FILE} CACHE INTERNAL "")
-set(EXTRA_DEFS STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD USE_HAL_DRIVER HAL_SAI_MODULE_ENABLED HAL_SPI_MODULE_ENABLED HAL_USB_MODULE_ENABLED
+set(EXTRA_DEFS ${EXTRA_DEFS} STM32F7 STM32F767xx ARM_MATH_CM7 STM_BUILD USE_HAL_DRIVER HAL_SAI_MODULE_ENABLED HAL_SPI_MODULE_ENABLED HAL_USB_MODULE_ENABLED
         HAL_PCD_MODULE_ENABLED USB_OTG_FS
         HAL_GPIO_MODULE_ENABLED CACHE INTERNAL "")
+
 set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/BSP/STM32F7xx_Nucleo_144
 
@@ -165,15 +203,32 @@ set(EXTRA_INCLUDES
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/Target
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/sd_logger/FatFs/App
 
+
+
+        CACHE INTERNAL ""
+)
+
+if(NOT BUILD_GLASSES_HOST)
+    set(EXTRA_INCLUDES
+        ${EXTRA_INCLUDES}
         #USB functions
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Core/Inc
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Device_Library/Class/CDC/Inc
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/App/
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_DEVICE/Target
+    )
+else()
+    set(EXTRA_INCLUDES
+        ${EXTRA_INCLUDES}
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_HOST/App/
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/USB_HOST/Target/
 
-        CACHE INTERNAL ""
-)
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Core/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/HID/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/MSC/Inc
 
+    )
+endif ()
 # Keep find_path/find_library from searching host locations by default.
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)

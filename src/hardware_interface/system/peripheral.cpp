@@ -9,7 +9,12 @@
 
 #include "embedded_mic.h"
 #include "fatfs.h"
+
+#ifdef BUILD_GLASSES_HOST
+#include "usb_host.h"
+#else
 #include "usb_device.h"
+#endif
 
 static void PeriphCommonClock_Config();
 static void MX_GPIO_Init();
@@ -53,13 +58,33 @@ void setupPeripherals() {
   MX_SPI1_Init();
   MX_FATFS_Init();
 
+
+
+
+#ifdef BUILD_GLASSES_HOST
+  /* FORCE HOST MODE & DISABLE VBUS SENSING */
+  /* 1. Force the hardware into Host Mode (Grounds the ID pin logically) */
+  USB_OTG_HS->GUSBCFG &= ~USB_OTG_GUSBCFG_FDMOD;
+  USB_OTG_HS->GUSBCFG |= USB_OTG_GUSBCFG_FHMOD;
+
+  /* 2. DISABLE VBUS SENSING (Crucial!) */
+  /* This prevents the "Illegal Voltage" error. */
+  /* The STM32 will now ignore the 5V LED and just start the data clock. */
+  USB_OTG_HS->GCCFG &= ~(USB_OTG_GCCFG_VBDEN);
+  MX_USB_HOST_Init();
+#else
+
   USB_OTG_FS->GUSBCFG |= USB_OTG_GUSBCFG_FDMOD;
+
+  /* Force the Physical Layer to stay in Peripheral mode regardless of the OTG cable */
+  USB_OTG_FS->GUSBCFG &= ~USB_OTG_GUSBCFG_HNPCAP; // Disable Host Negotiation Protocol
+  USB_OTG_FS->GUSBCFG &= ~USB_OTG_GUSBCFG_SRPCAP; // Disable Session Request Protocol
 
   /* 1. Power up the transceiver (1 = Power On, 0 = Power Down) */
   USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_PWRDWN;
 
   /* 2. Disable VBUS sensing (tells the PHY to ignore the VBUS pin) */
-  USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBDEN;
+  USB_OTG_FS->GCCFG &= ~USB_OTG_GCCFG_VBDEN;
 
   /* 3. Force B-Device Session (Ignore the physical ID pin grounded by the
    * adapter) */
@@ -68,7 +93,16 @@ void setupPeripherals() {
 
   MX_USB_DEVICE_Init();
 
+  /* Wait for glasses' power to stabilize */
+  HAL_Delay(1000);
+
+  /* Force the laptop/glasses to see a 'New' device by toggling the pull-up */
+  HAL_PCD_DevDisconnect(&hpcd_USB_OTG_FS);
+  HAL_Delay(500);
   HAL_PCD_DevConnect(&hpcd_USB_OTG_FS);
+#endif
+
+
 }
 
 /** @brief Sets up clock for the entire system. */
