@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-import 'package:flutter/services.dart';
+  import 'package:flutter/services.dart';
 import 'package:usb_serial/usb_serial.dart';
 import '../models/packet.dart';
 import './deserializer.dart';

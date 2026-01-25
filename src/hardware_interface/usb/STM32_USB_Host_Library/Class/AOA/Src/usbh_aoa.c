@@ -1,22 +1,42 @@
-//
-// Created by omera on 2026-01-24.
-//
+/**
+  ******************************************************************************
+  * @file    usbh_aoa.c
+  * @brief   This file contains the Android Open Accessory (AOA) class
+  *          implementation for the USB Host Library.
+  * @see https://source.android.com/docs/core/interaction/accessories/aoa
+  ******************************************************************************
+  */
 
 #include "usbh_aoa.h"
 
 #include "usbh_def.h"
 #include "usbh_pipes.h"
 
-#define AOA_HANDSHAKE 0x33
-#define AOA_SEND_DESCRIPTOR 0x34
-#define AOA_REBOOT 0x35
+/** @defgroup AOA_Private_Defines
+  * @{
+  */
+#define AOA_HANDSHAKE       0x33  /*!< Get Protocol Request */
+#define AOA_SEND_DESCRIPTOR 0x34  /*!< Send String Descriptor Request */
+#define AOA_REBOOT          0x35  /*!< Start Accessory Mode Request */
+/**
+  * @}
+  */
 
+/** @defgroup AOA_Private_FunctionPrototypes
+  * @{
+  */
 static USBH_StatusTypeDef USBH_AOA_InterfaceInit(USBH_HandleTypeDef *phost);
 static USBH_StatusTypeDef USBH_AOA_InterfaceDeInit(USBH_HandleTypeDef *phost);
 static USBH_StatusTypeDef USBH_AOA_ClassRequest(USBH_HandleTypeDef *phost);
 static USBH_StatusTypeDef USBH_AOA_Process(USBH_HandleTypeDef *phost);
 static USBH_StatusTypeDef USBH_AOA_SOF(USBH_HandleTypeDef *phost);
+/**
+  * @}
+  */
 
+/** @defgroup AOA_Private_Variables
+  * @{
+  */
 static char* Manufacturer = "audio360\0";
 static char* Model        = "audio360_1\0";
 static char* Description  = "STM32 Controller\0";
@@ -29,11 +49,17 @@ AOA_HandleTypeDef aoa_handle;
 extern USBH_HandleTypeDef hUsbHostFS;
 
 static char* aoa_descriptors[6];
+/**
+  * @}
+  */
 
 /* Define the Class Logic */
+/**
+  * @brief  AOA Class Information
+  */
 USBH_ClassTypeDef AOA_Class = {
   "AOA",
-  0xFF, // Match Vendor Specific Class
+  0xFF, // 255, this is not needed for us.
   USBH_AOA_InterfaceInit,
   USBH_AOA_InterfaceDeInit,
   USBH_AOA_ClassRequest,
@@ -42,12 +68,26 @@ USBH_ClassTypeDef AOA_Class = {
   NULL
 };
 
+/** @defgroup AOA_Private_Functions
+  * @{
+  */
+
+/**
+  * @brief  Start of Frame (SOF) Event Process. We do not need this.
+  * @param  phost: Host handle
+  * @retval USBH Status
+  */
 static USBH_StatusTypeDef USBH_AOA_SOF(USBH_HandleTypeDef *phost)
 {
   return USBH_OK;
 }
 
 /* 1. Initialization: Finds Pipes */
+/**
+  * @brief  Initialize the AOA class.
+  * @param  phost: Host handle
+  * @retval USBH Status
+  */
 static USBH_StatusTypeDef USBH_AOA_InterfaceInit(USBH_HandleTypeDef *phost) {
 
   aoa_descriptors[0] = Manufacturer;
@@ -61,7 +101,7 @@ static USBH_StatusTypeDef USBH_AOA_InterfaceInit(USBH_HandleTypeDef *phost) {
      (phost->device.DevDesc.idProduct == 0x2D00 || phost->device.DevDesc.idProduct == 0x2D01)) {
 
     /* Find Bulk Endpoints (Simplified for Interface 0) */
-    /* Note: You might need to iterate interfaces if 0 doesn't work */
+    /* Note: need to iterate interfaces if 0 doesn't work */
     aoa_handle.OutEp = phost->device.CfgDesc.Itf_Desc[0].Ep_Desc[0].bEndpointAddress;
     aoa_handle.InEp  = phost->device.CfgDesc.Itf_Desc[0].Ep_Desc[1].bEndpointAddress;
 
@@ -89,6 +129,11 @@ static USBH_StatusTypeDef USBH_AOA_InterfaceInit(USBH_HandleTypeDef *phost) {
   return USBH_OK;
 }
 
+/**
+  * @brief  De-Initialize the AOA class. Close out any opened pipes.
+  * @param  phost: Host handle
+  * @retval USBH Status
+  */
 static USBH_StatusTypeDef USBH_AOA_InterfaceDeInit(USBH_HandleTypeDef *phost) {
   if(aoa_handle.OutPipe) {
     USBH_ClosePipe(phost, aoa_handle.OutPipe);
@@ -100,12 +145,22 @@ static USBH_StatusTypeDef USBH_AOA_InterfaceDeInit(USBH_HandleTypeDef *phost) {
   return USBH_OK;
 }
 
+/**
+  * @brief  Handle the Class Requests.
+  * @param  phost: Host handle
+  * @retval USBH Status
+  */
 static USBH_StatusTypeDef USBH_AOA_ClassRequest(USBH_HandleTypeDef *phost) {
   // not needed for aoa.
   return USBH_OK;
 }
 
 
+/**
+  * @brief  Manage the AOA State Machine.
+  * @param  phost: Host handle
+  * @retval USBH Status
+  */
 static USBH_StatusTypeDef USBH_AOA_Process(USBH_HandleTypeDef *phost) {
   USBH_StatusTypeDef status = USBH_BUSY;
   static uint8_t string_index = 0;
@@ -207,6 +262,16 @@ static USBH_StatusTypeDef USBH_AOA_Process(USBH_HandleTypeDef *phost) {
   return status;
 }
 
+/**
+  * @}
+  */
+
+/**
+  * @brief  Transmits data over AOA interface
+  * @param  pbuff: Pointer to data buffer
+  * @param  length: Length of data to be sent
+  * @retval USBH Status
+  */
 USBH_StatusTypeDef USBH_AOA_Transmit(uint8_t *pbuff, uint16_t length) {
   if (aoa_handle.state != AOA_STATE_CONNECTED) {
     return USBH_FAIL;

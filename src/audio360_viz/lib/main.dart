@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'models/packet.dart';
 import 'usb/usb_service.dart';
 
