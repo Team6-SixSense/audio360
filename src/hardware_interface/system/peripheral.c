@@ -9,6 +9,7 @@
 
 #include "embedded_mic.h"
 #include "fatfs.h"
+#include "peripheral_error.h"
 #include "usb_device.h"
 
 static void PeriphCommonClock_Config();
@@ -96,12 +97,12 @@ void SystemClock_Config(void) {
   RCC_OscInitStruct.PLL.PLLQ = 8;
   RCC_OscInitStruct.PLL.PLLR = 2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_RCC_OSCILLATOR_INIT_FAIL);
   }
 
   /** Activate the Over-Drive mode */
   if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_PWR_ENABLE_OVERDRIVE_FAIL);
   }
 
   /** Initializes the CPU, AHB and APB buses clocks */
@@ -112,7 +113,7 @@ void SystemClock_Config(void) {
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_RCC_CLOCK_CONFIG_FAIL);
   }
 }
 
@@ -133,7 +134,7 @@ void PeriphCommonClock_Config(void) {
   PeriphClkInitStruct.Sai2ClockSelection = RCC_SAI2CLKSOURCE_PLLSAI;
 
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_RCC_PERI_CLOCK_CONFIG_FAIL);
   }
 }
 
@@ -201,7 +202,7 @@ static void MX_SPI1_Init() {
   SD_SPI_HANDLE.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
   SD_SPI_HANDLE.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
   if (HAL_SPI_Init(&SD_SPI_HANDLE) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_SPI_INIT_FAIL);
   }
 }
 
@@ -219,14 +220,7 @@ static void MX_USART3_UART_Init() {
   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 
   if (HAL_UART_Init(&huart3) != HAL_OK) {
-    Error_Handler();
-  }
-}
-
-void Error_Handler() {
-  // Turn LED3 on.
-  BSP_LED_On(LED3);
-  while (1) {
+    Report_Error(HAL_UART_INIT_FAIL);
   }
 }
 
