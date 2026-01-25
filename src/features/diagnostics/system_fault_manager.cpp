@@ -42,7 +42,9 @@ void SystemFaultManager::handlePeripheralSetupFaults(
       case SD_MOUNT_FAIL:
       case USB_DEVICE_INIT_FAIL:
       case USB_DEVICE_START_FAIL:
+      case USB_HOST_INIT_FAIL:
       case INVALID_USB_SPEED:
+      case DMA_INIT:
 
         // Enter unrecoverable state.
         enterUnrecoverableState(errorString);

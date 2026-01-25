@@ -16,10 +16,9 @@
 /** @brief System fault state. */
 enum SystemFaultState {
   NO_FAULT,
-  SETUP_FAULT,
+  HARDWARE_FAULT,
   CLASSIFICATION_FAULT,
-  DIRECTIONAL_ANALYSIS_FAULT,
-  VISUALIZATION_FAULT,
+  DIRECTIONAL_ANALYSIS_FAULT
 };
 
 /** @brief Module to monitors system health and manage critical system faults.
@@ -44,7 +43,7 @@ class SystemFaultManager {
    *
    * @param error Error that has caused to enter the unrecoverable state.
    */
-  void enterUnrecoverableState(std::string error);
+  virtual void enterUnrecoverableState(std::string error);
 
   /** @brief Current system fault state. */
   SystemFaultState state{NO_FAULT};

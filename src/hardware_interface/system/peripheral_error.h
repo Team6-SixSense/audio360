@@ -27,7 +27,9 @@ typedef enum PeripheralError {
   SD_MOUNT_FAIL,                   // Failed to mount SD card.
   USB_DEVICE_INIT_FAIL,            // Failed to initialized USB device.
   USB_DEVICE_START_FAIL,           // Failed to start USB device.
+  USB_HOST_INIT_FAIL,              // Failed to start USB host.
   INVALID_USB_SPEED,               // Invalid USB speed.
+  DMA_INIT,                        // Failed to initialize DMA.
 } PeripheralError;
 
 static const char* peripheralErrorStrings[] = {"HAL_RCC_OSCILLATOR_INIT_FAIL",
@@ -44,7 +46,9 @@ static const char* peripheralErrorStrings[] = {"HAL_RCC_OSCILLATOR_INIT_FAIL",
                                                "SD_MOUNT_FAIL",
                                                "USB_DEVICE_INIT_FAIL",
                                                "USB_DEVICE_START_FAIL",
-                                               "INVALID_USB_SPEED"};
+                                               "USB_HOST_INIT_FAIL",
+                                               "INVALID_USB_SPEED",
+                                               "DMA_INIT"};
 
 /**
  * @brief Report when an error related to pheripheral has occured.

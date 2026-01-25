@@ -93,7 +93,7 @@ void init_mic_a1() {
   hsai_BlockA1.SlotInit.SlotActive = 0x00000001;
 
   if (HAL_SAI_Init(&hsai_BlockA1) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_SAI_A1_INIT_FAIL);
   }
 }
 
@@ -134,7 +134,7 @@ void init_mic_b1() {
   hsai_BlockB1.SlotInit.SlotActive = 0x00000001;
 
   if (HAL_SAI_Init(&hsai_BlockB1) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_SAI_B1_INIT_FAIL);
   }
 }
 
@@ -175,7 +175,7 @@ void init_mic_a2() {
   hsai_BlockA2.SlotInit.SlotActive = 0x00000001;
 
   if (HAL_SAI_Init(&hsai_BlockA2) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_SAI_A2_INIT_FAIL);
   }
 }
 
@@ -215,7 +215,7 @@ void init_mic_b2() {
   hsai_BlockB2.SlotInit.SlotActive = 0x00000001;
 
   if (HAL_SAI_Init(&hsai_BlockB2) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_SAI_B2_INIT_FAIL);
   }
 }
 

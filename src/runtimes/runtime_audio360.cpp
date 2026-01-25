@@ -74,9 +74,6 @@ void mainAudio360() {
   vizPacket.direction = DirectionLabel::North;
   vizPacket.priority = 3U;
 
-  // Set-up peripherals. Must call before any hardware function calls.
-  setupPeripherals();
-
   while (1) {
 #ifdef BUILD_GLASSES_HOST
     MX_USB_HOST_Process();
