@@ -26,6 +26,8 @@ static char* Serial       = "00000001\0";
 
 AOA_HandleTypeDef aoa_handle;
 
+extern USBH_HandleTypeDef hUsbHostFS;
+
 static char* aoa_descriptors[6];
 
 /* Define the Class Logic */
@@ -42,7 +44,6 @@ USBH_ClassTypeDef AOA_Class = {
 
 static USBH_StatusTypeDef USBH_AOA_SOF(USBH_HandleTypeDef *phost)
 {
-  USBH_LL_IncTimer(phost->pData);
   return USBH_OK;
 }
 
@@ -77,6 +78,9 @@ static USBH_StatusTypeDef USBH_AOA_InterfaceInit(USBH_HandleTypeDef *phost) {
     USBH_OpenPipe(phost, aoa_handle.OutPipe, aoa_handle.OutEp, phost->device.address, phost->device.speed, USB_EP_TYPE_BULK, 64);
     USBH_OpenPipe(phost, aoa_handle.InPipe, aoa_handle.InEp, phost->device.address, phost->device.speed, USB_EP_TYPE_BULK, 64);
 
+    USBH_LL_SetToggle(phost, aoa_handle.InPipe, 0);
+    USBH_LL_SetToggle(phost, aoa_handle.OutPipe, 0);
+
     aoa_handle.state = AOA_STATE_CONNECTED; /* Ready to talk! */
      } else {
        /* Not in AOA mode yet. Prepare the handshake. */
@@ -90,7 +94,9 @@ static USBH_StatusTypeDef USBH_AOA_InterfaceDeInit(USBH_HandleTypeDef *phost) {
     USBH_ClosePipe(phost, aoa_handle.OutPipe);
     USBH_FreePipe(phost, aoa_handle.OutPipe);
     aoa_handle.OutPipe = 0;
+    aoa_handle.state = AOA_STATE_IDLE;
   }
+
   return USBH_OK;
 }
 
@@ -108,11 +114,13 @@ static USBH_StatusTypeDef USBH_AOA_Process(USBH_HandleTypeDef *phost) {
   switch (aoa_handle.state) {
     case AOA_STATE_SEND_AOA_PROTOCOL_REQ: {
       // We do request 51 here
-      phost->Control.setup.b.bmRequestType = USB_D2H | USB_REQ_TYPE_VENDOR | USB_REQ_RECIPIENT_DEVICE;
-      phost->Control.setup.b.bRequest = AOA_HANDSHAKE;
-      phost->Control.setup.b.wValue.w = protocol;
-      phost->Control.setup.b.wIndex.w = 0;
-      phost->Control.setup.b.wLength.w = 2;
+      if (phost->RequestState == CMD_SEND) {
+        phost->Control.setup.b.bmRequestType = USB_D2H | USB_REQ_TYPE_VENDOR | USB_REQ_RECIPIENT_DEVICE;
+        phost->Control.setup.b.bRequest = AOA_HANDSHAKE;
+        phost->Control.setup.b.wValue.w = 0;
+        phost->Control.setup.b.wIndex.w = 0;
+        phost->Control.setup.b.wLength.w = 2;
+      }
       status = USBH_CtlReq(phost, (uint8_t*) &protocol, 2);
 
       if (status == USBH_OK) {
@@ -126,37 +134,66 @@ static USBH_StatusTypeDef USBH_AOA_Process(USBH_HandleTypeDef *phost) {
       break;
     }
     case AOA_STATE_SEND_APP_DESCRIPTOR: {
-      size_t len_string = strlen(aoa_descriptors[string_index]) + 1;
-      phost->Control.setup.b.bmRequestType = USB_H2D | USB_REQ_TYPE_VENDOR | USB_REQ_RECIPIENT_DEVICE;
-      phost->Control.setup.b.bRequest = AOA_SEND_DESCRIPTOR;
-      phost->Control.setup.b.wValue.w = 0;
-      phost->Control.setup.b.wIndex.w = string_index;
-      phost->Control.setup.b.wLength.w = len_string;
+      size_t len_string = strlen(aoa_descriptors[string_index]);
+      if (phost->RequestState == CMD_SEND) {
+        phost->Control.setup.b.bmRequestType = USB_H2D | USB_REQ_TYPE_VENDOR | USB_REQ_RECIPIENT_DEVICE;
+        phost->Control.setup.b.bRequest = AOA_SEND_DESCRIPTOR;
+        phost->Control.setup.b.wValue.w = 0;
+        phost->Control.setup.b.wIndex.w = string_index;
+        phost->Control.setup.b.wLength.w = len_string;
+      }
 
       status = USBH_CtlReq(phost,(uint8_t*) aoa_descriptors[string_index], len_string);
       if (status == USBH_OK) {
         string_index++;
         if (string_index >= 6) {
-          aoa_handle.state = AOA_SEND_REBOOT_REQ;
+          aoa_handle.timer = HAL_GetTick();
+          aoa_handle.state = AOA_STATE_WAIT_REBOOT_REQ;
         }
       }
+      break;
+    }
+    case AOA_STATE_WAIT_REBOOT_REQ: {
+      if ((HAL_GetTick() - aoa_handle.timer) > 100) { // Wait 100ms
+        aoa_handle.state = AOA_SEND_REBOOT_REQ;
+      }
+      status = USBH_OK; // Keep returning OK so the loop runs
       break;
     }
     case AOA_SEND_REBOOT_REQ: {
 
       /* Start Accessory Mode (Request 53) */
-      phost->Control.setup.b.bmRequestType = USB_H2D | USB_REQ_TYPE_VENDOR | USB_REQ_RECIPIENT_DEVICE;
-      phost->Control.setup.b.bRequest = AOA_REBOOT;
-      phost->Control.setup.b.wValue.w = 0;
-      phost->Control.setup.b.wIndex.w = 0;
-      phost->Control.setup.b.wLength.w = 0;
+      if (phost->RequestState == CMD_SEND) {
+        phost->Control.setup.b.bmRequestType = USB_H2D | USB_REQ_TYPE_VENDOR | USB_REQ_RECIPIENT_DEVICE;
+        phost->Control.setup.b.bRequest = AOA_REBOOT;
+        phost->Control.setup.b.wValue.w = 0;
+        phost->Control.setup.b.wIndex.w = 0;
+        phost->Control.setup.b.wLength.w = 0;
+      }
 
       status = USBH_CtlReq(phost, NULL, 0);
 
       if (status == USBH_OK) {
         /* Device will now Re-Enumerate. We sit here and wait for Disconnect event. */
+        aoa_handle.timer = HAL_GetTick();
         aoa_handle.state = AOA_STATE_WAIT_FOR_NEXT_ENUM;
       }
+      break;
+    }
+
+    case AOA_STATE_WAIT_FOR_NEXT_ENUM: {
+      // Phone should be resetting now.
+      if ((HAL_GetTick() - aoa_handle.timer) > 500) {
+        USBH_UsrLog("AOA Watchdog: Missed Disconnect Event. Forcing Reset.");
+
+        /* FORCE the Host Core to realize the device is gone/changed */
+        /* This forces a re-enumeration of whatever is currently on the bus */
+        USBH_ReEnumerate(phost);
+
+        /* Reset our state to prevent loops */
+        aoa_handle.state = AOA_STATE_IDLE;
+      }
+      status = USBH_OK;
       break;
     }
 
@@ -170,6 +207,16 @@ static USBH_StatusTypeDef USBH_AOA_Process(USBH_HandleTypeDef *phost) {
   return status;
 }
 
-USBH_StatusTypeDef USBH_AOA_Transmit(USBH_HandleTypeDef *phost, uint8_t *pbuff, uint16_t length) {
-  return USBH_BulkSendData(phost, pbuff, length, aoa_handle.OutPipe, 1);
+USBH_StatusTypeDef USBH_AOA_Transmit(uint8_t *pbuff, uint16_t length) {
+  if (aoa_handle.state != AOA_STATE_CONNECTED) {
+    return USBH_FAIL;
+  }
+
+  USBH_URBStateTypeDef URB_Status = USBH_LL_GetURBState(&hUsbHostFS, aoa_handle.OutPipe);
+
+  if (URB_Status != USBH_URB_DONE && URB_Status != USBH_URB_IDLE) {
+    return USBH_BUSY;
+  }
+
+  return USBH_BulkSendData(&hUsbHostFS, pbuff, length, aoa_handle.OutPipe, 0);
 }
