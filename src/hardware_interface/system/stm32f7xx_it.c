@@ -22,6 +22,7 @@
 
 #include "embedded_mic.h"
 #include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_hcd.h"
 
 /******************************************************************************/
 /*           Cortex-M7 Processor Interruption and Exception Handlers          */

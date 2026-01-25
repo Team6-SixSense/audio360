@@ -10,7 +10,6 @@
 #include <cstdint>
 
 #include "constants.h"
-#include "logging.hpp"
 #include "packet.h"
 #include "peripheral.h"
 #include "usb_host.h"
