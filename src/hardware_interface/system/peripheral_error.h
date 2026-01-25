@@ -28,6 +28,7 @@ typedef enum PeripheralError {
   USB_DEVICE_INIT_FAIL,            // Failed to initialized USB device.
   USB_DEVICE_START_FAIL,           // Failed to start USB device.
   INVALID_USB_SPEED,               // Invalid USB speed.
+  DMA_INIT,                        // Failed to initialize DMA.
 } PeripheralError;
 
 static const char* peripheralErrorStrings[] = {"HAL_RCC_OSCILLATOR_INIT_FAIL",
