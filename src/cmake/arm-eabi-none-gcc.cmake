@@ -178,6 +178,8 @@ else ()
 
         ${CMAKE_CURRENT_LIST_DIR}/../lib/STM32CubeF7/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_hcd.c
 
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/AUDIO/Src/usbh_audio.c
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/AOA/Src/usbh_aoa.c
 
     )
 endif ()
@@ -226,6 +228,9 @@ else()
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Core/Inc
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/HID/Inc
         ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/MSC/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/AUDIO/Inc
+        ${CMAKE_CURRENT_LIST_DIR}/../hardware_interface/usb/STM32_USB_Host_Library/Class/AOA/Inc
+
 
     )
 endif ()

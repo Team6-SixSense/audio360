@@ -219,6 +219,21 @@ USBH_StatusTypeDef USBH_LL_Init(USBH_HandleTypeDef *phost)
   {
     Error_Handler( );
   }
+    /* === MANUAL FIFO RESIZING (The "Nuclear" Fix) === */
+    /* Target: RX=128, TX0=64, TX1=64 (Total 256 Words used out of 320) */
+
+    /* 1. Set RX FIFO Size (128 Words = 512 Bytes) */
+    hhcd_USB_OTG_FS.Instance->GRXFSIZ = 128;
+
+    /* 2. Set Non-Periodic TX FIFO (Control & Bulk) */
+    /* Format: Depth | (Start Address << 16) */
+    /* Start Address = Previous End = 128 */
+    hhcd_USB_OTG_FS.Instance->DIEPTXF0_HNPTXFSIZ = 64 | (128 << 16);
+
+    /* 3. Set Periodic TX FIFO (Interrupt & Iso) */
+    /* Format: Depth | (Start Address << 16) */
+    /* Start Address = Previous End = 128 + 64 = 192 */
+    hhcd_USB_OTG_FS.Instance->HPTXFSIZ  = 64 | (192 << 16);
 
   USBH_LL_SetTimer(phost, HAL_HCD_GetCurrentFrame(&hhcd_USB_OTG_FS));
   }
