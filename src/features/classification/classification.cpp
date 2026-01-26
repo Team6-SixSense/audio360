@@ -45,35 +45,25 @@ Classification::Classification(uint16_t n_fft, uint16_t numMelFilters,
       lda(numPCAComponents, numClasses),
       currClassification(ClassificationLabel::Unknown) {}
 
+std::string Classification::getClassificationLabel(){
+  return ClassificationClassToString(this->currClassification);
+}
+
 void Classification::Classify(std::vector<float> rawAudio) {
-  // Currently there is fixed logic that there will be 4 frames of fft of size
-  // n_fft to run classification on. However, this is subject to change based on
-  // hyperparameter tuning that will happen later on.
-  if (rawAudio.size() < static_cast<size_t>(4 * this->n_fft)) {
-    return;
+  if (rawAudio.size() < static_cast<size_t>(this->n_fft)) {
+    rawAudio.resize(this->n_fft, 0.0f);
   }
 
+  const size_t numFrames = rawAudio.size() / this->n_fft;
   std::vector<FrequencyDomain> fftData;
-  std::vector<float> frame1(rawAudio.begin(), rawAudio.begin() + this->n_fft);
-  std::vector<float> frame2(rawAudio.begin() + this->n_fft,
-                            rawAudio.begin() + 2 * this->n_fft);
-  std::vector<float> frame3(rawAudio.begin() + 2 * this->n_fft,
-                            rawAudio.begin() + 3 * this->n_fft);
-  std::vector<float> frame4(rawAudio.begin() + 3 * this->n_fft,
-                            rawAudio.begin() + 4 * this->n_fft);
-
-  FrequencyDomain fd1 =
-      this->fft.signalToFrequency(frame1, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd2 =
-      this->fft.signalToFrequency(frame2, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd3 =
-      this->fft.signalToFrequency(frame3, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd4 =
-      this->fft.signalToFrequency(frame4, WindowFunction::HANN_WINDOW);
-  fftData.push_back(fd1);
-  fftData.push_back(fd2);
-  fftData.push_back(fd3);
-  fftData.push_back(fd4);
+  fftData.reserve(numFrames);
+  for (size_t frame = 0; frame < numFrames; ++frame) {
+    const size_t frameStart = frame * this->n_fft;
+    std::vector<float> frameData(rawAudio.begin() + frameStart,
+                                 rawAudio.begin() + frameStart + this->n_fft);
+    fftData.push_back(
+        this->fft.signalToFrequency(frameData, WindowFunction::HANN_WINDOW));
+  }
 
   matrix stftSpec;
   std::vector<float> stftDataVector;

@@ -39,6 +39,8 @@ class Classification {
    */
   void Classify(std::vector<float> rawAudio);
 
+  std::string getClassificationLabel();
+
  private:
   /** @brief FFT size used for frequency-domain processing. */
   uint16_t n_fft;

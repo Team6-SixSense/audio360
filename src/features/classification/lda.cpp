@@ -134,7 +134,7 @@ std::string LinearDiscriminantAnalysis::apply(
     }
   }
 
-  printf("LDA Final Prediction: %s\n",
-         this->classTypes[finalPredictedClassIndex].c_str());
+  // printf("LDA Final Prediction: %s\n",
+  //        this->classTypes[finalPredictedClassIndex].c_str());
   return this->classTypes[finalPredictedClassIndex];
 }

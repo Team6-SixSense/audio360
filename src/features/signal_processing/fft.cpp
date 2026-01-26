@@ -28,7 +28,7 @@ FFT::FFT(uint16_t inputSize, int sampleFrequency)
 FFT::FFT(const FFT& other)
     : inputSize(other.inputSize),
       sampleFrequency(other.sampleFrequency),
-      outputSize(other.sampleFrequency) {
+      outputSize(other.outputSize) {
   this->in = new float32_t[this->inputSize];
   this->out = new float32_t[this->outputSize];
   std::copy(other.in, other.in + this->inputSize, this->in);
@@ -54,6 +54,7 @@ FFT& FFT::operator=(const FFT& other) {
   }
 
   this->sampleFrequency = other.sampleFrequency;
+  this->outputSize = other.outputSize;
 
   std::copy(other.in, other.in + this->inputSize, this->in);
   std::copy(other.out, other.out + this->outputSize, this->out);

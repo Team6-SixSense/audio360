@@ -72,6 +72,6 @@ void DiscreteCosineTransform::apply(
                   mfccSpectrogramVector.data());
 
   matrix_mult_f32(&logMel, &this->dctMatrixData.mat, &mfccSpectrogram);
-  printf("DCT Applied: mfccSpectrogram shape: %u x %u\n",
-         mfccSpectrogram.numRows, mfccSpectrogram.numCols);
+  // printf("DCT Applied: mfccSpectrogram shape: %u x %u\n",
+  //        mfccSpectrogram.numRows, mfccSpectrogram.numCols);
 }

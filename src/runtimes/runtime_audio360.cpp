@@ -9,6 +9,7 @@
 
 #include <cstdint>
 
+#include "classification.h"
 #include "doa.h"
 #include "embedded_mic.h"
 #include "logging.hpp"
@@ -32,9 +33,12 @@ static uint8_t micMainHalf{0}, micMainFull{0}, micDummyHalf{0}, micDummyFull{0};
 
 // Audio360 features.
 static DOA doa{DOA_SAMPLES};
+Classification* classifier = nullptr;
 
 void mainAudio360() {
   INFO("Running Audio360.");
+
+  classifier = new Classification(MIC_BUFFER_SIZE, NUM_MEL_FILTERS, NUM_DCT_COEFF, NUM_PCA_COMPONENTS, NUM_CLASSES);
 
   INFO("Initializing microphones.");
   micA1 = embedded_mic_get(MIC_A1);
@@ -49,22 +53,25 @@ void mainAudio360() {
   embedded_mic_start(micB2);
 
   while (1) {
-    INFO("Audio360 loop start.");
+    // INFO("Audio360 loop start.");
 
     // Extract microphone data if ready.
-    INFO("Microphone data extraction.");
+    // INFO("Microphone data extraction.");
     bool newData = extractMicData();
 
-    INFO("Running DoA estimation.");
-    float angle_rad = runDoA(newData);
-    INFO("DoA angle: %f rad.", angle_rad);
+    // // INFO("Running DoA estimation.");
+    // float angle_rad = runDoA(newData);
+    // INFO("DoA angle: %f rad.", angle_rad);
+
+    std::string prediction = runClassification(newData);
+    INFO("Classification: %s", prediction.c_str());
 
     // Reset half and full bool flags.
     if (micMainFull == 1U) {
       micMainHalf = 0U;
       micMainFull = 0U;
     }
-    INFO("Audio360 loop end.");
+    // INFO("Audio360 loop end.");
   }
 }
 
@@ -156,4 +163,29 @@ float runDoA(bool newData) {
                                        DOA_Algorithms::GCC_PHAT);
 
   return angle;
+}
+
+std::string runClassification(bool newData) {
+  if (!newData) {
+    INFO("There is no new data. Skipping...");
+    return "unknown";
+  }
+
+  // Extract the most recent microphone data.
+  size_t start = micBufferStartPos;
+  size_t end = micBufferStartPos + MIC_HALF_BUFFER_SIZE;
+  if (micMainFull == 1U) {
+    start += MIC_HALF_BUFFER_SIZE;
+    end += MIC_HALF_BUFFER_SIZE;
+  }
+
+  std::vector<float> mic1Data(MIC_HALF_BUFFER_SIZE);
+
+  for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; i++) {
+    mic1Data[i] = static_cast<float>(micA2Buffer[start + i]);
+  }
+
+  classifier->Classify(mic1Data);
+
+  return classifier->getClassificationLabel();
 }
