@@ -62,6 +62,4 @@ void PrincipleComponentAnalysis::apply(
                   pcaFeatureVector.data());
 
   matrix_mult_f32(&centeredMatrix, &projectionT, &pcaFeature);
-  // printf("PCA Apply: numFrames=%u, numEigenvectors=%u\n", numFrames,
-  //        this->numEigenvectors);
 }

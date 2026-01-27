@@ -110,16 +110,6 @@ std::string LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVector) co
     }
   }
 
-  printf("LDA Scores:\n");
-  for (uint16_t frame = 0; frame < numFrames; ++frame) {
-    const size_t rowStart = static_cast<size_t>(frame) * this->numClasses;
-    printf(" Frame %u: ", frame);
-    for (uint16_t c = 0; c < this->numClasses; ++c) {
-      printf("%f ", scores.pData[rowStart + c]);
-    }
-    printf("\n");
-  };
-
   // 3) Per-frame argmax + majority vote (same as before)
   std::vector<int> classCounts(this->numClasses, 0);
   for (uint16_t frame = 0; frame < numFrames; ++frame) {

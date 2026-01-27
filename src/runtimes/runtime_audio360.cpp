@@ -53,15 +53,15 @@ void mainAudio360() {
   embedded_mic_start(micB2);
 
   while (1) {
-    // INFO("Audio360 loop start.");
+    INFO("Audio360 loop start.");
 
     // Extract microphone data if ready.
-    // INFO("Microphone data extraction.");
+    INFO("Microphone data extraction.");
     bool newData = extractMicData();
 
-    // // INFO("Running DoA estimation.");
-    // float angle_rad = runDoA(newData);
-    // INFO("DoA angle: %f rad.", angle_rad);
+    INFO("Running DoA estimation.");
+    float angle_rad = runDoA(newData);
+    INFO("DoA angle: %f rad.", angle_rad);
 
     std::string prediction = runClassification(newData);
     INFO("Classification: %s", prediction.c_str());
@@ -71,7 +71,7 @@ void mainAudio360() {
       micMainHalf = 0U;
       micMainFull = 0U;
     }
-    // INFO("Audio360 loop end.");
+    INFO("Audio360 loop end.");
   }
 }
 
@@ -197,7 +197,6 @@ std::string runClassification(bool newData) {
   uint32_t h = fnv1a_hash32(raw, MIC_HALF_BUFFER_SIZE);
   if (h == lastHash) {
     check_same = true;
-    // INFO("Mic buffer identical to previous frame. Skipping.");
     return classifier->getClassificationLabel();
   }
   if (!check_same) {

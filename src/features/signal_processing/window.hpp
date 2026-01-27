@@ -35,11 +35,12 @@ template <typename T>
 class HannWindow : public Window<T> {
  public:
   void applyWindow(std::vector<T>& signal) override {
-    // Periodic Hann window to match librosa's default (fftbins=True).
-    const T N = static_cast<T>(signal.size());
-    for (T n = 0; n < N; ++n) {
-      const T w = static_cast<T>(0.5 - 0.5 * std::cos(TWO_PI_32 * n / N));
-      signal[static_cast<size_t>(n)] *= w;
+    T N = static_cast<T>(signal.size());
+    int n = 0;
+    for (T& signalValue : signal) {
+      T w = static_cast<T>(std::pow(std::sin(PI_32 * n / (N - 1)), 2.0));
+      signalValue *= w;
+      n++;
     }
   }
 };
