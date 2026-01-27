@@ -38,7 +38,7 @@ Classification* classifier = nullptr;
 void mainAudio360() {
   INFO("Running Audio360.");
 
-  classifier = new Classification(MIC_BUFFER_SIZE, NUM_MEL_FILTERS, NUM_DCT_COEFF, NUM_PCA_COMPONENTS, NUM_CLASSES);
+  classifier = new Classification(MIC_BUFFER_SIZE/2, NUM_MEL_FILTERS, NUM_DCT_COEFF, NUM_PCA_COMPONENTS, NUM_CLASSES);
 
   INFO("Initializing microphones.");
   micA1 = embedded_mic_get(MIC_A1);
@@ -165,24 +165,50 @@ float runDoA(bool newData) {
   return angle;
 }
 
+static uint32_t fnv1a_hash32(const int32_t* data, size_t n) {
+  uint32_t h = 2166136261u;
+  const uint8_t* bytes = reinterpret_cast<const uint8_t*>(data);
+  size_t len = n * sizeof(int32_t);
+  for (size_t i = 0; i < len; ++i) {
+    h ^= bytes[i];
+    h *= 16777619u;
+  }
+  return h;
+}
+
+static bool check_same = false;
+
 std::string runClassification(bool newData) {
   if (!newData) {
-    INFO("There is no new data. Skipping...");
-    return "unknown";
+    // INFO("There is no new data. Skipping...");
+    return classifier->getClassificationLabel();
   }
 
   // Extract the most recent microphone data.
   size_t start = micBufferStartPos;
-  size_t end = micBufferStartPos + MIC_HALF_BUFFER_SIZE;
   if (micMainFull == 1U) {
     start += MIC_HALF_BUFFER_SIZE;
-    end += MIC_HALF_BUFFER_SIZE;
   }
+
+  const int32_t* raw = &micA1Buffer[start];
+
+  // --- SAME-BUFFER CHECK ---
+  static uint32_t lastHash = 0;
+  uint32_t h = fnv1a_hash32(raw, MIC_HALF_BUFFER_SIZE);
+  if (h == lastHash) {
+    check_same = true;
+    // INFO("Mic buffer identical to previous frame. Skipping.");
+    return classifier->getClassificationLabel();
+  }
+  if (!check_same) {
+    lastHash = h;
+  }
+  // -----------------------
 
   std::vector<float> mic1Data(MIC_HALF_BUFFER_SIZE);
 
   for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; i++) {
-    mic1Data[i] = static_cast<float>(micA2Buffer[start + i]);
+    mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
   }
 
   classifier->Classify(mic1Data);

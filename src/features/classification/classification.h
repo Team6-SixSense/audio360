@@ -37,7 +37,7 @@ class Classification {
    * @param fftData Input vector of FFT frames, of size frames x
    * (fftSize/2 + 1) [nyquist].
    */
-  void Classify(std::vector<float> rawAudio);
+  void Classify(std::vector<float>& rawAudio);
 
   std::string getClassificationLabel();
 
@@ -74,6 +74,21 @@ class Classification {
 
   /** @brief Last inferred classification result. */
   ClassificationLabel currClassification;
+
+  std::vector<FrequencyDomain> fftData;
+
+  matrix stftSpec;
+
+  std::vector<float> stftDataVector;
+
+  matrix melSpec;
+  std::vector<float> melSpectrogramVector;
+
+  matrix mfccSpec;
+  std::vector<float> mfccSpectrogramVector;
+
+  matrix pcaSpec;
+  std::vector<float> pcaFeatureVector;
 
   /**
    * @brief Builds the STFT matrix representation from FFT frames.

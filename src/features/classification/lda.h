@@ -19,6 +19,10 @@ struct ldaProjectionData {
   /** @brief Per-class bias terms for LDA. */
   std::vector<float> classBiases;
 
+  matrix scalings;
+
+
+
   ldaProjectionData(uint16_t components)
       : numComponents(components), classWeights(), classBiases() {}
 };
