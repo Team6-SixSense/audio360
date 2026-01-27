@@ -18,15 +18,16 @@
 #ifdef STM_BUILD
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f7xx_hal.h"
 #include "stm32f7xx_it.h"
-#include "embedded_mic.h"
 
+#include "embedded_mic.h"
+#include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_hcd.h"
 
 /******************************************************************************/
 /*           Cortex-M7 Processor Interruption and Exception Handlers          */
 /******************************************************************************/
-extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+extern HCD_HandleTypeDef hhcd_USB_OTG_FS;
 
 /**
  * @brief This function handles Non maskable interrupt.
@@ -102,7 +103,7 @@ void OTG_FS_IRQHandler(void) {
   /* USER CODE BEGIN OTG_FS_IRQn 0 */
 
   /* USER CODE END OTG_FS_IRQn 0 */
-  HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
+  HAL_HCD_IRQHandler(&hhcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
 
   /* USER CODE END OTG_FS_IRQn 1 */

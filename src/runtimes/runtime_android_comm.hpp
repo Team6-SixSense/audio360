@@ -10,10 +10,10 @@
 #include <cstdint>
 
 #include "constants.h"
-#include "logging.hpp"
 #include "packet.h"
 #include "peripheral.h"
-#include "usbd_cdc_if.h"
+#include "usb_host.h"
+#include "usbh_aoa.h"
 
 void mainAndroidComm() {
   VisualizationPacket vizPacket{};
@@ -24,8 +24,13 @@ void mainAndroidComm() {
   // Send packet over USB CDC.
   float angle_rad = 0.0;
   while (1) {
+
+
+    MX_USB_HOST_Process();
+
     std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
-    CDC_Transmit_FS(packet.data(), PACKET_BYTE_SIZE);
+
+    USBH_AOA_Transmit(packet.data(), packet.size());
 
     // Update direction.
     angle_rad += PI_32 / 16.0;

@@ -11,8 +11,13 @@ class UsbSerialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: UsbPage(),
+    return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.black,
+        useMaterial3: false
+      ),
+      home: const UsbPage(),
     );
   }
 }
@@ -28,6 +33,8 @@ class _UsbPageState extends State<UsbPage> {
   late UsbService usbService;
   Packet? _packet;
   String _status = "Disconnected";
+
+
 
   @override
   void initState() {

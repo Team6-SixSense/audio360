@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+  import 'package:flutter/services.dart';
 import 'package:usb_serial/usb_serial.dart';
 import '../models/packet.dart';
 import './deserializer.dart';
@@ -14,32 +14,18 @@ class UsbService {
   final PacketCallback onPacket;
   final StatusCallback onStatus;
 
+  static const EventChannel _channel = EventChannel('com.audio360.aoa/stream');
+
   UsbService({required this.onPacket, required this.onStatus});
 
   Future<void> connect() async {
-    final devices = await UsbSerial.listDevices();
 
-    if (devices.isEmpty) {
-      onStatus("No USB devices found");
-      return;
-    }
+    _channel.receiveBroadcastStream().listen((dynamic event) {
+      final Uint8List data = event;
 
-    _port = await devices.first.create();
-
-    if (!await _port!.open()) {
-      onStatus("Failed to open USB");
-      return;
-    }
-
-    await _port!.setPortParameters(
-      115200,
-      UsbPort.DATABITS_8,
-      UsbPort.STOPBITS_1,
-      UsbPort.PARITY_NONE,
-    );
-
-    _port!.inputStream!.listen(_onDataReceived);
-    onStatus("Connected");
+      _onDataReceived(data);
+      onStatus("Connected");
+    });
   }
 
 void _onDataReceived(Uint8List data) {

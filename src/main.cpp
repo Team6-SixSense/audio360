@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #ifdef STM_BUILD
-#define RUNTIME_AUDIO360
+#define RUNTIME_ANDROID_COMM
 #else
 #define RUNTIME_FFT
 #endif
@@ -29,10 +29,17 @@
 #include "runtimes/runtime_fft.hpp"
 #endif
 
+#ifdef BUILD_GLASSES_HOST
+#define USBH_USE_OS 0
+#include "usb_host.h"
+#endif
+
 int main() {
 #ifdef STM_BUILD
   // Set-up peripherals. Must call before any hardware function calls.
   setupPeripherals();
+
+
 #endif
 
 #ifdef RUNTIME_AUDIO360
