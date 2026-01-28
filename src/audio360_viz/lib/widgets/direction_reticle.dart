@@ -89,8 +89,8 @@ class _ReticlePainter extends CustomPainter {
     final vignettePaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          Colors.black.withOpacity(0.55),
-          Colors.black.withOpacity(0.0),
+          Colors.black.withValues(alpha:0.55),
+          Colors.black.withValues(alpha:0.0),
         ],
       ).createShader(Rect.fromCircle(center: center, radius: radius * 1.35));
     canvas.drawRect(Offset.zero & size, vignettePaint);
@@ -100,7 +100,7 @@ class _ReticlePainter extends CustomPainter {
     _drawCardinalTicks(canvas, center, radius);
 
     // Darker center matte so the arrow doesn’t get lost
-    final matte = Paint()..color = Colors.black.withOpacity(0.55);
+    final matte = Paint()..color = Colors.black.withValues(alpha:0.55);
     canvas.drawOval(
       Rect.fromCenter(
         center: center,
@@ -112,7 +112,7 @@ class _ReticlePainter extends CustomPainter {
 
     // Main outer ellipse, slightly brighter
     final outline = Paint()
-      ..color = _gBright.withOpacity(0.9)
+      ..color = _gBright.withValues(alpha:0.9)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5;
     canvas.drawOval(ellipseRect, outline);
@@ -120,7 +120,7 @@ class _ReticlePainter extends CustomPainter {
     if (hasDirection) {
       _drawArrow(canvas, center, radius);
     } else {
-      final dot = Paint()..color = _gDim.withOpacity(0.6);
+      final dot = Paint()..color = _gDim.withValues(alpha:0.6);
       canvas.drawCircle(center, 3, dot);
     }
   }
@@ -136,7 +136,7 @@ class _ReticlePainter extends CustomPainter {
 
       final opacity = 0.20 + (0.10 * (4 - i));
       final p = Paint()
-        ..color = _gDim.withOpacity(opacity)
+        ..color = _gDim.withValues(alpha:opacity)
         ..style = PaintingStyle.stroke
         ..strokeWidth = i == 1 ? 1.5 : 1.0;
       canvas.drawOval(rect, p);
@@ -145,11 +145,11 @@ class _ReticlePainter extends CustomPainter {
 
   void _drawCrosshairs(Canvas canvas, Offset center, double radius) {
     final v = Paint()
-      ..color = _gBright.withOpacity(0.85)
+      ..color = _gBright.withValues(alpha:0.85)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
     final h = Paint()
-      ..color = _gBright.withOpacity(0.75)
+      ..color = _gBright.withValues(alpha:0.75)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.6;
 
@@ -172,7 +172,7 @@ class _ReticlePainter extends CustomPainter {
   void _drawCardinalTicks(Canvas canvas, Offset center, double radius) {
     const angles = <double>[0, 90, 180, 270];
     final tickPaint = Paint()
-      ..color = _gBright.withOpacity(0.9)
+      ..color = _gBright.withValues(alpha:0.9)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
@@ -207,14 +207,14 @@ class _ReticlePainter extends CustomPainter {
 
     // Arrow shaft (thicker + slight glow)
     final shaft = Paint()
-      ..color = _gBright.withOpacity(0.95)
+      ..color = _gBright.withValues(alpha:0.95)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(center, tip, shaft);
 
     final glow = Paint()
-      ..color = _gBright.withOpacity(0.25)
+      ..color = _gBright.withValues(alpha:0.25)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 10
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
@@ -243,7 +243,7 @@ class _ReticlePainter extends CustomPainter {
 
     // Tip marker (bright + glow)
     final tipGlow = Paint()
-      ..color = _gBright.withOpacity(0.35)
+      ..color = _gBright.withValues(alpha:0.35)
       ..style = PaintingStyle.fill
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
     canvas.drawCircle(tip, 14, tipGlow);

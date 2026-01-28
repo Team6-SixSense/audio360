@@ -71,7 +71,7 @@ class VisualizationScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: greenColor.withOpacity(0.2),
+        color: greenColor.withValues(alpha:0.2),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: greenColor,
@@ -108,17 +108,17 @@ class VisualizationScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.65),
+        color: Colors.black.withValues(alpha:0.65),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: const Color(0xFF00AA00).withOpacity(0.8),
+          color: const Color(0xFF00AA00).withValues(alpha:0.8),
           width: 1.5,
         ),
       ),
       child: Text(
         'WAITING',
         style: TextStyle(
-          color: const Color(0xFF00AA00).withOpacity(0.9),
+          color: const Color(0xFF00AA00).withValues(alpha:0.9),
           fontSize: 14,
           fontWeight: FontWeight.bold,
           letterSpacing: 2,

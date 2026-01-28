@@ -65,7 +65,7 @@ class ClassificationDisplay extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.65),
+        color: Colors.black.withValues(alpha:0.65),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: color,
@@ -74,7 +74,7 @@ class ClassificationDisplay extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             // Keep bloom controlled for optical displays
-            color: color.withOpacity(0.22),
+            color: color.withValues(alpha:0.22),
             blurRadius: 10,
             spreadRadius: 1,
           ),
@@ -114,7 +114,7 @@ class ClassificationDisplay extends StatelessWidget {
                 Text(
                   'Priority: $priority',
                   style: TextStyle(
-                    color: color.withOpacity(0.8), // Use classification color
+                    color: color.withValues(alpha:0.8), // Use classification color
                     fontSize: 11,
                     shadows: [
                       Shadow(
