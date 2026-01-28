@@ -60,9 +60,9 @@ static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
                                matrix& pcaSpec,
                                std::vector<float>& pcaFeatureVector) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
-  const uint16_t numFilters = 40;
-  const uint16_t numCepstral = 13;
-  const uint16_t numPCAComponents = 13;
+  const uint16_t numFilters = 6;
+  const uint16_t numCepstral = 6;
+  const uint16_t numPCAComponents = 6;
 
   if (offset0 < 0 || static_cast<size_t>(offset0) >= data.channel1.size()) {
     return;
@@ -111,7 +111,7 @@ TEST(LDA, ApplyLDA) {
   // Load MP3 data from file.
   MP3Data data = readMP3File("audio/jackhammer.mp3");
   const int offset0 = 0;
-  const uint16_t numPCAComponents = 13;
+  const uint16_t numPCAComponents = 6;
   const uint16_t numClasses = 3;
 
   // Apply LDA to the PCA feature vector.
@@ -124,5 +124,5 @@ TEST(LDA, ApplyLDA) {
   MakePCASpecFromMP3(data, SAMPLE_FREQUENCY, offset0, pcaFeature,
                      pcaFeatureVector);
 
-  std::string predictedClass = lda.apply(pcaFeature);
+  ClassificationLabel predictedClass = lda.apply(pcaFeature);
 }

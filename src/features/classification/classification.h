@@ -39,6 +39,11 @@ class Classification {
    */
   void Classify(std::vector<float>& rawAudio);
 
+
+   /**
+   * @brief Returns the classification label state value from the classification
+   * module
+   */
   std::string getClassificationLabel();
 
  private:
@@ -75,19 +80,31 @@ class Classification {
   /** @brief Last inferred classification result. */
   ClassificationLabel currClassification;
 
+  /** @brief buffer for storing the computed fft for each frame */
   std::vector<FrequencyDomain> fftData;
 
+  /** @brief Matrix representation of the fftData vector */
   matrix stftSpec;
 
+  /** @brief Helper of stftSpec, contains the actual data for the matrix */
   std::vector<float> stftDataVector;
 
+  /** @brief Matrix that will store the computed mel spectrogram */
   matrix melSpec;
+
+  /** @brief Helper of melSpec, contains the actual data for the matrix */
   std::vector<float> melSpectrogramVector;
 
+  /** @brief Matrix that will store the computed mfcc coefficients for each frame */
   matrix mfccSpec;
+
+  /** @brief Helper of mfccSpec, contains the actual data for the matrix */
   std::vector<float> mfccSpectrogramVector;
 
+  /** @brief Matrix that will store the data projected onto pca space */
   matrix pcaSpec;
+
+  /** @brief Helper of pcaSpec, contains the actual data for the matrix */
   std::vector<float> pcaFeatureVector;
 
   /**

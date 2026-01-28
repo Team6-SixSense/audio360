@@ -50,7 +50,7 @@ std::string Classification::getClassificationLabel(){
 }
 
 void Classification::Classify(std::vector<float>& rawAudio) {
-  if (this->fftData.size() < 4) {
+  if (this->fftData.size() < CLASSIFICATION_BUFFER_SIZE) {
     fftData.push_back(this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW));
     return;
   } else {
@@ -66,5 +66,5 @@ void Classification::Classify(std::vector<float>& rawAudio) {
 
   this->pca.apply(mfccSpec, pcaSpec, pcaFeatureVector);
 
-  this->currClassification = StringToClassification(this->lda.apply(pcaSpec));
+  this->currClassification = this->lda.apply(pcaSpec);
 }

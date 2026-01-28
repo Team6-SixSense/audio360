@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include "classificationLabel.h"
 #include "matrix.h"
 
 inline std::vector<float> PCA_MEAN_VECTOR = {
@@ -45,5 +46,5 @@ inline std::vector<float> LDA_SCALINGS_DATA = {
 // 6 rows (PCA dims), 2 cols (C-1)
 inline matrix LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
 
-inline std::vector<std::string> CLASSIFICATION_CLASSES = {
-    "jackhammer", "car_horn", "siren"};
+inline std::vector<ClassificationLabel> CLASSIFICATION_CLASSES = {
+    ClassificationLabel::Jackhammer, ClassificationLabel::CarHorn, ClassificationLabel::Siren};

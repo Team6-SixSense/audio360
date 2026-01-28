@@ -51,7 +51,10 @@ class MelFilter {
   /** @brief Sample rate of the input signal (Hz). */
   uint16_t sampleFrequency;
 
+  /** @brief Stores computed mel filter bank that'll be applied to stft */
   matrix filterBankT;
+
+  /** @brief Helper of filterBankT, contains the actual data for the matrix */
   std::vector<float> filterBankTData;
 
   /** @brief Create the Mel filter bank. */

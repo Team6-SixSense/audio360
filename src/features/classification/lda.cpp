@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 
+#include "classificationLabel.h"
 #include "classification_constants.h"
 
 void LinearDiscriminantAnalysis::initializeLDAData() {
@@ -27,11 +28,11 @@ LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
   this->initializeLDAData();
 }
 
-std::string LinearDiscriminantAnalysis::predictFrameClass(
+ClassificationLabel LinearDiscriminantAnalysis::predictFrameClass(
     const matrix& pcaFeatureVector, uint16_t frameIndex) const {
   if (pcaFeatureVector.numCols != this->numEigenvectors ||
       frameIndex >= pcaFeatureVector.numRows) {
-    return {};
+    return ClassificationLabel::Unknown;
   }
 
   const size_t frameStart =
@@ -62,10 +63,10 @@ std::string LinearDiscriminantAnalysis::predictFrameClass(
   return this->classTypes[predictedClassIndex];
 }
 
-std::string LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVector) const {
+ClassificationLabel LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVector) const {
   const uint16_t numFrames = pcaFeatureVector.numRows;
   if (numFrames == 0 || pcaFeatureVector.numCols != this->numEigenvectors) {
-    return {};
+    return ClassificationLabel::Unknown;
   }
 
   const uint16_t ldaDims = static_cast<uint16_t>(this->numClasses - 1U);
@@ -78,11 +79,11 @@ std::string LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVector) co
   // ldaProjection.scalings must be (numEigenvectors x ldaDims)
   if (this->ldaProjection.scalings.numRows != this->numEigenvectors ||
       this->ldaProjection.scalings.numCols != ldaDims) {
-    return {};
+    return ClassificationLabel::Unknown;
   }
 
   if (matrix_mult_f32(&pcaFeatureVector, &this->ldaProjection.scalings, &z) != ARM_MATH_SUCCESS) {
-    return {};
+    return ClassificationLabel::Unknown;
   }
 
   // 2) Scores in LDA space: scores = Z * W^T + b
@@ -92,7 +93,7 @@ std::string LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVector) co
   matrix_init_f32(&wT, ldaDims, this->numClasses, wTData.data());
 
   if (matrix_transpose_f32(&this->ldaProjection.classWeights, &wT) != ARM_MATH_SUCCESS) {
-    return {};
+    return ClassificationLabel::Unknown;
   }
 
   std::vector<float> scoresData(static_cast<size_t>(numFrames) * this->numClasses, 0.0f);
@@ -100,7 +101,7 @@ std::string LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVector) co
   matrix_init_f32(&scores, numFrames, this->numClasses, scoresData.data());
 
   if (matrix_mult_f32(&z, &wT, &scores) != ARM_MATH_SUCCESS) {
-    return {};
+    return ClassificationLabel::Unknown;
   }
 
   for (uint16_t frame = 0; frame < numFrames; ++frame) {

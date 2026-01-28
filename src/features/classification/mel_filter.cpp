@@ -35,14 +35,14 @@ void MelFilter::CreateFilterBank() {
   const float fmin = 0.0f;
   const float fmax = static_cast<float>(this->sampleFrequency) * 0.5f;
 
-  const float mel_min = hz_to_mel_f(fmin);
-  const float mel_max = hz_to_mel_f(fmax);
+  const float melMin = hz_to_mel_f(fmin);
+  const float melMax = hz_to_mel_f(fmax);
 
   // We only need bins[i], bins[i+1], bins[i+2] for each filter.
   // Compute all bins in a compact float array (numFilters + 2), no doubles.
   std::vector<float> bins(static_cast<size_t>(this->numFilters) + 2U, 0.0f);
   for (uint16_t i = 0; i < this->numFilters + 2U; ++i) {
-    const float mel = mel_min + (mel_max - mel_min) * static_cast<float>(i) /
+    const float mel = melMin + (melMax - melMin) * static_cast<float>(i) /
                                    static_cast<float>(this->numFilters + 1U);
     const float hz = mel_to_hz_f(mel);
     bins[i] = static_cast<float>(this->fftSize) * hz / static_cast<float>(this->sampleFrequency);
