@@ -9,8 +9,8 @@ void main() {
   
   // Set preferred orientations for smart glasses (landscape)
   SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
   ]);
   
   // Set system UI overlay style for immersive experience
