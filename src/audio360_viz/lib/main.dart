@@ -34,13 +34,6 @@ class Audio360VizApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
       home: const MainVisualizationPage(),
-    return MaterialApp(
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: Colors.black,
-        useMaterial3: false
-      ),
-      home: const UsbPage(),
     );
   }
 }
