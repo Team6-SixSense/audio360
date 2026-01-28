@@ -1,36 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'models/packet.dart';
-import 'usb/usb_service.dart';
+import 'usb/usb_service_factory.dart';
+import 'screens/visualization_screen.dart';
 
 void main() {
-  runApp(const UsbSerialApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Set preferred orientations for smart glasses (landscape)
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  
+  // Set system UI overlay style for immersive experience
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  
+  runApp(const Audio360VizApp());
 }
 
-class UsbSerialApp extends StatelessWidget {
-  const UsbSerialApp({super.key});
+class Audio360VizApp extends StatelessWidget {
+  const Audio360VizApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Audio360 Visualization',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
+        primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.black,
-        useMaterial3: false
+        fontFamily: 'Roboto',
       ),
-      home: const UsbPage(),
+      home: const MainVisualizationPage(),
     );
   }
 }
 
-class UsbPage extends StatefulWidget {
-  const UsbPage({super.key});
+class MainVisualizationPage extends StatefulWidget {
+  const MainVisualizationPage({super.key});
 
   @override
-  State<UsbPage> createState() => _UsbPageState();
+  State<MainVisualizationPage> createState() => _MainVisualizationPageState();
 }
 
-class _UsbPageState extends State<UsbPage> {
-  late UsbService usbService;
+class _MainVisualizationPageState extends State<MainVisualizationPage> {
+  dynamic usbService; // Can be UsbService or MockUsbService
   Packet? _packet;
   String _status = "Disconnected";
 
@@ -39,10 +55,15 @@ class _UsbPageState extends State<UsbPage> {
   @override
   void initState() {
     super.initState();
-    usbService = UsbService(
-      onPacket: (packet) => setState(() => _packet = packet),
-      onStatus: (status) => setState(() => _status = status),
+    usbService = UsbServiceFactory.createUsbService(
+      onPacket: (Packet packet) {
+        setState(() => _packet = packet);
+      },
+      onStatus: (String status) {
+        setState(() => _status = status);
+      },
     );
+    // Auto-connect on startup
     usbService.connect();
   }
 
@@ -54,30 +75,9 @@ class _UsbPageState extends State<UsbPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("USB Serial Viewer")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Status: $_status"),
-            const SizedBox(height: 12),
-            if (_packet != null) ...[
-              Text(
-                "Classification: ${_packet!.classification.name}",
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-
-              Text("Quadrant: ${_packet!.quadrant.name}"),
-              const SizedBox(height: 4),
-
-              Text("Priority: ${_packet!.priority}"),
-            ],
-          ],
-        ),
-      ),
+    return VisualizationScreen(
+      packet: _packet,
+      status: _status,
     );
   }
 }
