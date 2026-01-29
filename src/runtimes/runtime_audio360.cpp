@@ -64,31 +64,34 @@ void mainAudio360() {
   while (1) {
 
     MX_USB_HOST_Process();
-    INFO("Audio360 loop start.");
 
-    // Extract microphone data if ready.
-    INFO("Microphone data extraction.");
-    bool newData = extractMicData();
+    if (Is_AOA_Connected() == 1) {
+      INFO("Audio360 loop start.");
 
-    INFO("Running DoA estimation.");
-    float angle_rad = runDoA(newData);
-    INFO("DoA angle: %f rad.", angle_rad);
+      // Extract microphone data if ready.
+      INFO("Microphone data extraction.");
+      bool newData = extractMicData();
 
-    std::string prediction = runClassification(newData);
-    INFO("Classification: %s", prediction.c_str());
+      INFO("Running DoA estimation.");
+      float angle_rad = runDoA(newData);
+      INFO("DoA angle: %f rad.", angle_rad);
 
-    vizPacket.classification = StringToClassification(prediction);
+      std::string prediction = runClassification(newData);
+      INFO("Classification: %s", prediction.c_str());
 
-    vizPacket.direction = angleToDirection(angle_rad);
+      vizPacket.classification = StringToClassification(prediction);
 
-    std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
+      vizPacket.direction = angleToDirection(angle_rad);
 
-    USBH_AOA_Transmit(packet.data(), packet.size());
+      std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
-    // Reset half and full bool flags.
-    if (micMainFull == 1U) {
-      micMainHalf = 0U;
-      micMainFull = 0U;
+      USBH_AOA_Transmit(packet.data(), packet.size());
+
+      // Reset half and full bool flags.
+      if (micMainFull == 1U) {
+        micMainHalf = 0U;
+        micMainFull = 0U;
+      }
     }
     INFO("Audio360 loop end.");
   }

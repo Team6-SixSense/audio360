@@ -82,6 +82,15 @@ static USBH_StatusTypeDef USBH_AOA_SOF(USBH_HandleTypeDef *phost)
   return USBH_OK;
 }
 
+uint8_t Is_AOA_Connected() {
+  if (aoa_handle.state == AOA_STATE_CONNECTED) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
 /* 1. Initialization: Finds Pipes */
 /**
   * @brief  Initialize the AOA class.
