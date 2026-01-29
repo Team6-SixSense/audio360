@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import '../models/packet.dart';
 import 'usb_service.dart';
 import 'mock_usb_service.dart';
