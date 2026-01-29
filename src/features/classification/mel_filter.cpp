@@ -1,110 +1,109 @@
 /**
  ******************************************************************************
  * @file    mel_filter.cpp
- * @brief   Mel Filter Module source code.
+ * @brief   Mel Filter Module source code (memory-optimized).
  ******************************************************************************
  */
 
 #include "mel_filter.h"
 
-#include <stdio.h>
+#include <cmath>
+#include <cstdint>
 
 #include "matrix.h"
 
-inline double hz_to_mel(double hz) {
-  return 2595.0 * std::log10(1.0 + hz / 700.0);
+// Use float math to reduce code size + CPU (and avoid double temporaries).
+static inline float hz_to_mel_f(float hz) {
+  return 2595.0f * std::log10(1.0f + hz / 700.0f);
 }
 
-inline double mel_to_hz(double mel) {
-  return 700.0 * (std::pow(10.0, mel / 2595.0) - 1.0);
+static inline float mel_to_hz_f(float mel) {
+  return 700.0f * (std::pow(10.0f, mel / 2595.0f) - 1.0f);
 }
 
 void MelFilter::CreateFilterBank() {
-  int numFreq = this->fftSize / 2 + 1;
-  this->filterBankData.assign(this->numFilters * numFreq, 0.0f);
-  matrix_init_f32(&this->filterBank, this->numFilters, numFreq,
-                  this->filterBankData.data());
+  const int numFreq = static_cast<int>(this->fftSize / 2U + 1U);
 
-  double fmin = 0;
-  double fmax = this->sampleFrequency / 2;
+  // Store TRANSPOSED filter bank directly: (numFreq x numFilters)
+  // so apply() can do: (numFrames x numFreq) * (numFreq x numFilters)
+  this->filterBankTData.assign(static_cast<size_t>(numFreq) * this->numFilters, 0.0f);
+  matrix_init_f32(&this->filterBankT,
+                  static_cast<uint16_t>(numFreq),
+                  this->numFilters,
+                  this->filterBankTData.data());
 
-  double mel_min = hz_to_mel(fmin);
-  double mel_max = hz_to_mel(fmax);
+  const float fmin = 0.0f;
+  const float fmax = static_cast<float>(this->sampleFrequency) * 0.5f;
 
-  // Compute equally spaced mel banks
-  std::vector<double> mels(this->numFilters + 2);
-  for (int i = 0; i < this->numFilters + 2; ++i) {
-    mels[i] = mel_min + (mel_max - mel_min) * i / (this->numFilters + 1);
+  const float melMin = hz_to_mel_f(fmin);
+  const float melMax = hz_to_mel_f(fmax);
+
+  // We only need bins[i], bins[i+1], bins[i+2] for each filter.
+  // Compute all bins in a compact float array (numFilters + 2), no doubles.
+  std::vector<float> bins(static_cast<size_t>(this->numFilters) + 2U, 0.0f);
+  for (uint16_t i = 0; i < this->numFilters + 2U; ++i) {
+    const float mel = melMin + (melMax - melMin) * static_cast<float>(i) /
+                                   static_cast<float>(this->numFilters + 1U);
+    const float hz = mel_to_hz_f(mel);
+    bins[i] = static_cast<float>(this->fftSize) * hz / static_cast<float>(this->sampleFrequency);
   }
 
-  // Convert mel banks into Hz. This gives logarithmically spaced frequencies.
-  std::vector<double> hz(this->numFilters + 2);
-  for (int i = 0; i < this->numFilters + 2; ++i) {
-    hz[i] = mel_to_hz(mels[i]);
-  }
-
-  // Convert Hz to FFT bin numbers
-  std::vector<double> bins(this->numFilters + 2);
-  for (int i = 0; i < this->numFilters + 2; ++i) {
-    bins[i] = (this->fftSize) * hz[i] / this->sampleFrequency;
-  }
-
-  for (int i = 0; i < this->numFilters; ++i) {
-    double leftBin = bins[i];
-    double centerBin = bins[i + 1];
-    double rightBin = bins[i + 2];
+  // Build triangular filters, but write into TRANSPOSED layout:
+  // filterBankT[bin, filter] instead of filterBank[filter, bin]
+  for (uint16_t i = 0; i < this->numFilters; ++i) {
+    const float leftBin   = bins[i];
+    const float centerBin = bins[i + 1U];
+    const float rightBin  = bins[i + 2U];
 
     if (centerBin <= leftBin || centerBin >= rightBin) {
       continue;
     }
 
-    // Rising slope in triangle filter banks
-    int leftIdx = static_cast<int>(std::floor(leftBin));
+    const float invRise = 1.0f / (centerBin - leftBin);
+    const float invFall = 1.0f / (rightBin - centerBin);
+
+    // Rising slope
+    int leftIdx   = static_cast<int>(std::floor(leftBin));
     int centerIdx = static_cast<int>(std::ceil(centerBin));
+    if (leftIdx < 0) leftIdx = 0;
+    if (centerIdx > numFreq) centerIdx = numFreq;
+
     for (int j = leftIdx; j < centerIdx; ++j) {
-      if (j >= 0 && j < numFreq) {
-        this->filterBank.pData[i * numFreq + j] =
-            (j - leftBin) / (centerBin - leftBin);
-      }
+      const float w = (static_cast<float>(j) - leftBin) * invRise;
+      // filterBankT row-major: row = j (bin), col = i (filter)
+      this->filterBankT.pData[static_cast<size_t>(j) * this->numFilters + i] = w;
     }
 
-    // Falling slope in triangle filter banks
+    // Falling slope
     centerIdx = static_cast<int>(std::floor(centerBin));
     int rightIdx = static_cast<int>(std::ceil(rightBin));
+    if (centerIdx < 0) centerIdx = 0;
+    if (rightIdx > numFreq) rightIdx = numFreq;
+
     for (int j = centerIdx; j < rightIdx; ++j) {
-      if (j >= 0 && j < numFreq) {
-        this->filterBank.pData[i * numFreq + j] =
-            (rightBin - j) / (rightBin - centerBin);
-      }
+      const float w = (rightBin - static_cast<float>(j)) * invFall;
+      this->filterBankT.pData[static_cast<size_t>(j) * this->numFilters + i] = w;
     }
   }
 }
 
-MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize,
-                     uint16_t sampleFrequency)
+MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize, uint16_t sampleFrequency)
     : numFilters(numFilters),
       fftSize(fftSize),
       sampleFrequency(sampleFrequency) {
-  this->numFilters = numFilters;
-  this->fftSize = fftSize;
-  this->sampleFrequency = sampleFrequency;
   this->CreateFilterBank();
 }
 
 void MelFilter::apply(matrix& stftMatrix, matrix& melSpectrogram,
                       std::vector<float>& melSpectrogramVector) const {
-  uint16_t numFrames = stftMatrix.numRows;
-  const int numFreq = this->fftSize / 2 + 1;
+  const uint16_t numFrames = stftMatrix.numRows;
+  // stftMatrix is (numFrames x numFreq)
+  // filterBankT is (numFreq x numFilters)
+  // result is (numFrames x numFilters)
 
-  matrix filterBankT;
-  std::vector<float> filterBankTData(numFreq * this->numFilters, 0.0f);
-  matrix_init_f32(&filterBankT, numFreq, this->numFilters,
-                  filterBankTData.data());
-  matrix_transpose_f32(&this->filterBank, &filterBankT);
+  melSpectrogramVector.assign(static_cast<size_t>(numFrames) * this->numFilters, 0.0f);
+  matrix_init_f32(&melSpectrogram, numFrames, this->numFilters, melSpectrogramVector.data());
 
-  melSpectrogramVector.assign(numFrames * this->numFilters, 0.0f);
-  matrix_init_f32(&melSpectrogram, numFrames, this->numFilters,
-                  melSpectrogramVector.data());
-
-  matrix_mult_f32(&stftMatrix, &filterBankT, &melSpectrogram);
+  // No transpose, no heap allocation here.
+  matrix_mult_f32(&stftMatrix, &this->filterBankT, &melSpectrogram);
 }

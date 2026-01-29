@@ -9,12 +9,50 @@
 
 #include <stdio.h>
 
+#include "classificationLabel.h"
 #include "classification_constants.h"
 
+
+std::vector<float> LDA_CLASS_WEIGHTS_DATA;
+
+matrix LDA_CLASS_WEIGHTS;
+
+std::vector<float> LDA_CLASS_BIASES;
+
+std::vector<float> LDA_SCALINGS_DATA;
+
+matrix LDA_SCALINGS;
+
+std::vector<ClassificationLabel> CLASSIFICATION_CLASSES ;
+
 void LinearDiscriminantAnalysis::initializeLDAData() {
+  LDA_CLASS_WEIGHTS_DATA = {0.03074151,  1.2104454, -1.5900505,
+  -0.41783714, 1.4128469 , -0.44179523};
+
+  LDA_CLASS_WEIGHTS = {3, 2, LDA_CLASS_WEIGHTS_DATA.data()};
+
+  LDA_CLASS_BIASES = {
+    3.528, -9.737268, 7.043996
+  };
+
+  LDA_SCALINGS_DATA = {
+    -0.07936350, -0.01101666,
+     0.38999072, -0.04274665,
+    -0.55441391,  0.00280420,
+     0.21863136,  0.12364489,
+    -0.07492033, -1.26101398,
+     0.04050463,  0.37705261
+  };
+
+  LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
+
+  CLASSIFICATION_CLASSES = {
+    ClassificationLabel::Jackhammer, ClassificationLabel::CarHorn, ClassificationLabel::Siren};
+
   this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
   this->ldaProjection.classBiases = LDA_CLASS_BIASES;
   this->classTypes = CLASSIFICATION_CLASSES;
+  this->ldaProjection.scalings     = LDA_SCALINGS;
 }
 LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
                                                        uint16_t numClasses)
@@ -26,11 +64,11 @@ LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
   this->initializeLDAData();
 }
 
-std::string LinearDiscriminantAnalysis::predictFrameClass(
+ClassificationLabel LinearDiscriminantAnalysis::predictFrameClass(
     const matrix& pcaFeatureVector, uint16_t frameIndex) const {
   if (pcaFeatureVector.numCols != this->numEigenvectors ||
       frameIndex >= pcaFeatureVector.numRows) {
-    return {};
+    return ClassificationLabel::Unknown;
   }
 
   const size_t frameStart =
@@ -61,80 +99,78 @@ std::string LinearDiscriminantAnalysis::predictFrameClass(
   return this->classTypes[predictedClassIndex];
 }
 
-std::string LinearDiscriminantAnalysis::apply(
-    const matrix& pcaFeatureVector) const {
-  uint16_t numFrames = pcaFeatureVector.numRows;
+ClassificationLabel LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVector) const {
+  const uint16_t numFrames = pcaFeatureVector.numRows;
   if (numFrames == 0 || pcaFeatureVector.numCols != this->numEigenvectors) {
-    return {};
-  }
-  std::vector<float> classWeightsTData(this->numEigenvectors * this->numClasses,
-                                       0.0f);
-  matrix classWeightsT;
-  matrix_init_f32(&classWeightsT, this->numEigenvectors, this->numClasses,
-                  classWeightsTData.data());
-  if (matrix_transpose_f32(&this->ldaProjection.classWeights, &classWeightsT) !=
-      ARM_MATH_SUCCESS) {
-    return {};
+    return ClassificationLabel::Unknown;
   }
 
-  std::vector<float> scoresData(numFrames * this->numClasses, 0.0f);
+  const uint16_t ldaDims = static_cast<uint16_t>(this->numClasses - 1U);
+
+  // 1) Project PCA -> LDA space: Z = X * scalings  => (numFrames x ldaDims)
+  std::vector<float> zData(static_cast<size_t>(numFrames) * ldaDims, 0.0f);
+  matrix z;
+  matrix_init_f32(&z, numFrames, ldaDims, zData.data());
+
+  // ldaProjection.scalings must be (numEigenvectors x ldaDims)
+  if (this->ldaProjection.scalings.numRows != this->numEigenvectors ||
+      this->ldaProjection.scalings.numCols != ldaDims) {
+    return ClassificationLabel::Unknown;
+  }
+
+  if (matrix_mult_f32(&pcaFeatureVector, &this->ldaProjection.scalings, &z) != ARM_MATH_SUCCESS) {
+    return ClassificationLabel::Unknown;
+  }
+
+  // 2) Scores in LDA space: scores = Z * W^T + b
+  // classWeights: (numClasses x ldaDims) so transpose to (ldaDims x numClasses)
+  std::vector<float> wTData(static_cast<size_t>(ldaDims) * this->numClasses, 0.0f);
+  matrix wT;
+  matrix_init_f32(&wT, ldaDims, this->numClasses, wTData.data());
+
+  if (matrix_transpose_f32(&this->ldaProjection.classWeights, &wT) != ARM_MATH_SUCCESS) {
+    return ClassificationLabel::Unknown;
+  }
+
+  std::vector<float> scoresData(static_cast<size_t>(numFrames) * this->numClasses, 0.0f);
   matrix scores;
   matrix_init_f32(&scores, numFrames, this->numClasses, scoresData.data());
-  if (matrix_mult_f32(&pcaFeatureVector, &classWeightsT, &scores) !=
-      ARM_MATH_SUCCESS) {
-    return {};
+
+  if (matrix_mult_f32(&z, &wT, &scores) != ARM_MATH_SUCCESS) {
+    return ClassificationLabel::Unknown;
   }
 
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * this->numClasses;
-    for (uint16_t classType = 0; classType < this->numClasses; ++classType) {
-      scores.pData[rowStart + classType] +=
-          this->ldaProjection.classBiases[classType];
+    for (uint16_t c = 0; c < this->numClasses; ++c) {
+      scores.pData[rowStart + c] += this->ldaProjection.classBiases[c];
     }
   }
 
-  std::vector<std::string> framePredictions(numFrames);
+  // 3) Per-frame argmax + majority vote (same as before)
+  std::vector<int> classCounts(this->numClasses, 0);
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * this->numClasses;
     float maxScore = scores.pData[rowStart];
-    uint16_t predictedClassIndex = 0;
-    for (uint16_t classType = 1; classType < this->numClasses; ++classType) {
-      const float score = scores.pData[rowStart + classType];
-      if (score > maxScore) {
-        maxScore = score;
-        predictedClassIndex = classType;
+    uint16_t best = 0;
+    for (uint16_t c = 1; c < this->numClasses; ++c) {
+      const float s = scores.pData[rowStart + c];
+      if (s > maxScore) {
+        maxScore = s;
+        best = c;
       }
     }
-    framePredictions[frame] = this->classTypes[predictedClassIndex];
-    // printf("LDA Frame %u: ", frame);
-    // for (uint16_t classType = 0; classType < this->numClasses; ++classType) {
-    //   printf("%s: %f, ", this->classTypes[classType].c_str(),
-    //          scores.pData[rowStart + classType]);
-    // }
-    // printf("Predicted Class: %s\n",
-    //        this->classTypes[predictedClassIndex].c_str());
+    classCounts[best]++;
   }
 
-  // Find the most frequent class prediction across all frames.
-  std::vector<int> classCounts(this->numClasses, 0);
-  for (const auto& prediction : framePredictions) {
-    for (int classIndex = 0; classIndex < this->numClasses; ++classIndex) {
-      if (prediction == this->classTypes[classIndex]) {
-        classCounts[classIndex]++;
-        break;
-      }
+  int bestCount = classCounts[0];
+  int bestClass = 0;
+  for (int c = 1; c < this->numClasses; ++c) {
+    if (classCounts[c] > bestCount) {
+      bestCount = classCounts[c];
+      bestClass = c;
     }
   }
-  int maxCount = classCounts[0];
-  int finalPredictedClassIndex = 0;
-  for (int i = 1; i < this->numClasses; ++i) {
-    if (classCounts[i] > maxCount) {
-      maxCount = classCounts[i];
-      finalPredictedClassIndex = i;
-    }
-  }
-
-  printf("LDA Final Prediction: %s\n",
-         this->classTypes[finalPredictedClassIndex].c_str());
-  return this->classTypes[finalPredictedClassIndex];
+  return this->classTypes[bestClass];
 }
+

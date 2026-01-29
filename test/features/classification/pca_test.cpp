@@ -43,8 +43,8 @@ static void Make3FrameMFCCSpecFromMP3(
     const MP3Data& data, int sampleRate, int offset0, matrix& mfccSpec,
     std::vector<float>& mfccSpectrogramVector) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
-  const uint16_t numFilters = 40;
-  const uint16_t numCepstral = 13;
+  const uint16_t numFilters = 6;
+  const uint16_t numCepstral = 6;
 
   std::vector<float> in0(data.channel1.begin() + offset0,
                          data.channel1.begin() + offset0 + frameSize);
@@ -82,8 +82,8 @@ static void Make3FrameMFCCSpecFromMP3(
 TEST(PCA, ApplyPCA) {
   MP3Data data = readMP3File("audio/285_sine.mp3");
   const int offset0 = 100000;
-  const uint16_t numCepstral = 13;
-  const uint16_t numPCAComponents = 13;
+  const uint16_t numCepstral = 6;
+  const uint16_t numPCAComponents = 6;
 
   ASSERT_GT(static_cast<int>(data.channel1.size()),
             offset0 + 3 * static_cast<int>(WAVEFORM_SAMPLES));

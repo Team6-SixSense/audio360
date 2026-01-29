@@ -45,51 +45,26 @@ Classification::Classification(uint16_t n_fft, uint16_t numMelFilters,
       lda(numPCAComponents, numClasses),
       currClassification(ClassificationLabel::Unknown) {}
 
-void Classification::Classify(std::vector<float> rawAudio) {
-  // Currently there is fixed logic that there will be 4 frames of fft of size
-  // n_fft to run classification on. However, this is subject to change based on
-  // hyperparameter tuning that will happen later on.
-  if (rawAudio.size() < static_cast<size_t>(4 * this->n_fft)) {
+std::string Classification::getClassificationLabel(){
+  return ClassificationClassToString(this->currClassification);
+}
+
+void Classification::Classify(std::vector<float>& rawAudio) {
+  if (this->fftData.size() < CLASSIFICATION_BUFFER_SIZE) {
+    fftData.push_back(this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW));
     return;
+  } else {
+    fftData.erase(fftData.begin());
+    fftData.push_back(this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW));
   }
 
-  std::vector<FrequencyDomain> fftData;
-  std::vector<float> frame1(rawAudio.begin(), rawAudio.begin() + this->n_fft);
-  std::vector<float> frame2(rawAudio.begin() + this->n_fft,
-                            rawAudio.begin() + 2 * this->n_fft);
-  std::vector<float> frame3(rawAudio.begin() + 2 * this->n_fft,
-                            rawAudio.begin() + 3 * this->n_fft);
-  std::vector<float> frame4(rawAudio.begin() + 3 * this->n_fft,
-                            rawAudio.begin() + 4 * this->n_fft);
-
-  FrequencyDomain fd1 =
-      this->fft.signalToFrequency(frame1, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd2 =
-      this->fft.signalToFrequency(frame2, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd3 =
-      this->fft.signalToFrequency(frame3, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd4 =
-      this->fft.signalToFrequency(frame4, WindowFunction::HANN_WINDOW);
-  fftData.push_back(fd1);
-  fftData.push_back(fd2);
-  fftData.push_back(fd3);
-  fftData.push_back(fd4);
-
-  matrix stftSpec;
-  std::vector<float> stftDataVector;
   this->GenerateSTFT(fftData, stftSpec, stftDataVector);
 
-  matrix melSpec;
-  std::vector<float> melSpectrogramVector;
   this->melFilter.apply(stftSpec, melSpec, melSpectrogramVector);
 
-  matrix mfccSpec;
-  std::vector<float> mfccSpectrogramVector;
   this->dct.apply(melSpec, mfccSpec, mfccSpectrogramVector);
 
-  matrix pcaSpec;
-  std::vector<float> pcaFeatureVector;
   this->pca.apply(mfccSpec, pcaSpec, pcaFeatureVector);
 
-  this->currClassification = StringToClassification(this->lda.apply(pcaSpec));
+  this->currClassification = this->lda.apply(pcaSpec);
 }

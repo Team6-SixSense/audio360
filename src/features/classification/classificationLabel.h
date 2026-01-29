@@ -15,6 +15,7 @@ enum class ClassificationLabel {
   Siren = 1,
   Jackhammer = 2,
   CarHorn = 3,
+  Clapping = 4,
 };
 
 /**
@@ -32,6 +33,8 @@ inline const char* ClassificationClassToString(
       return "jackhammer";
     case ClassificationLabel::CarHorn:
       return "car_horn";
+    case ClassificationLabel::Clapping:
+      return "clapping";
     case ClassificationLabel::Unknown:
       return "unknown";
   }
@@ -53,6 +56,9 @@ inline ClassificationLabel StringToClassification(std::string classification) {
   }
   if (classification == "car_horn") {
     return ClassificationLabel::CarHorn;
+  }
+  if (classification == "clapping") {
+    return ClassificationLabel::Clapping;
   }
   return ClassificationLabel::Unknown;
 }

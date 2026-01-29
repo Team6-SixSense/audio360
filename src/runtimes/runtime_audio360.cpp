@@ -9,11 +9,12 @@
 
 #include <cstdint>
 
+#include "classification.h"
 #include "doa.h"
 #include "embedded_mic.h"
 #include "logging.hpp"
 #include "peripheral.h"
-
+#include "utils.h"
 
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;
@@ -32,9 +33,13 @@ static uint8_t micMainHalf{0}, micMainFull{0}, micDummyHalf{0}, micDummyFull{0};
 
 // Audio360 features.
 static DOA doa{DOA_SAMPLES};
+static Classification classifier{MIC_BUFFER_SIZE/2, NUM_MEL_FILTERS, NUM_DCT_COEFF, NUM_PCA_COMPONENTS, NUM_CLASSES};
+
+static bool checkSame = false;
 
 void mainAudio360() {
   INFO("Running Audio360.");
+
 
   INFO("Initializing microphones.");
   micA1 = embedded_mic_get(MIC_A1);
@@ -58,6 +63,9 @@ void mainAudio360() {
     INFO("Running DoA estimation.");
     float angle_rad = runDoA(newData);
     INFO("DoA angle: %f rad.", angle_rad);
+
+    std::string prediction = runClassification(newData);
+    INFO("Classification: %s", prediction.c_str());
 
     // Reset half and full bool flags.
     if (micMainFull == 1U) {
@@ -156,4 +164,41 @@ float runDoA(bool newData) {
                                        DOA_Algorithms::GCC_PHAT);
 
   return angle;
+}
+
+std::string runClassification(bool newData) {
+  if (!newData) {
+    // INFO("There is no new data. Skipping...");
+    return classifier.getClassificationLabel();
+  }
+
+  // Extract the most recent microphone data.
+  size_t start = micBufferStartPos;
+  if (micMainFull == 1U) {
+    start += MIC_HALF_BUFFER_SIZE;
+  }
+
+  const int32_t* raw = &micA1Buffer[start];
+
+  // --- SAME-BUFFER CHECK ---
+  static uint32_t lastHash = 0;
+  uint32_t h = fnv1a_hash32(raw, MIC_HALF_BUFFER_SIZE);
+  if (h == lastHash) {
+    checkSame = true;
+    return classifier.getClassificationLabel();
+  }
+  if (!checkSame) {
+    lastHash = h;
+  }
+  // -----------------------
+
+  std::vector<float> mic1Data(MIC_HALF_BUFFER_SIZE);
+
+  for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; i++) {
+    mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
+  }
+
+  classifier.Classify(mic1Data);
+
+  return classifier.getClassificationLabel();
 }

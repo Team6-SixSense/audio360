@@ -11,6 +11,12 @@
 
 const int MIC_BUFFER_SIZE = 4096;
 const int MIC_HALF_BUFFER_SIZE = WAVEFORM_SAMPLES / 2;
+const int MIC_CLASSIFICATION_BUFFER_SIZE = MIC_BUFFER_SIZE * 4;
+
+const int NUM_MEL_FILTERS = 6;
+const int NUM_DCT_COEFF = 6;
+const int NUM_PCA_COMPONENTS = 6;
+const int NUM_CLASSES = 3;
 
 /** @brief Main entry code. */
 void mainAudio360();
@@ -33,3 +39,5 @@ bool extractMicData();
  * @return float Angle of audio source in radian.
  */
 float runDoA(bool newData);
+
+std::string runClassification(bool newData);

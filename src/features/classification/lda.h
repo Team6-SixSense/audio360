@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "classificationLabel.h"
 #include "matrix.h"
 
 struct ldaProjectionData {
@@ -18,6 +19,8 @@ struct ldaProjectionData {
   matrix classWeights;
   /** @brief Per-class bias terms for LDA. */
   std::vector<float> classBiases;
+  /** @brief Scalings used after data projected into the LDA space */
+  matrix scalings;
 
   ldaProjectionData(uint16_t components)
       : numComponents(components), classWeights(), classBiases() {}
@@ -34,8 +37,7 @@ class LinearDiscriminantAnalysis {
    * @param pcaFrame Input PCA frame, of size inputFeatureLength.
    * @param ldaFrame Output LDA frame, of size numComponents.
    */
-  // TODO: Update this to return enum class type.
-  std::string predictFrameClass(const matrix& pcaFeatureVector,
+  ClassificationLabel predictFrameClass(const matrix& pcaFeatureVector,
                                 uint16_t frameIndex) const;
 
   /**
@@ -44,7 +46,7 @@ class LinearDiscriminantAnalysis {
    * @param inputFeatureVector Input feature vector, of size featureLength.
    * @param ldaFeatureVector Output LDA feature vector, of size numComponents.
    */
-  std::string apply(const matrix& pcaFeatureVector) const;
+  ClassificationLabel apply(const matrix& pcaFeatureVector) const;
 
  private:
   /** @brief Number of PCA eigenvectors expected as input. */
@@ -54,7 +56,7 @@ class LinearDiscriminantAnalysis {
   uint16_t numClasses;
 
   /** @brief Class label strings aligned with LDA outputs. */
-  std::vector<std::string> classTypes;
+  std::vector<ClassificationLabel> classTypes;
 
   /** @brief Cached projection weights and biases for LDA. */
   ldaProjectionData ldaProjection;
