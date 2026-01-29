@@ -20,7 +20,7 @@ constexpr inline int SAMPLE_FREQUENCY = 16000;
 constexpr inline int WAVEFORM_SAMPLES = 4096;  // Must be power of 2.
 constexpr inline int DOA_SAMPLES = 2048;       // Must be power of 2.
 
-constexpr inline int CLASSIFICATION_BUFFER_SIZE = 4;
+constexpr inline int CLASSIFICATION_BUFFER_SIZE = 1;
 
 // Math constants.
 constexpr inline float FLOAT_EPS = std::numeric_limits<float>::epsilon();

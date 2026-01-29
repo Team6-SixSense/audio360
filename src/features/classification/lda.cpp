@@ -12,7 +12,43 @@
 #include "classificationLabel.h"
 #include "classification_constants.h"
 
+
+std::vector<float> LDA_CLASS_WEIGHTS_DATA;
+
+matrix LDA_CLASS_WEIGHTS;
+
+std::vector<float> LDA_CLASS_BIASES;
+
+std::vector<float> LDA_SCALINGS_DATA;
+
+matrix LDA_SCALINGS;
+
+std::vector<ClassificationLabel> CLASSIFICATION_CLASSES ;
+
 void LinearDiscriminantAnalysis::initializeLDAData() {
+  LDA_CLASS_WEIGHTS_DATA = {0.03074151,  1.2104454, -1.5900505,
+  -0.41783714, 1.4128469 , -0.44179523};
+
+  LDA_CLASS_WEIGHTS = {3, 2, LDA_CLASS_WEIGHTS_DATA.data()};
+
+  LDA_CLASS_BIASES = {
+    3.528, -9.737268, 7.043996
+  };
+
+  LDA_SCALINGS_DATA = {
+    -0.07936350, -0.01101666,
+     0.38999072, -0.04274665,
+    -0.55441391,  0.00280420,
+     0.21863136,  0.12364489,
+    -0.07492033, -1.26101398,
+     0.04050463,  0.37705261
+  };
+
+  LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
+
+  CLASSIFICATION_CLASSES = {
+    ClassificationLabel::Jackhammer, ClassificationLabel::CarHorn, ClassificationLabel::Siren};
+
   this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
   this->ldaProjection.classBiases = LDA_CLASS_BIASES;
   this->classTypes = CLASSIFICATION_CLASSES;
