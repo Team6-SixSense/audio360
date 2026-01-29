@@ -51,6 +51,8 @@ extern USBH_ClassTypeDef  AOA_Class;
  * @retval USBH Status
  */
 USBH_StatusTypeDef USBH_AOA_Transmit(uint8_t *pbuff, uint16_t length);
+
+uint8_t Is_AOA_Connected();
 #ifdef __cplusplus
  }
 #endif

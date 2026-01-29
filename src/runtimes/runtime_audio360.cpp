@@ -13,7 +13,10 @@
 #include "doa.h"
 #include "embedded_mic.h"
 #include "logging.hpp"
+#include "packet.h"
 #include "peripheral.h"
+#include "usb_host.h"
+#include "usbh_aoa.h"
 #include "utils.h"
 
 // Microphone definitions.
@@ -53,24 +56,42 @@ void mainAudio360() {
   embedded_mic_start(micA2);
   embedded_mic_start(micB2);
 
+  VisualizationPacket vizPacket{};
+  vizPacket.classification = ClassificationLabel::CarHorn;
+  vizPacket.direction = DirectionLabel::North;
+  vizPacket.priority = 3U;
+
   while (1) {
-    INFO("Audio360 loop start.");
 
-    // Extract microphone data if ready.
-    INFO("Microphone data extraction.");
-    bool newData = extractMicData();
+    MX_USB_HOST_Process();
 
-    INFO("Running DoA estimation.");
-    float angle_rad = runDoA(newData);
-    INFO("DoA angle: %f rad.", angle_rad);
+    if (Is_AOA_Connected() == 1) {
+      INFO("Audio360 loop start.");
 
-    std::string prediction = runClassification(newData);
-    INFO("Classification: %s", prediction.c_str());
+      // Extract microphone data if ready.
+      INFO("Microphone data extraction.");
+      bool newData = extractMicData();
 
-    // Reset half and full bool flags.
-    if (micMainFull == 1U) {
-      micMainHalf = 0U;
-      micMainFull = 0U;
+      INFO("Running DoA estimation.");
+      float angle_rad = runDoA(newData);
+      INFO("DoA angle: %f rad.", angle_rad);
+
+      std::string prediction = runClassification(newData);
+      INFO("Classification: %s", prediction.c_str());
+
+      vizPacket.classification = StringToClassification(prediction);
+
+      vizPacket.direction = angleToDirection(angle_rad);
+
+      std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
+
+      USBH_AOA_Transmit(packet.data(), packet.size());
+
+      // Reset half and full bool flags.
+      if (micMainFull == 1U) {
+        micMainHalf = 0U;
+        micMainFull = 0U;
+      }
     }
     INFO("Audio360 loop end.");
   }
