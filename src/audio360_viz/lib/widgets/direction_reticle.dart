@@ -197,12 +197,12 @@ class _ReticlePainter extends CustomPainter {
   }
 
   void _drawArrow(Canvas canvas, Offset center, double radius) {
-    final a = azimuthDeg * (math.pi / 180);
+    final a = (azimuthDeg - 90) * (math.pi / 180);
     final len = radius * 0.62;
 
     final tip = Offset(
       center.dx + len * math.cos(a),
-      center.dy - len * math.sin(a) * yCompression,
+      center.dy + len * math.sin(a) * yCompression,
     );
 
     // Arrow shaft (thicker + slight glow)
