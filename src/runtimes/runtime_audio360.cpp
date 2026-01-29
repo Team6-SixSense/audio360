@@ -13,7 +13,10 @@
 #include "doa.h"
 #include "embedded_mic.h"
 #include "logging.hpp"
+#include "packet.h"
 #include "peripheral.h"
+#include "usb_host.h"
+#include "usbh_aoa.h"
 #include "utils.h"
 
 // Microphone definitions.
@@ -53,7 +56,14 @@ void mainAudio360() {
   embedded_mic_start(micA2);
   embedded_mic_start(micB2);
 
+  VisualizationPacket vizPacket{};
+  vizPacket.classification = ClassificationLabel::CarHorn;
+  vizPacket.direction = DirectionLabel::North;
+  vizPacket.priority = 3U;
+
   while (1) {
+
+    MX_USB_HOST_Process();
     INFO("Audio360 loop start.");
 
     // Extract microphone data if ready.
@@ -66,6 +76,14 @@ void mainAudio360() {
 
     std::string prediction = runClassification(newData);
     INFO("Classification: %s", prediction.c_str());
+
+    vizPacket.classification = StringToClassification(prediction);
+
+    vizPacket.direction = angleToDirection(angle_rad);
+
+    std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
+
+    USBH_AOA_Transmit(packet.data(), packet.size());
 
     // Reset half and full bool flags.
     if (micMainFull == 1U) {

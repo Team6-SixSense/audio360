@@ -6,14 +6,14 @@ import 'mock_usb_service.dart';
 /// Factory to create USB service based on environment.
 /// Uses mock service in debug mode or when USE_MOCK_USB is true.
 class UsbServiceFactory {
-  static const bool useMock = bool.fromEnvironment('USE_MOCK_USB', defaultValue: false);
+  static const bool useMock = false;
 
   static dynamic createUsbService({
     required Function(Packet) onPacket,
     required Function(String) onStatus,
   }) {
     // Use mock in debug mode or if explicitly requested
-    if (kDebugMode || useMock) {
+    if (useMock) {
       return MockUsbService(
         onPacket: onPacket,
         onStatus: onStatus,
