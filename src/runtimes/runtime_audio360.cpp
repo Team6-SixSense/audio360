@@ -36,13 +36,14 @@ static uint8_t micMainHalf{0}, micMainFull{0}, micDummyHalf{0}, micDummyFull{0};
 
 // Audio360 features.
 static DOA doa{DOA_SAMPLES};
-static Classification classifier{MIC_BUFFER_SIZE/2, NUM_MEL_FILTERS, NUM_DCT_COEFF, NUM_PCA_COMPONENTS, NUM_CLASSES};
+static Classification classifier{MIC_BUFFER_SIZE / 2, NUM_MEL_FILTERS,
+                                 NUM_DCT_COEFF, NUM_PCA_COMPONENTS,
+                                 NUM_CLASSES};
 
 static bool checkSame = false;
 
 void mainAudio360() {
   INFO("Running Audio360.");
-
 
   INFO("Initializing microphones.");
   micA1 = embedded_mic_get(MIC_A1);
@@ -62,7 +63,6 @@ void mainAudio360() {
   vizPacket.priority = 3U;
 
   while (1) {
-
     MX_USB_HOST_Process();
 
     if (Is_AOA_Connected() == 1) {
