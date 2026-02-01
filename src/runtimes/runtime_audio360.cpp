@@ -17,7 +17,6 @@
 #include "peripheral.h"
 #include "usb_host.h"
 #include "usbh_aoa.h"
-#include "utils.h"
 
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;
@@ -39,8 +38,6 @@ static DOA doa{DOA_SAMPLES};
 static Classification classifier{MIC_BUFFER_SIZE / 2, NUM_MEL_FILTERS,
                                  NUM_DCT_COEFF, NUM_PCA_COMPONENTS,
                                  NUM_CLASSES};
-
-static bool checkSame = false;
 
 void mainAudio360() {
   INFO("Running Audio360.");
@@ -157,16 +154,14 @@ bool extractMicData() {
 
 float runDoA(bool newData) {
   if (!newData) {
-    INFO("There is no new data. Skipping...");
+    INFO("There is no new data. Skipping DoA.");
     return -1.0;
   }
 
   // Extract the most recent microphone data.
   size_t start = micBufferStartPos;
-  size_t end = micBufferStartPos + MIC_HALF_BUFFER_SIZE;
   if (micMainFull == 1U) {
     start += MIC_HALF_BUFFER_SIZE;
-    end += MIC_HALF_BUFFER_SIZE;
   }
 
   std::vector<float> mic1Data(MIC_HALF_BUFFER_SIZE);
@@ -189,7 +184,7 @@ float runDoA(bool newData) {
 
 std::string runClassification(bool newData) {
   if (!newData) {
-    // INFO("There is no new data. Skipping...");
+    INFO("There is no new data. Skipping Classification.");
     return classifier.getClassificationLabel();
   }
 
@@ -198,20 +193,6 @@ std::string runClassification(bool newData) {
   if (micMainFull == 1U) {
     start += MIC_HALF_BUFFER_SIZE;
   }
-
-  const int32_t* raw = &micA1Buffer[start];
-
-  // --- SAME-BUFFER CHECK ---
-  static uint32_t lastHash = 0;
-  uint32_t h = fnv1a_hash32(raw, MIC_HALF_BUFFER_SIZE);
-  if (h == lastHash) {
-    checkSame = true;
-    return classifier.getClassificationLabel();
-  }
-  if (!checkSame) {
-    lastHash = h;
-  }
-  // -----------------------
 
   std::vector<float> mic1Data(MIC_HALF_BUFFER_SIZE);
 
