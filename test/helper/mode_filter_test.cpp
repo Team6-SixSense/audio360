@@ -13,12 +13,6 @@
 
 /* ============================== INTEGER TESTS ============================= */
 
-/** @brief Assert that mode filtering throws an invalid argument exception when
- * filter size is 0. */
-TEST(ModeFilterIntTest, InvalidArgs) {
-  EXPECT_THROW(ModeFilter<int>(0), std::invalid_argument);
-}
-
 /** @brief Verifiy that updating the buffer will return the correct mode. */
 TEST_P(ModeFilterIntTest, CorrectModeMultiUpdate) {
   const auto& param = this->GetParam();
@@ -43,12 +37,6 @@ INSTANTIATE_TEST_SUITE_P(IntModeFilterValues, ModeFilterIntTest,
                          ::testing::ValuesIn(GetIntTestConfigs()));
 
 /* ================================ ENUM TESTS ============================== */
-
-/** @brief Assert that mode filtering throws an invalid argument exception when
- * filter size is 0. */
-TEST(ModeFilterEnumTest, InvalidArgs) {
-  EXPECT_THROW(ModeFilter<ClassificationLabel>(0), std::invalid_argument);
-}
 
 /** @brief Verifiy that updating the buffer will return the correct mode. */
 TEST_P(ModeFilterEnumTest, CorrectModeMultiUpdate) {

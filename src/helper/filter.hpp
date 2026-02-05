@@ -30,8 +30,7 @@ class ModeFilter {
    */
   ModeFilter(size_t filterSize) : filterSize(filterSize) {
     if (filterSize == 0) {
-      throw std::invalid_argument(
-          "Mode Filter's filterSize must be greater than 0");
+      filterSize = 1;
     }
   }
 
