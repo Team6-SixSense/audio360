@@ -173,7 +173,7 @@ microcontroller's I2S peripheral.
     \label{fig:mic}
 \end{figure}
 
-\subsection{Micophone Synchronization}
+\subsection{Micophone Synchronization} \label{sec:mic_sync}
 
 Microphone synchronization ensures that audio samples captured from multiple
 microphones correspond to the same point in time. This simultaneity is critical
@@ -191,21 +191,110 @@ sampling jitter between microphones. Furthermore, a shared WS signal
 guarantees that samples from corresponding channels are aligned consistently in
 software buffers for subsequent processing.
 
-Figure~\ref{fig:mic_wiring} illustrates the microphone array wiring.
+Figure~\ref{fig:mic_wiring} illustrates the microphone wiring.
 The orange wire represents the SCK signal and the green wire represents the
 WS signal. Both signals are common to all microphones in the array.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\linewidth]{wiring/microphone_array.png}
-    \caption{Microphone array wiring.}
+    \caption{Microphone wiring. Note that this diagram does not represent the
+        exact microphone array position. The purpose is to illustrate the
+        wiring.}
     \label{fig:mic_wiring}
 \end{figure}
 
 \section{Hardware Integration}
 
 \subsection{Wiring}
-\wss{Provide images and explanation of wiring}
+
+Figure~\ref{fig:mic_wiring} illustrates the microphone array wiring
+configuration. As described in Section~\ref{sec:mic_sync}, the serial clock
+(SCK) and word select (WS) signals are shared among all microphones to achieve
+synchronized sampling. The left/right (L/R) channel signal is identical for all
+microphones to ensure that each device stores data within the same channel
+frame. In this project, all microphones are storing to left channel
+(arbitrarily chosen).
+
+Each microphone has an independent data line (blue wire) that transmits
+digitized audio data to the microcontroller. These data lines are connected to
+the microcontroller input pins PE6, PE3, PD11, and PA0. Power and ground
+connections are supplied to each microphone to ensure proper operation.
+
+A micro-USB cable is used to transmit data from the microcontroller to the
+smart glasses. Data is communicated via the USB transmit (TX) interface.
+Therefore, the connector on the receiving end may vary, provided that the
+connected device operates as a USB host.
+
+\subsection{Verification}
+
+Throughout the development of the capstone project, not all hardware components
+were available immediately. The smart glasses were expected to arrive
+approximately four months into the project, and the printed circuit board (PCB)
+for the glasses could not be designed until the wiring of all hardware
+components had been finalized. 
+
+As a result, hardware integration was divided into multiple development phases,
+allowing the system design to evolve iteratively while software development and
+testing proceeded in parallel. This section presents a chronological overview of
+the hardware integration evolution process.
+
+\subsubsection{Phase 1: Microcontroller Bring-Up}
+In this phase, the team focused on establishing a development environment for
+the microcontroller. The primary objective was to build and execute a simple
+\textit{Hello World} application to verify correct compilation, flashing, and
+execution on the target hardware. This phase enabled familiarity with the
+microcontroller toolchain and development workflow.
+
+USB serial communication was then implemented to transmit log data from the
+microcontroller to a debugging laptop. This capability was essential, as it
+provided the only means of observing internal system behavior during early
+development using the CLion debugger.
+
+\subsubsection{Phase 2: Microphone Integration}
+
+Microphones became available in mid October and were subsequently wired to the
+microcontroller. Initial development began with a single microphone to verify
+configuration and data acquisition before scaling to a
+four microphone synchronized array.
+
+To evaluate microphone performance, an SD card module was added to the
+microcontroller, and captured audio data were stored as \texttt{.wav} files for
+offline playback and verification. In parallel, the serial communication
+infrastructure developed in Phase~1 was reused to stream audio data to a host
+computer. A Python script was implemented to visualize microphone frequency
+responses in real time and provide live audio playback.
+
+These tools enabled rapid verification of microphone functionality and
+facilitated detection of wiring and soldering errors. The resulting microphone
+array configuration is illustrated in Figure~\ref{fig:mic_wiring}.
+
+\subsubsection{Phase 3: Glasses Integration and System Validation}
+
+In Phase~3, the microphone array was reconfigured to match the physical
+dimensions of the smart glasses, figure
+\ref{fig:phase3_hardware}. This allowed direction-of-arrival (DoA)
+estimation and sound classification algorithms to be evaluated directly on the
+microcontroller which was representative of the final product.
+
+During this phase, the smart glasses hardware arrived, enabling the development
+of a custom communication protocol between the microcontroller and the glasses.
+With these components integrated, the system achieved full end-to-end
+functionality.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{phase3_hardware.jpg}
+    \caption{Hardware configuration during Phase 3.}
+    \label{fig:phase3_hardware}
+\end{figure}
+
+\subsubsection{Phase 4: PCB Implementation}
+
+In the final phase, the wiring was transitioned from a breadboard based
+prototype to a custom PCB. This reduced the risk of loose connections, and
+enhanced the overall appearance and robustness of the final product.
+
 
 \section{Software-Hardware Integration}
 
