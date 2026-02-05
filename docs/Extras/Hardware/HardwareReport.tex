@@ -93,15 +93,114 @@ Dec 21, 2025 & Sathurshan, Omar & Report outline.\\
 \subsubsection{Rokid AR glasses}
 
 \section{Theory}
-\wss{This section goes over some theory, that will help understand the
-hardware integration section}
+
+This section reviews the theoretical background of hardware and software
+integration required for this project. It provides the necessary context to
+understand the design decisions made by the team. The information presented in
+this section comes from Digikey's documentation \cite{I2S} and the 
+STM 32 Reference Manual \cite{STM_REFERENCE_MANUAL}.
 
 \subsection{I2S Communication Protocol}
-\wss{Explain what is I2S? How it represents data?}
+
+I2S (Inter-Integrated Circuit Sound) is a serial communication protocol designed
+specifically for the transmission of digital audio data between integrated
+circuits. It enables synchronous and low-latency audio transfer, making it well
+suited for applications involving microphones, speakers, and audio devices where
+precise timing and synchronization are required. In systems with multiple
+microphones, I2S ensures that all devices sample and transmit data using a
+common clock, allowing for accurate time alignment of audio signals.
+\newline
+\newline
+\noindent The protocol uses three primary signal lines:
+\begin{itemize}
+    \item \textbf{SCK (Serial Clock or Bit Clock)}: Controls the timing of each
+        transmitted data bit and synchronizes all connected devices.
+    \item \textbf{WS (Word Select or Left/Right Clock)}: Indicates whether the
+        data being transmitted corresponds to the left or right audio channel.
+    \item \textbf{SD (Serial Data)}: Carries the audio sample data.
+\end{itemize}
+
+I2S operates using a controller-peripheral (master-slave) architecture. One
+device generates the clock signals (SCK and WS) and is referred to as the
+controller, while the remaining devices act as peripherals and transmit or
+receive audio data accordingly. In this project, the STM32 microcontroller
+functions as the controller, generating both the serial clock and word select
+signals. The microphones act as peripherals and transmit audio samples on the
+SD line in synchronization with these clocks.
+
+Data transmission occurs on either the rising or falling edge of the serial
+clock, depending on the configuration of the devices during initialization.
+The WS signal changes state once per audio frame, indicating whether the
+transmitted data corresponds to the left or right channel. Each audio sample
+is aligned with the WS signal such that one complete word is transmitted per
+channel per frame. Figure~\ref{fig:i2s_protocol} illustrates the timing
+relationship between SCK, WS, and SD.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{i2s_protocol.png}
+    \caption{I2S protocol as explained from STM32 reference manual.}
+    \label{fig:i2s_protocol}
+\end{figure}
+
+Audio samples are commonly 16, 24, or 32 bits in length. In this project,
+the microphones output 24 bit samples. Since the STM32 microcontroller store
+data in 32-bit registers, the received samples require post-processing to
+handle proper alignment and padding. This involves shifting the received data.
+The microphones transmit data most significant bit (MSB) first, as defined by
+the I2S standard. This transmission order is independent of the
+microcontroller's internal endianness. Therefore, software must correctly
+reconstruct the sample values from the received byte stream. Figure
+\ref{fig:i2s_protocol} shows how I2S data is received and stored on the
+microcontoller.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{i2s_data_transfer.png}
+    \caption{I2S data transfer.}
+    \label{fig:i2s_data_transfer}
+\end{figure}
+
+Figure~\ref{fig:mic} shows the I2S microphone used in this project.
+The device provides dedicated pins for the clock (SCK), word select (WS), and
+serial data (SD) connections, allowing direct interfacing with the
+microcontroller's I2S peripheral.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{../../Images/mic.jpg}
+    \caption{I2S microphone.}
+    \label{fig:mic}
+\end{figure}
 
 \subsection{Micophone Synchronization}
-\wss{Explain what mic Synchronization is. Why is it important?}
-\wss{How can multiple microphones be Synchronized on the same clock}
+
+Microphone synchronization ensures that audio samples captured from multiple
+microphones correspond to the same point in time. This simultaneity is critical
+for this project because direction-of-arrival (DoA) estimation relies on
+accurately measuring the time differences at which a sound reaches each
+microphone (\hyperref[SRS-FR1_2]{FR1.2}).
+
+The microphones communicate using the I2S protocol and are synchronized through
+a shared clock. The microcontroller operates as the I2S master and generates
+the serial clock (SCK) and word select (WS) signals, while all microphones
+operate as slaves. These signals are distributed to each microphone, ensuring
+that all devices sample audio simultaneously and remain phase-aligned.
+Using a common clock eliminates inter-channel clock drift and minimizes
+sampling jitter between microphones. Furthermore, a shared WS signal
+guarantees that samples from corresponding channels are aligned consistently in
+software buffers for subsequent processing.
+
+Figure~\ref{fig:mic_wiring} illustrates the microphone array wiring.
+The orange wire represents the SCK signal and the green wire represents the
+WS signal. Both signals are common to all microphones in the array.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{wiring/microphone_array.png}
+    \caption{Microphone array wiring.}
+    \label{fig:mic_wiring}
+\end{figure}
 
 \section{Hardware Integration}
 
