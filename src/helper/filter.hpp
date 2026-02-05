@@ -23,6 +23,11 @@
 template <typename T>
 class ModeFilter {
  public:
+  /**
+   * @brief Construct a new Mode Filter object
+   *
+   * @param filterSize Number of elements to track at a time.
+   */
   ModeFilter(size_t filterSize) : filterSize(filterSize) {
     if (filterSize == 0) {
       throw std::invalid_argument(
