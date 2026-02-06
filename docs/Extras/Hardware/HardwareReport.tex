@@ -298,21 +298,71 @@ enhanced the overall appearance and robustness of the final product.
 
 \section{Software-Hardware Integration}
 
-\wss{Explain this section is to provide more context how software was designed
-for the hardware. Main point to point out how software engineering is relevant
-since this is a software capstone.}
-\wss{System diagram with hardware layer at the bottom}
-\subsection{Software Architecture}
-\wss{briefly go over software architecture}
-\wss{libraries used related to hardware}
+This section describes how the software was designed in accordance with the
+hardware architecture. As software engineering students, it was essential to
+account for the hardware's limitations and capabilities, as these constraints
+directly influenced the overall software design and implementation decisions.
 
 \subsection{Hardware Abstraction Layer}
-\wss{Describe the hardware abstraction strategy. (benefits or portability and maintainability)}
 
-\subsection{Hardware Interface Implementation}
-\wss{Overview of manufacturer code}
-\wss{Point to the hardware layer code.}
-\wss{What interfacing code had to be implemented and why?}
+At the beginning of the project, there was significant uncertainty regarding
+the availability and suitability of the hardware. It was unclear whether the
+team would have access to smart glasses for data visualization or a
+microcontroller capable of processing audio data in real time. To mitigate
+these risks, contingency plans were developed. For example, the smart glasses
+could be replaced with a monitor to display user output, or audio data could be
+collected on the microcontroller and streamed to a laptop with sufficient
+computational resources to execute the \progname{} features.
+
+Given this uncertainty, the decision was made to abstract the hardware from the
+software implementation by introducing a hardware abstraction layer (HAL),
+figure \ref{fig:system_layer}.
+This layer provides a uniform software interface that is independent of the
+underlying hardware. Only the hardware specific interfacing code must be
+modified if components are replaced.
+
+The primary benefit of this design choice is improved portability and reduced
+dependency on specific hardware platforms, thereby lowering project risk in the
+context of a software engineering capstone. However, this approach introduces
+additional complexity in both implementation and maintenance of the generalized
+abstraction layer.
+
+The hardware abstraction layer is implemented in $src/hardware\_interface$
+folder. STM32 interfacing code is located in $src/lib/STM32CubeF7$ folder.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{sys_layer.png}
+    \caption{System layer diagram.}
+    \label{fig:system_layer}
+\end{figure}
+
+\subsection{Software Considerations}
+
+Hardware constraints significantly influenced software design decisions at the
+implementation level. In particular, the microcontroller provides approximately
+500 KB of usable RAM, which is insufficient for computationally intensive tasks.
+As a result, the software was designed to minimize memory usage by reusing
+objects by employing references instead of creating unnecessary copies.
+
+With this constraint, all algorithms were required to be lightweight and
+memory-efficient. This is the primary reason for the team not implementing
+a machine learning model for audio classification or direction of arrival
+estimation, as there was insufficient memory to store and execute such models.
+Additionally, limited RAM capacity restricted the number of audio samples that
+could be processed simultaneously. While a larger number of samples generally
+improves signal quality and analysis accuracy, memory limitations constrained
+the system to approximately 2000 samples per microphone
+(about 125~ms of audio data).
+
+Given the potential for hardware-related failures, the software was designed
+with error detection and recovery mechanisms if possible. All operations
+susceptible to failure, including memory allocation, configuration, and
+hardware initialization, are explicitly checked, and appropriate error codes are
+returned and handled accordingly. Without these safeguards, the system would
+default to an infinite loop of doing nothing, which degrades user experience.
+Incorporating structured error handling also enables more efficient debugging
+of system faults during development.
 
 \newpage 
 
