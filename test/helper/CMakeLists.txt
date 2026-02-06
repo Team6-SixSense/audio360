@@ -6,6 +6,7 @@ add_subdirectory(operations)
 
 # Define test executable files.
 target_sources(${TestExecutable} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/mode_filter_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/test_helper.cpp
 )
 

@@ -12,6 +12,7 @@
 #include "classification.h"
 #include "doa.h"
 #include "embedded_mic.h"
+#include "filter.hpp"
 #include "logging.hpp"
 #include "packet.h"
 #include "peripheral.h"
@@ -38,6 +39,10 @@ static DOA doa{DOA_SAMPLES};
 static Classification classifier{MIC_BUFFER_SIZE / 2, NUM_MEL_FILTERS,
                                  NUM_DCT_COEFF, NUM_PCA_COMPONENTS,
                                  NUM_CLASSES};
+static ModeFilter<DirectionLabel> directionModeFilter(
+    DIRECTION_MODE_FILTER_SIZE);
+static ModeFilter<ClassificationLabel> classificationModeFilter(
+    CLASSIFICATION_BUFFER_SIZE);
 
 void mainAudio360() {
   INFO("Running Audio360.");
@@ -72,13 +77,18 @@ void mainAudio360() {
       INFO("Running DoA estimation.");
       float angle_rad = runDoA(newData);
       INFO("DoA angle: %f rad.", angle_rad);
+      DirectionLabel direction = angleToDirection(angle_rad);
+      directionModeFilter.update(direction);
 
+      INFO("Running Audio classification.");
       std::string prediction = runClassification(newData);
       INFO("Classification: %s", prediction.c_str());
+      ClassificationLabel classification = StringToClassification(prediction);
+      classificationModeFilter.update(classification);
 
-      vizPacket.classification = StringToClassification(prediction);
-
-      vizPacket.direction = angleToDirection(angle_rad);
+      INFO("Creating visualization packet.");
+      vizPacket.classification = classificationModeFilter.getMostOccurring();
+      vizPacket.direction = directionModeFilter.getMostOccurring();
 
       std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
