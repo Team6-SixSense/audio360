@@ -5,12 +5,14 @@
  ******************************************************************************
  */
 
-#include "lda.h"
-
+#include <cmath>
 #include <stdio.h>
+
+#include "lda.h"
 
 #include "classificationLabel.h"
 #include "classification_constants.h"
+#include "constants.h"
 
 
 std::vector<float> LDA_CLASS_WEIGHTS_DATA;
@@ -147,20 +149,30 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVe
     }
   }
 
+  float totalConfidence = 0.0f;
+
   // 3) Per-frame argmax + majority vote (same as before)
   std::vector<int> classCounts(this->numClasses, 0);
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * this->numClasses;
     float maxScore = scores.pData[rowStart];
+    float total = std::exp(maxScore);
     uint16_t best = 0;
     for (uint16_t c = 1; c < this->numClasses; ++c) {
       const float s = scores.pData[rowStart + c];
+      total += std::exp(s);
       if (s > maxScore) {
         maxScore = s;
         best = c;
       }
     }
+    totalConfidence += std::exp(maxScore)/total;
     classCounts[best]++;
+  }
+  totalConfidence /= numFrames;
+
+  if (totalConfidence < CONFIDENCE_THRESHOLD) {
+    return ClassificationLabel::Unknown;
   }
 
   int bestCount = classCounts[0];
