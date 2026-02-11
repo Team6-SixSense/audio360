@@ -170,7 +170,7 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVe
   }
   totalConfidence /= numFrames;
 
-  if (totalConfidence < 0.7) {
+  if (totalConfidence < CONFIDENCE_THRESHOLD) {
     return ClassificationLabel::Unknown;
   }
 
