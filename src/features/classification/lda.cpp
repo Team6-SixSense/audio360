@@ -12,6 +12,7 @@
 
 #include "classificationLabel.h"
 #include "classification_constants.h"
+#include "constants.h"
 
 
 std::vector<float> LDA_CLASS_WEIGHTS_DATA;
