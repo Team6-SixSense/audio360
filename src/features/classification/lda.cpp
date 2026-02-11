@@ -5,9 +5,10 @@
  ******************************************************************************
  */
 
-#include "lda.h"
-
+#include <cmath>
 #include <stdio.h>
+
+#include "lda.h"
 
 #include "classificationLabel.h"
 #include "classification_constants.h"
