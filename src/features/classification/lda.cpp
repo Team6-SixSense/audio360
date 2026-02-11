@@ -154,12 +154,10 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVe
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * this->numClasses;
     float maxScore = scores.pData[rowStart];
-    printf("frame:%d, class: %d, score: %f", frame, classTypes[0], maxScore);
     float total = std::exp(maxScore);
     uint16_t best = 0;
     for (uint16_t c = 1; c < this->numClasses; ++c) {
       const float s = scores.pData[rowStart + c];
-      printf("frame:%d, class: %d, score: %f", frame, c, s);
       total += std::exp(s);
       if (s > maxScore) {
         maxScore = s;
@@ -171,7 +169,6 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVe
   }
   totalConfidence /= numFrames;
 
-  printf("confidence: %f", totalConfidence);
   if (totalConfidence < 0.7) {
     return ClassificationLabel::Unknown;
   }
