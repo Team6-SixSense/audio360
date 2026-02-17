@@ -33,6 +33,7 @@
 2025-11-18 & Sathurshan & Update Proof of Concept scope\\
 2025-11-26 & Sathurshan & Change Clang Static Analyzer to Cppcheck\\
 2025-12-12 & Omar & Update Team Charter with conflict and resolutions.\\
+2026-02-18 & Sathurshan & Update code coverage tools.\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -478,10 +479,9 @@ prototyping and visualization, unit tests will generally not be written.
 However, if correctness becomes critical,
 \href{https://docs.pytest.org/}{pytest} will be used.
 
-Code coverage for C/C++ will be measured using
-\href{https://gcc.gnu.org/onlinedocs/gcc/Gcov.html}{gcov} and visualized with
-\href{https://wiki.documentfoundation.org/Development/Lcov}{lcov}. Coverage
-metrics will not be collected for Python tests if any are written.
+Code coverage for C/C++ will be measured and visualized using
+\href{https://gcovr.com/en/stable/}{gcovr}, which is a Python library that wraps
+\href{https://gcc.gnu.org/onlinedocs/gcc/Gcov.html}{gcov}.
 
 \subsection{CI/CD}
 

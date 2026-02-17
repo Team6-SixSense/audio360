@@ -41,28 +41,28 @@
             }
         },
         {
-            "label": "Build x86 64 Preset",
+            "label": "Build MinGW Preset",
             "type": "shell",
-            "command": "cmake --preset native-x86_64-Visual-Studio",
-            "detail": "Configures the project using the native-x86_64-Visual-Studio preset, setting up all toolchains, options, and build files.",
+            "command": "cmake --preset native-mingw",
+            "detail": "Configures the project using the native-mingw preset, setting up all toolchains, options, and build files.",
             "presentation": {
                 "reveal": "always"
             }
         },
         {
-            "label": "Build x86 64",
+            "label": "Build MinGW",
             "type": "shell",
-            "command": "cmake --build --preset build-x86_64-VS",
-            "detail": "Builds (compiles) the project using the build-x86_64-VS preset based on the previously generated configuration.",
+            "command": "cmake --build --preset build-mingw",
+            "detail": "Builds (compiles) the project using the build-mingw preset based on the previously generated configuration.",
             "presentation": {
                 "reveal": "always"
             }
         },
         {
-            "label": "Build x86 64 All",
+            "label": "Build MinGW All",
             "dependsOn": [
-                "Build x86 64 Preset",
-                "Build x86 64"
+                "Build MinGW Preset",
+                "Build MinGW"
             ],
             "dependsOrder": "sequence",
             "detail": "Configures and builds the project using the build-x86_64-VS preset.",
