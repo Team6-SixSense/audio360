@@ -1,3 +1,10 @@
+/**
+ ******************************************************************************
+ * @file    realTimePolling.h
+ * @brief   Real-time polling header.
+ ******************************************************************************
+ */
+
 #pragma once
 
 #include <vector>
@@ -10,7 +17,7 @@
  * each simulated time step.
  */
 class RealTimePolling {
-public:
+ public:
   /**
    * @brief Constructs a new RealTimePolling object.
    *
@@ -39,7 +46,7 @@ public:
    */
   std::vector<double> getCurrentData();
 
-private:
+ private:
   /** @brief The number of samples in each simulated real-time window. */
   size_t windowSize{0};
 

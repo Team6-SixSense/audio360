@@ -1,0 +1,136 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Clean All",
+            "type": "shell",
+            "command": "rm -r build",
+            "detail": "Nukes the entire build folder.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build ARM Preset",
+            "type": "shell",
+            "command": "cmake --preset arm-cortex-m7",
+            "detail": "Configures the project using the arm-cortex-m7 preset, setting up all toolchains, options, and build files.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build ARM",
+            "type": "shell",
+            "command": "cmake --build --preset build-arm",
+            "detail": "Builds (compiles) the project using the build-arm preset based on the previously generated configuration.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build ARM All",
+            "dependsOn": [
+                "Build ARM Preset",
+                "Build ARM"
+            ],
+            "dependsOrder": "sequence",
+            "detail": "Configures and builds the project using the arm-cortex-m7 preset.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Preset",
+            "type": "shell",
+            "command": "cmake --preset native-x86_64-Visual-Studio",
+            "detail": "Configures the project using the native-x86_64-Visual-Studio preset, setting up all toolchains, options, and build files.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64",
+            "type": "shell",
+            "command": "cmake --build --preset build-x86_64-VS",
+            "detail": "Builds (compiles) the project using the build-x86_64-VS preset based on the previously generated configuration.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 All",
+            "dependsOn": [
+                "Build x86 64 Preset",
+                "Build x86 64"
+            ],
+            "dependsOrder": "sequence",
+            "detail": "Configures and builds the project using the build-x86_64-VS preset.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Preset Ninja",
+            "type": "shell",
+            "command": "cmake --preset native-x86_64-Ninja",
+            "detail": "Configures the project using the native-x86_64-Ninja preset, setting up all toolchains, options, and build files.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Ninja",
+            "type": "shell",
+            "command": "cmake --build --preset build-x86_64-NINJA",
+            "detail": "Builds (compiles) the project using the build-x86_64-Ninja preset based on the previously generated configuration.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 All Ninja",
+            "dependsOn": [
+                
+                "Build x86 64 Preset Ninja",
+                "Build x86 64 Ninja"
+            ],
+            "dependsOrder": "sequence",
+            "detail": "Configures and builds the project using the build-x86_64-NINJA preset.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Preset Tests Ninja",
+            "type": "shell",
+            "command": "cmake --preset native-x86_64-Ninja-Tests -DBUILD_TESTS=ON",
+            "detail": "Configures the project using the native-x86_64-Ninja-Tests preset, setting up all toolchains, options, and build files.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Tests Ninja",
+            "type": "shell",
+            "command": "cmake --build --preset build-x86_64-NINJA-TESTS",
+            "detail": "Builds (compiles) the tests using the build-x86_64-NINJA-TESTS preset",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Build x86 64 Tests All Ninja",
+            "dependsOn": [
+                
+                "Build x86 64 Preset Tests Ninja",
+                "Build x86 64 Tests Ninja"
+            ],
+            "dependsOrder": "sequence",
+            "detail": "Configures and builds the project using the build-x86_64-NINJA-TESTS preset.",
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+    ]
+}

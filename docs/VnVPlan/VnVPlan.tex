@@ -3,6 +3,7 @@
 \usepackage{amssymb}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{longtable}
 \usepackage[x11names]{xcolor}
 \usepackage{hyperref}
 \usepackage{xr}
@@ -22,6 +23,7 @@
 \setlength{\parindent}{0pt} % Set no indent to entire document.
 
 \externaldocument[SRS-]{../SRS/SRS}
+
 
 \begin{document}
 
@@ -45,6 +47,12 @@
 2025-10-31 & 2.2 & Merics included to checklist in section 4.3 \\
 2025-10-31 & 2.3 & Clearly stating exclusion of specific non-dynamic testing \\
 2025-10-31 & 2.4 & Defining success criteria for software validation \\
+2025-11-12 & 2.5 & Referencing SRS symbols table. \\
+2025-11-20 & 3.0 & Update extras \\
+2025-11-26 & 3.1 & Change Clang Static Analyzer to Cppcheck \\
+2025-12-12 & 3.2 & Remove some unnecessary test details and add reference for 
+eye movement\\
+2025-01-06 & 3.3 & Update angle units from degrees to radians. \\
 \hline
 \end{tabularx}
 
@@ -52,22 +60,31 @@
 
 \tableofcontents
 
+\listoftables
 
 \newpage
 
 \section{Symbols, Abbreviations, and Acronyms}
 
 \renewcommand{\arraystretch}{1.2}
-\begin{tabular}{|l|l|} 
-  \hline	
-  \textbf{symbol} & \textbf{description}\\
-  \hline
-  T & Test\\
-  FR & Functional Requirement\\
-  NFR & Non-Functional Requirement\\
-  \hline
-\end{tabular}\\
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|} 
+    \hline	
+    \textbf{symbol} & \textbf{description}\\
+    \hline
+    FR & Functional Requirement\\
+    NFR & Non-Functional Requirement\\
+    T & Test\\
+    VnV & Verification and Validation \\
+    \hline
+  \end{tabular}
+  \caption{Symbols, abbreviations and acronyms used in the VnV plan document.}
+\end{table}
 
+See SRS Documentation at
+\hyperref[SRS-sec:symbols]{Symbols, Abbreviations, and Acronyms}
+for a complete table used in \progname.
 
 \newpage
 
@@ -169,28 +186,25 @@ particularly challenging aspect is achieving precise microphone synchronization,
 as any timing discrepancies between microphones will render direction of arrival
 estimation impossible, effectively making the system's primary feature
 unachievable.
+\newline
 
 \textbf{Extras:}
 \begin{itemize}
-    \item \textbf{Usability Testing:} Comprehensive user validation sessions
-    with members of the McMaster Sign Language Club to ensure the system
-    effectively addresses the needs of individuals who are deaf or hard of
-    hearing. This includes structured interviews and observation sessions to
-    validate both functionality and user experience.
+    \item \textbf{Price + Hardware Selection Report:} 
+    Detailed report about the hardware selection process to meet software
+    requirements for the project. The report will include pricing details
+    and sources for acquiring hardware, as well as the hardware set-up.
     
-    \item \textbf{Code Walkthroughs:} Systematic peer review processes for
-    critical system components, particularly audio processing algorithms and
-    safety-critical code paths. This ensures code quality and helps identify
-    potential issues early in the development process.
-    
-    \item \textbf{User Documentation:} Development of comprehensive user guides
-    and instructional materials to help end-users effectively utilize the
-    system. This includes setup instructions, usage scenarios, and
-    troubleshooting guides.
+    \item \textbf{Theory Report:} 
+    The theory report will focus on documenting Direction of Arrival analysis
+    and sound classfication theory. The theory will go in depth on how 
+    the algorithms work using digital signal processing techniques.
+    The report will also go over intiial development and testing of these
+    algorithms using the pyroomacoustics library \cite{pyroomacoustics}. 
 \end{itemize}
 
-These extras enhance the project's value by ensuring both technical excellence
-and practical usability for the target user community.
+These extras enhance the project's value by documenting technical excellence
+acheived in the capstone.
 
 \subsection{Relevant Documentation}
 
@@ -253,12 +267,7 @@ implementation components, ensuring an unbiased evaluation of system
 functionality. The supervisor also contributes by providing technical oversight
 and expert validation for signal processing.
 
-\noindent
-\textbf{Table: Verification and validation team breakdown}
-\label{table:vnv_team}
-
-\noindent
-\begin{tabularx}{\textwidth}{|p{4cm}|X|p{3cm}|}
+\begin{longtable}{|p{4cm}|p{6cm}|p{2cm}|}
 \hline
 \textbf{Role} & \textbf{Description} & \textbf{Assignee} \\
 \hline
@@ -295,7 +304,9 @@ Reviews and assesses the audio processing methodologies implemented. The team
 will demonstrate and explain these techniques in a supervisor meeting and
 receive verbal or written feedback. & MVM (Supervisor) \\
 \hline
-\end{tabularx}
+
+\caption{verification and validation team breakdown} \label{table:vnv_team}
+\end{longtable}
 
 \subsection{SRS Verification}\label{sec:srs_verification}
 
@@ -309,6 +320,7 @@ implementation of the component. These fall under the
 \hyperref[role:firmware_verfication]{firmware verification},
 \hyperref[role:visual_vnv]{visual verification},
 \hyperref[role:classification_verfication]{audio classification verification},
+and
 \hyperref[role:directional_verfication]{directional analysis verification}
 roles. \newline
 
@@ -331,13 +343,25 @@ explaining the rationale for the change.
 The 
 \hyperref[role:audio_processing_verification]{supervisor verification process}
 will follow a formal meeting based review approach. During these meetings, the
-team will present core system elements, mainly audio processing methodologies,
+team will present core system elements - mainly audio processing methodologies -
 using mathematical descriptions, prototype demonstrations, and graphed data. The
-supervisor will be provided with targeted review questions and asked to identify
+supervisor will be provided with targeted
+\hyperref[questions:supervisor]{review questions}  and asked to identify
 potential weaknesses or missing test cases. Feedback will be documented, and
 resulting action items will be tracked and resolved through the project's issue
 tracker. \newline
 
+\textbf{Supervisor Audio Processing Verification Questions}
+\label{questions:supervisor}
+\begin{enumerate}
+  \item Are the derived audio processing formulas correct in the context of this
+    project?
+
+  \item Are the assumptions that the team made about audio processing in the
+    context of the project make sense?
+  \item Is there anything in particular in the processed audio results that does
+     not make sense?
+  \end{enumerate}
 
 \subsection{Design Verification}\label{sec:design_verification}
 
@@ -385,7 +409,7 @@ be developed in C/C++. The compiler used to build the source code will provide
 warnings of potential bugs. The team will resolve all warnings that is under the
 team's control, this excludes warnings from imported libraries. \newline
 
-The team will also employ Clang Static Analyzer \cite{clangStaticAnalyzer} as a
+The team will also employ Cppcheck \cite{Cppcheck} as a
 static analyzer tool. The static analyzer will be employed to detect bugs
 without running the source code on the hardware, and will be ran prior to
 merging PRs. It will block the PR from merging until all issues identified by
@@ -407,7 +431,7 @@ from the Development Plan document.
   \item 10.3: Linter, Static Analyzer and Formatting Tools
   \begin{itemize}
     \item Clangformat \cite{ClangFormat}
-    \item Clang Static Analyzer \cite{clangStaticAnalyzer}
+    \item Cppcheck \cite{Cppcheck}
   \end{itemize}
   \item 10.4: Testing Frameworks (section also includes code coverage)
   \begin{itemize}
@@ -419,6 +443,7 @@ from the Development Plan document.
   \begin{itemize}
     \item Run all unit tests (PR blocking)
     \item Build source code using compiler (PR blocking)
+    \item Run code static analyzer (PR blocking)
   \end{itemize}
 \end{itemize}
 
@@ -1054,9 +1079,8 @@ Mock audio data from the audio filtering module with no error flags.
 
 \textbf{Output:}
 All components in the system are expected to log important events for debugging
-purposes. The Audio360 Engine module starts the processing pipeline by notifying
-the dependent components to begin processing the new audio data. The sent
-notification and received acknowledgment from dependent components should be
+purposes. The notification sent by the Audio360 engine to dependent components
+and the received acknowledgment from dependent components should be
 logged in the debugging logs for verification of pipeline integrity. 
 
 \textbf{Test Case Derivation:}
@@ -1086,8 +1110,7 @@ Mock audio data from the audio filtering module with no error flags.
 The Audio360 Engine module manages the flow of data through the processing
 pipeline. It ensures that each component processes the data in the correct order
 and that the output of one component is correctly passed as input to the next
-component. The flow of data through the pipeline should be logged for
-verification. Every dependent component in the pipeline is executed correctly
+component. Every dependent component in the pipeline is executed correctly
 and in order.
 
 \textbf{Test Case Derivation:}
@@ -1170,7 +1193,11 @@ sample with a class level accuracy of at least 90\%.
 \textbf{Test Case Derivation:}
 The Frequency Analysis module is responsible for classifying audio sources based
 on their frequency-domain characteristics. By providing known samples, the
-module's classification accuracy can be evaluated.
+module's classification accuracy can be evaluated. The 90\% accuracy requirement
+is chosen since it is an achievable metric given the compute resolution 
+constraints. This accuracy requirement strikes a balance between computational
+load and user benefit. 100\% accuracy is unlikely to be achieved without
+significant control of the user's surrounding environment. 
 
 \textbf{How test will be performed:}
 The test will be performed automatically by feeding the frequency domain data of
@@ -1208,24 +1235,28 @@ originating from known directions relative to the microphone array.
 \textbf{Output:}
 The Frequency Analysis module processes input samples from the four microphone
 array and outputs the estimated direction of each audio source. The estimated
-direction should be within +/- 45 degrees of the known direction for each
-sample.
+direction should be within \hyperref[SRS-symbol:theta_e]{$\theta_e$} radians of
+the known direction for each sample.
 
 \textbf{Test Case Derivation:}
 The Frequency Analysis module is responsible for estimating the direction of
 audio sources based on the frequency-domain characteristics captured by the
 microphone array. By providing samples from known directions, the module's
-direction estimation accuracy can be evaluated.
+direction estimation accuracy can be evaluated. The
+\hyperref[SRS-symbol:theta_e]{$\theta_e$} metric
+ensures that the localization is accurate to at-least half an euclidean space
+quadrant which is approximately the range of motion of human eyes \cite{Eye_Hang_Woo}. 
 
 \textbf{How test will be performed:}
 The test will be performed automatically by feeding the frequency domain data of
 the known direction samples to the Frequency Analysis module. The estimated
 directions will be compared against the known directions to calculate the
-estimation accuracy. All estimated directions must be within the +/- 45 degree
+estimation accuracy. All estimated directions must be within the 
+\hyperref[SRS-symbol:theta_e]{$\theta_e$} 
 threshold of the known directions. In addition, the Mean Absolute Error (MAE)
 will be calculated to quantify the average direction estimation error across all
-samples. The MAE will need to be below 22.5 degrees for the test to pass using
-the formula:
+samples. The MAE will need to be below $\frac{\theta_e}{2}$ for the test to pass
+using the formula:
 
 \[
 \text{MAE} = \frac{1}{N} \sum_{i=1}^{N} | \text{Estimated Direction}_i - 
@@ -1320,7 +1351,7 @@ the microcontroller is connected to the output display.
 \textbf{Input:}
 A mock audio source direction input, represented as the object taken by the
 Visualization Controller module. The object will include an angle parameter in
-degrees (0 to 360°), indicating the direction of the audio source relative to
+radians (0 to $2\pi$), indicating the direction of the audio source relative to
 the user. This can be an arbitrary angle, such as 0°, 90°, 180°, 270°. 
 					
 \textbf{Output:}
@@ -1801,7 +1832,7 @@ the microcontroller is connected to the output display.
 \textbf{Input/Condition:} 
 A series of mock audio source direction inputs, represented as the object taken
 by the Visualization Controller module. The object will include an angle
-parameter in degrees (0 to 360°), indicating the direction of the audio source
+parameter in radians (0 to $2\pi$), indicating the direction of the audio source
 relative to the user. These can be an arbitrary angles.
 					
 \textbf{Output/Result:} 

@@ -8,11 +8,11 @@ on:
       - 'test/**'
       - '**/CMakeLists.txt'
   pull_request:
-    branches: [ main ]
     paths:
       - 'src/**'
       - 'test/**'
       - '**/CMakeLists.txt'
+      - '.github/workflows/buildsrc.yml'
 
 jobs:
   build:

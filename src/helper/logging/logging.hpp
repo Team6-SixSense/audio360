@@ -7,18 +7,18 @@
 #pragma once
 
 #ifdef STM_BUILD
-#include "hardware_interface/system/peripheral.h"
+#include "peripheral.h"
 #endif
 
 /* Logging macros. */
 #if LOGGING_ENABLED && defined(STM_BUILD)
-#define ERROR(fmt, ...)                                                        \
+#define ERROR(fmt, ...) \
   printf("[ERROR] %s:%d " fmt "\n\r", __FILE__, __LINE__, ##__VA_ARGS__)
-#define WARN(fmt, ...)                                                         \
+#define WARN(fmt, ...) \
   printf("[WARN] %s:%d " fmt "\n\r", __FILE__, __LINE__, ##__VA_ARGS__)
-#define INFO(fmt, ...)                                                         \
+#define INFO(fmt, ...) \
   printf("[INFO]  %s:%d " fmt "\n\r", __FILE__, __LINE__, ##__VA_ARGS__)
-#define DEBUG(fmt, ...)                                                        \
+#define DEBUG(fmt, ...) \
   printf("[DEBUG] %s:%d " fmt "\n\r", __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define ERROR(fmt, ...)

@@ -6,103 +6,57 @@
  */
 
 #ifdef STM_BUILD
-#include "hardware_interface/system/peripheral.h"
-#include "hardware_interface/sd_logger/FatFs/App/fatfs.h"
-#else
-#include "features/signal_processing/fft.h"
+#include "peripheral.h"
 #endif
 
-#define DEBUG_I2S_MIC
-
-#include "helper/logging/logging.hpp"
 #include <stdio.h>
-#include "string.h"
-
-// Define the number of samples you want to capture for one waveform snapshot
-#define WAVEFORM_SAMPLES 256
-
-int main() {
 
 #ifdef STM_BUILD
-  // Set-up pheripherals. Must call before any hardware function calls.
-  setupPeripherals();
+#define RUNTIME_AUDIO360
 #else
-  std::vector<double> test_vec;
-  FFT fft_test(static_cast<uint16_t>(test_vec.size()));
-#endif
-  //some variables for FatFs
-  FATFS FatFs; 	//Fatfs handle
-  FIL fil; 		//File handle
-  FRESULT fres; //Result after operations
-
-  //Open the file system
-  fres = f_mount(&FatFs, "", 1); //1=mount now
-  if (fres != FR_OK) {
-    ERROR("f_mount error (%i)\r\n", fres);
-    while(1);
-  }
-
-  fres = f_open(&fil, "write.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
-  if(fres == FR_OK) {
-    INFO("I was able to open 'write.txt' for writing\r\n");
-  } else {
-    ERROR("f_open error (%i)\r\n", fres);
-  }
-
-  BYTE readBuf[30];
-  strncpy((char*)readBuf, "a new file is made!", 19);
-  UINT bytesWrote;
-  fres = f_write(&fil, readBuf, 19, &bytesWrote);
-  if(fres == FR_OK) {
-    INFO("Wrote %i bytes to 'write.txt'!\r\n", bytesWrote);
-  } else {
-    ERROR("f_write error (%i)\r\n");
-  }
-
-  //Be a tidy kiwi - don't forget to close your file!
-  f_close(&fil);
-
-  //We're done, so de-mount the drive
-  f_mount(NULL, "", 0);
-
-  while (1) {
-
-#ifdef DEBUG_I2S_MIC
-    int32_t waveform_buffer[WAVEFORM_SAMPLES];
-    SAI_HandleTypeDef *handle = getSAI_Handle();
-
-    // 1. Capture a buffer of audio samples
-    for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
-      uint32_t raw_sample = 0;
-      // Receive one sample (based on your finding that size=1 works)
-      HAL_StatusTypeDef status = HAL_SAI_Receive(handle, (uint8_t *)&raw_sample, 1, 100);
-
-      if (status == HAL_OK) {
-        // Sign-extend the 24-bit sample to a 32-bit signed integer
-        if (raw_sample & 0x00800000) {
-          waveform_buffer[i] = raw_sample | 0xFF000000;
-        } else {
-          waveform_buffer[i] = raw_sample;
-        }
-      } else {
-        // If there's an error, just record a zero
-        waveform_buffer[i] = 0;
-      }
-    }
-
-    // 2. Print the captured waveform data to the serial console
-    // Use standard printf for easy copy-pasting
-    printf("---START_WAVEFORM_DATA---\r\n");
-    for (int i = 0; i < WAVEFORM_SAMPLES; i++) {
-      printf("%ld\r\n", waveform_buffer[i]);
-    }
-    printf("---END_WAVEFORM_DATA---\r\n");
-
-    // Delay for a couple of seconds before capturing the next waveform
-    HAL_Delay(2000);
+#define RUNTIME_FFT
 #endif
 
-  }
+#if defined(STM_BUILD) && defined(RUNTIME_FFT)
+#error "The SimpleFFT runtime is not meant for the STM32 MCU".
+#endif
+
+#ifdef STM_BUILD
+#include "runtimes/runtime_android_comm.hpp"
+#include "runtimes/runtime_audio360.hpp"
+#include "runtimes/runtime_usb_tx.hpp"
+#else
+#include "runtimes/runtime_fft.hpp"
+#endif
+
+#ifdef BUILD_GLASSES_HOST
+#define USBH_USE_OS 0
+#include "usb_host.h"
+#endif
+
+int main() {
+#ifdef STM_BUILD
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+
+
+#endif
+
+#ifdef RUNTIME_AUDIO360
+  mainAudio360();
+#endif
+
+#ifdef RUNTIME_USB_TX
+  main_usb_tx();
+#endif
+
+#ifdef RUNTIME_ANDROID_COMM
+  mainAndroidComm();
+#endif
+
+#ifdef RUNTIME_FFT
+  mainRuntimeFFT();
+#endif
 
   return 0;
 }

@@ -8,7 +8,8 @@
       "binaryDir": "${sourceDir}/build/arm",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/src/cmake/arm-eabi-none-gcc.cmake",
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ARM_BUILD": "ON"
       }
     },
     {
@@ -17,7 +18,8 @@
       "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build/x86_64",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": "ON"
       }
     },
     {
@@ -25,6 +27,15 @@
       "displayName": "Native x86_64-NINJA",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/x86_64",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "native-x86_64-Ninja-Tests",
+      "displayName": "Native x86_64-NINJA-TESTS",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/x86_64/tests",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
@@ -45,6 +56,11 @@
     {
       "name": "build-x86_64-NINJA",
       "configurePreset": "native-x86_64-Ninja",
+      "jobs": 8
+    },
+    {
+      "name": "build-x86_64-NINJA-TESTS",
+      "configurePreset": "native-x86_64-Ninja-Tests",
       "jobs": 8
     }
   ]

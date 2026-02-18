@@ -30,11 +30,8 @@ void setupPeripherals();
  */
 void Error_Handler();
 
-/**
- *@brief Get handle to SAI module block
- */
+void SystemClock_Config(void);
 
-SAI_HandleTypeDef* getSAI_Handle();
 
 #ifdef __cplusplus
 }

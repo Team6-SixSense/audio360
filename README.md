@@ -30,5 +30,6 @@ The folders and files for this project are as follows:
     ├── .github     # Contains template and workflows for GitHub
     ├── docs        # Documentation for the project
     ├── refs        # Reference materials used for the project
+    ├── scripts     # Custom scripts used for the project
     ├── src         # Core software
     └── test        # Contains the tests for core software in src folder

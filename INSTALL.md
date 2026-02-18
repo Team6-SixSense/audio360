@@ -26,67 +26,14 @@
 
 1. The distribution you are using should come with a compiler; No extra steps necessary.
 
-## Building
-
-### Building for STM32 MCU (target hardware)
-
-1. Ensure the path to ARM gcc compiler is included in `PATH` environment variable. Alternatively set `ARM_GCC_BIN` cmake variable manually.
-
-   ```text
-   example path: C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.3 rel1/bin
-   ```
-
-2. In a terminal or IDE, CD to this directory and list the available presets.
-
-   ```bash
-   cmake --list-presets
-   ```
-
-3. Choose the `arm-cortex-m7` preset.
-
-   ```bash
-   cmake --preset arm-cortex-m7
-   ```
-
-4. Once CMake successfully generates the build files, build the .elf binary using the following.
-
-   ```bash
-   cmake --build --preset build-arm
-   ```
-
-5. The binary will be available in `build/arm/src/<release_type>`.
-
-### Building for Windows (Testing purposes)
-
-1. In a terminal or IDE, CD to this directory and list the available presets:
-
-   ```bash
-   cmake --list-presets
-   ```
-
-2. Choose the `native-x86_64-Visual-Studio` preset.
-
-   ```bash
-   cmake --preset native-x86_64-Visual-Studio
-   ```
-
-3. Once CMake successfully generates the build files, build the .elf binary using the following.
-
-   ```bash
-   cmake --build --preset build-x86_64-VS
-   ```
-
-4. Binary will be available in `build/x86_64/src/<release_type>`.
-
 ## Deploying onto STM32
 
 1. Install clion. This will be used for debugging and deploying.
 2. Download the latest of openOCD from <https://gnutoolchains.com/arm-eabi/openocd/>
 3. Set the executable path of openOCD on clion.
-4. link the .cfg file
+4. link the .cfg file. `src/configs/st_nucleo_f7.cfg`
 5. Set up GDB with interface and target config.
-
-TODO: define the files names that need to be linked here.
+6. Set `arm-cortex-m7` as the cmake profile when building.
 
 ### Windows Note
 

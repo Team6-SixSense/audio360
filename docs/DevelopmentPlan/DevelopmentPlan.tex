@@ -19,6 +19,7 @@
 
 \newpage{}
 
+
 \begin{table}[hp]
 \caption{Revision History} \label{TblRevisionHistory}
 \begin{tabularx}{\textwidth}{llX}
@@ -28,7 +29,11 @@
 2025-09-22 & Nirmal, Sathurshan, Omar, Kalp, Jay & Initial Write-up\\
 2025-10-11 & Sathurshan & Defining static analyzer tool\\
 2025-10-26 & Sathurshan & Updating Proof of Concept scope\\
+2025-11-01 & Nirmal & Update Team Member Technical Roles \\
 2025-11-04 & Kalp & Revision from TA feedback\\
+2025-11-18 & Sathurshan & Update Proof of Concept scope\\
+2025-11-26 & Sathurshan & Change Clang Static Analyzer to Cppcheck\\
+2025-12-12 & Omar & Update Team Charter with conflict and resolutions.\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -87,7 +92,7 @@ below:
   \item Additional discussions (10 minutes)
 \end{itemize}
 
-\section{Team Communication Plan}
+\section{Team Communication Plan} \label{sec:TeamCommunicationPlan}
 
 The team will use the following communication methods for each of the scenarios
 listed:
@@ -123,6 +128,11 @@ listed:
 
 \section{Team Member Roles}\label{sec:TeamMemberRoles}
 
+From an admin perspective, each team member will have unique responsibilities
+they are expected to carry out. These responsibilities are defined under 
+distinct roles each member has been assigned to. A breakdown of the roles, 
+responsibilities, qualifications and assignee has been provided below. 
+
 \begin{itemize}
   \item Leader (Sathurshan Arulmohan) \label{role:leader}
     \begin{itemize}
@@ -133,7 +143,7 @@ listed:
       responsbile for the overall direction of the project and the technical 
       implementation of the project on the hardware platform.
     \end{itemize}
-  \item Meeting chair (Kalp Shah) \label{role:meeting_chair}
+  \item Meeting Chair (Kalp Shah)
     \begin{itemize}
       \item Creates the agenda for meetings.
       \item Facilitates the meetings.
@@ -182,6 +192,7 @@ should include what is being worked on (doc, fix, feature, test), the issue
 number that is being worked on, and a one line description of what was done.
 For traceability, each commit made to the branch should be specific to one
 issue.
+\newline
 
 When an issue is ready for review, a pull request must be created and assigned
 to at least one member of our team. For traceability reasons, all issues
@@ -193,6 +204,7 @@ each PR requires at least 1 approval before being merged. A default
 for PRs has also been created so the assignee can provide information of what
 exactly is done in that PR, and for all PRs to follow a consistent format. A PR
 should never be force merged into main if it contains pipeline errors.
+\newline
 
 Issues will be managed using the Kanban board projects linked to our github
 repository. We will have one general 
@@ -261,28 +273,52 @@ boards for. Note, the dates listed in each milestone are subject to change.
   \item EXPO Demonstration (TBD)
 \end{enumerate}
 
-\section{Proof of Concept Demonstration Plan}
+\section{Proof of Concept (PoC) Demonstration Plan}
 
-The biggest risk for the success of the project is the risk of not having a
+The biggest risk \label{risk} for the success of the project is the risk of not
+having a
 synchronized microphone array that can recognize the directionality of an audio
 source. This is the fundamental technology that the rest of the project and
 stretch goals are build upon (excluding the audio classification component).
 Consequently, additional time will be required to set up and verify the hardware
 requirements. As a result, the proof of concept will be de-scoped to run
 on local development devices.
+\newline
 
-The goal of the proof of concept demonstration is to showcase the system's
+The goal of the Proof of Concept demonstration is to showcase the system's
 ability to determine the direction of a sound source within a margin of error of
 45 degrees in a 2D plane. The demonstration will be conducted using 
 \href{https://pypi.org/project/pyroomacoustics/}{pyroomacoustics}'s
 simulation environment, where both the sound sources and their acoustic
-properties will be simulated. Additionally, the PoC will demonstrate the.
+properties will be simulated. Additionally, the PoC will demonstrate a basic
+working prototype of the
 \hyperlink{audio_classification_component}{audio classification component},
 which classifies at least three distinct sound sources relevant to stakeholder
-needs.
+needs. The output will be presented in a debug view.
+\newline
 
-Subsequent revisions will focus on migrating the software functionality to the
-hardware platform intended for stakeholder release. 
+The team will also present the intended visualization for the smart glasses.
+As the glasses have not yet arrived by the PoC milestone, this visualization
+will be demonstrated on a development computer. This view will integrate both
+directional analysis and audio classification outputs, and represents the
+user interface intended for end users.
+\newline
+
+Also, the team will present progress on hardware development. This includes
+the microphone array wired to the microcontroller on a breadboard and the
+supporting firmware integrated to interface with the microphones. The team will
+additionally demonstrate four microphones operating in synchronization, along
+with verification of captured audio data. In the PoC demo setup, the microphones
+will collect audio from the environment, transmit the data to a development
+computer, and display the corresponding frequency information while also
+replaying the audio through a speaker in real time.
+\newline
+
+At the time of PoC, microphone synchronization and audio data verification
+have been successfully completed, addressing the
+\hyperref[risk]{primary project risk} identified earlier. With this milestone
+achieved, subsequent revisions will focus on migrating the software
+functionality to the hardware platform intended for stakeholder release.
 
 If the PoC were to be unsuccessful, the team will narrow down the scope of the
 project and re-evaluate the project scope and goals. The scope would most likely
@@ -336,12 +372,15 @@ for plotting data. \\ \hline
 \end{table}
 
 \subsection{Linter, Static Analyzer and Formatting Tools}
+\label{sec:linter}
+\label{sec:static_analyzer_tool}
 
 \href{https://clang.llvm.org/docs/ClangFormat.html}{ClangFormat} will be used
 for autoformatting C/C++ code, ensuring compliance with the
 \nameref{sec:coding_standards}.
-\href{https://clang-analyzer.llvm.org/}{Clang Static Analyzer} will be used as
-the static analyzer tool for C/C++ source code.
+\href{https://cppcheck.sourceforge.io/}{Cppcheck} will be used as
+the static analyzer tool for C/C++ source code. This is being used since
+it can analyze ARM code and is open source.
 Additionally, Microsoft’s
 \href{https://code.visualstudio.com/docs/languages/cpp}{C/C++ extension} in
 Visual Studio Code will be used as the C/C++ linter.
@@ -367,6 +406,9 @@ metrics will not be collected for Python tests if any are written.
   \item Run all unit tests (\textit{PR blocking}).
   \item Build source code using a compiler compatible with the target
   microcontroller (\textit{PR blocking}).
+  \item Run code static analyzer
+  \hyperref[sec:static_analyzer_tool]{(Cppcheck)}.
+  Any errors detected by the tool will block PR merges. (\textit{PR blocking})
 \end{enumerate}
 \textbf{CD} % Don't create a new line before here; else auto-indent.
 \begin{enumerate}
@@ -666,7 +708,7 @@ resolution approach that prioritizes direct communication, active listening, and
 finding mutually beneficial solutions to maintain a supportive working
 environment.
 
-\subsubsection*{Stay on Track}
+\subsubsection*{Stay on Track} \label{sec:SOT}
 
 We will track team performance through regular check-ins, commit frequency, and
 meeting attendance to ensure everyone contributes their fair share. For members
@@ -693,5 +735,28 @@ disagreement that cannot be resolved through discussion, we will hold a formal
 vote to reach a decision and move forward with the project. This approach
 ensures we respect everyone's input while maintaining progress when consensus
 cannot be achieved.
+
+\subsubsection*{Conflicts and Resolution}
+If every prior aspect of the team charter is effectively followed,
+there should be minimal conflicts. With any team project, conflicts
+are bound to arise. Expected types of conflicts and their resolutions are:
+
+\begin{enumerate}
+  \item Design Conflicts: The individuals disagreeing on design decisions
+  should bring their arguments to the team and expect every member to evaluate
+  their reasons objectively. If no resolution is reached, the team will consult 
+  Dr. MvM for the final resolution. 
+
+  \item Workload Conflicts: These conflicts arise when individuals do not
+  complete their work on time consistently, requiring other members to step up. 
+  They will be handled as described in the \href{sec:SOT}{Stay on Track} section.
+
+  \item Scheduling Conflicts: These conflicts arise when a team member is not
+  able to participate in team activities due the activity time and their schedule
+  conflicting. In general, the time will try to pick a time suitable for every person
+  as described in the \href{sec:TeamCommunicationPlan}{team communication plan}. 
+  If an event is considered critical and a team member is not able to attend, they 
+  must make take the initiative to catch up on what they missed. 
+\end{enumerate}
 
 \end{document}

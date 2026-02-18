@@ -26,9 +26,13 @@
 2025-09-22 & Nirmal, Sathurshan, Omar, Kalp, Jay & Initial Write-up\\
 2025-09-29 & Jay & Update goals and stretch goals\\
 2025-11-04 & Kalp & Revision from TA feedback\\
+2025-11-20 & Sathurshan & Update Extras\\
+2025-12-12 & Omar & Address TA feedback for goals and stakeholders.\\
 \bottomrule
 \end{tabularx}
 \end{table}
+
+\setlength{\parindent}{0pt}
 
 \newpage{}
 
@@ -56,55 +60,72 @@ the classification and 'on your left' would be the direction).
 
 \subsection{Stakeholders}
 
-The primary stakeholders are individuals who are deaf or hard of hearing.
-These individuals will be the end-users of the system and will benefit from the
-system's ability to provide them with a visual indication of the direction of
-audio sources and their respective classifications.
-
-The secondary stakeholders are family members and caregivers of individuals who
-are deaf or hard of hearing. These individuals will benefit from the system's
-ability to provide them with a visual indication of the direction of audio
-sources and their respective classifications.
-
-The tertiary stakeholders are employers and workplace safety officers. These
-individuals will benefit from the system's ability to provide them with a visual
-indication of the direction of audio sources and their respective 
-classifications.
+The primary stakeholder identified for this project are individuals whom are
+deaf or hard of hearing. The project will be designed with their needs in mind
+and they will benefit the most from increased situational awareness. 
+\\[\baselineskip]
+Secondary stakeholders identified include individuals who have their ears 
+covered for any reason. The brain exploits how the human 
+ear shape changes waveforms hitting the eardrum from various directions to 
+localize sound direction. Placing covers on ears such as noise cancelling 
+headphones severely degrades 
+the brain's ability to localize sound in addition to very little sound being 
+transmitted through noise cancelling headphones. The same reasoning applies for 
+construction workers who have to wear large ear muffs to protect their hearing 
+\cite{HIL_HearingCues}. 
+\\[\baselineskip]
+Other tertiary stakeholders may include smart glasses and noise cancelling 
+headphone manufacturers who may be interested in implementing the resulting 
+technology from this project. 
 
 \subsection{Environment}
+The project is expected to perform adequately in indoor and outdoor environments.
+The hardware utilized will be a compact micro-controller to allow future integration into
+a wearable device form factor. The processor will be connected to a microphone
+array over a suitable communication interface that is able to accommodate multiple
+audio streams with adequate latency.
 
-The software environment is a real-time operating system. 
-The hardware environment is a 4 dimentional microphone
-array, with each microphone connected to a microcontroller for
-processing, as well as a pair of smart glasses for the
-visual display.
+The software developed to be run on the hardware
+will adhere to real-time constraints, most likely utilizing a real-time operating
+system (RTOS) designed to execute on embedded micro-controller targets. 
+
+The user facing hardware display is expected to be a pair of smart glasses with
+an embedded display that the user can see. This display will be connected to the 
+project hardware with a wired connection for prototyping purposes. 
 
 \section{Goals}
 
 \begin{itemize}
-    \item Capture real-time audio from a set of microphones.
-    \item Syncronize a set of incoming audio sources.
-    \item Estimate direction of arrival (DoA) for single sound sources, 
-    providing reliable localization for practical use cases.
-    \item The system should be easy to use, with a user-friendly
-    interface (easy to interpret output) and no setup required.
-    \item The system should be comfortable to wear for extended periods of time,
-    with minimal discomfort or fatigue.
+    \item Capture real-time audio from a microphone array with synchronized
+    sampling.
+    \item Accurate spatial analysis and real-time processing of audio sources
+    surrounding the user.
+    \item Estimate the angular direction of multiple audio sources relative
+    to the user, providing reliable localization for practical use cases.
+    \item Develop a minimal and easy to understand user interface that overlays
+    on top of what the user sees without being intrusive.
+    \item Meaningfully improve the situational awareness of primary and secondary
+    stakeholders by means of the project with minimal effort required by end-users.
+    \item Minimize the power usage of the software to extend the battery life of
+    the host wearable. This will allow end-users to use the product for longer.
 \end{itemize}
 \section{Stretch Goals}
 
 \begin{itemize}
-    \item Classify sounds using audio fingerprinting with high accuracy,
+    \item Classify sounds using audio fingerprinting with useful accuracy,
     allowing the system to recognize and differentiate between common sounds.
-    \item Display audio classification and transcription on smart glasses with,
-    supporting real-time, user-friendly interaction.
+    \item Display audio classification, localized direction and transcription (
+    when applicable) on smart glasses, supporting real-time and user-friendly interaction.
+    \item Test the project with members of the hard of hearing community to 
+    obtain valuable actionable feedback and improve the user experience.
 \end{itemize}
 \section{Extras}
 
 % TODO: link to the actual documentation when we create them.
 \begin{enumerate}
     \item Price + Hardware Selection Report
-    \item Usability Report
+    \item Theory Report (DOA + Sound Classification with pyroom simulation
+        integration)
 \end{enumerate} 
 
 \newpage{}

@@ -2,7 +2,6 @@
 
 \usepackage{amsmath, mathtools}
 
-\usepackage[round]{natbib}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
@@ -19,22 +18,61 @@
 \usepackage[section]{placeins}
 \usepackage{caption}
 \usepackage{fullpage}
+\usepackage{cite}
+\usepackage{breqn}
 
-\hypersetup{
-bookmarks=true,     % show bookmarks bar?
+\hypersetup{ bookmarks=true,     % show bookmarks bar?
 colorlinks=true,       % false: boxed links; true: colored links
-linkcolor=red,          % color of internal links (change box color with linkbordercolor)
+linkcolor=red,          % color of internal links (change box color with 
+%linkbordercolor)
 citecolor=blue,      % color of links to bibliography
 filecolor=magenta,  % color of file links
 urlcolor=cyan          % color of external links
 }
 
+
 \usepackage{array}
 
-\externaldocument{../../SRS/SRS}
+% Used to wrap words to next row in tables when they don't fit.
+\usepackage{ragged2e}
+\renewcommand\tabularxcolumn[1]{>{\RaggedRight\arraybackslash\hspace{0pt}}p{#1}}
+
+% Document references
+\externaldocument[SRS-]{../../SRS/SRS}
+\externaldocument[MG-]{../SoftArchitecture/MG}
+\newcommand{\mref}[1]{M\ref{#1}}
 
 \input{../../Comments}
 \input{../../Common}
+
+% Custom commands
+\newenvironment{apitable}{%
+\begin{center}
+\begin{longtable}{|p{0.3\linewidth}|p{0.7\linewidth}|} 
+\hline
+\textbf{Name} & \textbf{Details} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Name} & \textbf{Details} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+}{%
+\end{longtable}
+\end{center}
+}
+
+\newcommand{\apifunc}[4]{%
+#1 & 
+\textbf{In:} #2 \newline
+\textbf{Out:} #3 \newline
+\textbf{Exceptions:} #4 \\
+\hline
+}
 
 \begin{document}
 
@@ -50,11 +88,13 @@ urlcolor=cyan          % color of external links
 
 \section{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \toprule {\bf Date} & {\bf Version}
+& {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+2025-11-13 & 1.0 & Initial write-up\\
+2026-01-06 & 2.0 & Clearer MIS assumptions.\\
+2026-01-06 & 2.1 & Reformatting exported access programs tables.\\
+2026-01-06 & 2.2 & Classfication module enums defined.\\
 \bottomrule
 \end{tabularx}
 
@@ -62,9 +102,33 @@ Date 2 & 1.1 & Notes\\
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{l l} 
+    \toprule		
+    \textbf{symbol} & \textbf{description}\\
+    \midrule 
+    \progname & 360 Audio analysis system on smart glasses\\
+    DOA & Direction of Arrival \\
+    FR & Functional Requirement\\
+    FFT & Fast Fourier Transform \\
+    ICA & Independent Component Analysis \\
+    M & Module \\
+    MG & Module Guide \\
+    MIS & Module Interface Specification \\
+    NFR & Non-functional Requirement\\
+    R & Requirement\\
+    SPI & Serial Peripheral Interface \\
+    SRS & Software Requirements Specification\\
+    USART & Universal Synchronous/Asynchronous Receiver/Transmitter \\
+    \bottomrule
+  \end{tabular}\\
+  \caption{Symbols, abbreviations and acronyms used in the MIS document.}
+\end{table}
 
-\wss{Also add any additional symbols, abbreviations or acronyms}
+See SRS Documentation at
+\hyperref[SRS-sec:symbols]{Symbols, Abbreviations, and Acronyms}
+for a complete table used in \progname.
 
 \newpage
 
@@ -77,21 +141,20 @@ See SRS Documentation at \wss{give url}
 \section{Introduction}
 
 The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+\progname{}, an assistive device system for smart glasses that provides
+real-time visual indications of sound source locations and classifications to
+aid individuals who are deaf or hard of hearing.
 
-Complementary documents include the System Requirement Specifications
-and Module Guide.  The full documentation and implementation can be
-found at \url{...}.  \wss{provide the url for your repo}
+Complementary documents include the System Requirement Specifications and Module
+Guide.  The full documentation and implementation can be found at
+\url{https://github.com/Team6-SixSense/audio360}.
 
 \section{Notation}
 
-\wss{You should describe your notation.  You can use what is below as
-  a starting point.}
-
-The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
+The structure of the MIS for modules comes from \cite{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
 \cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
-\citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
+\cite{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
 multiple assignment statement and conditional rules follow the form $(c_1
 \Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
 
@@ -105,166 +168,2320 @@ The following table summarizes the primitive data types used by \progname.
 \textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
 \midrule
 character & char & a single symbol or digit\\
-integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
-natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
+integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$,
+  $\infty$) \\
+natural number & $\mathbb{N}$ & a number without a fractional component in [1,
+  $\infty$) \\
 real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+array/list & x[] & Ordered list of type x. \\
+2D array/list & x[][] & Ordered 2D list of type x. \\
+negate & $\neg$ & Logical math NOT.\\
+and & $\wedge$ & Logical math AND \\
+or & $\vee$ & Logical math OR \\
+implies & $\implies$ & Logical math implies \\
+assignment & $:=$ & For A := B. B is assigned to A. \\
+for all & $\forall$ & Referencing all items. For example:
+  $(\forall~variable~|~condition:~statement)$ \\
 \bottomrule
 \end{tabular} 
 \end{center}
 
 \noindent
-The specification of \progname \ uses some derived data types: sequences, strings, and
-tuples. Sequences are lists filled with elements of the same data type. Strings
-are sequences of characters. Tuples contain a list of values, potentially of
-different types. In addition, \progname \ uses functions, which
+The specification of \progname \ uses some derived data types: sequences,
+strings, and tuples. Sequences are lists filled with elements of the same data
+type. Strings are sequences of characters. Tuples contain a list of values,
+potentially of different types. In addition, \progname \ uses functions, which
 are defined by the data types of their inputs and outputs. Local functions are
 described by giving their type signature followed by their specification.
 
 \section{Module Decomposition}
 
-The following table is taken directly from the Module Guide document for this project.
+The following table is taken directly from the Module Guide document for this
+project.
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding} & ~ \\
+\multirow{4}{0.3\textwidth}{Hardware-Hiding Module}
+& Microphone Input Module\\ 
+& USART Communication Module \\
+& SD Card Module \\
+& SD Card Interface Module \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
+\multirow{2}{0.3\textwidth}{Behaviour-Hiding Module}
+& Audio360 Engine Module\\
+& Visualization Module\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+\multirow{15}{0.3\textwidth}{Software Decision Module}
+& Audio Generation Module\\
+& DOA Processor Module\\
+& Audio Sampling Module\\
+& Audio Spectral Leakage Prevention Module\\
+& Audio Normalizer Module\\
+& Audio Anomaly Detection Module\\
+& Fast Fourier Transform Module\\
+& Logging Module\\
+& Fault Manager Module\\
+& Mel Filter Module\\
+& Discrete Cosine Transform Module \\
+& Principle Component Analysis Module \\
+& Linear Discriminant Analysis Module \\
+& Classification Module \\
+& Independent Component Analysis\\
 \bottomrule
-
 \end{tabular}
 \caption{Module Hierarchy}
 \label{TblMH}
 \end{table}
 
 \newpage
-~\newpage
+\section{Data Types}
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
+\subsection{Generics} \label{sec:generics}
 
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
+\subsubsection{bool}\label{generic:bool} Logical 0 or 1.
 
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+\subsubsection{int8}\label{generic:int8} 8 bits signed integer ($\mathbb{Z}$).
+
+\subsubsection{int16}\label{generic:int16} 16 bits signed integer
+($\mathbb{Z}$).
+
+\subsubsection{int32}\label{generic:int32} 32 bits signed integer
+($\mathbb{Z}$).
+
+\subsubsection{int64}\label{generic:int64} 64 bits signed integer
+($\mathbb{Z}$).
+
+\subsubsection{uint8}\label{generic:uint8} 8 bits unsigned integer
+($\mathbb{N}$).
+
+\subsubsection{uint16}\label{generic:uint16} 16 bits unsigned integer
+($\mathbb{N}$).
+
+\subsubsection{uint32}\label{generic:uint32} 32 bits unsigned integer
+($\mathbb{N}$).
+
+\subsubsection{uint64}\label{generic:uint64} 64 bits unsigned integer
+($\mathbb{N}$).
+
+\subsubsection{float32}\label{generic:float32} 32 bits floating point
+($\mathbb{R}$).
+
+\subsubsection{float64}\label{generic:float64} 64 bits floating point
+($\mathbb{R}$).
+
+\subsubsection{string}\label{generic:string} Character stream.
+
+\subsection{Enums}
+\subsubsection{Audio360State}\label{enum:Audio360State}
+\begin{enumerate}
+  \item AudioClassificationProcess = 0:
+    \label{enum:Audio360State:AudioClassificationState}
+    State when audio classification is running.
+  \item DirectionalAnalysisProcess = 1:
+    \label{enum:Audio360State:DirectionalAnalysisState}
+    State when directional analysis is running.
+  \item OutputProcess = 2:
+    \label{enum:Audio360State:OutputProcessState}
+    State when output processing is running.
+\end{enumerate}
+
+\subsubsection{Audio360Status}\label{enum:Audio360Status}
+\begin{enumerate}
+  \item Uninitialized = 0: \label{enum:Audio360Status:Uninitialized}
+    Audio360 Engine is not initialized.
+  \item Initialized = 1: \label{enum:Audio360Status:Initialized}
+    Audio360 Engine is initialized, but not ready.
+  \item Ready = 2: \label{enum:Audio360Status:Ready} Audio360 Engine ready for
+    requests.
+  \item Running = 3: \label{enum:Audio360Status:Running}
+    Audio360 Engine is running. Can not accept new requests.
+  \item Error = 4: \label{enum:Audio360Status:Error}
+    Audio360 Engine is stuck at an unhandled error.
+\end{enumerate}
+
+\subsubsection{FaultState}\label{enum:FaultState}
+\begin{enumerate}
+  \item NoFault = 0: \label{enum:FaultState:NoFault} No fault state.
+  \item MicrophoneXFault = 1: \label{enum:FaultState:MicFault} Fault with
+  microphone X.
+  \item AudioClassificationFault = 2:
+    \label{enum:FaultState:ClassificationFault}
+    Fault with audio classification.
+  \item directionalAnalsysisFault = 3: \label{enum:FaultState:DOAFault}
+    Fault with the directional analysis.
+\end{enumerate}
+
+\subsubsection{MicInputStatus}\label{enum:MicInputStatus}
+\begin{enumerate}
+  \item Idle =  0: \label{enum:MicInputStatus:Idle} Microphone input is idled.
+  \item Error = 1: \label{enum:MicInputStatus:Error} Error in receiving
+  microphone input.
+  \item Received = 2: \label{enum:MicInputStatus:Received}
+    Received microphone input.
+\end{enumerate}
+
+\subsubsection{AudioAnomalyStatus}\label{enum:AudioAnomalyStatus}
+\begin{enumerate}
+  \item None = 0: \label{enum:AudioAnomalyStatus:None} No audio anomalies. 
+  \item Silent = 1: \label{enum:AudioAnomalyStatus:Silent} Received audio is silent.
+  \item Loud = 2: \label{enum:AudioAnomalyStatus:Loud} Received audio is loud.
+\end{enumerate}
+
+\subsubsection{Classification}\label{enum:Classification}
+\begin{enumerate}
+  \item NONE = 0: \label{enum:Classification:None} No classification.
+  \item CAR = 1: \label{enum:Classification:Car} Classified car. 
+  \item CLAP = 2: \label{enum:Classification:Clap} Classified clapping. 
+  \item KETTLE = 3: \label{enum:Classification:Kettle} Classified kettle.
+\end{enumerate}
+
+\subsubsection{ConfidenceLevel}\label{enum:ConfidenceLevel}
+\begin{enumerate}
+  \item NO\_CONFIDENCE = 0: \label{enum:ConfidenceLevel:Noconfidence} No
+    confidence. 
+  \item LOW = 1: \label{enum:ConfidenceLevel:Low} Low confidence. 
+  \item MEDIUM = 2: \label{enum:ConfidenceLevel:Medium} Medium confidence.
+  \item HIGH = 3: \label{enum:ConfidenceLevel:High} High confidence.
+\end{enumerate}
+
+\subsubsection{ClassificationStatus}\label{enum:ClassificationStatus}
+\begin{enumerate}
+  \item Uninitialized = 0: \label{enum:ClassificationStatus:Uninitialized}
+    Classifcation module is not initialized.
+  \item Initialized = 1: \label{enum:ClassificationStatus:Initialized}
+    Classifcation module is initialized, but not ready.
+  \item Ready = 2: \label{enum:ClassificationStatus:Ready}
+    Classifcation module ready for requests.
+  \item Running = 3: \label{enum:ClassificationStatus:Running}
+    Classifcation module is running. Can not accept new requests.
+  \item Error = 4: \label{enum:Audio360ClassificationStatusStatus:Error}
+    Classifcation module is stuck at an unhandled error.
+\end{enumerate}
+
+\subsection{Data Structures}
+\subsubsection{FrequencyDomain}\label{struct:FrequencyDomain}
+\begin{enumerate}
+  \item N (\hyperref[generic:uint16]{uint16}): \label{state:FrequencyDomain:N}
+    The number of data points.
+  \item frequency (\hyperref[generic:float32]{float32}[]):
+    \label{state:FrequencyDomain:frequency}
+    The frequency represented in Hz.
+  \item real (\hyperref[generic:float32]{float32}[]):
+    \label{state:FrequencyDomain:real}
+    The real component of the frequency contribution.
+  \item img (\hyperref[generic:float32]{float32}[]):
+    \label{state:FrequencyDomain:img}
+    The imaginary component of the frequency contribution.
+  \item magnitude (\hyperref[generic:float32]{float32}[]):
+    \label{state:FrequencyDomain:magnitude}
+    The magnitude of the frequency component.
+\end{enumerate}
+
+\subsubsection{CALLBACK\_MIC\_DATA} \label{ds:cb-mic-data}
+\begin{enumerate}
+  \item func\_callback : ([MIC\_INPUT\_BUFFER\_SIZE] of int16) \(\rightarrow\
+  \{0, 1\}\) Defines the callback function type for microphone data
+  subscription.
+ 
+\end{enumerate}
+
+\subsubsection{MIC\_INPUT\_CALLBACK} \label{ds:mic-input-callback}
+\begin{enumerate}
+  \item pair of (id: \(\mathbb{N}\), callback:
+    \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA})
+\end{enumerate}
+
+\subsubsection{Dictionary} \label{ds:dict}
+\begin{enumerate}
+  \item For any type $T_1$, $T_2$ from \hyperref[sec:generics]{generic data
+  types}, $T_1$ (key) maps to $T_2$ (value). Key $:= set~of~T_1$.
+\end{enumerate}
+
+\subsubsection{List} \label{ds:list}
+\begin{enumerate}
+  \item For any type $T$ from \hyperref[sec:generics]{generic data types}, a
+    list is a collection of ordered objects of type $T$.
+\end{enumerate}
+
+
+\newpage
+
+\section{MIS of Microphone Input Module \label{mod:MicInput} -
+\mref{MG-mMicInput}}
 
 \subsection{Module}
-
-\wss{Short name for the module}
+This module handles the task of interfacing and receiving audio sample data from
+the microphone array connected to the microcontroller and providing a buffered
+stream to modules fetching the stream.
 
 \subsection{Uses}
-
+\begin{enumerate}
+  \item Serial Audio Interface (SAI) Driver - STM32 HAL Library
+  \cite{STM_USER_MANUAL}
+  \item Direct Memory Access (DMA) Driver - STM32 HAL Library
+  \cite{STM_USER_MANUAL}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+  \item \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA} 
+  \item SAI\_HandleTypeDef - STM32 HAL Library \cite{STM_USER_MANUAL}
+\end{enumerate}
 
 \subsection{Syntax}
 
 \subsubsection{Exported Constants}
 
+\begin{itemize}
+  \item MIC\_INPUT\_BUFFER\_SIZE = 4096. Traces to
+    \hyperref[SRS-NFR3_2]{NFR3.2}.
+  \item MIC\_INPUT\_SAMPLE\_RATE = 16000. Traces to
+    \hyperref[SRS-NFR1_2]{NFR1.2}.
+  \item NUM\_MICROPHONES = \hyperref[SRS-symbol:N_mic]{$N_{mic}$}
+\end{itemize}
+
 \subsubsection{Exported Access Programs}
 
-\begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
-\hline
-\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-\wss{accessProg} & - & - & - \\
-\hline
-\end{tabular}
-\end{center}
+\begin{apitable}
+  \apifunc{initMicInput}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {MicInputInitFailure}
+  \apifunc{subscribeMicInput}
+    {callback: \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA}}
+    {subscriptionCB: \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK}}
+    {MicInputSubscriptionFailure}
+  \apifunc{unsubscribeMicInput}
+    {subscriptionID: \(\mathbb{N}\)}
+    {-}
+    {MicInputUnsubscriptionFailure}
+  \apifunc{micInput\_DMA\_Rx}{handle: SAI\_HandleTypeDef*}{-}{-}
+  \apifunc{micInput\_diagnostic\_error}{errorCode: \(\mathbb{N}\)}{-}{-}
+\end{apitable}
+
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+\begin{itemize}
+  \item micInputStatus: \hyperref[enum:MicInputStatus]{MicInputStatus}
+  \item subscriptions:
+  \hyperref[ds:mic-input-callback]{MIC\_INPUT\_CALLBACK}[]
+  \item nextSubscriptionID: \(\mathbb{N}\)
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item audioBuffer: sequence [MIC\_INPUT\_BUFFER\_SIZE \(\times\)
+  (MIC\_INPUT\_SAMPLE\_RATE \(\times\) 2) \(\times\) NUM\_MICROPHONES] of
+  \(\mathbb{N}\) 
+\end{itemize}
+
+\subsubsection{Assumptions}
+\begin{itemize}
+  \item Callback functions provided in subscribeMicInput are valid function
+  pointers.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+\noindent initMicInput():
+\begin{itemize}
+\item transition: micInputStatus :=
+  \hyperref[enum:MicInputStatus:Idle]{MIC\_INPUT\_IDLE} \(\wedge\)
+nextSubscriptionID := 0 \(\wedge\) subscriptions := \(\langle\ \rangle\)
+\(\wedge\ (\forall i \in \mathbb{N} | 0 \le i < |\text{audioBuffer}|:
+\text{audioBuffer}[i] := 0)\) \(\wedge\) Initialize SAI and DMA drivers
+\(\wedge\)
+\hyperref[mdiag:subscribe]{subscribeDiagnostics(micInput\_diagnostic\_error)}
+\item output: micInputStatus
+\item exception: exc := MicInputInitFailure if SAI or DMA initialization fails.
+\end{itemize}
+\noindent subscribeMicInput(callback):
+\begin{itemize}
+\item transition: nextSubscriptionID := nextSubscriptionID + 1 \(\wedge\)
+subscriptions := subscriptions \(\parallel\) \(\langle\) pair of (id:
+nextSubscriptionID, callback: callback) \(\rangle\)
+
+\item output: subscriptionCB := pair of (id: nextSubscriptionID, callback:
+callback) 
+\item exception: exc := MicInputSubscriptionFailure if subscription fails for
+any reason.
+\end{itemize}
+
+\noindent unsubscribeMicInput(subscriptionID):
+\begin{itemize}
+\item transition: isValidCallback(subscriptionID) \(\Rightarrow\) \\ 
+subscriptions := (subscriptions - \{cb: MIC\_INPUT\_CALLBACK \(\vert\) cb
+  \(\in\) subscriptions: cb.id \(\equiv\) subscriptionID\})
+\item output: None
+\item exception: exc := \(\neg\) isValidCallback(subscriptionID) \(\Rightarrow\)
+MicInputUnsubscriptionFailure
+\end{itemize}
+
+\noindent micInput\_DMA\_Rx(handle):
+\begin{itemize}
+  \item transition: (handle.ErrorCode \(\equiv\) HAL\_SAI\_ERROR\_NONE)
+  \(\Rightarrow\) \\
+  micInputStatus :=\hyperref[enum:MicInputStatus:Received]{MIC\_INPUT\_RECEIVED}
+  \(\wedge\) (\(\forall\) cb:
+  MIC\_INPUT\_CALLBACK \(\vert\) cb \(\in\) subscriptions :
+  cb.callback(audioBuffer))
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+\noindent micInput\_diagnostic\_error(errorCode):
+\begin{itemize}
+  \item transition: (errorCode \(\not\equiv\) 0) \(\Rightarrow\) micInputStatus
+  := \hyperref[enum:MicInputStatus:Error]{MIC\_INPUT\_ERROR}
+  \item output: None
+  \item exception: None
+\end{itemize} 
+
+
+\subsubsection{Local Functions}
+\begin{itemize}
+  \item isValidCallback: \(\mathbb{N} \rightarrow\)
+  \hyperref[generic:bool]{boolean}\\
+  isValidCallback(id) \(\equiv\ (\exists \text{ cb}: \text{MIC\_INPUT\_CALLBACK
+  } \vert  
+  \text{ cb} \in \text{subscriptions} : cb.id \equiv id)\) 
+\end{itemize}
+
+\newpage
+
+\section{MIS of USART Communication Module \label{mod:UsartComm} -
+\mref{MG-mUSART}}
+\subsection{Module}
+This module handles USART communication between the microcontroller and an
+external device.
+
+\subsection{Uses}
+\begin{enumerate}
+  \item USART Driver - STM32 HAL Library \cite{STM_USER_MANUAL}
+  \item USART\_Init() - STM32 HAL Library \cite{STM_USER_MANUAL}
+  \item UART\_Transmit() - STM32 HAL Library \cite{STM_USER_MANUAL}
+\end{enumerate}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item USART\_BAUDRATE = 115200
+  \item USART\_TIMEOUT = 1000
+  \item USART\_BUFFER\_SIZE = 256
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{initUSART}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {USARTInitFailure}
+  \apifunc{transmitData}
+    {data: sequence of \hyperref[generic:uint8]{uint8}}
+    {-}
+    {USARTTxFailure}
+  \apifunc{receiveData}
+    {length: \(\mathbb{N}\)}
+    {data: sequence of \hyperref[generic:uint8]{uint8}}
+    {USARTRxFailure}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+None.
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item usartBuffer: sequence [USART\_BUFFER\_SIZE] of uint8
+\end{itemize}
+
+\subsubsection{Assumptions}
+System may or may not have valid USART target port connection at the time of
+initialization.
+
+\subsubsection{Access Routine Semantics}
+\noindent initUSART():
+\begin{itemize}
+\item transition: \((\forall i \in \mathbb{N} | 0 \le i < |\text{usartBuffer}|:
+\text{usartBuffer}[i] := 0) \wedge\)\\
+  USART\_Init(USART\_BAUD\_RATE, ...).
+\item output: (Successful Initialization) \(\Rightarrow\) 0 \(\wedge\ \neg\)
+  (Successful Initialization) \(\Rightarrow\) 1
+\item exception: exc := USARTInitFailure if USART initialization fails.
+\end{itemize}
+
+\noindent transmitData(data):
+\begin{itemize}
+  \item transition: (\(\vert data \vert\ \leq \) USART\_BUFFER\_SIZE)
+   \(\Rightarrow\) copy\_array\_data(data,usartBuffer, \(\vert data \vert\ \leq
+   \)) \(\wedge\) (\(\vert data \vert\ > \) USART\_BUFFER\_SIZE) \(\Rightarrow\)
+   copy\_array\_data(data,usartBuffer, USART\_BUFFER\_SIZE) \(\wedge\)
+   UART\_Transmit(usartBuffer, \(\min(\vert data \vert\ ,\)
+   USART\_BUFFER\_SIZE), USART\_TIMEOUT)
+  \item output: None
+  \item exception: exc := (UART\_Transmit(...) \(\equiv\) HAL\_ERROR)
+  \(\Rightarrow\) USARTTxFailure 
+\end{itemize}
+
+\noindent receiveData(length):
+\begin{itemize}
+  \item transition: (\(length \leq \) USART\_BUFFER\_SIZE) \(\Rightarrow\)
+    UART\_Receive(usartBuffer, length, USART\_TIMEOUT) \(\wedge\) (\(length > \)
+    USART\_BUFFER\_SIZE) \(\Rightarrow\) UART\_Receive(usartBuffer,
+    USART\_BUFFER\_SIZE, USART\_TIMEOUT)
+  \item output: data
+  \item exception: exc := (UART\_Receive(...) \(\equiv\) HAL\_ERROR)
+  \(\Rightarrow\) USARTRxFailure
+\end{itemize}
+
+\subsection{Local Functions}
+\begin{itemize}
+  \item copy\_array\_data: sequence of \(\mathbb{N} \times\) sequence of
+  \(\mathbb{N} \times \mathbb{N}\ \rightarrow \text{void}\)  \\
+  copy\_array\_data(src, dest, length) \(\equiv\) (\(\forall i \in \mathbb{N} |
+  0 \le i \le \text{length} : \text{dest}[i] := \text{src}[i]\))
+\end{itemize}
+
+\newpage
+\section{MIS of SD Card Interface Module \label{mod:sdcard} -
+\mref{MG-mSDInterface}}
+
+\subsection{Module}
+This module manages reading from and writing to an SD card connected to the
+microcontroller via the SPI interface.
+
+\subsection{Uses}
+\begin{enumerate}
+  \item SPI Driver - STM32 HAL Library \cite{STM_USER_MANUAL}
+  \item FATFS Library - Chan's FatFs \cite{CHAN_FATFS}
+\end{enumerate}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+None.
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{initSDCard}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {SDCardInitFailure}
+  \apifunc{writeLog}
+    {data: \hyperref[generic:string]{string}}
+    {-}
+    {SDCardWriteFailure}
+\end{apitable}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+None.
+\subsubsection{Environment Variables}
+None.
+\subsubsection{Assumptions}
+
+System may or may not have connected and/or working SD card at the time of
+initialization.
+
+\subsubsection{Access Routine Semantics}
+\noindent initSDCard():
+\begin{itemize}
+\item transition: HAL\_SPI\_Init(...) \(\wedge\) f\_mount(...)
+\item output: (Successful Initialization) \(\Rightarrow\) 0 \(\wedge\ \neg\)
+  (Successful Initialization) \(\Rightarrow\) 1
+\item exception: exc := (SPI \(\vee\) FATFS initialization failure)
+\(\Rightarrow\) SDCardInitFailure.
+\end{itemize}
+
+\noindent writeLog(data):
+\begin{itemize}
+  \item transition: f\_write(data) \(\wedge\) f\_sync()
+  \item output: None
+  \item exception: exc := ((f\_write() \(\not\equiv\) FR\_OK) \(\vee\)
+  (f\_sync() failure \(\not\equiv\) FR\_OK)) \(\Rightarrow\) SDCardWriteFailure 
+\end{itemize}
+
+\subsection{Local Functions}
+None.
+
+\newpage
+
+\section{MIS of Microphone Diagnostic Module \label{mod:MicDiag}-
+\mref{MG-mMicDiag}}
+\subsection{Module}
+This module performs diagnostics on the microphone array to detect hardware
+errors.
+
+\subsection{Uses}
+\begin{itemize}
+  \item ADC Driver - STM32 HAL Library \cite{STM_USER_MANUAL}
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item MIC\_DIAG\_ERROR = 1
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{initMicDiagnostics}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {MicDiagInitFailure}
+  \apifunc{runMicDiagnostics}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {MicDiagFailure}
+  \apifunc{subscribeDiagnostics}
+    {callback: \(\mathbb{N} \rightarrow \text{void}\)}{-}{-}
+\end{apitable}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+  \item diagStatus: \(\mathbb{N}\)
+  \item callbacks: sequence of (\(\mathbb{N} \rightarrow \text{void}\))
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item ADC\_Handle: ADC\_HandleTypeDef
+  \item adcValue: \(\mathbb{R}\)
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+System may or may not have connected and/or working microphones at the time of
+initialization.
+
+\subsubsection{Access Routine Semantics}
+\noindent initMicDiagnostics():
+\begin{itemize}
+  \item transition: diagStatus := 0 \(\wedge\) ADC\_Init(ADC\_Handle).
+  \item output: (Successful Initialization) \(\Rightarrow\) 0 \(\wedge\ \neg\)
+    (Successful Initialization) \(\Rightarrow\) 1
+  \item exception: exc := (ADC\_Init(...) \(\equiv\) HAL\_ERROR) \(\Rightarrow\)
+  MicDiagInitFailure.
+\end{itemize}
+
+\noindent runMicDiagnostics():
+\begin{itemize}
+  \item transition: adcValue = HAL\_ADC\_GetValue(ADC\_Handle) \(\wedge\)
+    (map(adcValue, 0, 65535, 0, 3.3) \(<\) 3.1) \(\Rightarrow\) diagStatus :=
+    MIC\_DIAG\_ERROR \(\wedge\) (\(\forall\) cb: (\(\mathbb{N} \rightarrow
+    \text{void}\)) \(\vert\) cb \(\in\) callbacks : cb(diagStatus))
+    \item output: diagStatus
+    \item exception: exc := (ADC read failure) \(\Rightarrow\) MicDiagFailure
+\end{itemize}
+
+\noindent subscribeDiagnostics(callback)\label{mdiag:subscribe}:
+\begin{itemize}
+  \item transition: callbacks := callbacks \(\parallel\) \(\langle\) callback
+  \(\rangle\)
+  \item output: None
+  \item exception: None
+\end{itemize}
+
+
+\subsection{Local Functions}
+\begin{itemize}
+  \item map: \(\mathbb{N} \times \mathbb{N} \times \mathbb{N} \times \mathbb{R}
+  \times \mathbb{R} \rightarrow \mathbb{R}\)\\
+  map(x, in\_min, in\_max, out\_min, out\_max) \(\equiv\) (x - in\_min)
+  \(\times\) (out\_max - out\_min + 1) / (in\_max - in\_min + 1) + out\_min
+\end{itemize}
+
+\newpage
+
+\section{MIS of Audio Generation Module - \mref{MG-mAudioGen}}
+\label{mod:AudioGen}
+
+\subsection{Module}
+
+This module generates audio data by simulating room acoustics and generating
+synthetic microphone array data from a given audio source and position. This
+includes room response calculations and spatial audio propagation models. 
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item Python Standard Libraries
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{generateAudio}
+    {audioSource: \hyperref[generic:float32]{float32}[],
+    position: \hyperref[generic:float32]{float32}[],
+    outputFile: \hyperref[generic:string]{string}}
+    {microphoneData: \hyperref[generic:float32]{float32}[]}
+    {AudioGenerationFailure}
+\end{apitable}
 
 \subsection{Semantics}
 
 \subsubsection{State Variables}
 
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
+None.
 
 \subsubsection{Environment Variables}
 
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
+None.
 
 \subsubsection{Assumptions}
 
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+The pyroomacoustics module is assumed to be working correctly (generating
+realistic and reliable audio data based on configuration parameters).
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent generateAudio():
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+\item transition: None
+\item output: microphoneData
+\item exception: AudioGenerationFailure
 \end{itemize}
-
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
-
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
 
 \subsubsection{Local Functions}
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+\begin{itemize}
+\item simulateRoom(room: pra.ShoeBox) $\rightarrow$
+  \hyperref[generic:bool]{bool}
+\end{itemize}
+
+\newpage
+\section{MIS of Direction of Arrival (DOA) Processor Module - \mref{MG-mDOA}}
+\label{mod:DOA}
+
+\subsection{Module}
+
+This module processes audio data to estimate the direction of arrival of a sound
+source. This includes frequency domain analysis, signal processing, and
+direction estimation algorithms.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:AudioGen]{Audio Generation Module}
+  \item \hyperref[mod:AudioNormalizer]{Audio Normalizer Module} 
+  \item \hyperref[mod:AudioSpectralLeakage]{Audio Spectral Leakage Prevention
+    Module}
+  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{calculateDirection}
+    {audioData: \hyperref[generic:float32]{float32}[]}
+    {direction: \hyperref[generic:float32]{float32}}
+    {AudioProcessingFailure}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None.
+
+\subsubsection{Environment Variables}
+
+None.
+
+\subsubsection{Assumptions}
+
+Angle inputs are represented in radians.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent calculateDirection():
+\begin{itemize}
+\item transition: None
+\item output: direction
+\item exception: AudioProcessingFailure
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None.
 
 \newpage
 
-\bibliographystyle {plainnat}
-\bibliography {../../../refs/References}
+\section{MIS of Audio360 Engine \label{mod:Audio360Engine} -
+  \mref{MG-mAudio360Engine}}
+
+\subsection{Module}
+
+Orchestrates the overall audio processing by receiving raw input data and
+managing \hyperref[mod:Audio360Engine_Uses]{module} communication.
+
+\subsection{Uses}\label{mod:Audio360Engine_Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:FaultManager]{Fault Manager Module} 
+  \item \hyperref[mod:Logging]{Logging Module} 
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{runProgram}{-}{-}{ProgramStartFailure, ProgramRunTimeFailure}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item state (\hyperref[enum:Audio360State]{Audio360State}): Determines the
+    current state of the the Audio360 engine. Each state will run a specific
+    module in \hyperref[mod:Audio360Engine_Uses]{used modules}.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item status (\hyperref[enum:Audio360Status]{Audio360Status}): Status of the
+    module. This encapsulates initialization, running, ready, or errored.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent run():
+\begin{itemize}
+\item transition: The state machine in figure
+  \ref{fig:audio360_engine_state_machine} outlines the transition of this
+  module.
+
+\begin{figure}[h!]
+    \centering 
+    \includegraphics[width=\textwidth]{diagrams/Audio360EngineStateMachine.png}
+    \caption{Internal state machine of Audio360 Engine module.}
+    \label{fig:audio360_engine_state_machine}
+\end{figure}
+
+\item output: None
+\item exception: ProgramStartFailure, ProgramRunTimeFailure
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
 
 \newpage
 
-\section{Appendix} \label{Appendix}
+\section{MIS of Audio Sampling Module \label{mod:AudioSampling} -
+  \mref{MG-mAudioSampling}}
 
-\wss{Extra information if required}
+\subsection{Module}
+Provides sampling of audio data from a given source while preserving the order
+of individual samples.
+
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:MicInput]{Microphone Input Module}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item sampleWindowSize (\hyperref[generic:uint16]{uint16}):
+    \label{var:sampleWindowSize}
+    The number of samples in a window. The value is a power of 2.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{sample}
+    {inputSource: \hyperref[generic:string]{string}}
+    {-}
+    {InputSourceError}
+  \apifunc{getSampledData}{-}{\hyperref[var:sampleData]{sampleData}}{-}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item sampledData (\hyperref[generic:uint32]{uint32}[]):
+    \label{var:sampleData}  
+    A cyclic array of size \hyperref[var:sampleWindowSize]{sampleWindowSize}
+    that stored the sampled data.
+  \item windowPosition (\hyperref[generic:uint32]{uint32}):
+    \label{var:windowPosition}  
+    The current reference index position of the array storing sampled data. This
+    denotes the starting point of the cyclic array. 
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item Audio input source provides raw data.
+  \item To ensure the correct ordering of data, input sources may provide
+    audio samples with associated timestamps. When timestamps are not provided, 
+    the data is assumed to be in the order received.
+\end{itemize}
+
+
+\subsubsection{Access Routine Semantics}
+
+\noindent sample():
+\begin{itemize}
+\item transition: 
+  \begin{enumerate}
+    \item $sampleData[windowPosition] := inputSource.newData$
+    \item $((windowPosition + 1) \geq sampleWindowSize) \implies $
+      $windowPosition:= 0~\vee \neg ((windowPosition + 1) \geq $
+      $sampleWindowSize) \implies$ \\ $ windowPosition:= windowPosition + 1$
+  \end{enumerate}
+
+\item output: None
+\item exception: InputSourceError
+\end{itemize}
+
+\noindent getSampledData():
+\begin{itemize}
+\item transition: None 
+\item output: \hyperref[var:sampleData]{sampledData}
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage
+\section{MIS of Audio Spectral Leakage Prevention Module
+  \label{mod:AudioSpectralLeakage} - \mref{MG-mAudioSpectralLeakage}}
+
+\subsection{Module}
+
+Applying windowing on audio signal to reduce
+\hyperref[SRS-def:spectral_leakage]{spectral leakage} before
+\hyperref[SRS-def:frequency_domain]{frequency domain} processing.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{applyFilter}
+    {sampleWindow: \hyperref[generic:float32]{float32}[]}
+    {filteredWindow: \hyperref[generic:float32]{float32}[]}
+    {-}
+\end{apitable}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyFilter():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
+    $sampleWindow[i] * \sin(\dfrac{\pi * i}{N - 1})^2)$ \\
+    such that $N = $ size of sampleWindow.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+
+\subsubsection{Local Functions}
+
+None
+
+
+\newpage
+
+\section{MIS of Audio Normalizer Module \label{mod:AudioNormalizer} -
+  \mref{MG-mAudioNormalizer}}
+
+\subsection{Module}
+
+Processes audio signals to maintain consistent amplitude across different
+sources.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{normalize}
+    {sampleWindow: \hyperref[generic:int32]{int32}[],
+    source: \hyperref[generic:string]{string}}
+    {filteredWindow: \hyperref[generic:float32]{float32}[]}
+    {-}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+Normalization factor is pre-determined and known for all given sources.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent normalize():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~i~|~0 \leq i \leq N - 1:~filteredWindow[i] := $
+    $\dfrac{sampleWindow[i]}{F_{source}})$ \\
+    such that $N = $ size of sampleWindow and $F_{source}$ is normalization
+    factor of the sampleWindow source.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage
+
+\section{MIS of Audio Anomaly Detection Module \label{mod:AudioAnomaly} -
+  \mref{MG-mAudioAnomaly}}
+
+\subsection{Module}
+This module analyzes audio data to detect anomalies based on predefined
+patterns.
+
+\subsection{Uses}
+\begin{itemize}
+  \item \hyperref[mod:MicInput]{Microphone Input Module} 
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+\begin{itemize}
+  \item AA\_SIL\_AMP\_TIM\_THRESH = 10
+  \item AA\_SIL\_AMP\_THRESH = 100
+  \item AA\_LOUD\_AMP\_THRESH = 60000
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{initAnomalyDetector}
+    {-}
+    {\hyperref[generic:uint8]{uint8}}
+    {AnomalyDetectorInitFailure}
+\end{apitable}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+\begin{itemize}
+  \item aStat : \hyperref[enum:AudioAnomalyStatus]{AudioAnomalyStatus}
+  \item saCounter : \(\mathbb{N}\)
+\end{itemize}
+
+\subsubsection{Environment Variables}
+\begin{itemize}
+  \item micInputCallback : \hyperref[ds:cb-mic-data]{CALLBACK\_MIC\_DATA}
+\end{itemize}
+
+\subsection{Assumptions}
+
+Input audio data may have anomalies that occur within a short time that may
+not be possible to identify as an anomaly.
+
+\subsubsection{Access Routine Semantics}
+\noindent initAnomalyDetector():
+
+\begin{itemize}
+  \item transition: aStat = \hyperref[enum:AudioAnomalyStatus:None]{AA\_NONE}
+     \(\wedge\)\\ 
+  
+    micInputCallback := cb\_function(data: [MIC\_INPUT\_BUFFER\_SIZE] of int16)
+    \(\rightarrow\ \{0, 1\}\)\\
+    \(\text{cb\_function(data)} \equiv\)
+    \[
+\begin{alignedat}{2}
+&
+\Big(
+   (\text{silent\_function(data)} \equiv 1)
+   \Rightarrow
+   \Big(
+      \text{saCounter} := \text{saCounter} + 1
+      \;\wedge\allowbreak\\[-2pt]
+   &\quad
+      ((\text{saCounter} \equiv \text{AA\_SIL\_AMP\_TIM\_THRESH})
+         \Rightarrow
+         \text{aStat} := \hyperref[enum:AudioAnomalyStatus:Silent]{AA\_SILENT})
+   \Big)
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\neg(\text{silent\_function(data)} \equiv 1))
+   \Rightarrow
+   (\text{saCounter} := 0)
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\text{loud\_noise\_function(data)} \equiv 1)
+   \Rightarrow
+   (\text{aStat} := \hyperref[enum:AudioAnomalyStatus:Loud]{AA\_LOUD})
+\Big)
+\;\vee\allowbreak\\[4pt]
+&\Big(
+   (\neg\,\text{silent\_function(data)} \wedge
+    \neg\,\text{loud\_noise\_function(data)})
+   \Rightarrow
+   (\text{aStat} := 0 \wedge
+    \text{saCounter} := 0)
+\Big)
+\end{alignedat}
+\]
+
+\end{itemize}
+
+
+\subsection{Local Functions}
+\begin{itemize}
+  \item silent\_function: [MIC\_INPUT\_BUFFER\_SIZE] of int16 \(\rightarrow\
+  \{0, 1\}\)\\
+  silent\_function(data) \(\equiv\) ((\(+ i \vert 0 \le i <
+  \text{MIC\_INPUT\_BUFFER\_SIZE } \wedge \text{ data[i] } < \)
+  \\AA\_SIL\_AMP\_THRESH : 1) \( \equiv \) MIC\_INPUT\_BUFFER\_SIZE)
+  \item loud\_noise\_function: [MIC\_INPUT\_BUFFER\_SIZE] of int16
+  \(\rightarrow\ \{0, 1\}\)\\
+  loud\_noise\_function(data) \(\equiv\) ((\(+ i \vert 0 \le i <
+  \text{MIC\_INPUT\_BUFFER\_SIZE } \wedge \text{ data[i] } > \)
+  AA\_LOUD\_AMP\_THRESH : 1) \( \equiv \) MIC\_INPUT \_BUFFER\_SIZE)
+
+\end{itemize}
+
+\newpage
+\section{MIS of Fast Fourier Transform - \mref{MG-mFFT}} \label{mod:FFT}
+
+\subsection{Module}
+
+Computes the discrete Fourier transform of the input signal to obtain its
+\hyperref[SRS-def:frequency_domain]{frequency domain}
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:AudioSpectralLeakage]{Audio Spectral Leakage Prevention
+    Module}
+\end{itemize}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{signalToFrequency}
+    {signal: \hyperref[generic:int32]{int32}[]}
+    {frequency: \hyperref[generic:float32]{float32}[]}
+    {-}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item inputsize (\hyperref[generic:uint32]{uint32}):
+    The size of the signal input, as in number of
+     samples. This is required to interface with hardware acceleration methods
+     on the microcontroller.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+Module will have access to hardware acceleration methods on supported hardware
+devices that it is running on.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent signalToFrequency():
+\begin{itemize}
+\item transition: None
+\item output:
+  \begin{enumerate}
+    \item $(\forall~k~|~0 \leq k \leq N - 1:~frequency[k] := $ $\sum_{n=0}^{N-1}
+    x_n * e^{-2i \pi n \frac{k}{N}})$ \\
+    such that $N = $ size of input signal.
+  \end{enumerate}
+\item exception: None
+\end{itemize}
+
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item createOutput(): returns a
+    \hyperref[struct:FrequencyDomain]{FrequencyDomain}. This function extract
+    features from the FFT and stores it in the data structure.
+\end{itemize}
+
+\newpage
+
+\section{MIS of Logging Module \label{mod:Logging} - \mref{MG-mLogging}}
+
+\subsection{Module}
+
+Provides centralized logging of data streams to designated output destinations
+for debugging and monitoring.
+
+\subsection{Uses}
+
+\begin{itemize}
+  \item \hyperref[mod:UsartComm]{USART Communication Module}
+  \item \hyperref[mod:sdcard]{SD Card Interface Module}
+\end{itemize}
+
+\subsection{Syntax}
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{log}{text: \hyperref[generic:string]{string}}{-}{-}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item Logs are provided in chronological order in terms of time of log
+    occurrence.
+  \item Log source file and line number are always provided for traceability.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent log():
+\begin{itemize}
+\item transition: None
+\item output: input text is logged to output source (SD card or USART port)
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+
+\section{MIS of Fault Manager Module - \mref{MG-mFaultManager}
+  \label{mod:FaultManager}} 
+
+\subsection{Module}
+
+Monitors system health and manages critical faults to maintain core
+functionality.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:MicDiag]{Microphone Diagnostic Module}
+  \item \hyperref[mod:Classification]{Classification Module}
+  \item \hyperref[mod:DOA]{DOA Processor Module}
+  \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{runFaultAnalysis}{-}{-}{-}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item faultState (\hyperref[enum:FaultState]{FaultState}):
+    \label{faultState}
+    The current fault state of the overall software system.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item \hyperref[faultState]{faultState}: This variable is shared with the
+    display, to notify user of the internal status of the software system.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+Fault Manager module runs all the time unless there is a critical system fault
+that prevents the module from running at all. The module will only run once
+after system set-up (pheripherals) is successful.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent faultState():
+\begin{itemize}
+\item transition: update the value of faultState depending on the overall health
+  of the software system.
+\item output: None
+\item exception: None
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+\newpage
+
+
+\section{MIS of Mel Filter Module \label{mod:MelFilter} - \mref{MG-mMelFilter}}
+
+\subsection{Module}
+
+Converts a Spectrogram into the equivalent Mel-Spectrogram by applying a bank of
+$n$ mel-scaled triangular filters to each frequency frame.
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{applyMelFilterBank}
+    {spectrogram: \hyperref[generic:float32]{float32}[][]}
+    {mel-spectrogram: \hyperref[generic:float32]{float32}[][]}
+    {invalidSpectrogramDimension}
+\end{apitable}
+
+\subsection{Semantics}
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input spectrogram is the output of the \hyperref[MG-mFFT]{FFT
+  Module} across a constant buffer time. This is arranged as a 2D matrix where
+  the rows represent time frames and columns represent frequency bins. This
+  matrix can be represented as $S(t, k)$ where $k$ is the number of frequency
+  bins, and $t$ is the number of time frames. 
+  \item The mel filterbank matrix is precomputed offline and stored as a read
+  only constant within the system. It is computed offline using pre-determined
+  information like Sampling Rate, FFT Size, maximum and minimum frequencies and
+  number of mel filters. This matrix can be represented as $H(m,k)$, where $m$
+  is the number of mel-filters, $k$ is the number of frequency bins and $H(m,k)$
+  is a weight that tells you how much frequency bin $k$ contributes to mel band
+  $m$.
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyMelFilterBank():
+\begin{itemize}
+\item \textbf{transition:} None (function doesn't have states)
+\item \textbf{output:} Returns the equivalent mel-spectrogram, where each time
+  frame is converted from linear-frequency bin representation to mel-scaled
+  frequency bins. This is done by:
+  \begin{enumerate}
+    \item Multiplying each spectrogram frame by the mel filterbank matrix. 
+    \item Summing weighted energy contributions per mel filter. 
+  \end{enumerate}
+    \[
+    E(t, m) = \sum_{k} S(t, k) \cdot H(m, k)
+    \]
+\item \textbf{exception:} Invalid spectrogram dimension. If the dimension of the
+  input spectrogram is not $S(t,k)$ and perhaps something like $S(t,p)$ where $p
+  \neq k$, then the matrix multiplication would throw an invalid dimension
+  error, which must be exposed from the module as invalid spectrogram dimension
+  as well. This would only happens if the number of frequency bins in the
+  computed FFT is not equal to the number of frequency bins in the pre-computed
+  mel filterbank matrix. 
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Discrete Cosine Transform Module \label{mod:DCT} -
+\mref{MG-mDCT}}
+
+\subsection{Module}
+
+Converts a mel-spectrogram into a 2D array containing the sequence of Mel
+Frequency Cepstral Coefficients (MFCC) vectors by applying the Discrete Cosine
+Transform (DCT) to each time frame. This reduces overlap between frequency bands
+that carry similar information and ensures each coefficient is uncorrelated to
+the other one. Pre-processing step that makes it easier to perform Principle
+Component Analysis later on. 
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{applyDCT}
+    {mel-spectrogram: \hyperref[generic:float32]{float32}[][]}
+    {mfcc: \hyperref[generic:float32]{float32}[][]}
+    {invalidDimensions}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input mel-spectrogram is the output of the
+  \hyperref[MG-mMelFilter]{Mel Filter Module}. This input will be of size $E(t,
+  m)$, where $t$ is the number of time frames, and $m$ is the number of
+  mel-frequency bins. 
+  \item The DCT transform matrix $D(c,m)$ will be computed offline, where $c$ is
+  the desired number of MFCC coefficients for each time frame, and $m$ is the
+  number of mel-frequency bands. $D(c,m)$ represents the unique cosine wave that
+  is associated with the $c^{\text{th}}$ coefficient and $m^{\text{th}}$ band. A
+  combination of these waves will be used to uniquely represent the spectrogram
+  at time frame $t$. 
+
+    \[
+    D(c,m) = \cos\!\left(\frac{\pi c}{M}(m - 0.5)\right)
+    \]
+  
+  \item Only 13 MFCC coefficients will be calculated for each time frame $t$. 
+  
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyDCT():
+\begin{itemize}
+\item \textbf{transition:} None (function doesn't have states)
+\item \textbf{output:} Returns a matrix \textit{mfcc(t,c)}, such that for each
+  time frame $t$ and each MFCC coefficient index $c$, the value of the matrix at
+  $mfcc(t,c)$ can be computed as
+      \[
+      mfcc(t, c) = \sum_{m=1}^{M} E(t, m) \cdot DCT(c, m)
+      \]
+
+  Where $E(t, m)$ represents the mel-spectrogram at time frame $t$ and
+  mel-frequency $m$. And $DCT(c,m)$ represents the DCT transform matrix that was
+  computed offline. 
+\item \textbf{exception:} Invalid spectrogram dimension. If the dimension of the
+  input spectrogram is not $E(c,m)$ and perhaps something like $E(c,p)$ where $m
+  \neq p$ then the matrix multiplication would throw an invalid dimension error,
+  which must be exposed from the module as invalid spectrogram dimension as
+  well. This would only happens if for some reason the number of mel-frequency
+  bands returned by the \hyperref[MG-mMelFilter]{Mel Filter Module} is not the
+  same as the number of mel-frequency bands in the DCT matrix computation.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Principle Component Analysis Module \label{mod:PCA} -
+\mref{MG-mPCA}}
+
+\subsection{Module}
+
+Principle Component Analysis (PCA) highlights the features with the greatest
+variance from an input feature matrix. In this case, uses the MFCC feature
+vector for each time frame to find the direction of greatest variance. This
+helps with eliminating noise and unimportant information.
+
+\subsection{Uses}
+
+Non
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{applyPCA}
+    {mfcc: \hyperref[generic:float32]{float32}[][]}
+    {pcaFeatures: \hyperref[generic:float32]{float32}[][]}
+    {invalidDimensions}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input MFCC matrix is the output of the \hyperref[MG-mDCT]{Discrete
+  Cosine Transform Module}. This input will be of size $mfcc(t,c)$, where $t$ is
+  the number of time frames, and $c$ is the number of coefficients. 
+  \item The PCA mean vector and PCA projection matrix will be derived offline
+  during the system training and stored as read-only constants. The PCA mean
+  vector will be of size $(1,c)$, and will be computed as the average MFCC
+  vectors across all training samples. 
+    \[
+    \bar{x} = \frac{1}{T} \sum_{t=1}^{T} x(t)
+    \]
+
+  The PCA projection matrix will be of size $(K, c)$, where $K$ is the number of
+  eigenvectors with the maximum variance and $c$ is the number of MFCC
+  coefficients. These eigenvectors are extracted from the following covariance
+  matrix. 
+
+    \[
+    C = \frac{1}{T} \sum_{t=1}^{T} 
+    \left(x(t) - \bar{x}\right)
+    \left(x(t) - \bar{x}\right)^{T}
+    \]
+   
+  
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyPCA():
+\begin{itemize}
+\item \textbf{transition:} None (function doesn't have states)
+\item \textbf{output:} Returns a matrix \textit{pca(t, K)}, where $t$ represents
+  the number of time frames and $K$ represents the number of PCA components
+  retained (proportional to the number of eigen-vectors). Essentially, each input
+  mfcc matrix is projected onto the vectors of maximum variance, therefore
+  extracting only the most important features of the MFCC based on training.
+  This projection can be computed using the following matrix multiplication. 
+
+  \[
+  \text{pca} = \left( mfcc - \mathbf{1}\bar{x} \right) P^{T}
+  \]
+
+  Where $P$ represents the projection matrix, $\bar{x}$ represents the PCA mean
+  vector, and $mfcc$ represents the full mfcc matrix. 
+\item \textbf{exception:} Invalid mfcc dimension. If the dimension of the input
+  mfcc matrix is not $(t,c)$ and perhaps something like $(t,p)$ where $c \neq p$
+  then the matrix multiplication would throw an invalid dimension error, which
+  must be exposed from the module as invalid mfcc dimension as well. This would
+  only happens if for some reason the number of coefficients returned by the
+  \hyperref[MG-mDCT]{Discrete Cosine Transform} is not the same as the number of
+  coefficients in the projection matrix.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Linear Discriminant Analysis Module \label{mod:LDA} -
+\mref{MG-mLDA}}
+
+\subsection{Module}
+
+Classifies given feature vector into one of the predefined set of sound classes.
+This is module is optimized for class separation. The feature vector in this
+case is already narrowed down to the features with the most variance using the
+\hyperref[MG-mPCA]{PCA} module. 
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{applyLDA}
+    {pcaFeatures: \hyperref[generic:float32]{float32}[][]}
+    {classLabels: \hyperref[generic:float32]{float32}[]}
+    {invalidDimensions}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+None
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input pcaFeatures is the output of the \hyperref[MG-mPCA]{Principle
+  Component Analysis Module}. This input will be of size $(t,K)$, where $t$ is
+  the number of time frames, and $K$ is number of features selected with the
+  highest variances from PCA.
+  \item The LDA projection matrix, and class weight parameters are computed
+  offline using labelled training data. They are stored as read-only constants
+  in the system. The LDA projection matrix is of size $(K,C-1)$, where $C$ is
+  the number of classes, and $K$ is the number of variance eigenvectors. In
+  essence, this matrix maps the input feature space into the discriminant
+  subspace where class separation is maximized.
+  
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyLDA():
+\begin{itemize}
+\item \textbf{transition:} None (function doesn't have states)
+\item \textbf{output:}
+
+  Returns a vector of class labels, one per time frame. 
+
+  Each feature vector from PCA is projected onto the discriminant space using
+  the LDA projection matrix using the following multiplication. 
+
+  \[
+  z(t,:) = pca(t,:) \cdot W_{\text{LDA}}
+  \]
+
+  Where $pca(t,:)$ represents the PCA eigenvectors at time $t$, and
+  $W_{\text{LDA}}$ represents the LDA projection matrix. 
+
+  Classification is then performed using linear discriminant functions for each
+  class $j$, where $w_j$ and $b_j$ is the weight and bias matrices that were
+  pre-computed offline during training for class $j$. 
+
+  \[
+  g_j(t) = w_j^{T} z(t,:) + b_j
+  \]
+
+  The predicted class for that time frame is then assigned as the class with the
+  maximum value. 
+
+  \[
+  \text{classLabel}(t) = \arg\max_{j} \, g_j(t)
+  \]
+
+  The output of the module is then a vector of length t, representing the best
+  classification for all time frames. 
+
+
+\item \textbf{exception:} Invalid feature space dimension. If the dimension of
+  the input feature matrix is not $(t,K)$ and perhaps something like $(t,p)$
+  where $K \neq p$ then the matrix multiplication would throw an invalid
+  dimension error, which must be exposed from the module as invalid feature
+  dimension as well. This would only happens if for some reason the number of
+  eigenvectors returned by the \hyperref[MG-mPCA]{PCA} module is not the same as
+  the number of eigen-vectors in the precomputed LDA matrix.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Classification Module \label{mod:Classification} -
+\mref{MG-mClassification}}
+
+\subsection{Module}
+
+Orchestrates the overall audio classification flow by receiving signals in the
+frequency domain and encapsulating the complexity of the various modules
+involved. 
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:AudioSampling]{Audio Sampling Module}
+  \item \hyperref[mod:AudioNormalizer]{Audio Normalizer Module}
+  \item \hyperref[mod:FFT]{Fast Fourier Transform Module}
+  \item \hyperref[mod:MelFilter]{Mel Filter Module}
+  \item \hyperref[mod:DCT]{Discrete Cosine Transform Module}
+  \item \hyperref[mod:PCA]{Principle Component Analysis Module}
+  \item \hyperref[mod:LDA]{Linear Discrete Analysis Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{classify}
+    {spectrogram: \hyperref[generic:float32]{float32}[][]}
+    {-}
+    {ClassificationStartFailure, ClassificationRunTimeFailure}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item classification (\hyperref[enum:Classification]{Classification}):
+  Stores the current classification. Will
+  continuously be updated at runtime after receiving continuous audio signals. 
+  \item ConfidenceLevel (\hyperref[enum:ConfidenceLevel]{ConfidenceLevel}):
+  Stores the confidence of the classification
+  that was done. Values for status include high, medium or low confidence. 
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item state (\hyperref[enum:ClassificationStatus]{ClassificationStatus}):
+  Encapsulates initialization, running, ready or errored status of the module.  
+\end{itemize}
+
+\subsubsection{Assumptions}
+None.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent applyLDA():
+\begin{itemize}
+\item \textbf{transition:} \hyperref[fig:classification_state_machine]{State
+  machine} below outlines the transition of this module.
+
+\begin{figure}[h!]
+    \centering 
+    \includegraphics[width=\textwidth]{diagrams/ClassificationStateMachine.png}
+    \caption{Internal state machine of Classification module.}
+    \label{fig:classification_state_machine}
+\end{figure}
+
+\item \textbf{output:} None
+\item \textbf{exception:} ClassificationStartFailure,
+ClassificationRunTimeFailure
+
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+None
+
+\newpage 
+
+\section{MIS of Visualization Module \label{mod:Visualization} -
+\mref{MG-mVisualization}}
+
+\subsection{Module}
+
+This module formats and renders visual information on the smart glasses display.
+It receives classification labels and direction angles from the Audio360 Engine,
+formats this information according to display constraints and prioritization
+rules, and renders visual indicators on the smart glasses display. The module
+ensures non-intrusive presentation while maintaining a minimum update rate of 30
+frames per second. It also handles display of error states and safety feature
+failure alerts.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:Audio360Engine]{Audio360 Engine Module}
+  \item \hyperref[mod:FaultManager]{Fault Manager Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+\begin{itemize}
+  \item minUpdateRate (\hyperref[generic:uint16]{uint16}): 
+    \label{var:minUpdateRate}
+    The minimum display update rate in frames per second. The value is 30 FPS as
+    specified by \hyperref[SRS-NFR8_1]{NFR8.1}.
+\end{itemize}
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{updateDisplay}
+    {classificationLabel: \hyperref[generic:string]{string},
+    directionAngle: \hyperref[generic:float32]{float32}, 
+    priority: \hyperref[generic:uint8]{uint8}}
+    {-}
+    {DisplayUpdateFailure, InvalidInputError}
+  \apifunc{displayError}
+    {errorType: \hyperref[generic:string]{string},
+    errorMessage: \hyperref[generic:string]{string}}
+    {-}
+    {DisplayUpdateFailure}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item currentDisplayState (\hyperref[ds:dict]{dict}): 
+    \label{var:currentDisplayState}
+    Stores the current state of the display, including active visual indicators,
+    their positions, and priorities. This state is continuously updated at
+    runtime as new classification and direction data is received.
+  \item displayQueue (\hyperref[ds:list]{list}): 
+    \label{var:displayQueue}
+    A priority queue that stores pending display updates. Items are ordered by
+    priority to ensure safety-critical information is displayed first, as
+    required by \hyperref[SRS-NFR6_1]{NFR6.1}.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+\begin{itemize}
+  \item display [Display Hardware]: The smart glasses display hardware
+    interface. This encapsulates the physical display device and its driver
+    interface, allowing the visualization format to be modified independently of
+    the underlying display technology.
+\end{itemize}
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The display hardware is properly initialized and functional.
+  \item The Audio360 Engine provides valid classification labels and direction
+    angles in radians within the range [0, 2$\pi$).
+  \item Priority values are non-negative integers, with lower values indicating
+    higher priority (safety-critical information has priority 0).
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent updateDisplay():
+\begin{itemize}
+\item \textbf{transition:} The module receives classification and direction
+  data, applies prioritization logic to determine if the information should be
+  displayed (based on \hyperref[SRS-NFR6_1]{NFR6.1}), formats the information
+  according to display constraints and non-intrusive presentation requirements
+  (\hyperref[SRS-NFR6_2]{NFR6.2}), and updates the display state. The visual
+  indicator is rendered on the smart glasses display at the appropriate position
+  corresponding to the direction angle. If multiple sources are present, only
+  the highest priority source is displayed.
+
+\item \textbf{output:} None
+
+\item \textbf{exception:} DisplayUpdateFailure if the display hardware fails to
+  update, or InvalidInputError if the direction angle is outside the valid range
+  [0, 2$\pi$) or if the classification label is empty.
+\end{itemize}
+
+\noindent displayError():
+\begin{itemize}
+\item \textbf{transition:} The module formats and displays an error message on
+  the smart glasses display to alert users when core safety features such as
+  direction determination or classification fail, as required by
+  \hyperref[SRS-FR6_2]{FR6.2}. Error messages are displayed with high priority
+  to ensure visibility.
+
+\item \textbf{output:} None
+
+\item \textbf{exception:} DisplayUpdateFailure if the display hardware fails to
+  update the error message.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item formatDisplayData(classificationLabel:
+    \hyperref[generic:string]{string}, directionAngle:
+    \hyperref[generic:float32]{float32}) $\rightarrow$ \hyperref[ds:dict]{dict}:
+    Formats the classification label and direction angle into a display-ready
+    data structure, including position calculations for directional indicators
+    and text labels.
+  \item applyPrioritization(displayQueue: \hyperref[ds:list]{list})
+    $\rightarrow$ \hyperref[ds:dict]{dict}: Selects the highest priority item
+    from the display queue to be rendered, ensuring safety-critical information
+    is displayed first as required by \hyperref[SRS-NFR6_1]{NFR6.1}.
+  \item renderNonIntrusive(displayData: \hyperref[ds:dict]{dict}) $\rightarrow$
+    \hyperref[generic:bool]{bool}: Renders visual indicators in a non-intrusive
+    manner, minimizing visual obstruction so users can safely perform external
+    activities, as required by \hyperref[SRS-NFR6_2]{NFR6.2}.
+\end{itemize}
+
+\newpage 
+
+\section{MIS of Independent Component Analysis (ICA) Module \label{mod:ICA} -
+\mref{MG-mICA}}
+
+\subsection{Module}
+
+This module performs blind source separation on multi-channel audio signals to
+separate mixed audio signals into individual independent source components. The
+module accepts multi-channel audio signals from the microphone array and outputs
+separated audio streams, each representing an individual sound source. This
+enables improved classification and direction estimation accuracy when multiple
+sound sources are present simultaneously. The module is conditionally invoked by
+the Audio360 Engine when multiple sources are detected, allowing the system to
+operate with or without this capability.
+
+\subsection{Uses}
+
+\begin{enumerate}
+  \item \hyperref[mod:Audio360Engine]{Audio360 Engine Module}
+  \item \hyperref[mod:AudioSampling]{Audio Sampling Module}
+\end{enumerate}
+
+\subsection{Syntax}
+
+\subsubsection{Exported Constants}
+
+None
+
+\subsubsection{Exported Access Programs}
+\begin{apitable}
+  \apifunc{separateSources}
+    {mixedAudio: \hyperref[generic:float32]{float32}[]}
+    {separatedSources: \hyperref[generic:float32]{float32}[]}
+    {ICASeparationFailure, InvalidInputError}
+\end{apitable}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+
+\begin{itemize}
+  \item separationModel (\hyperref[ds:dict]{dict}): 
+    \label{var:separationModel}
+    Stores the ICA separation model parameters and learned mixing matrix. This
+    state may be updated during the separation process to adapt to the input
+    signal characteristics.
+\end{itemize}
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+  \item The input audio signals contain multiple independent sound sources that
+    can be separated using ICA.
+  \item The number of microphones is at least equal to the number of sound
+    sources to be separated.
+  \item The sound sources are statistically independent and non-Gaussian.
+  \item The mixing process is linear and instantaneous (no significant delays
+    between sources reaching different microphones).
+\end{itemize}
+
+\subsubsection{Access Routine Semantics}
+
+\noindent separateSources():
+\begin{itemize}
+\item \textbf{transition:} The module applies Independent Component Analysis
+  (e.g., FastICA algorithm) to the input mixed audio signals from multiple
+  microphones. The algorithm estimates the mixing matrix and separates the mixed
+  signals into independent source components. The separation model state may be
+  updated during this process. Each output stream represents a separated audio
+  source that can be further processed by classification and direction
+  estimation modules.
+
+\item \textbf{output:} An array of separated audio source streams, where each
+  stream contains the audio data for one independent sound source. The number of
+  output streams corresponds to the number of detected independent sources.
+
+\item \textbf{exception:} ICASeparationFailure if the ICA algorithm fails to
+  converge or cannot successfully separate the sources. InvalidInputError if the
+  input audio data is invalid, has incorrect dimensions, or does not meet the
+  assumptions required for ICA separation.
+\end{itemize}
+
+\subsubsection{Local Functions}
+
+\begin{itemize}
+  \item estimateMixingMatrix(mixedAudio:
+    \hyperref[generic:float32]{float32}[]) $\rightarrow$
+    \hyperref[ds:dict]{dict}: Estimates the mixing matrix that describes how the
+    independent sources are combined in the mixed signals. This is a core step
+    in the ICA algorithm.
+  \item applySeparation(mixedAudio: \hyperref[generic:float32]{float32}[],
+    mixingMatrix: \hyperref[ds:dict]{dict}) $\rightarrow$
+    \hyperref[generic:float32]{float32}[]: Applies the inverse of the
+    estimated mixing matrix to separate the mixed signals into independent
+    source components.
+  \item checkConvergence(previousModel: \hyperref[ds:dict]{dict}, currentModel:
+    \hyperref[ds:dict]{dict}) $\rightarrow$ \hyperref[generic:bool]{bool}:
+    Checks if the ICA algorithm has converged by comparing the current model
+    parameters with the previous iteration's parameters.
+\end{itemize}
+
+\newpage 
+
+\bibliographystyle{IEEEtran}
+\bibliography{../../../refs/References}
+
 
 \newpage{}
 
 \section*{Appendix --- Reflection}
 
-\wss{Not required for CAS 741 projects}
-
-The information in this section will be used to evaluate the team members on the
-graduate attribute of Problem Analysis and Design.
-
-\input{../../Reflection.tex}
+\subsection*{Reflection Questions}
 
 \begin{enumerate}
   \item What went well while writing this deliverable? 
-  \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
+  
+  \textbf{Sathurshan:} The system was decomposed into modules that was small
+  enough. This allowed the team to easily split up the work without having much
+  dependencies on each other. Furthermore, writing the MIS has helped the team
+  further align with design decisions and formally document.
+
+  \textbf{Kalp:} I think that developing the PoC (Proof of Concept) was a great
+  way to get a better understanding of the system and the modules that are
+  involved. Though maybe not ideal in other scenarios, getting a small headstart
+  on the design implementation helped us really easily scope out what the
+  modules on the system should be.
+
+  \textbf{Nirmal:} Since the classification POC was already created, I feel like
+  it was a lot easier to decompose the classification feature into distinct
+  features. Furthermore, since the POC was created earlier, a lot of the
+  research was already completed, which means I knew what equations I needed for
+  each module. 
+
+  \textbf{Jay:} I think the part that went well was how aligned the team already
+  was before writing the document. Because we had been discussing the system and
+  reviewing each module ahead of time, putting everything together felt more
+  organized. The MIS ended up reinforcing our understanding and helped us
+  clearly lay out how each part of the system will work.
+
+  \textbf{Omar: } Our team knocked it out of the park by using formal math to
+  define each module's functionality whenever possible. This was especially
+  helpful for reducing workload looking ahead. 
+
+  \item What pain points did you experience during this deliverable, and how did
+    you resolve them?
+
+  \textbf{Omar: } The major pain point was the timing of this deliverable.
+  Although it is done well, it required too much time and effort while balancing
+  other deliverables and courses. We tried to resolve this by delegating
+  sections to each team member based on their expertise. 
+
+  \textbf{Sathurshan:} The main pain point was the deliverable deadline as the
+  team was asked to finish the first revision in a week while preparing for the
+  proof of concept of demo. The team expressed the concerns with the professor,
+  and fortunately received an extension allowing us to put more effort into this
+  document.
+
+  \textbf{Kalp:} I think that the main pain point was just timing. With the VnV
+  plan due shortly prior to this deliverable, and the team PoC implementation
+  being due a week after this deliverable, there was really not much time to
+  write out this document, especially given the length and detail that it goes
+  into. This was slightly mitigated by the provided extension and the PoC
+  implementation, but it was still a challenge to get everything done in time.
+
+  \textbf{Nirmal:} Although I mentioned I had a good idea of which modules are
+  needed for classification, modularizing which equation goes in what module and
+  in what order was a difficult and time consuming task. For example the POC was
+  done as a python implementation, and as such the logic with coming up with the
+  LDA projection matrix was encapsulated into python libraries. For this
+  document, I had to reverse engineer how exactly this is done using equations. 
+
+  \textbf{Jay:} The biggest pain point for me was keeping everything consistent
+  across the sections, especially since multiple people were writing at the same
+  time while also balancing work on the PoC. It was a bit overwhelming to juggle
+  both. We resolved this by coordinating early and reviewing each other's
+  sections so the document stayed cohesive. The extension also gave us some
+  breathing room to fix issues we noticed.
+
   \item Which of your design decisions stemmed from speaking to your client(s)
   or a proxy (e.g. your peers, stakeholders, potential users)? For those that
   were not, why, and where did they come from?
+
+  \textbf{Omar:} Many design decisions stemmed from past experience working on
+  embedded projects and large system designs. The approach to effectively break
+  down larger tasks such as audio classification into smaller modules (e.g.,
+  FFT, Mel Filter, DCT, PCA, LDA) was inspired by prior discussion with our
+  capstone supervisor. 
+
+  \textbf{Sathurshan:} The supervisor mentioned the difficulty of getting access
+  to hardware that will meet our software specification. As a result, we
+  designed the system such that the software is portable and can take input from
+  different sources. This ensures that the capstone project can still be
+  successful in the case we are not able to find the right hardware within our
+  budget.
+
+  \textbf{Kalp:} A lot of the hardware and software design decisions that we
+  made was based from speaking to the supervisor and the team. Our supervisor
+  would be able to give better insight on what would and wouldn't work for the
+  scope of what we're trying to accomplish. We selected the pipeline design of
+  audio to processing to output with the specific hardware, but the specific
+  algorithm (ex. LDA for classification) or the specific hardware came through
+  our supervisors insights. 
+
+  \textbf{Nirmal:} The decision of using PCA and LDA for classification stems
+  from asking our supervisor (MVM) for input on an approach that has low
+  computation. Originally, I was using a SVM for classifying audio sources, but
+  our supervisor mentioned this isn't really necessary, and might be overkill. 
+
+  \textbf{Jay:} Most of the high-level decisions came from discussions with the
+  supervisor, especially around what is realistic for the hardware we have
+  access to. Hearing their perspective helped steer us toward a design that is
+  flexible and doesn’t rely too heavily on one specific setup. Some of the
+  lower-level decisions, like how we break up certain processes, came from our
+  own team discussions and figuring out what would make implementation more
+  manageable.
+
   \item While creating the design doc, what parts of your other documents (e.g.
   requirements, hazard analysis, etc), it any, needed to be changed, and why?
+
+  \textbf{Omar:} While writing the design document, some parts of the SRS needed
+  to be updated to add labels and to link module decomposition to the SRS
+  requirements. 
+
+  \textbf{Sathurshan:} SRS needed to be updated. It was updated because part of
+  writing this document required reviewing the SRS. From this, I have found
+  parts of the requirements that can be improved based on recent better
+  understanding of the system.
+
+  \textbf{Kalp:} The SRS document was updated to reflect the changes that we
+  made to the system. A lot of the requirements changes revolved around the
+  hardware and software design decisions that we made (ex. choosing to separate
+  a process into multiple modules leads to more specific requirements). 
+  
+  \textbf{Nirmal:} For the classification specific modules, no parts of any
+  other documents needed to be changed, since the other documents never
+  mentioned any exact implementation details. Which is what this document is
+  focused on. 
+
+  \textbf{Jay:} Similar to the others, I found that parts of the SRS needed
+  updates. While detailing the modules in this document, it became clear that a
+  few requirements could be phrased more precisely or split into smaller pieces
+  based on the updated understanding of the system. So the changes mostly came
+  from wanting the requirements to better match the actual design.
+
   \item What are the limitations of your solution?  Put another way, given
-  unlimited resources, what could you do to make the project better? (LO\_ProbSolutions)
-  \item Give a brief overview of other design solutions you considered.  What
-  are the benefits and tradeoffs of those other designs compared with the chosen
-  design?  From all the potential options, why did you select the documented design?
-  (LO\_Explores)
+  unlimited resources, what could you do to make the project better?
+  (LO\_ProbSolutions)
+
+  \textbf{Omar:} The main limitation in our case is the hardware constraints.
+  Given unlimited resources, we would be able to design custom audio hardware
+  that meets all of our software requirements without any guess work. We would
+  also be able to design PCBs that are optimized for reducing trace lengths
+  between the microphones and the microcontroller, improving signal integrity. 
+  
+  \textbf{Sathurshan:} The limitations of the solution is the dependency on
+  hardware. This project relies on hardware, and our team has done
+  a good job abstracting the software design from the hardware design. This
+  allows the team ensure the software is portable and scalable. However, it
+  makes testing and developing the software much difficult as the team only has
+  budget for 2 cheap microcontrollers. This forces the team to optimize the
+  software as much as possible, while making debugging efforts simple, both are
+  difficult to acheive at the same time.
+
+  \textbf{Kalp:} I think the biggest limitation that we can see right now is the
+  hardware limitations. The software that we're using for this project is good
+  enough to handle the tasks that we're trying to accomplish within the software
+  requirements, but the hardware limitations are what are holding us back
+  slightly. With just better hardware (at the expense of higher cost), a lot of
+  the issues we're dealing with could be mitigated.
+  
+  \textbf{Nirmal:} Given unlimited resources, we could have a more robust
+  classification approach. The current approach of using PCA and LDA comes from
+  not having computation power to use resources like SVM or neural networks
+  taking in the full audio input. 
+
+  \textbf{Jay:} The biggest limitation I see is tied to performance and the
+  hardware we're working with. If we had more resources, we could definitely
+  explore more powerful hardware and push the system to handle more complex
+  processing or higher-resolution data. With more time and computing power, we
+  could also refine the software to be more efficient and include features that
+  aren't feasible right now.
+  
+  \item Give a brief overview of other design solutions you considered. What are
+  the benefits and tradeoffs of those other designs compared with the chosen
+  design?  From all the potential options, why did you select the documented
+  design? (LO\_Explores)
+
+  \textbf{Omar:} During the research phase, we considered using many different
+  hardware platforms including Raspberry Pi, Texas Instruments and Arduino. We
+  settled on the STM32 platform due to its inclusion of DSP libraries and audio
+  peripherals. While the Texas Instruments controllers have great documentation
+  and software support, they are specialized for motor control applications
+  which means they lack the real-time audio peripherals required for the
+  project. On the software side, we considered using more complex machine
+  learning algorithms for audio classification, but ultimately chose not to due
+  to simplicity and compute resource constraints
+
+  \textbf{Sathurshan:} Initially, having a abstracted hardware layer was not
+  really considered. At the beginning of the project, we did not realize the
+  risk of how difficult it is to get the right hardware for our problem at
+  an affordable cost. Initial thoughts of the design was to couple the software
+  tightly with the hardware to make our lives easier (faster development time).
+  However due to the risk, the team benefits more of an abstracted layer.
+  This de-risks having the re-write a lot of code in the case where hardware
+  needed to be changed midway in the project. It ultimately made our current
+  design portable and scalable.
+
+  \textbf{Kalp:} I know for the software side, specifically the audio
+  classification, we considered using a neural network for the classification.
+  This was a potential solution, but we ultimately decided against it because of
+  the hardware limitations. The neural network would require a lot of memory and
+  processing power, which is not available on the hardware that we're using. For
+  this reason, we decided to use the LDA for classification because it is a
+  simple algorithm that is easy to implement and understand, and a lot less
+  computationally expensive than a neural network.
+
+  \textbf{Nirmal:} Another design solution we considered for classification was
+  using SVM. Although that seemed to work really well, compared to the PCA and
+  LDA approach, this approach would firstly take a lot of storage on the
+  microcontroller which we didn't have. And also involved running full blackbox
+  models. The approach now just involves doing matrix multiplications which is
+  what the microcontroller is optimized for. 
+
+  \textbf{Jay:} One alternative we discussed early on was using more advanced
+  machine learning methods for classification, like a small neural network or
+  more complex models. They might have improved accuracy, but they also would
+  have required more memory and processing power than we realistically have. The
+  chosen design gives us a simpler, reliable system that fits within our
+  constraints, which made it the more practical option for the project. 
+
 \end{enumerate}
+
+\subsection*{Implementing Team 13 Module}
+
+Issue Assigned our team:
+\url{https://github.com/speech-buddies/VoiceBridge/issues/181} \\
+Pull request: \url{https://github.com/speech-buddies/VoiceBridge/pull/183} \\
+
+Sathurshan implemented the User Profile Module for Team 13's project, which
+presented both successes and challenges. The module's references to requirements
+helped clarify the rationale behind some design decisions. The function and
+state variable names were descriptive, making the module's purpose clear.
+However, undefined custom types made it impossible to know what data was
+accessible. Additionally, the lack of function formalization made it difficult
+to understand the full scope of the module's functionality. As a result, many
+assumptions had to be made, relying on understanding how other modules interact
+with the User Profile Manager to complete the implementation. The design
+document could be improved by clearly defining types and inserting hyperlinks to
+their definitions. Also it can be improved by providing formal descriptions or
+pseudocode to explain function processes.
+\\\\
+Issue assigned to Team 13: 
+\url{https://github.com/Team6-SixSense/audio360/issues/451} \\
+
+As of Jan 22, 2026, the assigned issue to the other team has not been completed.
+There is no pull request for our team to analyze what has been learned from
+having another team implementing one of our modules.
 
 
 \end{document}

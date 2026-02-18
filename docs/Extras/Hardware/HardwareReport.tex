@@ -1,0 +1,134 @@
+\documentclass[12pt, titlepage]{article}
+
+\usepackage{amsmath, mathtools}
+
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{xr}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{xfrac}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[section]{placeins}
+\usepackage{caption}
+\usepackage{fullpage}
+\usepackage{cite}
+\usepackage{breqn}
+
+\input{../../Comments}
+\input{../../Common}
+
+\externaldocument[SRS-]{../../SRS/SRS}
+
+\begin{document}
+
+\title{Hardware Report\\\progname}
+
+\author{\authname}
+
+\date{}
+
+\maketitle
+
+\pagenumbering{roman}
+
+\newpage
+\section{Revision History}
+
+\begin{table}[hp]
+\caption{Revision History} \label{TblRevisionHistory}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
+\midrule
+Dec 21, 2025 & Sathurshan, Omar & Report outline.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\pagenumbering{arabic}
+
+\section{Introduction}
+\wss{Explain the prupose of this document. Why it was selected for this project}
+\wss{Briefly outline the structure of the document}
+
+\section{Hardware}
+
+\subsection{Hardware Requirements}
+\wss{Write down requirements that applied to hardware from SRS.}
+\wss{Write down any constraints (budget)}
+
+\subsection{Required Hardware Conponents}
+\wss{List what hardware is required based on the requirements from above section.}
+\wss{Explain how each hardware acheives each requirements/ why it is needed?}
+\wss{microcontroller, microphone, Rokid glasses \cite{RokidGlasses}}
+
+\subsection{Hardware Selection Process}
+\wss{Process of selecting hardware to fit requirements and pricing}
+\wss{performance, cost, timing of shipment, etc.}
+\wss{Aleternative hardware}
+\wss{Include links to hardware source}
+
+\subsection{Hardware Specification}
+\wss{Include specification table of each hardware.}
+\wss{Include links to manufacturing documentation whether online or in this repo}
+
+\subsubsection{STM microcontoller}
+
+\subsubsection{Microphone}
+\wss{Go over each pin}
+
+\subsubsection{Rokid AR glasses}
+
+\section{Theory}
+\wss{This section goes over some theory, that will help understand the
+hardware integration section}
+
+\subsection{I2S Communication Protocol}
+\wss{Explain what is I2S? How it represents data?}
+
+\subsection{Micophone Synchronization}
+\wss{Explain what mic Synchronization is. Why is it important?}
+\wss{How can multiple microphones be Synchronized on the same clock}
+
+\section{Hardware Integration}
+
+\subsection{Wiring}
+\wss{Provide images and explanation of wiring}
+
+\section{Software-Hardware Integration}
+
+\wss{Explain this section is to provide more context how software was designed
+for the hardware. Main point to point out how software engineering is relevant
+since this is a software capstone.}
+\wss{System diagram with hardware layer at the bottom}
+\subsection{Software Architecture}
+\wss{briefly go over software architecture}
+\wss{libraries used related to hardware}
+
+\subsection{Hardware Abstraction Layer}
+\wss{Describe the hardware abstraction strategy. (benefits or portability and maintainability)}
+
+\subsection{Hardware Interface Implementation}
+\wss{Overview of manufacturer code}
+\wss{Point to the hardware layer code.}
+\wss{What interfacing code had to be implemented and why?}
+
+\newpage 
+
+\bibliographystyle{IEEEtran}
+\bibliography{../../../refs/References}
+
+\end{document}
