@@ -52,7 +52,9 @@
 2025-11-26 & 3.1 & Change Clang Static Analyzer to Cppcheck \\
 2025-12-12 & 3.2 & Remove some unnecessary test details and add reference for 
 eye movement\\
-2025-01-06 & 3.3 & Update angle units from degrees to radians. \\
+2026-01-06 & 3.3 & Update angle units from degrees to radians. \\
+2026-02-18 & 3.4 & Integrate TA feedback (primarily removing implementation 
+details from test cases). \\
 \hline
 \end{tabularx}
 
@@ -133,24 +135,29 @@ The primary objectives of this verification and validation plan are:
 
 \textbf{Primary Objectives:}
 \begin{itemize}
-    \item \textbf{Software Correctness:} Build confidence that the system
-    correctly implements all functional requirements, particularly
-    safety-critical features such as direction of arrival estimation and sound
-    classification with 90\% accuracy.
+    \item \textbf{Software Correctness:} Verify that core algorithms 
+    (direction-of-arrival estimation and sound-event classification) behave 
+    correctly across expected operating conditions. Incorrect localization or 
+    missed events could produce misleading guidance, reducing user trust and 
+    potentially introducing safety risks identified in the Hazard Analysis.
     
-    \item \textbf{Real-time Performance:} Demonstrate that the system meets all
-    timing constraints, including processing audio at 16 kHz sampling rate
-    (\hyperref[SRS-NFR1_2]{NF1.2}) and providing visual feedback within 1 second
-    latency (\hyperref[SRS-sec:VC-4.1]{VC-4.1}).
+    \item \textbf{Real-time Performance:} Demonstrate that the system provides 
+    feedback quickly enough to support live use without confusing or delaying 
+    the user. Delayed feedback reduces usability and can invalidate the safety 
+    benefit of alerts during real-world interactions (user needs + HA timing 
+    considerations).
     
     \item \textbf{User Safety and Usability:} Validate that the system
     effectively addresses the needs of individuals who are deaf or hard of
     hearing through structured user testing sessions with the McMaster Sign
-    Language Club.
+    Language Club. User understanding is required for the system to be safe and
+    effective; misinterpretation is a failure mode even if algorithms are 
+    technically accurate.
     
     \item \textbf{System Reliability:} Ensure robust error handling and fault
     tolerance, particularly for memory management and hardware component
-    failures.
+    failures. Reliability prevents silent failures and increases trust, 
+    especially when the system is used as an assistive safety tool.
 \end{itemize}
 
 \textbf{Objectives Out of Scope:}
@@ -526,8 +533,8 @@ system.
 \textbf{Input:}
 Three concurrent tasks submitted to the firmware scheduler: Task A with high
 priority (priority level 1), Task B with medium priority (priority level 5), and
-Task C with low priority (priority level 10). Each task logs its execution start
-time with microsecond precision when it begins execution.
+Task C with low priority (priority level 10). Execution order is recorded to 
+determine the task start sequence.
 					
 \textbf{Output:}
 Execution logs show that tasks execute in priority order: Task A starts first,
@@ -557,14 +564,11 @@ connected and initialized. Audio capture subsystem is ready to receive data.
 					
 \textbf{Input:}
 An impulse sound (hand clap or tone burst) played in the environment, captured
-simultaneously by all four microphones. The same acoustic event should be
-detected by all microphones with known time delays based on geometry.
+simultaneously by all four microphones. 
 					
 \textbf{Output:}
-Four synchronized audio buffers, each containing the impulse signal.
-Cross-correlation analysis between channels shows time alignment within margins
-of 10 microseconds, accounting for physical microphone spacing. All channels
-have matching sample rates and frame timestamps.
+Four synchronized audio buffers, each containing the impulse signal, and a time 
+alignment value for each pair of channels. 
 
 \textbf{Test Case Derivation:} 
 Accurate direction of arrival estimation requires precise temporal alignment
@@ -596,8 +600,7 @@ exceeding memory limit.
 For valid allocations, memory is allocated successfully and functions return
 success codes. For allocation exceeding limits, the firmware detects the
 condition, denies the allocation, returns an appropriate error code, and
-continues operation without crashing. System remains stable and responsive after
-handling the error.
+continues operation without crashing. 
 
 \textbf{Test Case Derivation:} 
 Memory exhaustion on embedded systems causes system crashes if not handled
@@ -628,10 +631,8 @@ disconnect one microphone, (2) disconnect display interface, (3) restore all
 connections. Normal operation continues between fault injections.
 					
 \textbf{Output:}
-For each fault condition, the diagnostic system detects the hardware error
-within 1 second and logs appropriate error codes identifying the failed
-component. When connections are restored, the diagnostic system detects recovery
-and clears error flags. All detections and recoveries are timestamped in logs.
+For each fault condition, the diagnostic system outputs error codes 
+identifying the failed component. 
 
 \textbf{Test Case Derivation:} 
 Continuous hardware monitoring enables the system to detect failures in
@@ -678,8 +679,7 @@ interface rather than direct hardware register access.
 All driver API calls complete successfully and return expected data. ADC reads
 return valid voltage samples. GPIO writes toggle pin states visible on
 oscilloscope. Timer configuration produces expected timing behavior. System
-clock reads return monotonically increasing timestamps. No direct hardware
-register access is required by the test application.
+clock reads return monotonically increasing timestamps. 
 
 \textbf{Test Case Derivation:} 
 Hardware abstraction through the driver layer enables higher-level software to
@@ -693,7 +693,8 @@ access). Deploy to microcontroller. Execute test sequence exercising each driver
 function. Verify all operations complete successfully through return codes. Use
 oscilloscope to verify GPIO toggles. Use serial logging to verify ADC readings
 are within expected ranges. The test passes if all driver operations execute
-correctly and provide expected functionality.
+correctly and provide expected functionality. Note that no direct hardware
+register access is required by the test application.
 
 \item{\textbf{Test-FR-2.2} Permission-based hardware access\\}
 
@@ -706,15 +707,14 @@ Module B with restricted privilege (limited hardware access).
 					
 \textbf{Input:}
 Test requests from both modules attempting to access hardware resources: (1)
-Module A requests ADC access (allowed by permissions), (2) Module B requests ADC
-access (denied by permissions), (3) Module A requests GPIO write (allowed), (4)
-Module B requests GPIO write (denied).
+Module A requests ADC access, (2) Module B requests ADC
+access, (3) Module A requests GPIO write, (4)
+Module B requests GPIO write.
 					
 \textbf{Output:}
 Module A's requests complete successfully with hardware operations executed.
 Module B's requests are rejected by the driver layer, returning permission
-denied error codes without executing hardware operations. System logs show
-permission checks for all requests.
+denied error codes without executing hardware operations. 
 
 \textbf{Test Case Derivation:} 
 Permission-based access control prevents unauthorized or unintended hardware
@@ -727,7 +727,8 @@ Configure driver with permission rules for test modules. Execute test requests
 from both modules in sequence. Verify Module A's requests succeed by checking
 return codes. Verify Module B's requests are denied by checking for error codes.
 Examine system logs to confirm permission checks occurred. The test passes if
-all access decisions match configured permissions.
+all access decisions match configured permissions. System logs will show
+permission checks for all requests.
 
 \item{\textbf{Test-FR-2.3} Error code propagation\\}
 
@@ -748,8 +749,7 @@ peripheral.
 For each error condition, the driver returns a specific error code identifying
 the failure type (e.g., ERROR\_NOT\_INITIALIZED, ERROR\_INVALID\_PIN,
 ERROR\_INVALID\_PARAMETER, \\ ERROR\_HARDWARE\_DISCONNECTED). Error codes are
-returned immediately without hanging or crashing. Higher-level software receives
-these codes and can take appropriate action.
+returned immediately without hanging or crashing. 
 
 \textbf{Test Case Derivation:} 
 Proper error reporting enables higher-level software to detect and handle
@@ -780,7 +780,7 @@ real-time processing conditions.
 					
 \textbf{Output:}
 Audio data in buffers maintains integrity throughout the test period. No buffer
-corruption occurs (verified by checksum or known test pattern). No data races
+corruption occurs. No data races
 between writers (DMA) and readers (audio processing) cause invalid data. Buffer
 state transitions are atomic and consistent.
 
@@ -944,7 +944,7 @@ filtering component on.
 A 10 second digital audio signal sampled at 16 kHz containing waves with mixed
 frequencies and amplitudes. The same input will be processed once with the
 microcontroller, and once on a local development machine without hardware
-acceleration. Each test will be timed to measure the processing speed. 
+acceleration. 
 					
 \textbf{Output:}
 Both processing modes should produce equivalent spectrograms for the given audio
@@ -977,10 +977,9 @@ retrieved from an audio file.
 					
 \textbf{Input:}
 Three separate audio clips represented in audio files. One will have a 1 second
-sine wave with an amplitude that exceeds 1.0. Since amplitudes above 1.0 will
-become clipped. Another clip will have a 1 second sine wave, that is replaced by
-zeros halfway. This will test the lost signal case. The last clip will just have
-2 seconds of zero amplitude, measuring the silence case. 
+sine wave with an amplitude that exceeds 1.0. Another clip will have a 1 second 
+sine wave, that is replaced by zeros halfway. The last clip will just have
+2 seconds of zero amplitude.
 					
 \textbf{Output:}
 For each test case, the component should output the correct anomaly flag. In
@@ -1916,7 +1915,7 @@ are defined in this section for easy maintenance.
 
 The following 10 essential survey questions will be used during user validation
 sessions with members of the McMaster Sign Language Club who are hard of hearing
-to assess the effectiveness and usability of \progname{Audio360}.
+to assess the effectiveness and usability of \progname{}.
 
 \begin{enumerate}
     \item \textbf{Background:} What is your level of hearing loss? (Complete
