@@ -7,6 +7,8 @@
 
 #include "doa.h"
 
+#include <stdexcept>
+
 #include "logging.hpp"
 
 DOA::DOA(size_t numSamples) : numSamples(numSamples), gccPhaT(numSamples) {}
@@ -17,8 +19,10 @@ float DOA::calculateDirection(std::vector<float>& mic1Data,
                               std::vector<float>& mic4Data,
                               DOA_Algorithms algo) {
   if (!this->checkInputSize(mic1Data, mic2Data, mic3Data, mic4Data)) {
-    // TODO: throw AudioProcessingFailure.
     ERROR("Incorrect mic audio input data.");
+#ifndef STM_BUILD
+    throw std::logic_error("AudioProcessingFailure");
+#endif
   }
 
   float angle_rad = 0.0;

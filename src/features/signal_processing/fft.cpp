@@ -60,6 +60,8 @@ FFT& FFT::operator=(const FFT& other) {
   std::copy(other.out, other.out + this->outputSize, this->out);
 
   this->initializeFFTInstance();
+
+  return *this;
 }
 
 FFT::~FFT() {

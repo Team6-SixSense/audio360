@@ -28,6 +28,7 @@ add_subdirectory(helper)
 target_link_libraries(${TestExecutable} PRIVATE
     Audio360Lib
     GTest::gtest_main
+    GTest::gmock_main 
 )
 
 # Link compile definitions.
