@@ -13,13 +13,14 @@
       }
     },
     {
-      "name": "native-x86_64-Visual-Studio",
-      "displayName": "Native x86_64-VS",
-      "generator": "Visual Studio 17 2022",
-      "binaryDir": "${sourceDir}/build/x86_64",
+      "name": "native-mingw",
+      "displayName": "Native MinGW",
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build/mingw",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "BUILD_TESTS": "ON"
+        "BUILD_TESTS": "ON",
+        "ENABLE_COVERAGE": "ON"
       }
     },
     {
@@ -49,8 +50,8 @@
       "jobs": 8
     },
     {
-      "name": "build-x86_64-VS",
-      "configurePreset": "native-x86_64-Visual-Studio",
+      "name": "build-mingw",
+      "configurePreset": "native-mingw",
       "jobs": 8
     },
     {

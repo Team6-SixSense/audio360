@@ -1,4 +1,4 @@
-name: Native MSVC Build & Test
+name: Native MinGW Build & Test
 
 on:
   push:
@@ -15,7 +15,7 @@ on:
       - '.github/workflows/buildtest.yml'
 
 jobs:
-  build:
+  run_tests:
     runs-on: windows-latest
 
     steps:
@@ -24,15 +24,31 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Configure (native x86_64 Visual Studio)
+    - name: Configure (native MinGW)
       run: |
-        if (Test-Path build) { Remove-Item -Recurse -Force build }
-        cmake --preset native-x86_64-Visual-Studio -DBUILD_TESTS=ON
+        Remove-Item -Recurse -Force build -ErrorAction SilentlyContinue
+        cmake --preset native-mingw
 
     - name: Build
-      run: cmake --build --preset build-x86_64-VS
+      run: cmake --build --preset build-mingw
 
     - name: Run Tests
       run: |
-        cd .\build\x86_64\src\Debug\
+        cd ./build/mingw/src
         .\Audio360Tests.exe
+
+    - name: Install gcovr
+      run: pip install gcovr
+
+    - name: Run Code Coverage
+      run: |
+        Remove-Item -Recurse -Force coverage -ErrorAction SilentlyContinue
+        mkdir coverage
+        cd ./build/mingw
+        gcovr -r ../.. --html --html-details -o ../../coverage/coverage.html --exclude '.*_deps.*' --exclude '.*test.*' --exclude '.*lib.*' --exclude '.*minimp3*.*'
+
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage.html
+        path: coverage/coverage.html

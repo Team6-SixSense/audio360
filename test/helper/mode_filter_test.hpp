@@ -62,7 +62,8 @@ std::vector<ModeFilterParamType<int>> GetIntTestConfigs() {
       {5, 10, allOnes, allOnes},                       // Test 1.
       {5, 12, modeChangesInput, modeChangesExpected},  // Test 2.
       {6, 12, equalFreqInput, equalFreqExpected},      // Test 3.
-      {1, 6, sizeOneResults, sizeOneResults}           // Test 4.
+      {1, 6, sizeOneResults, sizeOneResults},          // Test 4.
+      {0, 10, allOnes, allOnes}                        // Filter size 0 test.
   };
 }
 
@@ -122,6 +123,7 @@ std::vector<ModeFilterParamType<ClassificationLabel>> GetEnumTestConfigs() {
       {5, 10, allSirens, allSirens},                   // Test 1.
       {5, 12, modeChangesInput, modeChangesExpected},  // Test 2.
       {6, 12, equalFreqInput, equalFreqExpected},      // Test 3.
-      {1, 5, sizeOneResults, sizeOneResults}           // Test 4.
+      {1, 5, sizeOneResults, sizeOneResults},          // Test 4.
+      {0, 10, allSirens, allSirens}                    // Filter size 0 test.
   };
 }
