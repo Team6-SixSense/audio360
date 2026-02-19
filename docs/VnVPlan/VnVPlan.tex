@@ -632,21 +632,45 @@ connections. Normal operation continues between fault injections.
 					
 \textbf{Output:}
 For each fault condition, the diagnostic system outputs error codes 
-identifying the failed component. 
+identifying the failed component.
+
+\textbf{Pass Criteria:}
+\begin{itemize}
+\item Fault detection latency $\leq$ 1 second (measured from physical fault
+occurrence timestamp to diagnostic log entry timestamp)
+\item Correct error code generated for each fault type (microphone disconnect,
+display disconnect, etc.)
+\item 100\% fault detection rate (no missed faults)
+\item Zero false positives (no spurious error logs when hardware is operational)
+\item Recovery detection within 1 second of hardware restoration
+\end{itemize}
 
 \textbf{Test Case Derivation:} 
 Continuous hardware monitoring enables the system to detect failures in
 real-time and inform users about degraded functionality. Quick detection (within
-1 second) ensures users are aware of system limitations. Component
-identification in error logs aids in troubleshooting and repair.
+1 second from fault occurrence) ensures users are aware of system limitations.
+Component identification in error logs aids in troubleshooting and repair.
 					
 \textbf{How test will be performed:}
 Deploy firmware to microcontroller with all peripherals connected. Start
-diagnostic logging. Systematically introduce each fault condition while
-monitoring logs. Verify each fault is detected within 1 second by examining log
-timestamps. Verify correct error codes are generated for each fault type.
-Restore connections and verify recovery detection. The test passes if all faults
-are detected within timing constraints with correct error identification.
+diagnostic logging with high-precision timestamps. Systematically introduce each
+fault condition while recording the exact fault occurrence time:
+
+\begin{enumerate}
+\item Record baseline timestamp ($t_0$) immediately before introducing fault
+\item Introduce fault (e.g., physically disconnect microphone)
+\item Record fault occurrence timestamp ($t_{fault}$) at moment of disconnection
+\item Monitor diagnostic logs for error detection
+\item Record diagnostic log entry timestamp ($t_{log}$)
+\item Calculate detection latency: $\Delta t = t_{log} - t_{fault}$
+\item Verify $\Delta t \leq 1$ second
+\item Verify error code matches expected fault type (cross-reference with fault
+injection log)
+\end{enumerate}
+
+The test passes if all faults are detected within timing constraints, with
+correct error identification, zero false positives, and verified correspondence
+between logged states and actual hardware states.
 
 \end{enumerate}
 
