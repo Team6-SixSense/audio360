@@ -17,10 +17,6 @@
 #define RUNTIME_FFT
 #endif
 
-#if defined(STM_BUILD) && defined(RUNTIME_FFT)
-#error "The SimpleFFT runtime is not meant for the STM32 MCU".
-#endif
-
 #ifdef STM_BUILD
 #include "runtimes/runtime_android_comm.hpp"
 #include "runtimes/runtime_audio360.hpp"
@@ -38,7 +34,6 @@ int main() {
 #ifdef STM_BUILD
   // Set-up peripherals. Must call before any hardware function calls.
   setupPeripherals();
-
 
 #endif
 
