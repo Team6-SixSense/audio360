@@ -54,6 +54,14 @@ void SystemFaultManager::handlePeripheralSetupFaults(
   }
 }
 
+SystemFaultState SystemFaultManager::getSystemFaultState() {
+  return this->state;
+}
+
+void SystemFaultManager::updateFaultState(SystemFaultState faultState) {
+  this->state = faultState;
+}
+
 void SystemFaultManager::enterUnrecoverableState(std::string error) {
   ERROR("Entering unrecoverable state due to %s", error);
 

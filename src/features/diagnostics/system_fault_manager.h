@@ -12,14 +12,7 @@
 #include <string>
 
 #include "peripheral_error.h"
-
-/** @brief System fault state. */
-enum SystemFaultState {
-  NO_FAULT,
-  HARDWARE_FAULT,
-  CLASSIFICATION_FAULT,
-  DIRECTIONAL_ANALYSIS_FAULT
-};
+#include "system_fault_states.h"
 
 /** @brief Module to monitors system health and manage critical system faults.
  */
@@ -34,6 +27,21 @@ class SystemFaultManager {
    * @param errors Set of peripheral set-up errors.
    */
   void handlePeripheralSetupFaults(std::set<PeripheralError>* errors);
+
+  /**
+   * @brief Return the current system fault state.
+   *
+   * @return SystemFaultState The current system fault state.
+   */
+  SystemFaultState getSystemFaultState();
+
+ protected:
+  /**
+   * @brief Setter for system fault state for testing purposes.
+   *
+   * @param faultState The fault state to set to.
+   */
+  void updateFaultState(SystemFaultState faultState);
 
  private:
   /**

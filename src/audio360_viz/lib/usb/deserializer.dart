@@ -13,10 +13,14 @@ Packet deserializePacket(Uint8List data) {
   final int quadrantInt = bd.getUint8(offset);
   offset += 1;
 
+  final int systemFaultInt = bd.getUint8(offset);
+  offset += 1;
+
   final int priority = bd.getUint8(offset);
 
   return Packet(
     classification: classificationFromInt(classificationInt),
     quadrant: quadrantFromInt(quadrantInt),
+    systemFault: systemFaultFromInt(systemFaultInt),
     priority: priority);
 }
