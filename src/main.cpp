@@ -6,12 +6,6 @@
  */
 
 #ifdef STM_BUILD
-#include "peripheral.h"
-#endif
-
-#include <stdio.h>
-
-#ifdef STM_BUILD
 #define RUNTIME_AUDIO360
 #else
 #define RUNTIME_FFT
@@ -31,12 +25,6 @@
 #endif
 
 int main() {
-#ifdef STM_BUILD
-  // Set-up peripherals. Must call before any hardware function calls.
-  setupPeripherals();
-
-#endif
-
 #ifdef RUNTIME_AUDIO360
   mainAudio360();
 #endif

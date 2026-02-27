@@ -16,6 +16,9 @@
 #include "usbh_aoa.h"
 
 void mainAndroidComm() {
+  // Set-up peripherals. Must call before any hardware function calls.
+  setupPeripherals();
+
   VisualizationPacket vizPacket{};
   vizPacket.classification = ClassificationLabel::CarHorn;
   vizPacket.direction = DirectionLabel::North;
@@ -23,6 +26,7 @@ void mainAndroidComm() {
 
   // Send packet over USB CDC.
   float angle_rad = 0.0;
+
   while (1) {
     MX_USB_HOST_Process();
 
