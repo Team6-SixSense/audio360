@@ -6,7 +6,7 @@
  */
 
 #pragma once
-
+#ifdef BUILD_GLASSES_HOST
 #include <cstdint>
 
 #include "constants.h"
@@ -24,8 +24,6 @@ void mainAndroidComm() {
   // Send packet over USB CDC.
   float angle_rad = 0.0;
   while (1) {
-
-
     MX_USB_HOST_Process();
 
     std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
@@ -39,3 +37,4 @@ void mainAndroidComm() {
     HAL_Delay(100);
   }
 }
+#endif

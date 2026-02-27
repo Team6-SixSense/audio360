@@ -4,7 +4,6 @@
  * @brief   FFT runtime main source code.
  ******************************************************************************
  */
-
 #include "runtime_audio360.hpp"
 
 #include <cstdint>
@@ -16,8 +15,11 @@
 #include "logging.hpp"
 #include "packet.h"
 #include "peripheral.h"
+
+#ifdef BUILD_GLASSES_HOST
 #include "usb_host.h"
 #include "usbh_aoa.h"
+#endif
 
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;
@@ -65,9 +67,11 @@ void mainAudio360() {
   vizPacket.priority = 3U;
 
   while (1) {
+#ifdef BUILD_GLASSES_HOST
     MX_USB_HOST_Process();
 
     if (Is_AOA_Connected() == 1) {
+#endif
       INFO("Audio360 loop start.");
 
       // Extract microphone data if ready.
@@ -92,7 +96,9 @@ void mainAudio360() {
 
       std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
+#ifdef BUILD_GLASSES_HOST
       USBH_AOA_Transmit(packet.data(), packet.size());
+#endif
 
       // Reset half and full bool flags.
       if (micMainFull == 1U) {
@@ -101,7 +107,9 @@ void mainAudio360() {
       }
     }
     INFO("Audio360 loop end.");
+#ifdef BUILD_GLASSES_HOST
   }
+#endif
 }
 
 bool extractMicData() {
