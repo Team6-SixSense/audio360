@@ -9,6 +9,11 @@
 
 #include <gtest/gtest.h>
 
+#include <vector>
+
+#include "system_fault_states.h"
+
+
 struct PeripheralErrorParamType {
   PeripheralError error;  // Peripheral error.
 };
@@ -29,6 +34,22 @@ class SystemFaultManagerTest
   /** @brief Recent error string. */
   std::string lastError;
 };
+
+/** @brief Verify that requesting for the system fault state returned the
+ * current one. */
+TEST_F(SystemFaultManagerTest, GetSystemFault) {
+  std::vector<SystemFaultState> systemFaultStates{NO_FAULT, HARDWARE_FAULT,
+                                                  CLASSIFICATION_FAULT,
+                                                  DIRECTIONAL_ANALYSIS_FAULT};
+
+  for (SystemFaultState faultState : systemFaultStates) {
+    // Update current fault state.
+    this->updateFaultState(faultState);
+
+    // Asert getting the fault state returns the correct state.
+    ASSERT_EQ(this->getSystemFaultState(), faultState);
+  }
+}
 
 /** @brief Verify that nothing happens when no pheripheral errors occur. */
 TEST_F(SystemFaultManagerTest, NoPheripheralErrors) {

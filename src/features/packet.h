@@ -12,8 +12,9 @@
 
 #include "classificationLabel.h"
 #include "directionLabel.h"
+#include "system_fault_states.h"
 
-const size_t PACKET_BYTE_SIZE = 4;
+const size_t PACKET_BYTE_SIZE = 5;
 
 /** @brief Struct for representing the packet being sent to the visualization
  * module. */
@@ -26,6 +27,9 @@ struct VisualizationPacket {
 
   /** @brief Direction of the audio source. */
   DirectionLabel direction{DirectionLabel::None};
+
+  /** @brief Current system fault state. */
+  SystemFaultState systemFaultState{SystemFaultState::NO_FAULT};
 
   /** @brief Priority of packet. */
   uint8_t priority{0U};
@@ -42,6 +46,7 @@ inline std::array<uint8_t, PACKET_BYTE_SIZE> createPacket(
     VisualizationPacket vizPacket) {
   std::array<uint8_t, PACKET_BYTE_SIZE> packet = {
       vizPacket.startByte, static_cast<uint8_t>(vizPacket.classification),
-      static_cast<uint8_t>(vizPacket.direction), vizPacket.priority};
+      static_cast<uint8_t>(vizPacket.direction),
+      static_cast<uint8_t>(vizPacket.systemFaultState), vizPacket.priority};
   return packet;
 }

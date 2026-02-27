@@ -52,12 +52,22 @@ class MockUsbService {
     ];
     final quadrant = quadrants[_random.nextInt(quadrants.length)];
 
+    final systemFaults = [
+      SystemFault.none,
+      SystemFault.hardware,
+      SystemFault.classification,
+      SystemFault.doa
+    ];
+
+    final systemFault = systemFaults[_random.nextInt(systemFaults.length)];
+
     // Random priority (1-5)
     final priority = _random.nextInt(5) + 1;
 
     final packet = Packet(
       classification: classification,
       quadrant: quadrant,
+      systemFault: systemFault,
       priority: priority,
     );
 

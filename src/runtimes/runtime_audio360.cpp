@@ -101,6 +101,7 @@ void mainAudio360() {
       INFO("Creating visualization packet.");
       vizPacket.classification = classificationModeFilter.getMostOccurring();
       vizPacket.direction = directionModeFilter.getMostOccurring();
+      vizPacket.systemFaultState = systemFaultManager.getSystemFaultState();
 
       std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
