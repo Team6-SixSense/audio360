@@ -8,9 +8,15 @@
 #include "system_fault_manager.h"
 
 #include "logging.hpp"
+#include "packet.h"
 
 #ifdef STM_BUILD
 #include "stm32f7xx_hal_cortex.h"
+#endif
+
+#ifdef BUILD_GLASSES_HOST
+#include "usb_host.h"
+#include "usbh_aoa.h"
 #endif
 
 SystemFaultManager::SystemFaultManager() {}
@@ -101,7 +107,14 @@ void SystemFaultManager::updateFaultState(SystemFaultState faultState) {
 void SystemFaultManager::enterUnrecoverableState(std::string error) {
   ERROR("Entering unrecoverable state due to %s", error);
 
-  // TODO: send message to USB.
+#ifdef BUILD_GLASSES_HOST
+  // Transmit system fault error to visualization before entering unrecoverable
+  // state.
+  VisualizationPacket vizPacket{};
+  vizPacket.systemFaultState = this->state;
+  std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
+  USBH_AOA_Transmit(packet.data(), packet.size());
+#endif
 
   // Enter infinite loop to prevent any further execution.
   while (true) {

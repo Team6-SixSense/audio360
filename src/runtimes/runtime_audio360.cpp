@@ -71,9 +71,6 @@ void mainAudio360() {
   embedded_mic_start(micB2);
 
   VisualizationPacket vizPacket{};
-  vizPacket.classification = ClassificationLabel::CarHorn;
-  vizPacket.direction = DirectionLabel::North;
-  vizPacket.priority = 3U;
 
   while (1) {
 #ifdef BUILD_GLASSES_HOST
