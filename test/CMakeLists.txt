@@ -22,6 +22,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(${TestExecutable})
 add_dependencies(${TestExecutable} Audio360Lib)
 add_subdirectory(features)
+add_subdirectory(hardware_interface)
 add_subdirectory(helper)
 
 # Link test executable against your library + gtest
