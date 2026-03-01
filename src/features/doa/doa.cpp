@@ -9,6 +9,7 @@
 
 #include <stdexcept>
 
+#include "exceptions.hpp"
 #include "logging.hpp"
 
 DOA::DOA(size_t numSamples) : numSamples(numSamples), gccPhaT(numSamples) {}
@@ -20,9 +21,7 @@ float DOA::calculateDirection(std::vector<float>& mic1Data,
                               DOA_Algorithms algo) {
   if (!this->checkInputSize(mic1Data, mic2Data, mic3Data, mic4Data)) {
     ERROR("Incorrect mic audio input data.");
-#ifndef STM_BUILD
-    throw std::logic_error("AudioProcessingFailure");
-#endif
+    throw AudioProcessingException("Incorrect mic audio input data.");
   }
 
   float angle_rad = 0.0;
@@ -34,8 +33,9 @@ float DOA::calculateDirection(std::vector<float>& mic1Data,
       break;
 
     default:
-      // TODO: throw AudioProcessingFailure.
       ERROR("DOA algorithm is currently not supported.");
+      throw AudioProcessingException(
+          "DOA algorithm is currently not supported.");
       break;
   }
 
