@@ -35,6 +35,28 @@ class SystemFaultManager {
    */
   SystemFaultState getSystemFaultState();
 
+  /** @brief Runs System Fault Manager internal state machine to determine the
+   * current system fault state. */
+  void runStateMachine();
+
+  /** @brief Reports hardware error. */
+  void reportHardwareError();
+
+  /** @brief Clears hardware error. */
+  void clearHardwareError();
+
+  /** @brief Reports audio classification error. */
+  void reportClassificationError();
+
+  /** @brief Clears audio classification error. */
+  void clearClassficationError();
+
+  /** @brief Reports DOA error. */
+  void reportDoaError();
+
+  /** @brief Clears DOA error. */
+  void clearDoaError();
+
  protected:
   /**
    * @brief Setter for system fault state for testing purposes.
@@ -55,4 +77,16 @@ class SystemFaultManager {
 
   /** @brief Current system fault state. */
   SystemFaultState state{NO_FAULT};
+
+  /** @brief True if there is a hardware error. False is there are no errors
+   * associated to hardware. */
+  bool hardwareError{false};
+
+  /** @brief True if there is an audio classification error. False is there are
+   * no errors associated to audio classification. */
+  bool classificationError{false};
+
+  /** @brief True if there is a DOA error. False is there are no errors
+   * associated to DOA. */
+  bool doaError{false};
 };
