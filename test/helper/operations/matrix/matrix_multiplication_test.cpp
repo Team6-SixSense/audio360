@@ -13,7 +13,7 @@
  * @brief Tests matrix multiplication associative property.
  * Property: (AB)C = A(BC).
  */
-TEST(MatrixMultiplication, Associative) {
+TEST(MatrixMultiplication, MultiAssociative) {
   const int numRows = 4, numCols = 4;
   matrix A, B, C, AB, BC, ABC1, ABC2;
 
@@ -48,7 +48,7 @@ TEST(MatrixMultiplication, Associative) {
  * @brief Tests matrix multiplication distributive property.
  * Property: A(B + C) = AB + AC.
  */
-TEST(MatrixMultiplication, Distributive) {
+TEST(MatrixMultiplication, MultiDistributive) {
   const int numRows = 4, numCols = 4;
   matrix A, B, C, BC, AB, AC, ABC1, ABC2;
 
@@ -86,7 +86,7 @@ TEST(MatrixMultiplication, Distributive) {
  * @brief Tests matrix multiplication identity property.
  * Property: AI = A.
  */
-TEST(MatrixMultiplication, Identity) {
+TEST(MatrixMultiplication, MultiIdentity) {
   const int numRows = 4, numCols = 4;
   matrix A, I, Result;
 
@@ -110,7 +110,7 @@ TEST(MatrixMultiplication, Identity) {
  * @brief Tests matrix multiplication zero property.
  * Property: A0 = 0.
  */
-TEST(MatrixMultiplication, Zero) {
+TEST(MatrixMultiplication, MultiZero) {
   const int numRows = 4, numCols = 4;
   matrix A, Zero, Result;
 
@@ -132,7 +132,7 @@ TEST(MatrixMultiplication, Zero) {
 
 /** @brief Test that matrix multiplication fails when matrices size are not
  * compatible. */
-TEST(MatrixMultiplication, DimensionMismatch) {
+TEST(MatrixMultiplication, MultiDimensionMismatch) {
   matrix A, B, C;
 
   // Create matrices.

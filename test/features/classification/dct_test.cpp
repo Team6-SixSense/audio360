@@ -89,7 +89,7 @@ static void Make3FrameMelSpecFromMP3(const MP3Data& data, int sampleRate,
 }
 
 /** @brief Checks DCT output against known MFCC reference values. */
-TEST(DCTTest, ComputeDCT_OnMelSpectrogram_ProducesExpectedMFCC) {
+TEST(DCTTest, ComputeDCTOnMelSpectrogramProducesExpectedMFCC) {
   // These were validated experimentally using Python to see if relatively the
   // MFCC are obtained.
   std::vector<float> actualFrame1 = {

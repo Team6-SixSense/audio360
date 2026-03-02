@@ -13,7 +13,7 @@
  * @brief Tests matrix transpose involution property.
  * Property: (A^T)^T = A.
  */
-TEST(MatrixTranspose, Involution) {
+TEST(MatrixTranspose, TransInvolution) {
   const int numRows = 4, numCols = 4;
   matrix A, AT, ATT;
 
@@ -39,7 +39,7 @@ TEST(MatrixTranspose, Involution) {
  * @brief Tests matrix transpose addition property.
  * Property: (A + B)^T = A^T + B^T.
  */
-TEST(MatrixTranspose, Addition) {
+TEST(MatrixTranspose, TransAddition) {
   const int numRows = 4, numCols = 4;
   matrix A, B, AB, AT, BT, ABT1, ABT2;
 
@@ -76,7 +76,7 @@ TEST(MatrixTranspose, Addition) {
  * @brief Tests matrix transpose scalar property.
  * Property: (cA)^T = cA^T.
  */
-TEST(MatrixTranspose, Scalar) {
+TEST(MatrixTranspose, TransScalar) {
   const int numRows = 4, numCols = 4;
   const int c = 2;
   matrix A, cA, AT, cAT1, cAT2;
@@ -110,7 +110,7 @@ TEST(MatrixTranspose, Scalar) {
  * @brief Tests matrix transpose multiplication property.
  * Property: (AB)^T = B^TA^T.
  */
-TEST(MatrixTranspose, Multiplication) {
+TEST(MatrixTranspose, TransMultiplication) {
   const int numRows = 4, numCols = 4;
   matrix A, B, AB, BT, AT, ABT1, ABT2;
 
