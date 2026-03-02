@@ -3,6 +3,11 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{cite}
+\usepackage{xr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{url}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -10,10 +15,13 @@
     linkcolor=red,
     urlcolor=blue
 }
-\usepackage[round]{natbib}
+
+
 
 \input{../Comments}
 \input{../Common}
+
+\externaldocument[SRS-]{../SRS/SRS}
 
 \begin{document}
 
@@ -30,8 +38,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+March 9, 2026 & 1.0 & Initial VNV report. \\
 \bottomrule
 \end{tabularx}
 
@@ -39,16 +46,34 @@ Date 2 & 1.1 & Notes\\
 
 \section{Symbols, Abbreviations and Acronyms}
 
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
-  \toprule		
-  \textbf{symbol} & \textbf{description}\\
-  \midrule 
-  T & Test\\
-  \bottomrule
-\end{tabular}\\
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|} 
+    \toprule		
+    \textbf{symbol} & \textbf{description}\\
+    \midrule 
+    \progname & 360 Audio analysis system on smart glasses\\ \hline
+    CI & Continuous Integration\\ \hline
+    DOA & Direction of Arrival \\ \hline
+    FFT & Fast Fourier Transform \\ \hline
+    FR & Functional Requirement\\ \hline
+    HUD & Heads Up Display \\ \hline
+    M & Module \\ \hline
+    NFR & Non-Functional Requirement\\ \hline
+    R & Requirement\\ \hline    
+    SRS & Software Requirements Specification\\ \hline
+    T & Test\\ \hline
+    VnV & Verification and Validation \\ \hline
+    \bottomrule
 
-\wss{symbols, abbreviations or acronyms -- you can reference the SRS tables if needed}
+  \end{tabular}
+  \caption{Table of abbreviations and acronyms used in \progname.}
+\end{table}
+
+See SRS Documentation at
+\hyperref[SRS-sec:symbols]{Symbols, Abbreviations, and Acronyms}
+for a complete table used in \progname.
+
 
 \newpage
 
@@ -76,7 +101,7 @@ This document ...
 	
 \section{Comparison to Existing Implementation}	
 
-This section will not be appropriate for every project.
+Not applicable. There is no existing implementation known to the team.
 
 \section{Unit Testing}
 
@@ -88,6 +113,34 @@ the feedback from the Rev 0 demo to the supervisor (or to potential users)
 should be highlighted.}
 
 \section{Automated Testing}
+
+To ensure consistent verification throughout development, multiple automated
+testing CI pipelines were implemented using GitHub Actions. These pipeline are
+triggered on each push to the main branch, and any Pull requests targetted to
+the main branch. Pull requests are blocked from merging if any pipeline fails
+to ensure verification holds for any new changes to the project.
+These automation testing reduces reliance on manual testing and increases the
+repeatability and reliability of the verification process.
+
+The automated workflow are as follows:
+
+\begin{itemize}
+  \item \textbf{Build Verification:} The source code is compiled using hardware
+    compiler to ensure that all changes integrate correctly and do not
+    introduce build errors.
+
+  \item \textbf{Unit Testing:} All unit tests are executed using gtest
+    \cite{GoogleTest} to verify the functional correctness of core software
+    components.
+  \item \textbf{Static Code Analysis:} A C++ static analysis tool
+    \cite{clangStaticAnalyzer} is run to detect potential programming errors,
+    memory issues, and violations of coding standards.
+\end{itemize}
+
+
+The results of each automated pipeline are recorded and made available through
+the \href{https://github.com/Team6-SixSense/audio360/actions}{repository's GitHub Actions tab}
+for traceability and review.
 		
 \section{Trace to Requirements}
 		
@@ -95,7 +148,45 @@ should be highlighted.}
 
 \section{Code Coverage Metrics}
 
-\bibliographystyle{plainnat}
+Table \ref{tab:code_coverage} presents the code coverage metrics summary as of
+March 1, 2026. Code coverage analysis was performed using gcovr \cite{gcovr}, a
+Python based tool that utilizes gcov to generate line, function, and branch
+coverage reports. Given the safety critical nature of \progname, achieving
+full test coverage was established as a target objective.
+However, this objective was not fully achieved due to gcovr reporting
+branch coverage for portions of the C++ standard library in addition to project
+developed source code.
+Despite this limitation, the results indicate greater than $90\%$ line and
+function coverage and greater than $60\%$ branch coverage, which is considered
+sufficient for the scope of this capstone project and demonstrates a high level
+of verification.
+
+These coverage metrics exclude manufacturer supplied libraries and hardware
+interface components. Verification of manufacturer code is outside the project's
+responsibility, and meaningful testing of hardware interfaces would require
+extensive mocking, which was determined to be beyond the scope of the project
+objectives and available resources.
+
+A copy of the code coverage report is also saved to this repository in
+\href{https://github.com/Team6-SixSense/audio360/blob/main/docs/VnVReport/coverage.html}{\path{docs/VnVReport/coverage.html}}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|} 
+    \toprule		
+    \textbf{Metric} & \textbf{Coverage (\%)} & \textbf{Executed / Total} \\
+    \midrule 
+    Lines & 91.4 & $604 / 661$\\ \hline
+    Functions & 94.4 & $85 / 90$\\ \hline
+    Branches & 64.1 & $261 / 407$\\ \hline
+    \bottomrule
+  \end{tabular}
+  \caption{Code coverage mertrics summary.}
+  \label{tab:code_coverage}
+\end{table}
+
+\newpage
+\bibliographystyle{IEEEtran}
 \bibliography{../../refs/References}
 
 \newpage{}
