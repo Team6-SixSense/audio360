@@ -53,6 +53,7 @@ March 9, 2026 & 1.0 & Initial VNV report. \\
     \textbf{symbol} & \textbf{description}\\
     \midrule 
     \progname & 360 Audio analysis system on smart glasses\\ \hline
+    CI & Continuous Integration\\ \hline
     DOA & Direction of Arrival \\ \hline
     FFT & Fast Fourier Transform \\ \hline
     FR & Functional Requirement\\ \hline
@@ -100,7 +101,7 @@ This document ...
 	
 \section{Comparison to Existing Implementation}	
 
-This section will not be appropriate for every project.
+Not applicable. There is no existing implementation known to the team.
 
 \section{Unit Testing}
 
@@ -112,6 +113,34 @@ the feedback from the Rev 0 demo to the supervisor (or to potential users)
 should be highlighted.}
 
 \section{Automated Testing}
+
+To ensure consistent verification throughout development, multiple automated
+testing CI pipelines were implemented using GitHub Actions. These pipeline are
+triggered on each push to the main branch, and any Pull requests targetted to
+the main branch. Pull requests are blocked from merging if any pipeline fails
+to ensure verification holds for any new changes to the project.
+These automation testing reduces reliance on manual testing and increases the
+repeatability and reliability of the verification process.
+
+The automated workflow are as follows:
+
+\begin{itemize}
+  \item \textbf{Build Verification:} The source code is compiled using hardware
+    compiler to ensure that all changes integrate correctly and do not
+    introduce build errors.
+
+  \item \textbf{Unit Testing:} All unit tests are executed using gtest
+    \cite{GoogleTest} to verify the functional correctness of core software
+    components.
+  \item \textbf{Static Code Analysis:} A C++ static analysis tool
+    \cite{clangStaticAnalyzer} is run to detect potential programming errors,
+    memory issues, and violations of coding standards.
+\end{itemize}
+
+
+The results of each automated pipeline are recorded and made available through
+the \href{https://github.com/Team6-SixSense/audio360/actions}{repository's GitHub Actions tab}
+for traceability and review.
 		
 \section{Trace to Requirements}
 		
