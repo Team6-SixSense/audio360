@@ -5,6 +5,9 @@
 \usepackage{hyperref}
 \usepackage{cite}
 \usepackage{xr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{url}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -115,6 +118,43 @@ should be highlighted.}
 \section{Trace to Modules}		
 
 \section{Code Coverage Metrics}
+
+Table \ref{tab:code_coverage} presents the code coverage metrics summary as of
+March 1, 2026. Code coverage analysis was performed using gcovr \cite{gcovr}, a
+Python based tool that utilizes gcov to generate line, function, and branch
+coverage reports. Given the safety critical nature of \progname, achieving
+full test coverage was established as a target objective.
+However, this objective was not fully achieved due to gcovr reporting
+branch coverage for portions of the C++ standard library in addition to project
+developed source code.
+Despite this limitation, the results indicate greater than $90\%$ line and
+function coverage and greater than $60\%$ branch coverage, which is considered
+sufficient for the scope of this capstone project and demonstrates a high level
+of verification.
+
+These coverage metrics exclude manufacturer supplied libraries and hardware
+interface components. Verification of manufacturer code is outside the project's
+responsibility, and meaningful testing of hardware interfaces would require
+extensive mocking, which was determined to be beyond the scope of the project
+objectives and available resources.
+
+A copy of the code coverage report is also saved to this repository in
+\href{https://github.com/Team6-SixSense/audio360/blob/main/docs/VnVReport/coverage.html}{\path{docs/VnVReport/coverage.html}}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|} 
+    \toprule		
+    \textbf{Metric} & \textbf{Coverage (\%)} & \textbf{Executed / Total} \\
+    \midrule 
+    Lines & 91.4 & $604 / 661$\\ \hline
+    Functions & 94.4 & $85 / 90$\\ \hline
+    Branches & 64.1 & $261 / 407$\\ \hline
+    \bottomrule
+  \end{tabular}
+  \caption{Code coverage mertrics summary.}
+  \label{tab:code_coverage}
+\end{table}
 
 \newpage
 \bibliographystyle{IEEEtran}
