@@ -6,6 +6,13 @@
  */
 
 #ifdef STM_BUILD
+#include "peripheral.h"
+#endif
+
+#include <stdio.h>
+#include "runtime_bluetooth_test.hpp"
+
+#ifdef STM_BUILD
 #define RUNTIME_AUDIO360
 #else
 #define RUNTIME_FFT
@@ -39,6 +46,10 @@ int main() {
 
 #ifdef RUNTIME_FFT
   mainRuntimeFFT();
+#endif
+
+#ifdef RUNTIME_BLUETOOTH_TEST
+  main_bluetooth_test();
 #endif
 
   return 0;

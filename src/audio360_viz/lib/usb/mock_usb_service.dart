@@ -2,21 +2,20 @@ import 'dart:async';
 import 'dart:math';
 import '../models/packet.dart';
 import '../models/enums.dart';
+import '../baseDataService.dart';
 
-typedef PacketCallback = void Function(Packet packet);
-typedef StatusCallback = void Function(String status);
 
 /// Mock USB service for testing without hardware.
 /// Simulates packet data with random classifications and directions.
-class MockUsbService {
+final class MockUsbService extends BaseDataService {
   Timer? _timer;
-  final PacketCallback onPacket;
-  final StatusCallback onStatus;
+
   final Random _random = Random();
 
-  MockUsbService({required this.onPacket, required this.onStatus});
+  MockUsbService({required super.onPacket, required super.onStatus});
 
-  Future<void> connect() async {
+  @override
+  Future<void> initialize() async {
     // Simulate connection delay
     await Future.delayed(const Duration(milliseconds: 500));
     onStatus("Connected (Mock Mode)");
@@ -74,7 +73,8 @@ class MockUsbService {
     onPacket(packet);
   }
 
-  void dispose() {
+  @override
+  void close() {
     _timer?.cancel();
     _timer = null;
     onStatus("Disconnected");

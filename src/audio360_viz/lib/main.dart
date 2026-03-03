@@ -1,5 +1,7 @@
+import 'package:audio360_viz/baseDataService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'ble/bluetooth_service.dart';
 import 'models/packet.dart';
 import 'usb/usb_service_factory.dart';
 import 'screens/visualization_screen.dart';
@@ -46,30 +48,42 @@ class MainVisualizationPage extends StatefulWidget {
 }
 
 class _MainVisualizationPageState extends State<MainVisualizationPage> {
-  dynamic usbService; // Can be UsbService or MockUsbService
+  late BaseDataService dataService; // Can be UsbService or MockUsbService or BluetoothLEService
   Packet? _packet;
   String _status = "Disconnected";
 
+  bool useBluetooth = true;
+
+  void onPacket (Packet packet) {
+  setState(() => _packet = packet);
+  }
+
+  void onStatus (String status) {
+  setState(() => _status = status);
+  }
 
 
   @override
   void initState() {
+
     super.initState();
-    usbService = UsbServiceFactory.createUsbService(
-      onPacket: (Packet packet) {
-        setState(() => _packet = packet);
-      },
-      onStatus: (String status) {
-        setState(() => _status = status);
-      },
-    );
+    if(!useBluetooth){
+      dataService = UsbServiceFactory.createUsbService(
+        onPacket: this.onPacket,
+        onStatus: this.onStatus,
+      );
+    } else {
+      dataService= BluetoothLEService(p: this.onPacket,
+          s: this.onStatus);
+    }
+
     // Auto-connect on startup
-    usbService.connect();
+    dataService.initialize();
   }
 
   @override
   void dispose() {
-    usbService.dispose();
+    dataService.close();
     super.dispose();
   }
 
