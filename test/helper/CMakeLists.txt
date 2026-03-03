@@ -1,6 +1,7 @@
 # test/helper CMakeLists.txt
 
 # Add subdirectories (each adds sources/includes).
+add_subdirectory(bit_operations)
 add_subdirectory(mp3)
 add_subdirectory(operations)
 
