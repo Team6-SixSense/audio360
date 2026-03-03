@@ -22,8 +22,10 @@ static void MX_SPI1_Init();
 static void MX_USART3_UART_Init();
 
 static void MX_DMA_Init();
+static void MX_UART5_Init(void);
 
 UART_HandleTypeDef huart3;
+UART_HandleTypeDef huart5;
 SPI_HandleTypeDef SD_SPI_HANDLE;
 
 #define SD_CS_Pin GPIO_PIN_4
@@ -49,6 +51,7 @@ void setupPeripherals() {
 
   // Set up and intial UART pherrials.
   MX_USART3_UART_Init();
+  MX_UART5_Init();
 
   MX_DMA_Init();
   // Set up the microphone SAI peripherals
@@ -193,6 +196,13 @@ static void MX_GPIO_Init() {
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(SD_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
 }
 
 /**
@@ -255,6 +265,36 @@ static void MX_USART3_UART_Init() {
   if (HAL_UART_Init(&huart3) != HAL_OK) {
     Error_Handler();
   }
+}
+
+static void MX_UART5_Init(void)
+{
+
+  /* USER CODE BEGIN UART5_Init 0 */
+
+  /* USER CODE END UART5_Init 0 */
+
+  /* USER CODE BEGIN UART5_Init 1 */
+
+  /* USER CODE END UART5_Init 1 */
+  huart5.Instance = UART5;
+  huart5.Init.BaudRate = 9600;
+  huart5.Init.WordLength = UART_WORDLENGTH_8B;
+  huart5.Init.StopBits = UART_STOPBITS_1;
+  huart5.Init.Parity = UART_PARITY_NONE;
+  huart5.Init.Mode = UART_MODE_TX_RX;
+  huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart5.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart5.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart5.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart5) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN UART5_Init 2 */
+
+  /* USER CODE END UART5_Init 2 */
+
 }
 
 void Error_Handler() {

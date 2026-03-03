@@ -10,9 +10,10 @@
 #endif
 
 #include <stdio.h>
+#include "runtime_bluetooth_test.hpp"
 
 #ifdef STM_BUILD
-#define RUNTIME_AUDIO360
+#define RUNTIME_BLUETOOTH_TEST
 #else
 #define RUNTIME_FFT
 #endif
@@ -56,6 +57,10 @@ int main() {
 
 #ifdef RUNTIME_FFT
   mainRuntimeFFT();
+#endif
+
+#ifdef RUNTIME_BLUETOOTH_TEST
+  main_bluetooth_test();
 #endif
 
   return 0;
