@@ -976,7 +976,14 @@ Both processing modes should produce equivalent spectrograms for the given audio
 input. This means for each frequency in the spectrogram, the amplitude defined
 in the hardware-accelerated mode should match the amplitude in the
 non-accelerated mode within a defined tolerance of 0.1\%. The hardware
-accelerated run should complete in less time than the non-accelerated run.
+accelerated run should complete at least 50\% faster than the non-accelerated
+run.
+
+\textbf{Pass Criteria:}
+\begin{itemize}
+\item Amplitude error $\leq$ 0.1\% for all frequency bins
+\item Hardware-accelerated execution time $\leq$ 0.5 $\times$ non-accelerated execution time
+\end{itemize}
 
 \textbf{Test Case Derivation:} 
 Hardware acceleration uses specialized processing units to perform expensive
@@ -989,8 +996,8 @@ Manually running one configuration on the microcontroller, and another on the
 local computer. Execution time will be measured with a profiler. A test function
 will be written to measure the numerical equivalence of both outputs after
 processing is completed. Profiler measurements will be manually inspected to
-verify that the response time of the hardware accelerated mode is less than the
-non-accelerated mode.
+verify that the pass criteria are met (hardware-accelerated execution time is at
+least 50\% faster).
 
 \item{\textbf{Test-FR-3.5} Flagging anomalies\\}
 
@@ -1475,13 +1482,19 @@ Processing logs show that frames are processed in strict chronological order
 based on their capture timestamps. No newer frame is processed before an older
 frame. Earliest frames consistently receive highest priority in the task queue.
 All 60 seconds of audio are processed without frame reordering.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR1_1]{NFR1.1}):}
+\begin{itemize}
+\item 100\% monotonically increasing frame timestamps
+\item Zero out-of-order frame processing events
+\item Verified over full 60-second capture period
+\end{itemize}
 					
 \textbf{How test will be performed:} 
 Deploy firmware to microcontroller with frame logging enabled. Capture 60
 seconds of continuous audio. Export frame processing logs. Analyze log sequence
-to verify timestamps are monotonically increasing (each processed frame has a
-timestamp greater than or equal to the previous frame). The test passes if no
-out-of-order processing is detected across the entire 60-second capture period.
+to verify all pass criteria are met (timestamps are monotonically increasing).
+The test passes if no out-of-order processing is detected.
 					
 \item{\textbf{Test-NFR1.2} Real-time processing speed\\}
 
@@ -1501,15 +1514,22 @@ and preparation for downstream components.
 \textbf{Output/Result:} 
 Performance logs show that the firmware processes all audio frames without
 falling behind the input rate. Processing rate consistently exceeds 16 kHz
-(e.g., processes 44100 samples in less than 1 second). No buffer overflows
+(e.g., processes 16,000 samples in less than 1 second). No buffer overflows
 occur. No frames are dropped due to processing delays.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR1_2]{NFR1.2}):}
+\begin{itemize}
+\item Processing rate $\geq$ 16,000 samples/second for entire test duration
+\item Zero buffer overflows
+\item Zero dropped frames
+\item Verified over 5-minute continuous operation
+\end{itemize}
 					
 \textbf{How test will be performed:} 
 Deploy firmware to microcontroller and start continuous audio capture. Monitor
 processing rate through performance counters and logs over 5-minute duration.
 Calculate effective processing rate (samples processed per second). Check for
-buffer overflow indicators in logs. The test passes if processing rate remains
-above 16 kHz throughout the test and no overflows occur.
+buffer overflow indicators in logs. 
 
 \end{enumerate}
 
@@ -1536,18 +1556,24 @@ parameters, timeout conditions, and hardware disconnections. Each call is
 timestamped at invocation and when error code is returned.
 					
 \textbf{Output/Result:} 
-For all N error-triggering calls, the driver returns error codes within 10
-milliseconds of the call. No error is delayed or queued for later reporting. The
-median error propagation time is less than 1 millisecond. All errors are
-reported to the firmware layer immediately without buffering.
+For all N error-triggering calls, the driver returns error codes immediately
+without delay or queueing. The median error propagation time is less than 1
+millisecond, and the maximum propagation time is less than 10 milliseconds. All
+errors are reported to the firmware layer immediately without buffering.
+
+\textbf{Pass Criteria:}
+\begin{itemize}
+\item Maximum error propagation delay $<$ 10 ms for all calls
+\item Median error propagation delay $<$ 1 ms
+\item No errors are buffered or queued
+\end{itemize}
 					
 \textbf{How test will be performed:} 
 Execute automated test suite with N error-inducing driver calls. Measure time
 from function entry to error code return using microcontroller cycle counters or
 high-precision timers. Calculate propagation delay for each call. Generate
-statistics (minimum, median, maximum, 99th percentile). The test passes if
-maximum delay is less than 100 milliseconds and median delay is less than 10
-milliseconds.
+statistics (minimum, median, maximum, 99th percentile). The test passes if all
+pass criteria are met.
 
 \end{enumerate}
 
@@ -1571,7 +1597,14 @@ composite signals (white noise segments) may be used for robustness testing.
 					
 \textbf{Output/Result:} 
 The computed frequency-domain representation from the component should differ
-from the true spectrum by less than 10\% error across all frequency bins. 
+from the true spectrum by less than 10\% error across all frequency bins.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR3_1]{NFR3.1}):}
+\begin{itemize}
+\item Mean relative error $<$ 10\% across all frequency bins
+\item Verified against high-precision FFT reference
+\item Automated test passes on every commit
+\end{itemize}
 					
 \textbf{How test will be performed:} 
 Upload the audio file and high-precision FFT reference file to the automated
@@ -1579,8 +1612,7 @@ testing framework. Configure the test to run every time a commit is made to Git.
 When a commit is made, the test suite will feed the audio file into the audio
 filtering component. After retrieving the frequency-domain output, calculate the
 mean relative error between component's output and the reference spectrum using
-the following formula across all bins. If the mean is less than 10\%, the test
-passes. 
+the following formula across all bins.
 
 \[
 \text{Error} = \frac{\left|A_{\text{component}} - A_{\text{true}}\right|}{A_{\text{true}}} \times 100\%, 
@@ -1603,13 +1635,22 @@ arbitrary frequency).
 					
 \textbf{Output/Result:} 
 For each input size, the Audio Filtering component should process all frames
-without exceeding time constraints defined in \hyperref[SRS-NFR1_2]{NFR1.2}. 
+without exceeding time constraints defined in \hyperref[SRS-NFR1_2]{NFR1.2}
+(processing must keep pace with 16 kHz input rate, i.e., process 16,000 samples
+per second or faster).
+
+\textbf{Pass Criteria:}
+\begin{itemize}
+\item Processing rate $\geq$ 16,000 samples/second for all input sizes
+\item No frame drops or buffer overflows detected
+\end{itemize}
 					
 \textbf{How test will be performed:} 
 Manually upload each audio file to the microcontroller and trigger processing.
 Execution time will be measured using microcontroller logs. After processing is
 complete, logs will be manually inspected to verify the processing time for each
-input size meets the time constraints defined in the SRS.
+input size meets the pass criteria (processing rate $\geq$ 16,000 
+samples/second).
 
 \item{\textbf{Test-NFR3.3} Accuracy of FFT calculation exceeds 90\%\\}
 
@@ -1639,13 +1680,20 @@ A_{\text{true}}\right|}{A_{\text{true}}} \times 100\%,
 \quad \forall A \in \text{Spectrum}
 \]
 
+\textbf{Pass Criteria (from \hyperref[SRS-NFR3_3]{NFR3.3}):}
+\begin{itemize}
+\item Mean relative error $<$ 10\% across all frequency bins
+\item Verified over 60-second continuous audio sample
+\item Comparison against high-precision reference implementation
+\end{itemize}
+
 \textbf{How test will be performed:} 
 Manually record 60 seconds of audio from the environment using microphones
 attached to microcontroller. The same audio will be recorded on a separate
 laptop for reference processing. After recording, both the microcontroller and
 laptop will output their respective spectrograms. The spectrograms will be
 compared by calculating the mean relative error across all frequency bins using
-the formula above. If the mean error is less than 10\%, the test passes
+the formula above.
 
 \end{enumerate}
 		
@@ -1665,16 +1713,22 @@ filtering module.
 
 \textbf{Output/Result:}
 The Audio360 Engine module processes the incoming audio data without modifying
-the data in the original buffer used by the audio filtering module. 
+the data in the original buffer used by the audio filtering module.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR4_1]{NFR4.1}):}
+\begin{itemize}
+\item Zero write operations to read-only input buffers
+\item No data corruption in audio filtering module buffers
+\item Static analysis reports no memory safety violations
+\end{itemize}
 
 \textbf{How test will be performed:}
 The test will be performed automatically using the Clang toolchain to analyze
 the function calls and memory accesses (read/write) within the Audio360 Engine
 module. The tool will check for any instances where the Audio360 Engine module
-writes to memory locations that are passed as read-only inputs. If no such
-instances are found, the test passes, confirming that there are are no memory
-race conditions. This is important to ensure since the buffers used by the audio
-filtering module are most likely serviced by interrupts. 
+writes to memory locations that are passed as read-only inputs. The test passes
+if all pass criteria are met. This is important to ensure since the buffers used
+by the audio filtering module are most likely serviced by interrupts. 
 
 \item{\textbf{Test-NFR4.2} Real-time processing\\}
 
@@ -1691,15 +1745,19 @@ audio filtering module.
 The Audio360 Engine module processes each incoming audio data frame before the
 next frame arrives, maintaining real-time processing.
 
+\textbf{Pass Criteria:}
+\begin{itemize}
+\item Processing time per frame $<$ 62.5 $\mu$s (1/16,000 seconds)
+\item No frame drops over entire test duration
+\item 100\% of frames processed within time constraint
+\end{itemize}
+
 \textbf{How test will be performed:}
 The test will be performed automatically by simulating a continuous stream of
 frequency-domain audio data from the audio filtering module. The Audio360 Engine
 module will log the processing time for each frame. The logs will be analyzed to
-verify that the processing time for each frame does not exceed the time interval
-between frames (1/16,000 seconds). If all frames are processed within this time
-constraint, the test passes real-time processing constraints. This test will
-have to be performed on the microcontroller to ensure accurate timing
-measurements.
+verify that all pass criteria are met. This test will have to be performed on
+the microcontroller to ensure accurate timing measurements.
 
 \item{\textbf{Test-NFR4.3} Microphone audio data and all derivative data is
  discarded after processing.\\}
@@ -1718,11 +1776,19 @@ After processing each input sample, the Audio360 Engine module or any of its
 dependent components do not retain any copies of the original microphone data or
 any derivative data in memory.
 
+\textbf{Pass Criteria (from \hyperref[SRS-NFR4_3]{NFR4.3}):}
+\begin{itemize}
+\item No persistent storage of microphone data or derivatives
+\item All audio buffers are cleared after processing
+\item Code review confirms no data retention mechanisms
+\end{itemize}
+
 \textbf{How test will be performed:}
 The test will be performed manually by inspecting the source code of the
 Audio360 Engine module and its dependent components. The code will be reviewed
-to ensure that there are no persistent data structures or variables that retain
-copies of the original microphone data or any derivative data.
+to ensure that all pass criteria are met and there are no persistent data
+structures or variables that retain copies of the original microphone data or
+any derivative data.
 
 \end{enumerate}
 
@@ -1749,14 +1815,20 @@ sample.
 The Frequency Analysis module processes each input sample and outputs the
 predicted audio class and estimated direction for up to 3 simultaneous audio
 sources. The predicted classes and estimated directions should match the known
-classes and directions for each source within the defined accuracy thresholds
-defined in \hyperref[sec:freq-analysis-tests]{Frequency Analysis Tests}.
+classes and directions for each source within defined accuracy thresholds.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR5_1]{NFR5.1}, \hyperref[SRS-NFR5_2]{NFR5.2}, \hyperref[SRS-NFR5_3]{NFR5.3}):}
+\begin{itemize}
+\item Classification accuracy $\geq$ 90\% per class
+\item Direction estimation error $\leq$ 45° (azimuth angle)
+\item Successfully processes up to 3 simultaneous sources
+\end{itemize}
 
 \textbf{How test will be performed:}
 The test will be performed automatically by feeding the frequency domain data of
 the known audio sample with multiple sources to the Frequency Analysis module.
 The predicted classes and estimated directions will be compared against the
-known classes and directions to calculate the accuracy.
+known classes and directions to verify all pass criteria are met.
 
 \item{\textbf{Test-NFR5.2} Single source classification accuracy.\\}
  
@@ -1773,14 +1845,19 @@ classes. Each sample contains a single isolated audio source.
 \textbf{Output/Result:}
 The Frequency Analysis module processes each input sample and outputs the
 predicted audio class. The predicted class should match the known class for each
-sample with a class level accuracy defined in
-\hyperref[sec:freq-analysis-tests]{Frequency Analysis Tests}.
+sample.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR5_2]{NFR5.2}):}
+\begin{itemize}
+\item Classification accuracy $\geq$ 90\% per audio class
+\item Tested across all supported audio classes (car horn, kettle, alarm, speech, etc.)
+\end{itemize}
 
 \textbf{How test will be performed:}
 The test will be performed automatically by feeding the frequency domain data of
 the known audio samples to the Frequency Analysis module. The predicted classes
 will be compared against the known classes to calculate the classification
-accuracy.
+accuracy. The test passes if accuracy $\geq$ 90\% for each class.
 
 \item{\textbf{Test-NFR5.3} Single source direction estimation accuracy.\\}
 
@@ -1798,14 +1875,19 @@ contains a single isolated audio source.
 \textbf{Output/Result:}
 The Frequency Analysis module processes input samples from the four microphone
 array and outputs the estimated direction of each audio source. The estimated
-direction should be within the threshold defined in
-\hyperref[sec:freq-analysis-tests]{Frequency Analysis Tests}.
+direction should match the known direction within the accuracy threshold.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR5_3]{NFR5.3}):}
+\begin{itemize}
+\item Direction estimation error $\leq$ 45° (azimuth angle on 2D plane)
+\item Tested across multiple known source positions (0°, 45°, 90°, 135°, 180°, etc.)
+\end{itemize}
 
 \textbf{How test will be performed:}
 The test will be performed automatically by feeding the frequency domain data of
 the known direction samples to the Frequency Analysis module. The estimated
-directions will be compared against the known directions to calculate the
-directional estimation accuracy.
+directions will be compared against the known directions to verify the error is
+within 45° for all test cases.
 
 
 \end{enumerate}
@@ -1834,14 +1916,20 @@ have medium priority and the third object will have the lowest priority.
 \textbf{Output/Result:} 
 The output display should only visualize the highest priority audio source
 first. So in this case, the direction of the first object should be visualized
-on the output display, and the rest should be ignored. 
+on the output display, and the rest should be ignored.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR6_1]{NFR6.1}):}
+\begin{itemize}
+\item Only highest priority source is displayed
+\item Lower priority sources are suppressed
+\item Verified across all priority levels (high, medium, low)
+\end{itemize}
 					
 \textbf{How test will be performed:} 
 Simulate multiple audio sources by mocking the Visualization Controller's input
 objects with different priority levels. Capture the output display output by
-visually seeing if only the highest priority direction is visualized on the
-output display. The test passes if the highest priority direction is the only
-one visualized.
+visually verifying that all pass criteria are met and only the highest priority
+direction is visualized on the output display.
 
 					
 \item{\textbf{Test-NFR6.2} Present information in a non-intrusive manner\\}
@@ -1860,15 +1948,22 @@ parameter in radians (0 to $2\pi$), indicating the direction of the audio source
 relative to the user. These can be an arbitrary angles.
 					
 \textbf{Output/Result:} 
-Stakeholders verifies the non-obtrusive nature of the visualizations on the
+Stakeholders verify the non-obtrusive nature of the visualizations on the
 output display. The stakeholder should report that the visualizations do not
 obstruct their view or cause discomfort during typical usage scenarios.
+
+\textbf{Pass Criteria (from \hyperref[SRS-NFR6_2]{NFR6.2}):}
+\begin{itemize}
+\item Average non-obtrusiveness rating $\geq$ 4.0 out of 5.0
+\item Minimum 5 stakeholder participants
+\item No reports of significant visual obstruction or discomfort
+\end{itemize}
 
 \textbf{How test will be performed:} 
 Conduct a controlled usability session with at least 5 stakeholders. Record
 quantitative feedback from stakeholders, each rating the non-obtrusiveness on a
 scale of 1 to 5 (1 being very obtrusive, 5 being very non-obtrusive). The test
-passes if the average rating across all stakeholders is at least 4.
+passes if all pass criteria are met.
 
 \end{enumerate}
 
