@@ -10,6 +10,7 @@ import '../baseDataService.dart';
 
 final class BluetoothLEService extends BaseDataService {
 
+  // Bluetooth device has FFE0 service and FFE1 characteristic
   static const String hm10ServiceUUID = "FFE0";
   static const String hm10CharacteristicUUID = "FFE1";
 
@@ -30,8 +31,10 @@ final class BluetoothLEService extends BaseDataService {
 
 void scanAndConnectToSTM32()
   {
+    // Start bluetooth scan
     FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
 
+    // Filter to BT05
     FlutterBluePlus.scanResults.listen((results) {
       for (ScanResult r in results) {
         print('${r.device.remoteId}: "${r.advertisementData.advName}" found!');
@@ -50,6 +53,7 @@ void scanAndConnectToSTM32()
 
     List<BluetoothService> services = await device.discoverServices();
 
+    // Find the characteristic and service we want
     BluetoothService targetService = services.firstWhere(
             (s) => s.serviceUuid.toString().toUpperCase() == hm10ServiceUUID
     );
@@ -58,6 +62,8 @@ void scanAndConnectToSTM32()
             (c) => c.uuid.toString().toUpperCase() == hm10CharacteristicUUID
     );
 
+    // We get notified every time a new value is published to the bluetooth
+    // byte stream
     await stm32Pipe!.setNotifyValue(true);
 
     onStatus("Connected");
@@ -70,6 +76,7 @@ void scanAndConnectToSTM32()
     });
   }
 
+  // Disconnect from bluetooth and terminate subscription.
   @override
   Future<void> close() async {
     try {
