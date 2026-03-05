@@ -70,13 +70,15 @@ This document ...
 
 \subsection{Usability}
 This subsection outlines the usability testing plan for non-functional
-requirements NFR6.1 and NFR6.2.
+requirement NFR6.2.
+
+The current implementation includes packet-level support for source priority,
+but project-level priority definitions and decision rules are not finalized.
+Because of this, formal validation of NFR6.1 is deferred and not included in
+this usability test cycle.
 
 \textbf{Evaluation scope:}
 \begin{itemize}
-  \item \textbf{Safety-priority visualization (NFR6.1):}
-  confirm that only the highest-priority safety cue is shown when multiple
-  sources are present at the same time.
   \item \textbf{Non-intrusive display (NFR6.2):}
   confirm that users can continue normal visual tasks without major
   obstruction or discomfort.
@@ -86,8 +88,6 @@ requirements NFR6.1 and NFR6.2.
 \begin{enumerate}
   \item Recruit at least 4 stakeholders from the target user group.
   \item Provide a short orientation on HUD indicator meaning and test steps.
-  \item Run controlled scenarios with simultaneous mock sources of different
-  priority to assess NFR6.1.
   \item Run directional cue scenarios during typical visual tasks (walking,
   reading signs, and obstacle awareness simulation) to assess NFR6.2.
   \item Record observations on cue correctness, user hesitation, distraction,
@@ -98,8 +98,6 @@ requirements NFR6.1 and NFR6.2.
 
 \textbf{Planned acceptance criteria:}
 \begin{itemize}
-  \item NFR6.1: in all simultaneous-source trials, only the highest-priority
-  cue is shown.
   \item NFR6.2: average non-obtrusiveness rating is at least 4.0/5.0.
   \item NFR6.2: no stakeholder reports significant visual obstruction or
   discomfort during normal task flow.
