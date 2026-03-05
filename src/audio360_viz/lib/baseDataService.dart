@@ -6,6 +6,10 @@ import './usb/deserializer.dart';
 typedef PacketCallback = void Function(Packet packet);
 typedef StatusCallback = void Function(String status);
 
+/**
+ * Base class to provide data packet streaming functionality from
+ * external sources.
+ */
 base class BaseDataService {
   static const int packetSize = 4;
 
@@ -16,17 +20,21 @@ base class BaseDataService {
 
   BaseDataService({required this.onPacket, required this.onStatus});
 
+  /// Initialize the service. Do setup here.
   Future<void> initialize()
   {
     throw UnimplementedError();
   }
 
+  /// *
+  /// Terminate the service. Implement your cleanup here.
   void close()
   {
     throw UnimplementedError();
 
   }
 
+  /// This is a common method provided to process a list of raw bytes
   void onDataReceived(Uint8List data) {
     _buffer = Uint8List.fromList(_buffer + data);
 
