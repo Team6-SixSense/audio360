@@ -13,7 +13,7 @@
 #include "runtime_bluetooth_test.hpp"
 
 #ifdef STM_BUILD
-#define RUNTIME_AUDIO360
+#define RUNTIME_BLUETOOTH_TEST
 #else
 #define RUNTIME_FFT
 #endif
