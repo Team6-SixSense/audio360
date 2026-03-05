@@ -13,7 +13,7 @@
  *  @brief Tests matrix scaling associative property holds.
  * Property: (cd)A = c(dA).
  */
-TEST(MatrixScale, Associative) {
+TEST(MatrixScale, ScaleAssociative) {
   const int numRows = 4, numCols = 4;
   const int c = 2, d = 3;
   matrix A, cdA1, cdA2;
@@ -42,7 +42,7 @@ TEST(MatrixScale, Associative) {
  *  @brief Tests matrix scaling distributive property holds.
  * Property: c(A + B) = cA + cB.
  */
-TEST(MatrixScale, Distributive1) {
+TEST(MatrixScale, ScaleDistributiveSingle) {
   const int numRows = 4, numCols = 4;
   const int c = 2;
   matrix A, B, AB, cAB, cA, cB, cAcB;
@@ -80,7 +80,7 @@ TEST(MatrixScale, Distributive1) {
  *  @brief Tests matrix scaling distributive property holds.
  * Property: (c+d)A = cA + dA.
  */
-TEST(MatrixScale, Distributive2) {
+TEST(MatrixScale, ScaleDistributiveDouble) {
   const int numRows = 4, numCols = 4;
   const int c = 2, d = 3;
   matrix A, cdA, cA, dA, cAdA;
@@ -114,7 +114,7 @@ TEST(MatrixScale, Distributive2) {
  *  @brief Tests matrix scaling identity property holds.
  * Property: A*1 = A.
  */
-TEST(MatrixScale, Identity) {
+TEST(MatrixScale, ScaleIdentity) {
   const int numRows = 4, numCols = 4;
   matrix A, Result;
 
@@ -137,7 +137,7 @@ TEST(MatrixScale, Identity) {
  *  @brief Tests matrix zero scaling property holds
  * Property: A*0 = 0.
  */
-TEST(MatrixScale, Zero) {
+TEST(MatrixScale, ScaleZero) {
   const int numRows = 4, numCols = 4;
   matrix A, Result;
 

@@ -106,7 +106,7 @@ static int CountPositiveRow(const matrix& m, uint16_t row, float eps = 1e-8f) {
 }
 
 /** @brief Verifies mel filter responses are sparse per impulse bin. */
-TEST(MelFilterTest, CreateFilterBank_ImpulseBinContributesToAtMostTwoMelBands) {
+TEST(MelFilterTest, CreateFilterBankImpulseBinContributesToAtMostTwoMelBands) {
   MP3Data data = readMP3File("audio/285_sine.mp3");
 
   const int offset0 = 100000;  // same style as fft_test.cpp

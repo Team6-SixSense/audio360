@@ -13,7 +13,7 @@
  * @brief Tests matrix additive commutative property.
  * Property: A + B = B + A.
  */
-TEST(MatrixAddition, Commutativity) {
+TEST(MatrixAddition, AddCommutativity) {
   const int numRows = 4, numCols = 4;
   matrix A, B, AB, BA;
 
@@ -40,7 +40,7 @@ TEST(MatrixAddition, Commutativity) {
  * @brief Tests matrix additive associativitiy property holds.
  * Property: (A + B) + C = A + (B + C).
  */
-TEST(MatrixAddition, Associativity) {
+TEST(MatrixAddition, AddAssociativity) {
   const int numRows = 4, numCols = 4;
   matrix A, B, C, AB, BC, ABC1, ABC2;
 
@@ -75,7 +75,7 @@ TEST(MatrixAddition, Associativity) {
  *  @brief Tests matrix additive identity property holds.
  * Property: A + 0 = A.
  */
-TEST(MatrixAddition, Identity) {
+TEST(MatrixAddition, AddIdentity) {
   const int numRows = 5, numCols = 5;
   matrix A, Zero, Result;
 
@@ -101,7 +101,7 @@ TEST(MatrixAddition, Identity) {
  *  @brief Tests matrix additive inverse property holds.
  * Property: A + (−A) = 0.
  */
-TEST(MatrixAddition, Inverse) {
+TEST(MatrixAddition, AddInverse) {
   const int numRows = 4, numCols = 4;
   matrix A, NegA, Result;
 
@@ -128,7 +128,7 @@ TEST(MatrixAddition, Inverse) {
 
 /** @brief Test that matrix addition fails when matrices size are not
  * compatible. */
-TEST(MatrixAddition, DimensionMismatch) {
+TEST(MatrixAddition, AddDimensionMismatch) {
   matrix A, B, C;
 
   // Create matrices.

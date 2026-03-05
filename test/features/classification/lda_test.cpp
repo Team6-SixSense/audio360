@@ -107,7 +107,7 @@ static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
 }
 
 /** @brief Runs LDA classification on PCA features from an MP3 file. */
-TEST(LDA, ApplyLDA) {
+TEST(LDA, ApplyLDANormalPCAFeatures) {
   // Load MP3 data from file.
   MP3Data data = readMP3File("audio/jackhammer.mp3");
   const int offset0 = 0;
