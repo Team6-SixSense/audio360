@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import '../models/packet.dart';
-import '../usb/deserializer.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import '../baseDataService.dart';
+import '../base_data_service.dart';
 
 
 final class BluetoothLEService extends BaseDataService {
@@ -37,7 +35,9 @@ void scanAndConnectToSTM32()
     // Filter to BT05
     FlutterBluePlus.scanResults.listen((results) {
       for (ScanResult r in results) {
-        print('${r.device.remoteId}: "${r.advertisementData.advName}" found!');
+        if (kDebugMode) {
+          print('${r.device.remoteId}: "${r.advertisementData.advName}" found!');
+        }
         // Check if this is the device we want
         if (r.advertisementData.advName.contains("BT05")) {
           FlutterBluePlus.stopScan();
@@ -49,7 +49,9 @@ void scanAndConnectToSTM32()
 
   Future<void> connectToDevice(BluetoothDevice device) async {
     await device.connect();
-    print("Connected to ${device.platformName}");
+    if (kDebugMode) {
+      print("Connected to ${device.platformName}");
+    }
 
     List<BluetoothService> services = await device.discoverServices();
 
@@ -83,9 +85,13 @@ void scanAndConnectToSTM32()
       onStatus("Disconnected");
       await _dataSubscription?.cancel();
       await stm32dev?.disconnect();
-      print("Disconnected from STM32");
+      if (kDebugMode) {
+        print("Disconnected from STM32");
+      }
     } catch (e) {
-      print("Error during disconnect: $e");
+      if (kDebugMode) {
+        print("Error during disconnect: $e");
+      }
     }
   }
 

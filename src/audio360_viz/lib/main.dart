@@ -1,4 +1,4 @@
-import 'package:audio360_viz/baseDataService.dart';
+import 'package:audio360_viz/base_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'ble/bluetooth_service.dart';
@@ -69,12 +69,12 @@ class _MainVisualizationPageState extends State<MainVisualizationPage> {
     super.initState();
     if(!useBluetooth){
       dataService = UsbServiceFactory.createUsbService(
-        onPacket: this.onPacket,
-        onStatus: this.onStatus,
+        onPacket: onPacket,
+        onStatus: onStatus,
       );
     } else {
-      dataService= BluetoothLEService(p: this.onPacket,
-          s: this.onStatus);
+      dataService= BluetoothLEService(p: onPacket,
+          s: onStatus);
     }
 
     // Auto-connect on startup

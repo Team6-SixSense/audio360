@@ -1,15 +1,12 @@
 import 'package:flutter/services.dart';
-import 'package:usb_serial/usb_serial.dart';
 import '../models/packet.dart';
 import './usb/deserializer.dart';
 
 typedef PacketCallback = void Function(Packet packet);
 typedef StatusCallback = void Function(String status);
 
-/**
- * Base class to provide data packet streaming functionality from
- * external sources.
- */
+/// Base class to provide data packet streaming functionality from
+/// external sources.
 base class BaseDataService {
   static const int packetSize = 4;
 

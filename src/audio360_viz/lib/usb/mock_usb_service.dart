@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import '../models/packet.dart';
 import '../models/enums.dart';
-import '../baseDataService.dart';
+import '../base_data_service.dart';
 
 
 /// Mock USB service for testing without hardware.
