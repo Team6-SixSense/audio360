@@ -12,6 +12,7 @@
 #include "classification.h"
 #include "doa.h"
 #include "embedded_mic.h"
+#include "exceptions.hpp"
 #include "filter.hpp"
 #include "logging.hpp"
 #include "packet.h"
@@ -73,9 +74,6 @@ void mainAudio360() {
   embedded_mic_start(micB2);
 
   VisualizationPacket vizPacket{};
-  vizPacket.classification = ClassificationLabel::CarHorn;
-  vizPacket.direction = DirectionLabel::North;
-  vizPacket.priority = 3U;
 
   while (1) {
     Bluetooth_Manager_Process();
@@ -109,7 +107,8 @@ void mainAudio360() {
       std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
 #ifdef BUILD_GLASSES_HOST
-      USBH_AOA_Transmit(packet.data(), packet.size());
+      Bluetooth_Manager_Send(packet.data(),
+                             static_cast<uint16_t>(packet.size()));
 #endif
 
       // Reset half and full bool flags.
@@ -206,8 +205,14 @@ float runDoA(bool newData) {
     mic4Data[i] = static_cast<float>(micB1Buffer[start + i]);
   }
 
-  float angle = doa.calculateDirection(mic1Data, mic2Data, mic3Data, mic4Data,
-                                       DOA_Algorithms::GCC_PHAT);
+  float angle{0.0};
+  try {
+    angle = doa.calculateDirection(mic1Data, mic2Data, mic3Data, mic4Data,
+                                   DOA_Algorithms::GCC_PHAT);
+    systemFaultManager.clearDoaError();
+  } catch (const AudioProcessingException& e) {
+    systemFaultManager.reportDoaError();
+  }
 
   return angle;
 }
@@ -230,7 +235,14 @@ std::string runClassification(bool newData) {
     mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
   }
 
-  classifier.Classify(mic1Data);
+  std::string classification{};
+  try {
+    classifier.Classify(mic1Data);
+    classification = classifier.getClassificationLabel();
+    systemFaultManager.clearClassficationError();
+  } catch (const std::exception& e) {
+    systemFaultManager.reportClassificationError();
+  }
 
-  return classifier.getClassificationLabel();
+  return classification;
 }
