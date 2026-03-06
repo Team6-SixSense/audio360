@@ -6,22 +6,18 @@
  */
 
 #ifdef STM_BUILD
-#include "peripheral.h"
-#include "runtime_bluetooth_test.hpp"
-#endif
-
-#ifdef STM_BUILD
 #define RUNTIME_AUDIO360
 #else
 #define RUNTIME_FFT
 #endif
 
 #ifdef STM_BUILD
-#include "runtimes/runtime_android_comm.hpp"
-#include "runtimes/runtime_audio360.hpp"
-#include "runtimes/runtime_usb_tx.hpp"
+#include "runtime_android_comm.hpp"
+#include "runtime_audio360.hpp"
+#include "runtime_bluetooth_test.hpp"
+#include "runtime_usb_tx.hpp"
 #else
-#include "runtimes/runtime_fft.hpp"
+#include "runtime_fft.hpp"
 #endif
 
 #ifdef BUILD_GLASSES_HOST

@@ -8,6 +8,7 @@
 
 #include <cstdint>
 
+#include "bluetooth_manager.h"
 #include "classification.h"
 #include "doa.h"
 #include "embedded_mic.h"
@@ -22,8 +23,6 @@
 #include "usb_host.h"
 #include "usbh_aoa.h"
 #endif
-
-#include "bluetooth/bluetooth_manager.h"
 
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;
@@ -81,7 +80,9 @@ void mainAudio360() {
   while (1) {
     Bluetooth_Manager_Process();
 
-    if (Is_Bluetooth_Connected() == 1) {
+#ifdef BUILD_GLASSES_HOST
+    if (Is_Bluetooth_Connected() == BLUTOOTH_CONNECTED) {
+#endif
       INFO("Audio360 loop start.");
 
       // Extract microphone data if ready.
@@ -107,7 +108,9 @@ void mainAudio360() {
 
       std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
+#ifdef BUILD_GLASSES_HOST
       USBH_AOA_Transmit(packet.data(), packet.size());
+#endif
 
       // Reset half and full bool flags.
       if (micMainFull == 1U) {
@@ -116,8 +119,9 @@ void mainAudio360() {
       }
     }
     INFO("Audio360 loop end.");
+#ifdef BUILD_GLASSES_HOST
   }
-
+#endif
 }
 
 bool extractMicData() {
