@@ -8,6 +8,7 @@
 
 #include <cstdint>
 
+#include "bluetooth_manager.h"
 #include "classification.h"
 #include "doa.h"
 #include "embedded_mic.h"
@@ -57,6 +58,8 @@ void mainAudio360() {
   setupPeripherals();
   systemFaultManager.handlePeripheralSetupFaults(getPeripheralErrors());
 
+  Bluetooth_Manager_Init();
+
   INFO("Initializing microphones.");
   micA1 = embedded_mic_get(MIC_A1);
   micB1 = embedded_mic_get(MIC_B1);
@@ -75,10 +78,10 @@ void mainAudio360() {
   vizPacket.priority = 3U;
 
   while (1) {
-#ifdef BUILD_GLASSES_HOST
-    MX_USB_HOST_Process();
+    Bluetooth_Manager_Process();
 
-    if (Is_AOA_Connected() == 1) {
+#ifdef BUILD_GLASSES_HOST
+    if (Is_Bluetooth_Connected() == BLUTOOTH_CONNECTED) {
 #endif
       INFO("Audio360 loop start.");
 

@@ -2,6 +2,7 @@
 
 # Add subdirectories (each adds sources/includes).
 if(ARM_BUILD)
+    add_subdirectory(bluetooth)
     add_subdirectory(inmp441_mic)
 endif()
 
