@@ -15,8 +15,7 @@
 #endif
 
 #ifdef BUILD_GLASSES_HOST
-#include "usb_host.h"
-#include "usbh_aoa.h"
+#include "bluetooth_manager.h"
 #endif
 
 SystemFaultManager::SystemFaultManager() {}
@@ -113,7 +112,7 @@ void SystemFaultManager::enterUnrecoverableState(std::string error) {
   VisualizationPacket vizPacket{};
   vizPacket.systemFaultState = this->state;
   std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
-  USBH_AOA_Transmit(packet.data(), packet.size());
+  Bluetooth_Manager_Send(packet.data(), static_cast<uint16_t>(packet.size()));
 #endif
 
   // Enter infinite loop to prevent any further execution.

@@ -107,7 +107,8 @@ void mainAudio360() {
       std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
 #ifdef BUILD_GLASSES_HOST
-      USBH_AOA_Transmit(packet.data(), packet.size());
+      Bluetooth_Manager_Send(packet.data(),
+                             static_cast<uint16_t>(packet.size()));
 #endif
 
       // Reset half and full bool flags.
