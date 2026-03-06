@@ -32,6 +32,7 @@ class DOA {
    * @param mic4Data Audio data stream from microphone 4.
    * @param algo DOA algorithm to use.
    * @return float Direction of audio source in radians.
+   * @throws AudioProcessingException if failure in processing audio data.
    */
   float calculateDirection(std::vector<float>& mic1Data,
                            std::vector<float>& mic2Data,

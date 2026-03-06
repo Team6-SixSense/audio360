@@ -24,7 +24,7 @@ class AngleNormalizationTest : public ::testing::TestWithParam<AngleParamType> {
 
 /** @brief Given an angle in radians, verify that after normalization, the angle
  * is range of [0, 2*PI). */
-TEST_P(AngleNormalizationTest, DegToRadTest) {
+TEST_P(AngleNormalizationTest, AngleNormalization) {
   AngleParamType param = GetParam();
 
   EXPECT_NEAR(normalizeAngleRad(param.angle_rad), param.expectedAngle_rad,

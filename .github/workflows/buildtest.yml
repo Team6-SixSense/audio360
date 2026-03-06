@@ -45,7 +45,7 @@ jobs:
         Remove-Item -Recurse -Force coverage -ErrorAction SilentlyContinue
         mkdir coverage
         cd ./build/mingw
-        gcovr -r ../.. --html --html-details -o ../../coverage/coverage.html --exclude '.*_deps.*' --exclude '.*test.*' --exclude '.*lib.*' --exclude '.*minimp3*.*'
+        gcovr -r ../.. --html --html-details --html-single-page -o ../../coverage/coverage.html --exclude '.*_deps.*' --exclude '.*test.*' --exclude '.*lib.*' --exclude '.*mp3*.*'
 
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v4

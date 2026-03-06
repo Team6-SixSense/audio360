@@ -9,6 +9,7 @@
 
 #include <math.h>
 
+#include <cstdint>
 #include <limits>
 #include <string>
 #include <vector>
@@ -43,6 +44,8 @@ constexpr inline float MIC2_3_DISTANCE_m = 0.10f;
 constexpr inline float MIC3_4_DISTANCE_m = 0.10f;
 constexpr inline float MIC4_1_DISTANCE_m = 0.10f;
 #endif
+
+constexpr inline uint8_t BLUTOOTH_CONNECTED = 1U;
 
 // Physics constants.
 constexpr inline float SOUND_AIR_mps = 343.0f;

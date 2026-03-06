@@ -86,7 +86,7 @@ set(ARM_MCU_FLAGS "-mcpu=${ARM_CPU} -mthumb -mfpu=${ARM_FPU} -mfloat-abi=${ARM_F
     CACHE STRING "Common per-target MCU flags")
 
 set(CMAKE_C_FLAGS_INIT   "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -ffunction-sections -fdata-sections -fno-common -fmessage-length=0 -Wall -Wextra")
-set(CMAKE_CXX_FLAGS_INIT "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -fno-common -fmessage-length=0 -Wall -Wextra -fno-exceptions -fno-rtti")
+set(CMAKE_CXX_FLAGS_INIT "${ARM_MCU_FLAGS} -ffunction-sections -fdata-sections -fno-common -fmessage-length=0 -Wall -Wextra -fno-rtti")
 set(CMAKE_ASM_FLAGS_INIT "${ARM_MCU_FLAGS} -x assembler-with-cpp")
 
 # Linker script (adjust path if needed)
