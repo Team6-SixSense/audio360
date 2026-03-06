@@ -1,6 +1,10 @@
-//
-// Created by omera on 2026-02-26.
-//
+/**
+******************************************************************************
+* @file    runtime_bluetooth_test.hpp
+* @brief   Runtime code for testing bluetooth communication.
+******************************************************************************
+*/
+#pragma once
 
 #include "stm32f7xx_hal_uart.h"
 
@@ -21,6 +25,8 @@ uint8_t buffer[16]; // Smaller buffer for simple responses
 
 /** @brief Main Bluetooth Test. */
 void main_bluetooth_test() {
+
+  setupPeripherals();
 
   VisualizationPacket vizPacket{};
   vizPacket.classification = ClassificationLabel::Clapping;

@@ -54,8 +54,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart) {
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3;
     PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-      while (1) {
-      }
+      Report_Error(HAL_UART_INIT_FAIL);
     }
 
     /* Peripheral clock enable */
@@ -86,8 +85,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart) {
     PeriphClkInitStruct.Uart5ClockSelection = RCC_UART5CLKSOURCE_PCLK1;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
-      while (1) {
-      }
+      Report_Error(HAL_UART_INIT_FAIL);
     }
 
     /* Peripheral clock enable */

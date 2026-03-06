@@ -23,6 +23,8 @@
 #include "usbh_aoa.h"
 #endif
 
+#include "bluetooth/bluetooth_manager.h"
+
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;
 static embedded_mic_t* micB1 = nullptr;
@@ -57,6 +59,8 @@ void mainAudio360() {
   setupPeripherals();
   systemFaultManager.handlePeripheralSetupFaults(getPeripheralErrors());
 
+  Bluetooth_Manager_Init();
+
   INFO("Initializing microphones.");
   micA1 = embedded_mic_get(MIC_A1);
   micB1 = embedded_mic_get(MIC_B1);
@@ -75,11 +79,9 @@ void mainAudio360() {
   vizPacket.priority = 3U;
 
   while (1) {
-#ifdef BUILD_GLASSES_HOST
-    MX_USB_HOST_Process();
+    Bluetooth_Manager_Process();
 
-    if (Is_AOA_Connected() == 1) {
-#endif
+    if (Is_Bluetooth_Connected() == 1) {
       INFO("Audio360 loop start.");
 
       // Extract microphone data if ready.
@@ -105,9 +107,7 @@ void mainAudio360() {
 
       std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
-#ifdef BUILD_GLASSES_HOST
       USBH_AOA_Transmit(packet.data(), packet.size());
-#endif
 
       // Reset half and full bool flags.
       if (micMainFull == 1U) {
@@ -116,9 +116,8 @@ void mainAudio360() {
       }
     }
     INFO("Audio360 loop end.");
-#ifdef BUILD_GLASSES_HOST
   }
-#endif
+
 }
 
 bool extractMicData() {

@@ -7,13 +7,11 @@
 
 #ifdef STM_BUILD
 #include "peripheral.h"
+#include "runtime_bluetooth_test.hpp"
 #endif
 
-#include <stdio.h>
-#include "runtime_bluetooth_test.hpp"
-
 #ifdef STM_BUILD
-#define RUNTIME_BLUETOOTH_TEST
+#define RUNTIME_AUDIO360
 #else
 #define RUNTIME_FFT
 #endif
