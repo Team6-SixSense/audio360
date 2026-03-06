@@ -95,6 +95,8 @@ urlcolor=cyan          % color of external links
 2026-01-06 & 2.0 & Clearer MIS assumptions.\\
 2026-01-06 & 2.1 & Reformatting exported access programs tables.\\
 2026-01-06 & 2.2 & Classfication module enums defined.\\
+2026-03-06 & 3.0 & Fault Manager Module transition specifications.\\
+2026-03-06 & 3.1 & Visualization Module transition specifications.\\
 \bottomrule
 \end{tabularx}
 
@@ -1503,15 +1505,23 @@ None
 \subsubsection{Assumptions}
 
 Fault Manager module runs all the time unless there is a critical system fault
-that prevents the module from running at all. The module will only run once
-after system set-up (pheripherals) is successful.
+that prevents the module from running at all. The module will run at each time
+step of \progname~ environment.
 
 \subsubsection{Access Routine Semantics}
 
-\noindent faultState():
+\noindent runFaultAnalysis():
 \begin{itemize}
 \item transition: update the value of faultState depending on the overall health
   of the software system.
+
+  \begin{figure}[h!]
+    \centering 
+    \includegraphics[width=\textwidth]{diagrams/FaultManagerDecisionLogic.png}
+    \caption{Fault Manager Module's decision logic.}
+    \label{fig:fault_manager_decision_logic}
+  \end{figure}
+  
 \item output: None
 \item exception: None
 \end{itemize}
@@ -2072,13 +2082,23 @@ failure alerts.
 \noindent updateDisplay():
 \begin{itemize}
 \item \textbf{transition:} The module receives classification and direction
-  data, applies prioritization logic to determine if the information should be
-  displayed (based on \hyperref[SRS-NFR6_1]{NFR6.1}), formats the information
-  according to display constraints and non-intrusive presentation requirements
-  (\hyperref[SRS-NFR6_2]{NFR6.2}), and updates the display state. The visual
-  indicator is rendered on the smart glasses display at the appropriate position
-  corresponding to the direction angle. If multiple sources are present, only
-  the highest priority source is displayed.
+  data, and priority (based on \hyperref[SRS-NFR6_1]{NFR6.1}) of incoming data.
+  Based on recently retrieved data, determined the highest priority display
+  content and update the display state. The visual indicator is rendered on the
+  smart glasses display at the appropriate position corresponding to the
+  direction angle. 
+
+    \[
+    \forall v \in V,\quad \text{display}\left(\arg\max_{v \in V} \; P(v)\right)
+    \]
+
+    \noindent where:
+    \begin{align*}
+    V &:= \text{set of all visual indicators} \\
+    v &:= \text{a visual indicator},\; v \in V \\
+    P(v) &:= \text{priority assigned to indicator } v \\
+    \text{display}(\cdot) &:= \text{function that renders the selected indicator}
+    \end{align*}
 
 \item \textbf{output:} None
 
@@ -2481,7 +2501,16 @@ Issue assigned to Team 13:
 
 As of Jan 22, 2026, the assigned issue to the other team has not been completed.
 There is no pull request for our team to analyze what has been learned from
-having another team implementing one of our modules.
+having another team implementing one of our modules. Regardless, our team
+identified that the Module Interface Specification documentation can be
+improved by providing more detailed descriptions of the control logic for
+specific modules, particularly the Direction of Arrival Module and the
+Visualization Module. This gap became evident through feedback from the TA and
+during the transition to the implementation phase. As development progressed,
+the team needed to design the control logic while simultaneously updating the
+documentation and implementing the corresponding software, which increased
+development time. However, well documented modules, such as Fast Fourier
+Transform Module, had a smooth development and testing process as a result.
 
 
 \end{document}

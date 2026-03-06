@@ -62,7 +62,7 @@ void SystemFaultManager::handlePeripheralSetupFaults(
   }
 }
 
-void SystemFaultManager::runStateMachine() {
+void SystemFaultManager::runFaultAnalysis() {
   // System Fault priority:
   // 1. Hardware fault since software depends on hardware.
   // 2. DOA fault since safety critical feature if hardware is working

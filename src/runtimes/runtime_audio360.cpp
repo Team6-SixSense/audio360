@@ -117,6 +117,9 @@ void mainAudio360() {
         micMainFull = 0U;
       }
     }
+
+    systemFaultManager.runFaultAnalysis();
+
     INFO("Audio360 loop end.");
 #ifdef BUILD_GLASSES_HOST
   }
