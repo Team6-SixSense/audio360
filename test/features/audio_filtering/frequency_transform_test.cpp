@@ -64,10 +64,11 @@ FrequencyDomain runFft(std::vector<float> frame) {
 
 }  // namespace
 
-/** @brief Given a 3-second WAV containing 100 Hz, 1 kHz, and 8 kHz tones,
+/** @brief Given a 3-second WAV containing 100 Hz, 1 kHz, and 7.5 kHz tones,
  * the FFT output should show peaks at those frequencies and no other peaks of
  * comparable magnitude. NFR: spectrum error vs. ideal reference must be <10%
- * per bin. */
+ * per bin. Note: 7.5 kHz is used instead of 8 kHz to avoid Nyquist frequency
+ * issues (8 kHz is exactly at the Nyquist limit for 16 kHz sampling rate). */
 TEST(AudioFilteringTest, TimeToFrequencyShowsThreePeaks) {
   AudioFile<float> audio;
   ASSERT_TRUE(audio.load("audio/three_tone.wav"));
@@ -92,7 +93,7 @@ TEST(AudioFilteringTest, TimeToFrequencyShowsThreePeaks) {
       static_cast<float>(SAMPLE_FREQUENCY) / static_cast<float>(frameLen);
   const float toleranceHz = 1.5f * binSize;  // allow small bin drift
 
-  const float targets[] = {100.0f, 1000.0f, 8000.0f};
+  const float targets[] = {100.0f, 1000.0f, 7500.0f};
   std::vector<int> peakCenters;
   peakCenters.reserve(3);
 
@@ -120,7 +121,7 @@ TEST(AudioFilteringTest, TimeToFrequencyShowsThreePeaks) {
     const float n = static_cast<float>(offset + i);
     ideal[i] = 0.20f * std::sin(TWO_PI_32 * 100.0f * n / SAMPLE_FREQUENCY) +
                0.20f * std::sin(TWO_PI_32 * 1000.0f * n / SAMPLE_FREQUENCY) +
-               0.60f * std::cos(TWO_PI_32 * 8000.0f * n / SAMPLE_FREQUENCY);  // cos to represent Fs/2 tone.
+               0.60f * std::sin(TWO_PI_32 * 7500.0f * n / SAMPLE_FREQUENCY);
   }
 
   FrequencyDomain reference = runFft(ideal);

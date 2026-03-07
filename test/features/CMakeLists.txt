@@ -6,6 +6,8 @@ add_subdirectory(diagnostics)
 add_subdirectory(doa)
 add_subdirectory(signal_processing)
 add_subdirectory(classification)
+add_subdirectory(audio360_engine)
+add_subdirectory(integration)
 
 # Define test executable files.
 target_sources(${TestExecutable} PRIVATE
