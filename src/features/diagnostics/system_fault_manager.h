@@ -37,7 +37,7 @@ class SystemFaultManager {
 
   /** @brief Runs System Fault Manager internal state machine to determine the
    * current system fault state. */
-  void runStateMachine();
+  void runFaultAnalysis();
 
   /** @brief Reports hardware error. */
   void reportHardwareError();

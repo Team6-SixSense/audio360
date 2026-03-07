@@ -53,7 +53,7 @@ TEST_P(SystemFaultStateMachineTest, CheckStateMachineStates) {
   }
 
   // Run the state machine and assert the correct state.
-  this->runStateMachine();
+  this->runFaultAnalysis();
   ASSERT_EQ(this->getSystemFaultState(), params.expectedState);
 }
 

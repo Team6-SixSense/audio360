@@ -21,6 +21,8 @@ matrix LDA_CLASS_WEIGHTS;
 
 std::vector<float> LDA_CLASS_BIASES;
 
+std::vector<float> LDA_CLASS_BIASES_NOT_EMBEDDED;
+
 std::vector<float> LDA_SCALINGS_DATA;
 
 matrix LDA_SCALINGS;
@@ -37,6 +39,14 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
     3.528, -9.737268, 7.043996
   };
 
+  // The biases change based on the microphone being used. So, keep this as the default when 
+  // running test, but make sure it is changed to LDA_CLASS_BIASES when running on the actual 
+  // device
+
+  LDA_CLASS_BIASES_NOT_EMBEDDED = {
+    -1.002, -0.64, 1.24
+  };
+
   LDA_SCALINGS_DATA = {
     -0.07936350, -0.01101666,
      0.38999072, -0.04274665,
@@ -44,15 +54,16 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
      0.21863136,  0.12364489,
     -0.07492033, -1.26101398,
      0.04050463,  0.37705261
+
   };
 
   LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
 
   CLASSIFICATION_CLASSES = {
-    ClassificationLabel::Jackhammer, ClassificationLabel::CarHorn, ClassificationLabel::Siren};
+    ClassificationLabel::CarHorn, ClassificationLabel::Jackhammer, ClassificationLabel::Siren};
 
   this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
-  this->ldaProjection.classBiases = LDA_CLASS_BIASES;
+  this->ldaProjection.classBiases = LDA_CLASS_BIASES_NOT_EMBEDDED;
   this->classTypes = CLASSIFICATION_CLASSES;
   this->ldaProjection.scalings     = LDA_SCALINGS;
 }

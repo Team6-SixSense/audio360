@@ -1,0 +1,25 @@
+@startuml FaultManagerDecisionLogic
+title Fault Manager Decision Logic
+
+start
+
+if (hardwareError?) then (yes)
+  :Hardware Fault;
+else (no)
+
+  if (doaError?) then (yes)
+    :Direction of Arrival Fault;
+  else (no)
+
+    if (classificationError?) then (yes)
+      :Classification Fault;
+    else (no)
+      :No Fault;
+    endif
+
+  endif
+
+endif
+
+stop
+@enduml
