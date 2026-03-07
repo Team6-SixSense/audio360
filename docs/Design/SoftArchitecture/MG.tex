@@ -51,7 +51,8 @@
 2025-11-13 & 1.0 & Initial write-up\\
 2026-01-06 & 2.0 & Module type definitions \& formatting section Module
                    Decomposition.\\
-2025-01-06 & 1.0 & Detailed timeline Rev0. \\
+2025-01-06 & 2.1 & Detailed timeline Rev0. \\
+2025-03-07 & 3.0 & Timeline for individual contributions. \\
 \bottomrule
 \end{tabularx}
 
@@ -1015,25 +1016,40 @@ following modules listed in table \ref{table:rev0_timeline}.
 These modules are required for Rev 0 because they support the core features of
 the project which are audio classification and audio directional analysis.
 Deadlines were assigned to ensure there is enough time for integration
-verification with the hardware while respecting module dependencies.
+verification with the hardware while respecting module dependencies. Each
+module is assigned an owner. The owner is responsible for the main development
+(but can delegate development to other if needed),
+and managing any changes to the module for any Pull Requests that touches the
+module's file. They are also the point of contact for testing purposes for the
+module.
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{|c|c|}
+    \begin{tabular}{|c|c|c|}
         \hline
-        \textbf{Module} & \textbf{Deadline} \\ \hline
+        \textbf{Module} & \textbf{Deadline} & \textbf{Module Owner} \\ \hline
         DOA (Direction of Arrival) Processor Module (\mref{mDOA})
-          & Jan 23, 2026 \\ 
-        Audio360 Engine Module (\mref{mAudio360Engine}) & Jan 23, 2026 \\
-        Audio Sampling Module (\mref{mAudioSampling}) & Jan 9, 2026 \\
-        Audio Normalizer Module (\mref{mAudioNormalizer}) & Jan 9, 2026 \\
-        Audio Anomaly Detection Module (\mref{mAudioAnomaly}) & Jan 23, 2026 \\
-        Mel Filter Module (\mref{mMelFilter}) & Jan 9, 2026 \\
-        Discrete Cosine Transform Module (\mref{mDCT}) & Jan 9, 2026 \\
-        Principle Component Analysis Module (\mref{mPCA}) & Jan 16, 2026 \\
-        Linear Discriminant Analysis Module (\mref{mLDA}) & Jan 16, 2026 \\
-        Classification Module (\mref{mClassification}) & Jan 16, 2026 \\
-        Visualization Module (\mref{mVisualization}) & Jan 16, 2026 \\
+          & Jan 23, 2026 & Kalp \\ 
+        Audio360 Engine Module (\mref{mAudio360Engine}) & Jan 23, 2026
+          & Sathurshan \\
+        Audio Sampling Module (\mref{mAudioSampling}) & Jan 9, 2026
+          & Omar \\
+        Audio Normalizer Module (\mref{mAudioNormalizer}) & Jan 9, 2026
+          & Sathurshan \\
+        Audio Anomaly Detection Module (\mref{mAudioAnomaly}) & Jan 23, 2026
+          & Omar \\
+        Mel Filter Module (\mref{mMelFilter}) & Jan 9, 2026
+          & Nirmal \\
+        Discrete Cosine Transform Module (\mref{mDCT}) & Jan 9, 2026 
+          & Nirmal \\
+        Principle Component Analysis Module (\mref{mPCA}) & Jan 16, 2026
+          & Nirmal \\
+        Linear Discriminant Analysis Module (\mref{mLDA}) & Jan 16, 2026
+          & Nirmal \\
+        Classification Module (\mref{mClassification}) & Jan 16, 2026
+          & Nirmal \\
+        Visualization Module (\mref{mVisualization}) & Jan 16, 2026
+          & Jay \\
         \hline
     \end{tabular}
     \caption{Rev 0 module development timeline.}
@@ -1049,9 +1065,44 @@ domain knowledge.
 In parallel, the team will be writing unit tests for each module that is
 written. This is to ensure that the software is being developed correctly as
 there are limited number of microcontroller available to do full hardware
-integration testing. Omar Alam and Sathurshan Arulmohan will be taking main
+integration testing. Table \ref{table:rev0_testing_timeline} outlines the
+deadline and tester lead for the essential modules. Unit tests and integration
+testing must be complete by the deadline indicated in the table.
+Omar Alam and Sathurshan Arulmohan will be taking main
 responsibility in verifying core features such as audio classification and
-audio direction analysis on hardware.
+audio direction analysis on hardware. 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Module} & \textbf{Deadline} & \textbf{Tester} \\ \hline
+        DOA (Direction of Arrival) Processor Module (\mref{mDOA})
+          & Jan 30, 2026 & Sathurshan \\ 
+        Audio360 Engine Module (\mref{mAudio360Engine}) & Jan 30, 2026
+          & Omar \\
+        Audio Sampling Module (\mref{mAudioSampling}) & Jan 15, 2026
+          & Nirmal \\
+        Audio Normalizer Module (\mref{mAudioNormalizer}) & Jan 15, 2026
+          & Nirmal \\
+        Audio Anomaly Detection Module (\mref{mAudioAnomaly}) & Jan 30, 2026
+          & Sathurshan \\
+        Mel Filter Module (\mref{mMelFilter}) & Jan 15, 2026
+          & Jay \\
+        Discrete Cosine Transform Module (\mref{mDCT}) & Jan 15, 2026 
+          & Jay \\
+        Principle Component Analysis Module (\mref{mPCA}) & Jan 25, 2026
+          & Jay \\
+        Linear Discriminant Analysis Module (\mref{mLDA}) & Jan 25, 2026
+          & Kalp \\
+        Classification Module (\mref{mClassification}) & Jan 25, 2026
+          & Kalp \\
+        Visualization Module (\mref{mVisualization}) & Jan 25, 2026
+          & Omar \\
+        \hline
+    \end{tabular}
+    \caption{Rev 0 module testing timeline.}
+    \label{table:rev0_testing_timeline}
+\end{table}
 
 \newpage
 \bibliographystyle{IEEEtran}
