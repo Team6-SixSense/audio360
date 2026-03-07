@@ -53,6 +53,10 @@
                    Decomposition.\\
 2025-01-06 & 2.1 & Detailed timeline Rev0. \\
 2025-03-07 & 3.0 & Timeline for individual contributions. \\
+2025-03-07 & 3.1 & Uses hierarchy diagram labelling simplified. \\
+2025-03-07 & 3.2 & Removed safety-critical secrete from visualization module.\\
+2025-03-07 & 3.3 & Grammar and spelling fixes. \\
+2025-03-07 & 3.4 & Including module name in table \ref{TblMH}.\\
 \bottomrule
 \end{tabularx}
 
@@ -217,12 +221,14 @@ adapted here is called design for change.
   as that is the minimum to analyze audible sounds to human. However, the scope
   can expand to detect sounds outside the human audible range to notify users of
   other critical sounds that human would have never been able to process on
-  their own.
+  their own. This may be necessary in scenarios where users would want to detect
+  industrial machinery or animal communication which can emit high frequencies
+  outside the human hearing range.
 
 \item[\refstepcounter{acnum} \actheacnum \label{SampleSize}:]
   The sample size of audio data to analyze each time step. Currently specified
   to be up to 4096 samples from \hyperref[SRS-NFR3_3]{NFR3.2}. \\
-  \textbf{Rationale:} For higher quality of audio processing, an higher sample
+  \textbf{Rationale:} For higher quality of audio processing, a higher sample
   rate is required.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acVizContent}:] 
@@ -372,31 +378,34 @@ Analysis Module
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-\multirow{4}{0.3\textwidth}{Hardware-Hiding Module} & \mref{mMicInput}\\ 
-& \mref{mUSART} \\
-& \mref{mSDInterface} \\
-& \mref{mMicDiag}\\
+\multirow{4}{0.3\textwidth}{Hardware-Hiding Module} 
+& \mref{mMicInput}: Microphone Input Module \\ 
+& \mref{mUSART}: USART Communication Module \\
+& \mref{mSDInterface}: SD Card Interface Module \\
+& \mref{mMicDiag}: Microphone Diagnostic Module \\
 \midrule
 
-\multirow{1}{0.3\textwidth}{Behaviour-Hiding Module} & \mref{mAudio360Engine}\\
-& \mref{mVisualization}\\
+\multirow{1}{0.3\textwidth}{Behaviour-Hiding Module}
+& \mref{mAudio360Engine}: Audio360 Enginer Module \\
+& \mref{mVisualization}: Visualization Module \\
 \midrule
 
-\multirow{16}{0.3\textwidth}{Software Decision Module} & \mref{mAudioGen}\\
-& \mref{mDOA}\\
-& \mref{mAudioSampling}\\
-& \mref{mAudioSpectralLeakage}\\
-& \mref{mAudioNormalizer}\\
-& \mref{mAudioAnomaly}\\
-& \mref{mFFT}\\
-& \mref{mLogging}\\
-& \mref{mFaultManager}\\
-& \mref{mMelFilter}\\
-& \mref{mDCT}\\
-& \mref{mPCA}\\
-& \mref{mLDA}\\
-& \mref{mClassification}\\
-& \mref{mICA}\\
+\multirow{16}{0.3\textwidth}{Software Decision Module}
+& \mref{mAudioGen}: Audio Generation Module \\
+& \mref{mDOA}: DOA Processor Module \\
+& \mref{mAudioSampling}: Audio Sampling Module \\
+& \mref{mAudioSpectralLeakage}: Audio spectral Leakage Prevention Module \\
+& \mref{mAudioNormalizer}: Audio Normalizer Module \\
+& \mref{mAudioAnomaly}: Audio Anomaly Detection Module \\
+& \mref{mFFT}: Fast Fourier Transform Module \\
+& \mref{mLogging}: Logging Module \\
+& \mref{mFaultManager}: Fault Manager Module \\
+& \mref{mMelFilter}: Mel Filter Module \\
+& \mref{mDCT}: Discrete Cosine Transform Module\\
+& \mref{mPCA}: Principle Component Analysis Module \\
+& \mref{mLDA}: Linear Discriminant Analysis Module \\
+& \mref{mClassification}: Classification Module \\
+& \mref{mICA}: Independent Component Analysis Module \\
 \bottomrule
 
 \end{tabular}
@@ -581,6 +590,8 @@ array hardware and its connections to the microcontroller.
 \item[Secrets:] The internal coordination logic that determines the execution
   order and timing of core audio processing features. Also, the mechanisms that
   manage data flow between hardware interfaces and the software modules.
+  It is also contains the prioritization logic for safety-critical information
+  based on the data received from classification and DOA modules.
 \item[Services:] Orchestrates the overall audio processing by receiving raw
   input data and managing module communication.
 \item[Implemented By:] \progname
@@ -592,11 +603,8 @@ array hardware and its connections to the microcontroller.
 \begin{description}[labelindent=0.5cm]
   \item[Secrets:] The algorithms and data structures used to format and render
   visual information on the smart glasses display. This includes the layout
-  strategy for HUD elements, prioritization logic for safety-critical
-  information, and the rendering pipeline for directional indicators and
-  classification labels. The module also hides the specific display hardware
-  interface details, allowing the visualization format to be modified
-  independently of the underlying display technology.
+  strategy for HUD elements, and the rendering pipeline for directional
+  indicators, classification labels, and system faults.
   \item[Services:] Accepts classification labels and direction angles (in
   radians) from the Audio360 Engine, formats this information according to
   display constraints and prioritization rules, and renders visual indicators on
@@ -947,7 +955,8 @@ they use modules from the lower levels.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.34]{diagrams/uses_hierarchy.png}
-\caption{Use hierarchy among modules}
+\caption{Use hierarchy among modules. Software modules are green, hardware
+  modules are blue and mock modules are light purple.}
 \label{FigUH}
 \end{figure}
 \end{landscape}
