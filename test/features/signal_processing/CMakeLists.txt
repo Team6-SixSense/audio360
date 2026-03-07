@@ -4,4 +4,7 @@
 target_sources(${TestExecutable} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/fft_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ifft_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/normalization_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/anomaly_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/performance_test.cpp
 )
