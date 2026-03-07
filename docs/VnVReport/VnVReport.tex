@@ -351,28 +351,28 @@ Pipeline suppression triggered with 100\% success rate for all error types. Four
 \item{\textbf{Test-FR-5.1} Audio classification \\}
 
 \textbf{Input:}
-Frequency-domain samples of different known audio classes.
+Frequency-domain samples of different known audio classes (resampled to 16 kHz for compatibility).
 
 \textbf{Expected Output:}
 Predicted class matches known class with $\geq$ 90\% accuracy per class.
 
 \textbf{Actual Output:}
-Proper 90\% accuracy test implemented and executed. Classifier processed 283 frames from long\_jackhammer.mp3. Results: 1 correct classification out of 283 total frames. Measured accuracy: 0.35\% (vs required 90\%). Accuracy deficit: 89.65 percentage points below requirement (0.39\% of target). Test completed in 511 ms total. Overall accuracy across tested classes: 0.35\%. \textit{Note:} Classifier demonstrates critical systematic failure requiring fundamental algorithm revision.
+Classifier processed 102 frames from long\_jackhammer\_16k.mp3 with confidence threshold of 65\%. Results: Jackhammer accuracy = 63.7\% (65/102 correct classifications). Classifier correctly identified jackhammer in 65 frames, returned "unknown" (low confidence) in 37 frames. Accuracy deficit: 26.3 percentage points below 90\% requirement (70.8\% of target achieved). Test completed in 80 ms. \textit{Note:} Classification system requires improved LDA model training. See Section [X] for detailed analysis and remediation plan.
 
-\textbf{Result:} Fail (X) - 0.35\% accuracy vs 90\% required
+\textbf{Result:} Fail (X) - 63.7\% accuracy vs 90\% required
 
 \item{\textbf{Test-FR-5.2} Direction of arrival (DOA) estimation accuracy \\}
 
 \textbf{Input:}
-Frequency-domain samples from known directions (4-mic array).
+Four-channel audio from known directions (0°, 45°, 90°, 135°) using correctly generated test audio.
 
 \textbf{Expected Output:}
 Estimated direction within $\theta_e$ radians of known direction. MAE $<$ $\theta_e$/2.
 
 \textbf{Actual Output:}
-Proper accuracy test implemented and executed. Tested 4 known angles (0°, 45°, 90°, 135°) with microphone array data. Results: 0° estimated at 196.8° (error: 163.2°, 362\% over threshold), 45° at 317.8° (error: 87.2°, 194\% over), 90° at 328.8° (error: 121.2°, 269\% over), 135° at 36.0° (error: 99.0°, 220\% over). Mean Absolute Error (MAE): 117.6° (vs required $<$ 22.5°). Pass rate: 0\% (0/4 angles within $\theta_e$ threshold). Test completed in 31 ms. \textit{Note:} Systematic DOA algorithm failure confirmed with proper accuracy testing.
+DOA accuracy test executed with properly configured microphone array audio (16 kHz, 0.1m $\times$ 0.1m array). Tested 4 known angles: 0° estimated at 0.0° (error: 0.0°), 45° at 42.2° (error: 2.79°), 90° at 90.0° (error: $\sim$0°), 135° at 137.8° (error: 2.79°). Mean Absolute Error (MAE): 1.39° (6.2\% of 22.5° requirement). Pass rate: 100\% (4/4 angles within $\theta_e$ = 45° threshold). Extended angle range test (180°, 225°, 270°, 315°) also passed with MAE = 1.39°. Test completed in 31 ms.
 
-\textbf{Result:} Fail (X) - MAE 117.6° vs required $<$ 22.5°, 0\% pass rate
+\textbf{Result:} Pass (X)
 
 \item{\textbf{Test-FR-5.3} Direction of arrival (DOA) range validation \\}
 
@@ -390,15 +390,15 @@ Three test cases passed: (1) gccPhatAngleRange verified output in [0, 2$\pi$] ra
 \item{\textbf{Test-FR-5.4} Low confidence notification \\}
 
 \textbf{Input:}
-Random frequency-domain samples (ambiguous) and known samples (control).
+Random frequency-domain samples (ambiguous) and known samples (control, resampled to 16 kHz).
 
 \textbf{Expected Output:}
 Ambiguous samples flagged as low confidence. Known samples classified with high confidence.
 
 \textbf{Actual Output:}
-Four test cases: (1) AmbiguousSampleDetection: random noise produced 1 unique label from 5 runs (20\% consistency - expected higher variance), (2) KnownSampleHighConfidence: FAILED - jackhammer audio produced 2 different labels ("unknown" and "siren") from 5 segments (40\% consistency, expected 100\%), (3) ConfidenceDifferentiation: known samples 1/3 unique (100\% consistent), random samples 2/3 unique (67\% consistent), (4) SilentInputHandling: passed without crashing. \textit{Note:} Classifier instability issue identified in test case 2.
+Four test cases executed with 65\% confidence threshold: (1) AmbiguousSampleDetection: random noise produced expected variance in classification labels, (2) KnownSampleHighConfidence: FAILED - jackhammer audio produced inconsistent labels ("unknown" and "jackhammer") across segments due to borderline confidence values (0.65-0.70 range), (3) ConfidenceDifferentiation: passed - differentiated known vs random samples, (4) SilentInputHandling: passed without crashing. \textit{Note:} Test reveals classifier confidence instability near threshold boundary. See Section [X] for LDA model improvement plan.
 
-\textbf{Result:} Partial (X)
+\textbf{Result:} Fail (X) - Inconsistent classification of known samples
 
 \end{enumerate}
 
@@ -580,41 +580,41 @@ No persistent storage of microphone data. All buffers cleared after processing. 
 \item{\textbf{Test-NFR5.1} Simultaneous classification and DOA \\}
 
 \textbf{Input:}
-Frequency-domain sample with multiple audio classes from known directions (up to 3 simultaneous sources).
+Frequency-domain sample from known direction (0°) using properly generated microphone array audio.
 
 \textbf{Expected Output:}
 Classification accuracy $\geq$ 90\%. Direction error $\leq$ 45°. Processes 3 simultaneous sources.
 
 \textbf{Actual Output:}
-Simultaneous processing completed successfully (1.55 ms/frame). However, DOA accuracy failed with systematic errors: 0° source estimated at 309.6° (error: 309.6°, 687\% over threshold), 45° source at 292.5° (error: 247.5°, 550\% over), 90° source at 303.5° (error: 213.5°, 474\% over), 135° source at 42.2° (error: 267.2°, 594\% over). All errors exceeded 45° threshold by 474-687\%. Zero angles within tolerance. Systematic DOA calibration issue identified requiring microphone array geometry or algorithm investigation.
+Simultaneous processing completed successfully (1.58 ms/frame). Single-source test: DOA estimated 0° source at 261.1° (error: 261.1°, 580\% over 45° threshold). Classification returned "unknown" (low confidence). Multi-angle test: All 5 tested angles (0°, 45°, 90°, 135°, 180°) exceeded 45° threshold with errors ranging from 90° to 261°. DOA errors due to integration test using old coordinate system. \textit{Note:} Classification failures propagate from Test-FR-5.1. See Section [X] for remediation plan.
 
-\textbf{Result:} Fail (X)
+\textbf{Result:} Fail (X) - DOA integration test needs update, classification below threshold
 
 \item{\textbf{Test-NFR5.2} Classification accuracy \\}
 
 \textbf{Input:}
-Frequency-domain samples of known audio classes (single isolated source per sample).
+Frequency-domain samples of known audio classes (resampled to 16 kHz, single isolated source per sample).
 
 \textbf{Expected Output:}
 Classification accuracy $\geq$ 90\% per class across all supported classes.
 
 \textbf{Actual Output:}
-Proper 90\% accuracy test (ClassificationAccuracyTest) measured 0.35\% accuracy for jackhammer classification (1/283 correct). This is 0.39\% of the required 90\% threshold, representing a 99.61\% shortfall. Multiple audio classes tested with overall accuracy of 0.35\%. Test completed in 511 ms. \textit{Note:} Critical systematic classifier failure requiring fundamental algorithm redesign.
+Classification accuracy test (ClassificationAccuracyTest) measured 63.7\% accuracy for jackhammer classification (65/102 correct) with 65\% confidence threshold. Accuracy deficit: 26.3 percentage points below 90\% requirement (70.8\% of target achieved). Car horn test: 0\% accuracy (0/7 correct) - classifier misidentifies car horn as siren with high confidence. Overall accuracy across tested classes: 63.7\%. Test completed in 166 ms. \textit{Note:} Classification system requires improved LDA model training for car horn/siren discrimination. See Section [X] for detailed analysis and remediation plan.
 
-\textbf{Result:} Fail (X)
+\textbf{Result:} Fail (X) - 63.7\% accuracy vs 90\% required
 
 \item{\textbf{Test-NFR5.3} DOA accuracy \\}
 
 \textbf{Input:}
-Frequency-domain samples from known directions (single source, 4-mic array).
+Frequency-domain samples from known directions (single source, 4-mic array) using properly generated test audio.
 
 \textbf{Expected Output:}
 Direction error $\leq$ 45° across multiple positions (0°, 45°, 90°, 135°, 180°, etc.).
 
 \textbf{Actual Output:}
-Proper accuracy test (DOAAccuracyTest.KnownDirectionEstimation) measured errors for 4 angles: 0° (error: 163.2°, 362\% over threshold), 45° (error: 87.2°, 194\% over), 90° (error: 121.2°, 269\% over), 135° (error: 99.0°, 220\% over). Pass rate: 0\% (0/4 angles within 45° threshold). Mean Absolute Error: 117.6° (523\% over 22.5° requirement). Test completed in 31 ms. \textit{Note:} DOA algorithm requires systematic recalibration or replacement.
+DOA accuracy test (DOAAccuracyTest.KnownDirectionEstimation and ExtendedAngleRange) measured errors for 8 angles using correctly configured microphone array audio: 0° (error: 0.0°), 45° (error: 2.79°), 90° (error: $\sim$0°), 135° (error: 2.79°), 180° (error: $\sim$0°), 225° (error: 2.79°), 270° (error: $\sim$0°), 315° (error: 2.79°). Pass rate: 100\% (8/8 angles within 45° threshold). Mean Absolute Error: 1.39° (3.1\% of 45° requirement). Test completed in 31 ms.
 
-\textbf{Result:} Fail (X)
+\textbf{Result:} Pass (X)
 
 \end{enumerate}
 

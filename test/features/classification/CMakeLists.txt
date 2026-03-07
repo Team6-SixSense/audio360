@@ -7,4 +7,6 @@ target_sources(${TestExecutable} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/pca_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/lda_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/classification_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/classification_accuracy_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/confidence_test.cpp
 )
