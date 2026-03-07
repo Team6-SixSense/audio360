@@ -17,6 +17,8 @@
 
 namespace {
 
+/** @brief Runs the classifier over all frames of an MP3 and returns the ratio
+ * of frames labeled with the expected class. */
 float RunClassificationOverMp3(const std::string& filename,
                                const std::string& expectedLabel,
                                float minRatio = 0.9f) {
@@ -110,4 +112,3 @@ TEST(ClassificationTest, DISABLED_CarHornMp3IsCarHorn) {
   float ratio = RunClassificationOverMp3("audio/car_horn.mp3", "car_horn");
   EXPECT_GE(ratio, 0.9f);
 }
-

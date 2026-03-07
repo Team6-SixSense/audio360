@@ -20,6 +20,8 @@ namespace {
 
 // Half-width (in bins) of the main lobe for supported windows. Rectangular
 // (no window) has first null at +/-1 bin, Hann at +/-2 bins.
+/** @brief Returns the half-width (in bins) of the main lobe for the given
+ * window function. */
 constexpr int mainLobeHalfWidth(WindowFunction window) {
   switch (window) {
     case WindowFunction::HANN_WINDOW:
@@ -30,11 +32,14 @@ constexpr int mainLobeHalfWidth(WindowFunction window) {
   }
 }
 
+/** @brief Returns the index of the maximum element in a vector. */
 int findPeakIndex(const std::vector<float>& values) {
   return static_cast<int>(std::distance(
       values.begin(), std::max_element(values.begin(), values.end())));
 }
 
+/** @brief Calculates the proportion of total spectral power that leaks outside
+ * the main lobe defined by halfWidth around the peak. */
 double computeLeakage(const FrequencyDomain& spectrum, int halfWidth) {
   const auto& power = spectrum.powerMagnitude;
   const int peakIdx = findPeakIndex(power);
@@ -51,6 +56,8 @@ double computeLeakage(const FrequencyDomain& spectrum, int halfWidth) {
   return 1.0 - (mainLobePower / totalPower);
 }
 
+/** @brief Returns the maximum side-lobe power outside the main lobe defined by
+ * halfWidth around the spectral peak. */
 double computeMaxSideLobe(const FrequencyDomain& spectrum, int halfWidth) {
   const auto& power = spectrum.powerMagnitude;
   const int peakIdx = findPeakIndex(power);

@@ -15,6 +15,8 @@
 
 namespace {
 
+/** @brief Returns the maximum absolute value in the half-open interval
+ * [start, end) of the signal buffer. */
 double maxAbs(const std::vector<double>& data, size_t start, size_t end) {
   double maxVal = 0.0;
   for (size_t i = start; i < end; ++i) {
@@ -23,6 +25,8 @@ double maxAbs(const std::vector<double>& data, size_t start, size_t end) {
   return maxVal;
 }
 
+/** @brief Counts sign changes between successive samples in [start, end) to
+ * approximate zero-crossings. */
 int zeroCrossings(const std::vector<double>& signal, size_t start, size_t end) {
   auto sign = [](double v) { return (v > 0.0) - (v < 0.0); };
   int count = 0;
@@ -65,4 +69,3 @@ TEST(AudioFilteringTest, DISABLED_NormalizeAmplitudeFromMp3) {
   const int zcSecond = zeroCrossings(data.channel1, mid, total);
   EXPECT_EQ(zcFirst, zcSecond);
 }
-

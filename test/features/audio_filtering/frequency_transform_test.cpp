@@ -20,6 +20,8 @@
 
 namespace {
 
+/** @brief Finds the index of the highest magnitude bin within a tolerance of
+ * the target frequency; returns -1 if no bin is within tolerance. */
 int peakIndexNear(const std::vector<float>& freq, const std::vector<float>& mag,
                   float targetHz, float toleranceHz) {
   int bestIdx = -1;
@@ -33,6 +35,8 @@ int peakIndexNear(const std::vector<float>& freq, const std::vector<float>& mag,
   return bestIdx;
 }
 
+/** @brief Computes the largest magnitude outside exclusion windows around the
+ * provided peak centers. */
 float maxOutsideWindows(const std::vector<float>& mag,
                         const std::vector<int>& centers,
                         int halfWidth) {
@@ -52,6 +56,7 @@ float maxOutsideWindows(const std::vector<float>& mag,
   return maxVal;
 }
 
+/** @brief Convenience wrapper to run the FFT over a frame using Hann windowing. */
 FrequencyDomain runFft(std::vector<float> frame) {
   FFT fft(static_cast<uint16_t>(frame.size()), SAMPLE_FREQUENCY);
   return fft.signalToFrequency(frame, WindowFunction::HANN_WINDOW);
