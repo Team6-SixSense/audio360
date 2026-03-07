@@ -884,17 +884,22 @@ for traceability and review.
 \section{Code Coverage Metrics}
 
 Table \ref{tab:code_coverage} presents the code coverage metrics summary as of
-March 1, 2026. Code coverage analysis was performed using gcovr \cite{gcovr}, a
+March 7, 2026. Code coverage analysis was performed using gcovr \cite{gcovr}, a
 Python based tool that utilizes gcov to generate line, function, and branch
 coverage reports. Given the safety critical nature of \progname, achieving
 full test coverage was established as a target objective.
 However, this objective was not fully achieved due to gcovr reporting
 branch coverage for portions of the C++ standard library in addition to project
-developed source code.
+developed source code. Testing all branches used in the C++ standard libraries
+requires a lot of effort with minimal verification benefit, since standard
+libraries are well-tested by the C++ community.
 Despite this limitation, the results indicate greater than $90\%$ line and
 function coverage and greater than $60\%$ branch coverage, which is considered
 sufficient for the scope of this capstone project and demonstrates a high level
-of verification.
+of verification for modules that are essential to the project. Important modules
+to the functionality of \progname~include classification, LDA, MEL filter, DCT,
+PCA, Direction of Arrival, System Fault Manager, FFT modules, which all have
+above $95\%$ line coverage and $100\%$ function coverage.
 
 These coverage metrics exclude manufacturer supplied libraries and hardware
 interface components. Verification of manufacturer code is outside the project's
@@ -911,9 +916,9 @@ A copy of the code coverage report is also saved to this repository in
     \hline		
     \textbf{Metric} & \textbf{Coverage (\%)} & \textbf{Executed / Total} \\
     \hline 
-    Lines & 91.4 & $604 / 661$\\ \hline
-    Functions & 94.4 & $85 / 90$\\ \hline
-    Branches & 64.1 & $261 / 407$\\ \hline
+    Lines & 91.4 & $615 / 673$\\ \hline
+    Functions & 94.6 & $88 / 93$\\ \hline
+    Branches & 64.1 & $262 / 409$\\ \hline
   \end{tabular}
   \caption{Code coverage mertrics summary.}
   \label{tab:code_coverage}
