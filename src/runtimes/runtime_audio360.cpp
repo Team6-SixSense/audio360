@@ -8,6 +8,7 @@
 
 #include <cstdint>
 
+#include "audio_anomaly_detection.h"
 #include "bluetooth_manager.h"
 #include "classification.h"
 #include "doa.h"
@@ -42,6 +43,7 @@ static uint8_t micMainHalf{0}, micMainFull{0}, micDummyHalf{0}, micDummyFull{0};
 
 // Audio360 features.
 static SystemFaultManager systemFaultManager{};
+static AudioAnomalyDectection audioAnomalyDectection{};
 static DOA doa{DOA_SAMPLES};
 static Classification classifier{MIC_BUFFER_SIZE / 2, NUM_MEL_FILTERS,
                                  NUM_DCT_COEFF, NUM_PCA_COMPONENTS,
@@ -172,6 +174,18 @@ bool extractMicData() {
       SCB_CleanDCache_by_Addr((uint32_t*)micB1Buffer[startPos], numBytes);
       SCB_CleanDCache_by_Addr((uint32_t*)micA2Buffer[startPos], numBytes);
       SCB_CleanDCache_by_Addr((uint32_t*)micB2Buffer[startPos], numBytes);
+
+      // Check and report any audio anomalies.
+      std::vector<int32_t*> audioStreams{
+          &micA1Buffer[startPos], &micB1Buffer[startPos],
+          &micA2Buffer[startPos], &micB2Buffer[startPos]};
+
+      if (audioAnomalyDectection.checkAnomalies(audioStreams,
+                                                MIC_HALF_BUFFER_SIZE)) {
+        systemFaultManager.reportAudioAnomalyDetected();
+      } else {
+        systemFaultManager.reportAudioAnomalyUndetected();
+      }
     }
   }
 

@@ -2,6 +2,7 @@
 
 # Add individual source files.
 target_sources(${SourceLib} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/audio_anomaly_detection.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/system_fault_manager.cpp
 )
 
