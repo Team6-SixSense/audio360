@@ -57,6 +57,12 @@ class SystemFaultManager {
   /** @brief Clears DOA error. */
   void clearDoaError();
 
+  /** @brief Reports audio anomalies detected. */
+  void reportAudioAnomalyDetected();
+
+  /** @brief Reports no audio anomalies detected. */
+  void reportAudioAnomalyUndetected();
+
  protected:
   /**
    * @brief Setter for system fault state for testing purposes.
@@ -89,4 +95,8 @@ class SystemFaultManager {
   /** @brief True if there is a DOA error. False is there are no errors
    * associated to DOA. */
   bool doaError{false};
+
+  /** @brief True if audio anomalies were detected. False if there hasn't been
+   * any audio anomalies detected. */
+  bool audioAnomalyDetected{false};
 };

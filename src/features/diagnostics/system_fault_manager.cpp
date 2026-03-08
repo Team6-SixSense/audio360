@@ -68,7 +68,9 @@ void SystemFaultManager::runFaultAnalysis() {
   // 2. DOA fault since safety critical feature if hardware is working
   // 3. Classification
 
-  if (this->hardwareError) {
+  if (this->hardwareError || this->audioAnomalyDetected) {
+    // Audio anomalies are most likely to be tied to a microphone (hardware)
+    // fault.
     this->state = HARDWARE_FAULT;
   } else if (this->doaError) {
     this->state = DIRECTIONAL_ANALYSIS_FAULT;
@@ -94,6 +96,14 @@ void SystemFaultManager::clearClassficationError() {
 void SystemFaultManager::reportDoaError() { this->doaError = true; }
 
 void SystemFaultManager::clearDoaError() { this->doaError = false; }
+
+void SystemFaultManager::reportAudioAnomalyDetected() {
+  this->audioAnomalyDetected = true;
+}
+
+void SystemFaultManager::reportAudioAnomalyUndetected() {
+  this->audioAnomalyDetected = false;
+}
 
 SystemFaultState SystemFaultManager::getSystemFaultState() {
   return this->state;

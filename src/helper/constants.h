@@ -45,6 +45,9 @@ constexpr inline float MIC3_4_DISTANCE_m = 0.10f;
 constexpr inline float MIC4_1_DISTANCE_m = 0.10f;
 #endif
 
+constexpr inline int32_t MIN_AUDIO_SAMPLE_DATA = -8388608;
+constexpr inline int32_t MAX_AUDIO_SAMPLE_DATA = 8388607;
+
 constexpr inline uint8_t BLUTOOTH_CONNECTED = 1U;
 
 // Physics constants.
