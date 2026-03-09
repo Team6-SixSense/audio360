@@ -8,7 +8,6 @@
 
 #include "classification.h"
 #include "doa.h"
-#include "gccPhat.h"
 
 #include <gtest/gtest.h>
 
@@ -49,6 +48,20 @@ static float radianToDegree(float angleRad) {
 }
 
 /**
+ * @brief Calculate angular error with proper wrapping.
+ * @details Handles angle wrapping to ensure error is always the shortest
+ *          angular distance between estimated and known direction.
+ */
+static double calculateAngularError(double estimated, double known) {
+  double error = std::abs(estimated - known);
+  // Wrap error to [0, π] (shortest angular distance)
+  if (error > M_PI) {
+    error = 2.0 * M_PI - error;
+  }
+  return error;
+}
+
+/**
  * @brief Test-NFR5.1: Simultaneous classification and direction estimation.
  * @details Verifies frequency analysis can perform both classification and
  *          DOA estimation on the same audio source.
@@ -67,8 +80,7 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousClassificationAndDOA_SingleSo
                              numPCAComponents, numClasses);
 
   // Initialize DOA module
-  const int sampleFrequency = SAMPLE_FREQUENCY;
-  GCCPhaT gccPhat{WAVEFORM_SAMPLES, sampleFrequency};
+  DOA doa(WAVEFORM_SAMPLES);
 
   // Load test audio from known direction and class
   // Using existing test audio: car horn from 0 degrees
@@ -80,44 +92,52 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousClassificationAndDOA_SingleSo
   audioFile3.load(folder + "mic2_angle_0.wav");
   audioFile4.load(folder + "mic3_angle_0.wav");
 
-  const int OFFSET = 1500;
-
-  // Extract audio segments
-  std::vector<float> mic1Input = ToFloatSamples(audioFile1.samples[0], OFFSET,
-                                                  OFFSET + WAVEFORM_SAMPLES);
-  std::vector<float> mic2Input = ToFloatSamples(audioFile2.samples[0], OFFSET,
-                                                  OFFSET + WAVEFORM_SAMPLES);
-  std::vector<float> mic3Input = ToFloatSamples(audioFile3.samples[0], OFFSET,
-                                                  OFFSET + WAVEFORM_SAMPLES);
-  std::vector<float> mic4Input = ToFloatSamples(audioFile4.samples[0], OFFSET,
-                                                  OFFSET + WAVEFORM_SAMPLES);
+  // Extract audio segments (using same offset as DOA accuracy test: 0)
+  std::vector<float> mic1Input = ToFloatSamples(audioFile1.samples[0], 0,
+                                                  WAVEFORM_SAMPLES);
+  std::vector<float> mic2Input = ToFloatSamples(audioFile2.samples[0], 0,
+                                                  WAVEFORM_SAMPLES);
+  std::vector<float> mic3Input = ToFloatSamples(audioFile3.samples[0], 0,
+                                                  WAVEFORM_SAMPLES);
+  std::vector<float> mic4Input = ToFloatSamples(audioFile4.samples[0], 0,
+                                                  WAVEFORM_SAMPLES);
 
   // Run classification (using mic1 as reference)
   classifier.Classify(mic1Input);
   std::string classLabel = classifier.getClassificationLabel();
 
-  // Run DOA estimation
-  float directionRad = gccPhat.calculateDirection(mic1Input, mic2Input,
-                                                   mic3Input, mic4Input);
+  // Run DOA estimation (using DOA class with GCC-PHAT algorithm)
+  float directionRad = doa.calculateDirection(mic1Input, mic2Input,
+                                              mic3Input, mic4Input,
+                                              DOA_Algorithms::GCC_PHAT);
 
   // Verify both operations succeeded
-  EXPECT_FALSE(classLabel.empty());
+  EXPECT_FALSE(classLabel.empty()) << "Classification returned empty label";
   EXPECT_GE(directionRad, 0.0f);
   EXPECT_LE(directionRad, TWO_PI_32);
 
+  // Classification check: Should be car_horn, horn, siren, or unknown
+  // Following existing test logic: correct classification, similar class, or unknown are acceptable
+  bool classificationAcceptable = (classLabel == "car_horn" || 
+                                   classLabel == "horn" || 
+                                   classLabel == "siren" ||
+                                   classLabel == "unknown");
+  EXPECT_TRUE(classificationAcceptable)
+      << "Classification returned unexpected label: " << classLabel;
+
   // Known direction is 0 degrees (0 radians)
-  float expectedDirection = 0.0f;
-  float directionError = std::fabs(directionRad - expectedDirection);
+  double expectedDirection = 0.0;
+  double directionError = calculateAngularError(directionRad, expectedDirection);
 
   // Test-NFR5.1 Pass Criteria: Direction error ≤ 45° (0.785 radians)
-  const float MAX_DIRECTION_ERROR = degreeToRad(45.0f);
-  EXPECT_LE(directionError, MAX_DIRECTION_ERROR);
-
-  // Note: Classification accuracy threshold (≥ 90%) tested separately
-  // in ClassificationTest suite. Here we verify both can run simultaneously.
+  const double MAX_DIRECTION_ERROR = degreeToRad(45.0);
+  EXPECT_LE(directionError, MAX_DIRECTION_ERROR)
+      << "Direction error " << radianToDegree(directionError) 
+      << "° exceeds 45° threshold";
 
   std::cout << "Integration test results:" << std::endl;
-  std::cout << "  Classification: " << classLabel << std::endl;
+  std::cout << "  Classification: " << classLabel 
+            << (classificationAcceptable ? " (acceptable)" : " (UNEXPECTED)") << std::endl;
   std::cout << "  Direction: " << directionRad << " rad ("
             << radianToDegree(directionRad) << "°)" << std::endl;
   std::cout << "  Direction error: " << radianToDegree(directionError) << "°"
@@ -129,7 +149,7 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousClassificationAndDOA_SingleSo
  */
 TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
   Classification classifier(WAVEFORM_SAMPLES, 6, 6, 6, 3);
-  GCCPhaT gccPhat{WAVEFORM_SAMPLES, SAMPLE_FREQUENCY};
+  DOA doa(WAVEFORM_SAMPLES);
 
   std::vector<int> angles = {0, 45, 90, 135, 180};
 
@@ -142,30 +162,36 @@ TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
     audioFile3.load(folder + "mic2_angle_" + std::to_string(angle) + ".wav");
     audioFile4.load(folder + "mic3_angle_" + std::to_string(angle) + ".wav");
 
-    const int OFFSET = 1500;
-
-    std::vector<float> mic1 = ToFloatSamples(audioFile1.samples[0], OFFSET,
-                                              OFFSET + WAVEFORM_SAMPLES);
-    std::vector<float> mic2 = ToFloatSamples(audioFile2.samples[0], OFFSET,
-                                              OFFSET + WAVEFORM_SAMPLES);
-    std::vector<float> mic3 = ToFloatSamples(audioFile3.samples[0], OFFSET,
-                                              OFFSET + WAVEFORM_SAMPLES);
-    std::vector<float> mic4 = ToFloatSamples(audioFile4.samples[0], OFFSET,
-                                              OFFSET + WAVEFORM_SAMPLES);
+    // Extract audio segments (using same offset as DOA accuracy test: 0)
+    std::vector<float> mic1 = ToFloatSamples(audioFile1.samples[0], 0,
+                                              WAVEFORM_SAMPLES);
+    std::vector<float> mic2 = ToFloatSamples(audioFile2.samples[0], 0,
+                                              WAVEFORM_SAMPLES);
+    std::vector<float> mic3 = ToFloatSamples(audioFile3.samples[0], 0,
+                                              WAVEFORM_SAMPLES);
+    std::vector<float> mic4 = ToFloatSamples(audioFile4.samples[0], 0,
+                                              WAVEFORM_SAMPLES);
 
     // Run both simultaneously
     classifier.Classify(mic1);
-    float direction = gccPhat.calculateDirection(mic1, mic2, mic3, mic4);
+    std::string label = classifier.getClassificationLabel();
+    float direction = doa.calculateDirection(mic1, mic2, mic3, mic4,
+                                             DOA_Algorithms::GCC_PHAT);
 
-    // Verify both succeed
-    EXPECT_FALSE(classifier.getClassificationLabel().empty());
+    // Verify classification succeeded (correct class, similar class, or unknown acceptable)
+    EXPECT_FALSE(label.empty()) << "Classification returned empty label for angle " << angle;
+    bool classAcceptable = (label == "car_horn" || label == "horn" || label == "siren" || label == "unknown");
+    EXPECT_TRUE(classAcceptable)
+        << "Angle " << angle << "°: unexpected classification " << label;
+
+    // Verify DOA succeeded
     EXPECT_GE(direction, 0.0f);
     EXPECT_LE(direction, TWO_PI_32);
 
-    // Verify direction accuracy
-    float expectedRad = degreeToRad(static_cast<float>(angle));
-    float error = std::fabs(normalizeAngleRad(direction - expectedRad));
-    EXPECT_LE(error, degreeToRad(45.0f))
+    // Verify direction accuracy (≤ 45° error threshold)
+    double expectedRad = degreeToRad(static_cast<double>(angle));
+    double error = calculateAngularError(direction, expectedRad);
+    EXPECT_LE(error, degreeToRad(45.0))
         << "Angle: " << angle << "°, Direction: " << radianToDegree(direction)
         << "°, Error: " << radianToDegree(error) << "°";
   }
@@ -176,7 +202,7 @@ TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
  */
 TEST(FrequencyAnalysisIntegrationTest, SimultaneousProcessingPerformance) {
   Classification classifier(WAVEFORM_SAMPLES, 6, 6, 6, 3);
-  GCCPhaT gccPhat{WAVEFORM_SAMPLES, SAMPLE_FREQUENCY};
+  DOA doa(WAVEFORM_SAMPLES);
 
   // Load test audio
   AudioFile<double> audioFile1, audioFile2, audioFile3, audioFile4;
@@ -185,20 +211,22 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousProcessingPerformance) {
   audioFile3.load("audio/mic_recordings/mic2_angle_0.wav");
   audioFile4.load("audio/mic_recordings/mic3_angle_0.wav");
 
-  std::vector<float> mic1 = ToFloatSamples(audioFile1.samples[0], 1500,
-                                            1500 + WAVEFORM_SAMPLES);
-  std::vector<float> mic2 = ToFloatSamples(audioFile2.samples[0], 1500,
-                                            1500 + WAVEFORM_SAMPLES);
-  std::vector<float> mic3 = ToFloatSamples(audioFile3.samples[0], 1500,
-                                            1500 + WAVEFORM_SAMPLES);
-  std::vector<float> mic4 = ToFloatSamples(audioFile4.samples[0], 1500,
-                                            1500 + WAVEFORM_SAMPLES);
+  // Extract audio segments (using same offset as DOA accuracy test: 0)
+  std::vector<float> mic1 = ToFloatSamples(audioFile1.samples[0], 0,
+                                            WAVEFORM_SAMPLES);
+  std::vector<float> mic2 = ToFloatSamples(audioFile2.samples[0], 0,
+                                            WAVEFORM_SAMPLES);
+  std::vector<float> mic3 = ToFloatSamples(audioFile3.samples[0], 0,
+                                            WAVEFORM_SAMPLES);
+  std::vector<float> mic4 = ToFloatSamples(audioFile4.samples[0], 0,
+                                            WAVEFORM_SAMPLES);
 
   // Measure combined processing time
   auto start = std::chrono::high_resolution_clock::now();
 
   classifier.Classify(mic1);
-  float direction = gccPhat.calculateDirection(mic1, mic2, mic3, mic4);
+  float direction = doa.calculateDirection(mic1, mic2, mic3, mic4,
+                                           DOA_Algorithms::GCC_PHAT);
 
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> duration = end - start;
@@ -206,8 +234,12 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousProcessingPerformance) {
   std::cout << "Simultaneous classification + DOA: " << duration.count()
             << " ms" << std::endl;
 
-  // Verify both completed
-  EXPECT_FALSE(classifier.getClassificationLabel().empty());
+  // Verify both completed (classification can be any non-empty result including "unknown")
+  std::string label = classifier.getClassificationLabel();
+  EXPECT_FALSE(label.empty());
+  bool classAcceptable = (label == "car_horn" || label == "horn" || label == "siren" || label == "unknown");
+  EXPECT_TRUE(classAcceptable) << "Unexpected classification: " << label;
+  
   EXPECT_GE(direction, 0.0f);
   EXPECT_LE(direction, TWO_PI_32);
 
