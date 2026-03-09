@@ -62,7 +62,7 @@ March 9, 2026 & 1.0 & Initial VNV report. \\
     LDA & Linear Discriminant Analysis \\ \hline
     M & Module \\ \hline
     NFR & Non-Functional Requirement\\ \hline
-    PCA & Priniciple Component Analysis \\ \hline
+    PCA & Principal Component Analysis \\ \hline
     R/Req & Requirement\\ \hline    
     SRS & Software Requirements Specification\\ \hline
     T & Test\\ \hline
@@ -321,7 +321,7 @@ Windowed output has reduced spectral leakage (sharper peak, lower side-lobes)
 compared to non-windowed.
 
 \textbf{Actual Output:}
-Hann window reduced side-lobe amplitude by 21.3\% compared to unwindowed signal
+Hann window reduced side-lobe amplitude by 21.3\% compared to un-windowed signal
 (reduction ratio = 0.787). Main lobe peak frequency preserved within 1 bin
 tolerance. Integer cycle test showed leakage ratio $<$ 10\% of main lobe. Three
 test cases passed: HannWindowReducesSpectralLeakage, MainLobePreserved,
@@ -332,7 +332,7 @@ IntegerCyclesMinimalLeakage. All completed in 1 ms total.
 \item{\textbf{Test-FR-3.4} Hardware-accelerated processing \\}
 
 \textbf{Input:}
-10-second signal at 16 kHz processed on: (1) microcontroller with hardware
+10-second signal at 16 kHz processed on: (1) micro-controller with hardware
 acceleration, (2) local machine without acceleration.
 
 \textbf{Expected Output:}
@@ -704,7 +704,7 @@ confirmed zero memory violations. Five test cases completed in 2 ms total.
 Spectrogram matches reference with $\leq$ 10\% mean error across all bins.
 
 \textbf{Actual Output:}
-60-second environmental audio captured simultaneously on microcontroller and
+60-second environmental audio captured simultaneously on micro-controller and
 laptop. Both systems generated spectrograms (2,048 frequency bins). Bin-by-bin
 comparison: mean relative error = 3.8\%, maximum error = 8.2\%, 95th percentile
 error = 6.1\% (all below 10\% threshold). 1,987 of 2,048 bins (97\%) within 5\%
@@ -935,8 +935,8 @@ same reason of mocking complexity.
     SouthEastLabel \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{EastLabel} & EastLabel \\
     \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{NorhtEastLabel} &
-    NorhtEastLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NorthEastLabel} &
+    NorthEastLabel \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle0} &
     SingleAudioSourceAngle0 \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle45} &
@@ -987,11 +987,11 @@ same reason of mocking complexity.
     % Fault Manager Module
     \refstepcounter{unitTest} \mtheunitTest \label{GetSystemFault} &
     GetSystemFault \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{NoPheripheralErrors} &
-    NoPheripheralErrors \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NoPeripheralErrors} &
+    NoPeripheralErrors \\ \hline
     \refstepcounter{unitTest} \mtheunitTest
-    \label{PheripheralErrorsTriggerUnrecoverableState} &
-    PheripheralErrorsTriggerUnrecoverableState \\ \hline
+    \label{PeripheralErrorsTriggerUnrecoverableState} &
+    PeripheralErrorsTriggerUnrecoverableState \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{ReportPeripheralError} &
     ReportPeripheralError \\ \hline
     \refstepcounter{unitTest} \mtheunitTest
@@ -1240,7 +1240,7 @@ same reason of mocking complexity.
     \utref{EastLabel} & Angle between $\frac{11\pi}{8}$ and $\frac{13\pi}{8}$ &
     Retrieve corresponding direction label  & Direction label is East & PASS\\
     \hline
-    \utref{NorhtEastLabel} & Angle between $\frac{13\pi}{8}$ and
+    \utref{NorthEastLabel} & Angle between $\frac{13\pi}{8}$ and
     $\frac{15\pi}{8}$ & Retrieve corresponding direction label  & Direction
     label is North East & PASS\\ \hline
     \utref{SingleAudioSourceAngle0} & 4 microphone streams with audio of source
@@ -1302,16 +1302,16 @@ same reason of mocking complexity.
     PASS\\
     \hline
     \utref{AllFrequenciesToImpulse} & Frequency domain with all frequency, FFT
-    module initiailized & Run inverse fast fourier transform on the frequency
+    module initialized& Run inverse fast fourier transform on the frequency
     domain  & Returned signal domain is the impulse response & PASS\\
     \hline
     \utref{AllFrequenciesToImpulseCopy} & Frequency domain with all frequency,
-    FFT module initiailized using the copy constructor & Run inverse fast
-    fourier transform on the frequency domain  & Returned signal domain is the
-    impulse response & PASS\\
+    FFT module initialized using the copy constructor & Run inverse fast fourier
+    transform on the frequency domain  & Returned signal domain is the impulse
+    response & PASS\\
     \hline
     \utref{AllFrequenciesToImpulseAssignment} & Frequency domain with all
-    frequency, FFT module initiailized using the assignment constructor & Run
+    frequency, FFT module initialized using the assignment constructor & Run
     inverse fast fourier transform on the frequency domain  & Returned signal
     domain is the impulse response & PASS\\
     \hline
@@ -1334,32 +1334,32 @@ same reason of mocking complexity.
     Set each system fault.  & For each system fault, fault manager reports back
     that system fault & PASS\\
     \hline
-    \utref{NoPheripheralErrors} & Fault manager is initiailized, no faults in
+    \utref{NoPeripheralErrors} & Fault manager is initialized, no faults in
     system & Pass no peripheral errors to fault manager  & Fault manager reports
     no system fault & PASS\\
     \hline
-    \utref{PheripheralErrorsTriggerUnrecoverableState} & Fault manager is
-    initiailized, no faults in system & Set each pheripheral fault & For each
-    pheripheral fault, fault manager reports a hardware system fault & PASS\\
+    \utref{PeripheralErrorsTriggerUnrecoverableState} & Fault manager is
+    initialized, no faults in system & Set each Peripheral fault & For each
+    Peripheral fault, fault manager reports a hardware system fault & PASS\\
     \hline
-    \utref{ReportPeripheralError} & Fault manager is initiailized, no faults in
+    \utref{ReportPeripheralError} & Fault manager is initialized, no faults in
     system & Report peripheral errors & Set of all peripheral errors that has
     been reported are tracked & PASS\\
     \hline
-    \utref{CheckStateMachineStatesNoFault} & Fault manager is initiailized, no
+    \utref{CheckStateMachineStatesNoFault} & Fault manager is initialized, no
     faults in system & Run fault manager state machine & Fault manager moves to
     no fault state & PASS\\
     \hline
-    \utref{CheckStateMachineStatesHardwareFault} & Fault manager is
-    initiailized, hardware faults in system & Run fault manager state machine &
-    Fault manager moves to hardware fault state & PASS\\
+    \utref{CheckStateMachineStatesHardwareFault} & Fault manager is initialized,
+    hardware faults in system & Run fault manager state machine & Fault manager
+    moves to hardware fault state & PASS\\
     \hline
-    \utref{CheckStateMachineStatesDOAFault} & Fault manager is initiailized, no
+    \utref{CheckStateMachineStatesDOAFault} & Fault manager is initialized, no
     hardware faults, but DOA fault in system & Run fault manager state machine &
     Fault manager moves to DOA fault state & PASS\\
     \hline
     \utref{CheckStateMachineStatesClassificationFault} & Fault manager is
-    initiailized, no hardare or DOA faults, but classification fault in system &
+    initialized, no hardware or DOA faults, but classification fault in system &
     Run fault manager state machine & Fault manager moves to classification
     fault state & PASS\\
     \hline
@@ -1439,7 +1439,7 @@ same reason of mocking complexity.
 }
 
 % PCA Module
-\subsection{Prinicipal Component Analysis Module}
+\subsection{Principal Component Analysis Module}
 {\footnotesize
 \begin{longtable}{|p{0.8cm}|p{3.5cm}|p{3.5cm}|p{3.5cm}|p{1cm}|}
     \hline
@@ -1535,8 +1535,8 @@ same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{CreatePackets} & Visualization packet struct initiailized & Create a
-    byte stream packet fromt he visualization packet & Byte stream convertion is
+    \utref{CreatePackets} & Visualization packet struct initialized& Create a
+    byte stream packet from the visualization packet & Byte stream conversion is
     as expected as per established serialization rule & PASS\\
     \hline
 
@@ -1859,7 +1859,7 @@ system crashes, it can fail safely and recover in a controlled way.
 
 Moreover, the classification module was identified as an area for improvement in
 terms of reliability and accuracy, which led to the improvements mentioned in
-the next section. The following issues addressed the feedback recieved:
+the next section. The following issues addressed the feedback received:
 
 \begin{itemize}
     \item \href{https://github.com/Team6-SixSense/audio360/issues/497}{issue
@@ -1887,10 +1887,10 @@ reliability of the system by filtering out low confidence predictions and
 substituting them with an "Unknown" classification when the confidence is below
 a current threshold of 70\%. This threshold was determined by manually analyzing
 the confidence levels of correct and incorrect classifications during testing
-with the current PCA and LDA trained matricies. However, to meet the
-requirements specified in the VnV plan, the classification module had to further
-be improved so that the confidence threshold can be increased to 90\% or higher.
-This led to the next improvement mentioned below. 
+with the current PCA and LDA trained matrices. However, to meet the requirements
+specified in the VnV plan, the classification module had to further be improved
+so that the confidence threshold can be increased to 90\% or higher. This led to
+the next improvement mentioned below. 
 
 \subsubsection{Classification Accuracy Improvement}
 The accuracy of the classification module was low because of two main reasons:
@@ -1908,8 +1908,8 @@ Bell, Siren and Knock.
 
 To ensure consistent verification throughout development, multiple automated
 testing CI pipelines were implemented using GitHub Actions. These pipeline are
-triggered on each push to the main branch, and any Pull requests targetted to
-the main branch. Pull requests are blocked from merging if any pipeline fails to
+triggered on each push to the main branch, and any Pull requests targeted to the
+main branch. Pull requests are blocked from merging if any pipeline fails to
 ensure verification holds for any new changes to the project. These automation
 testing reduces reliance on manual testing and increases the repeatability and
 reliability of the verification process.
@@ -2300,7 +2300,7 @@ A copy of the code coverage report is also saved to this repository in
     Functions & 94.6 & $88 / 93$\\ \hline
     Branches & 64.1 & $262 / 409$\\ \hline
   \end{tabular}
-  \caption{Code coverage mertrics summary.}
+  \caption{Code coverage metrics summary.}
   \label{tab:code_coverage}
 \end{table}
 
@@ -2344,8 +2344,8 @@ graduate attribute of Reflection.
 
   \textbf{Nirmal:} Since I was responsible for writing the changes due to
   testing section of the report, I think it was clear what we needed to include
-  in that due to transparency and good feedback recieved during our rev0 demo.
-  Moreoever constant communication within the team helped facilitate this
+  in that due to transparency and good feedback received during our rev0 demo.
+  Moreover, constant communication within the team helped facilitate this
   section as well, since we were all aware of changes that were already being
   made. 
   
@@ -2411,7 +2411,7 @@ graduate attribute of Reflection.
   the NFR written in the VnV plan and SRS document were very ambitious and
   harder to realize in a fully working system. For example, 90\% accuracy for
   classification with PCA and LDA seems to be very hard to achieve in this
-  scope. Athough we are actively trying to fulfill this, it may have to be
+  scope. Although we are actively trying to fulfill this, it may have to be
   updated. 
 
 \end{enumerate}
