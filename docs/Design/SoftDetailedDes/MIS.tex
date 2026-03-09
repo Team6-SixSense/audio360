@@ -97,6 +97,7 @@ urlcolor=cyan          % color of external links
 2026-01-06 & 2.2 & Classfication module enums defined.\\
 2026-03-06 & 3.0 & Fault Manager Module transition specifications.\\
 2026-03-06 & 3.1 & Visualization Module transition specifications.\\
+2026-03-07 & 3.2 & DOA Processor Module algorithm specifications.\\
 \bottomrule
 \end{tabularx}
 
@@ -871,7 +872,9 @@ realistic and reliable audio data based on configuration parameters).
 
 This module processes audio data to estimate the direction of arrival of a sound
 source. This includes frequency domain analysis, signal processing, and
-direction estimation algorithms.
+direction estimation algorithms. The module implements the Generalized
+Cross-Correlation with Phase Transform (GCC-PHAT) algorithm to estimate
+inter-microphone time delays, from which the source angle is derived.
 
 \subsection{Uses}
 
@@ -881,6 +884,7 @@ direction estimation algorithms.
   \item \hyperref[mod:AudioSpectralLeakage]{Audio Spectral Leakage Prevention
     Module}
   \item \hyperref[mod:AudioAnomaly]{Audio Anomaly Detection Module}
+  \item \hyperref[mod:FFT]{Fast Fourier Transform Module}
 \end{enumerate}
 
 \subsection{Syntax}
@@ -909,15 +913,72 @@ None.
 
 \subsubsection{Assumptions}
 
-Angle inputs are represented in radians.
+\begin{itemize}
+  \item Angle outputs are represented in radians in the range $[0, 2\pi)$,
+  measured relative to the forward axis of the glasses frame per
+  \hyperref[SRS-FR5_3]{FR5.3}.
+  \item The input \textit{audioData} contains $N_{mic}$ channels of time-domain
+  samples, each of length $N$ (a power of 2). Channels are ordered by
+  microphone index.
+  \item Microphone array geometry is fixed: adjacent microphone pairs have
+  known inter-microphone distances $d_{1,2}$, $d_{2,3}$, $d_{3,4}$, $d_{4,1}$
+  (in metres), and the speed of sound $c$ is constant.
+\end{itemize}
+
+\subsubsection{Algorithm Specification}
+
+The module estimates direction using GCC-PHAT. For each pair of microphones
+$(A, B)$ with maximum physically possible delay $\tau_{\max} = d_{A,B} / c$:
+
+\textbf{1. Cross-spectrum.} Let $X_A(k)$ and $X_B(k)$ denote the FFT of the
+windowed signals from microphones $A$ and $B$. The cross-spectrum is
+\[
+  G_{AB}(k) = X_A(k) \cdot \overline{X_B(k)}
+\]
+where $\overline{X_B(k)}$ is the complex conjugate of $X_B(k)$.
+
+\textbf{2. Phase transform weighting.} The GCC-PHAT spectrum normalizes by
+magnitude to retain only phase information:
+\[
+  \Psi_{AB}(k) = \frac{G_{AB}(k)}{\left| G_{AB}(k) \right| + \epsilon}
+\]
+where $\epsilon$ is a small constant to avoid division by zero. If
+$|G_{AB}(k)| < \epsilon$, then $\Psi_{AB}(k) := G_{AB}(k) / \epsilon$.
+
+\textbf{3. Time delay estimation.} The cross-correlation in the time domain is
+$R_{AB}(\tau) = \text{IFFT}(\Psi_{AB})$. The time delay $\tau_{AB}$ is the lag
+that maximizes $R_{AB}(\tau)$ within the physically feasible range
+$|\tau| \leq \tau_{\max}$:
+\[
+  \tau_{AB} = \frac{1}{f_s} \cdot \arg\max_{\ell \in [-\ell_{\max}, \ell_{\max}]}
+  R_{AB}(\ell),\quad \ell_{\max} = \lceil \tau_{\max} \cdot f_s \rceil
+\]
+where $f_s$ is the sampling frequency.
+
+\textbf{4. Angle from time delays.} For a rectangular microphone layout, pairs
+$(1,2)$ and $(4,3)$ provide horizontal ($x$) delays; pairs $(3,2)$ and
+$(4,1)$ provide vertical ($y$) delays. Average normalized delays are
+\[
+  d_x = \frac{\tau_{1,2} + \tau_{4,3}}{2 \cdot \tau_{\max,x}},\quad
+  d_y = \frac{\tau_{3,2} + \tau_{4,1}}{2 \cdot \tau_{\max,y}}
+\]
+where $\tau_{\max,x}$ and $\tau_{\max,y}$ are the maximum delays for the
+respective axis pairs. The raw angle is
+\[
+  \theta_{\text{raw}} = \arctan2(d_y, d_x) - \frac{\pi}{2}
+\]
+The output \textit{direction} is $\theta_{\text{raw}}$ normalized to
+$[0, 2\pi)$ to align with the coordinate system in \hyperref[SRS-FR5_3]{FR5.3}.
 
 \subsubsection{Access Routine Semantics}
 
 \noindent calculateDirection():
 \begin{itemize}
 \item transition: None
-\item output: direction
-\item exception: AudioProcessingFailure
+\item output: \textit{direction} is the estimated angle in radians, computed as
+  described in the Algorithm Specification above.
+\item exception: exc := AudioProcessingFailure if input dimensions are invalid
+  or processing fails.
 \end{itemize}
 
 \subsubsection{Local Functions}

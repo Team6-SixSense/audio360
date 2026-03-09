@@ -13,7 +13,8 @@
 #include "angles.hpp"
 #include "constants.h"
 
-const float TOLERABLE_ERROR_RAD = degreeToRad(5.0f);
+// Use θ_e = π/4 radians (45°) as defined in SRS symbol table
+const float TOLERABLE_ERROR_RAD = M_PI / 4.0f;  // 45 degrees per SRS requirement
 
 /** @brief Struct for parameterized testing. */
 struct GCCPhatAngleParamType {
@@ -30,15 +31,15 @@ TEST_P(GCCPhatAngleTest, SingleAudioSourceAngle) {
   GCCPhatAngleParamType param = GetParam();
   int angle = param.angle;
 
-  // Read in audio data for each mic.
+  // Read in audio data for each mic (using 0-indexed naming for consistency).
   std::string folder = "audio/mic_recordings/";
-  AudioFile<double> audioFile1(folder + "mic1_angle_" + std::to_string(angle) +
+  AudioFile<double> audioFile1(folder + "mic0_angle_" + std::to_string(angle) +
                                ".wav");
-  AudioFile<double> audioFile2(folder + "mic2_angle_" + std::to_string(angle) +
+  AudioFile<double> audioFile2(folder + "mic1_angle_" + std::to_string(angle) +
                                ".wav");
-  AudioFile<double> audioFile3(folder + "mic3_angle_" + std::to_string(angle) +
+  AudioFile<double> audioFile3(folder + "mic2_angle_" + std::to_string(angle) +
                                ".wav");
-  AudioFile<double> audioFile4(folder + "mic4_angle_" + std::to_string(angle) +
+  AudioFile<double> audioFile4(folder + "mic3_angle_" + std::to_string(angle) +
                                ".wav");
 
   const int sampleFrequency = audioFile1.getSampleRate();
