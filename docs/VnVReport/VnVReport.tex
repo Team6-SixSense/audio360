@@ -876,6 +876,8 @@ for the same reason of mocking complexity.
 
 \section{Changes Due to Testing}
 
+\subsection{General Feedback}
+
 Usability testing was completed with four stakeholders using the plan in
 Section 4.2. The average user rating was \textbf{4.75/5.0} across
 non-obtrusiveness, clarity, and situational awareness, and all planned metrics
@@ -888,6 +890,44 @@ load while keeping cues easy to read.
 In addition, testing discussions highlighted the need for better behavior during
 unexpected failures. We are implementing system fault handling so that if the
 system crashes, it can fail safely and recover in a controlled way.
+
+Moreover, the classification module was identified as an area for improvement 
+in terms of reliability and accuracy, which led to the improvements mentioned 
+in the next section. 
+
+\subsection{Classification Module}
+After user testing, it was found that the classification module could be 
+improved to provide more reliable output the the user. Specifically related to 
+the confidence level and overall accuracy of the classification results. To 
+address these issues, the classification module was updated as follows:
+
+\subsubsection{Confidence Implementation}
+The classification module was updated to calculate the confidence level of each 
+class prediction. This was achieved by implementing a softmax function to 
+convert the raw output of the classifier into probabilities. The confidence 
+level is determined by the highest probability among the predicted classes, 
+providing feedback to the overall system of how much trust to put in the 
+classification results. These metrics were used to improve the overall 
+reliability of the system by filtering out low confidence predictions and 
+substituting them with an "Unknown" classification when the confidence is 
+below a current threshold of 70\%. This threshold was determined by manually 
+analyzing the confidence levels of correct and incorrect classifications during 
+testing with the current PCA and LDA trained matricies. However, to meet the 
+requirements specified in the VnV plan, the classification module had to 
+further be improved so that the confidence threshold can be increased to 90\% 
+or higher. This led to the next improvement mentioned below. 
+
+\subsubsection{Classification Accuracy Improvement}
+The accuracy of the classification module was low because of two main reasons: 
+limited examples in the training dataset and choosing classes that had very 
+similar audio signatures (car horn vs siren). To address these issues, the 
+first change that was made was finding another sound dataset that had more 
+examples and more distinct classes to choose from. The dataset that was chosen 
+was the FSD50k sound dataset, which has over 50,000 audio samples across 200
+classes \cite{FSD50k}. Using this dataset, the second change that was made was 
+changing the list of classes that the system was trained to classify to have 
+more distinct audio signatures. The new classes that are chosen are Chatter, 
+Bicycle Bell, Siren and Knock.
 
 \section{Automated Testing}
 
