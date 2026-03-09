@@ -847,19 +847,19 @@ retrieved from an audio file.
 \textbf{Input:}
 A 3 second audio clip represented in an audio file containing pre-recorded audio
 data in the time domain sampled at 16 kHz. The audio clip contains 3 sine waves
-at low (100 Hz), mid (1 kHz), and high (8 kHz) frequency ranges. No filtering or
+at low (100 Hz), mid (1 kHz), and high (7.5 kHz) frequency ranges. No filtering or
 frequency transformation have been applied to the audio data initially.
 					
 \textbf{Output:}
 The audio filtering module accepts the file with no errors. The resulting
 frequency domain representation should display 3 spectral peaks at approximately
-100 Hz, 1 kHz, and 8 kHz, corresponding to the sine waves.
+100 Hz, 1 kHz, and 7.5 kHz, corresponding to the sine waves.
 
 \textbf{Test Case Derivation:} 
 The Fourier Transform converts time-domain signals into frequency domain by
 independently extracting the frequency of various waves in the signals and
 plotting the peaks at those frequencies after the transformation. In the
-original audio clip, there are 3 sine waves at 100 Hz, 1 kHz, and 8 kHz. After
+original audio clip, there are 3 sine waves at 100 Hz, 1 kHz, and 7.5 kHz. After
 applying the Fourier Transform, the resulting frequency domain representation
 should display peaks at those frequencies.
 					
@@ -869,7 +869,7 @@ framework. This test will trigger when a commit is made to any branch in the
 repository. The audio filtering module will return the frequency domain
 representation automatically on the input of the audio file. The
 frequency-domain output will be inspected to verify the presence of peaks at 100
-Hz, 1 kHz and 8 kHz. The test passes if all 3 peaks are present with no
+Hz, 1 kHz and 7.5 kHz. The test passes if all 3 peaks are present with no
 unexpected frequencies showing up.  
 					
 \item{\textbf{Test-FR-3.2} Normalize amplitude of signals\\}
@@ -1060,7 +1060,7 @@ There are no errors flagged to the Audio360 Engine module.
 \textbf{Input:}
 A data stream of frequency-domain audio data sampled at 16 kHz by an array of 4
 microphones. The audio data contains sine waves at low (100 Hz), mid (1 kHz),
-and high (8 kHz) frequency ranges. No error flags are set in the input data.
+and high (7.5 kHz) frequency ranges. No error flags are set in the input data.
 
 \textbf{Output:}
 The Audio360 Engine module accepts the input data with no errors. There should

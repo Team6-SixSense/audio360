@@ -24,7 +24,7 @@ constexpr inline size_t DIRECTION_MODE_FILTER_SIZE = 3;
 constexpr inline size_t CLASSIFICATION_MODE_FILTER_SIZE = 3;
 constexpr inline int CLASSIFICATION_BUFFER_SIZE = 4;
 
-constexpr inline float CONFIDENCE_THRESHOLD = 0.7f;
+constexpr inline float CONFIDENCE_THRESHOLD = 0.65f;
 
 // Math constants.
 constexpr inline float FLOAT_EPS = std::numeric_limits<float>::epsilon();

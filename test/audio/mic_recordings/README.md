@@ -22,7 +22,7 @@ It was generated using pyroomacoustics.
 
 ## Sound Sources
 
-There is one sound source located 3 m away from the center of the microphone array.
+There is one sound source located 3.0 m away from the center of the microphone array.
 The relative angle is in the file name, where 0 degrees is North and 90 degrees is West.
 
 File naming convention: ```mic{mic_num}_angle_{angle}.wav```

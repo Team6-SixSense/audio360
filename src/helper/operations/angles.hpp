@@ -20,6 +20,14 @@
 inline float degreeToRad(float angle) { return angle * PI_32 / 180.0f; }
 
 /**
+ * @brief Converts angles from radians to degrees.
+ *
+ * @param angle Angle in radians
+ * @return float Degree equivalent.
+ */
+inline float radToDegree(float angle) { return angle * 180.0f / PI_32; }
+
+/**
  * @brief Represent angle in range of [0, 2*PI).
  *
  * @param angle angle to normalize.
