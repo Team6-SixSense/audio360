@@ -1030,6 +1030,13 @@ graduate attribute of Reflection.
   \textbf{Jay:} What went well was that we already had good starting material
   from our earlier documents. That made it easier to organize this report and
   write each section without guessing what to include.
+
+  \textbf{Nirmal:} Since I was responsible for writing the changes due to 
+  testing section of the report, I think it was clear what we needed to 
+  include in that due to transparency and good feedback recieved during our 
+  rev0 demo. Moreoever constant communication within the team helped facilitate 
+  this section as well, since we were all aware of changes that were already 
+  being made. 
   
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
@@ -1042,6 +1049,13 @@ graduate attribute of Reflection.
   course work at the same time. There were weeks with multiple deadlines, so it
   was hard to keep steady progress. I handled this by breaking the work into
   smaller parts and setting short work sessions during the week.
+
+  \textbf{Nirmal:} I think the main pain point when writing this deliverable 
+  was trying to actively make changes to the system after the rev0 demo, while 
+  also trying to test and write this report at the same time. For me, I was 
+  responsible for making changes to the classification module, which involved 
+  finding a new dataset, retraining the PCA and LDA matricies, and then testing 
+  the changes out. 
 
   \item Which parts of this document stemmed from speaking to your client(s) or
   a proxy (e.g. your peers)? Which ones were not, and why?
@@ -1060,7 +1074,15 @@ graduate attribute of Reflection.
   evidence that demonstrates the required quality?  (It is expected that most
   teams will have had to deviate from their original VnV Plan.)
 
-  \textbf{Team:}
+  \textbf{Team:} The main differences were associated with certain 
+  non-functional requirement tests that were not created as their own unit 
+  tests, but rather as part of the functional unit tests that were being 
+  written. In the VnV plan, we had planned unit tests for NFR and FR, but later 
+  realized that related tests can be combined. Moreover, it seemed like some of 
+  the NFR written in the VnV plan and SRS document were very ambitious and 
+  harder to realize in a fully working system. For example, 90\% accuracy for 
+  classification with PCA and LDA seems to be very hard to achieve in this 
+  scope. Athough we are actively trying to fulfill this, it may have to be updated. 
 
 \end{enumerate}
 
