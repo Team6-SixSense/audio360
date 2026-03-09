@@ -10,13 +10,8 @@
 \usepackage{float}
 \usepackage{url}
 \usepackage{tabularx}
-\hypersetup{
-    colorlinks,
-    citecolor=black,
-    filecolor=black,
-    linkcolor=red,
-    urlcolor=blue
-}
+\hypersetup{ colorlinks, citecolor=black, filecolor=black, linkcolor=red,
+    urlcolor=blue }
 
 
 \newcounter{unitTest}
@@ -40,8 +35,8 @@
 
 \section{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\hline {\bf Date} & {\bf Version} & {\bf Notes}\\
+\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X} \hline {\bf Date} & {\bf Version} &
+{\bf Notes}\\
 \hline
 March 9, 2026 & 1.0 & Initial VNV report. \\
 \hline
@@ -94,21 +89,18 @@ for a complete table used in \progname.
 
 \pagenumbering{arabic}
 
-This document presents the results of verification and validation testing for 
-the
-Audio360 system. The tests documented here correspond to those defined in the
-Verification and Validation Plan \cite{VnVPlan}. Section 3 evaluates functional
-requirements, Section 4 evaluates non-functional requirements, and subsequent
-sections provide additional testing insights and traceability.
+This document presents the results of verification and validation testing for
+the Audio360 system. The tests documented here correspond to those defined in
+the Verification and Validation Plan \cite{VnVPlan}. Section 3 evaluates
+functional requirements, Section 4 evaluates non-functional requirements, and
+subsequent sections provide additional testing insights and traceability.
 
 \section{Functional Requirements Evaluation}
 
-This section presents the results of functional requirement testing as defined 
-in
-the VnV Plan. Tests are organized by system component. For each test, the 
-following
-information is provided: input conditions, expected output, actual output (as
-observed during testing), and pass/fail status.
+This section presents the results of functional requirement testing as defined
+in the VnV Plan. Tests are organized by system component. For each test, the
+following information is provided: input conditions, expected output, actual
+output (as observed during testing), and pass/fail status.
 
 \subsection{Embedded Firmware Tests}
 
@@ -121,28 +113,28 @@ Three concurrent tasks: Task A (high priority, level 1), Task B (medium priority
 , level 5), Task C (low priority, level 10).
 
 \textbf{Expected Output:}
-Execution logs show tasks execute in priority order: Task A, then Task B, then 
+Execution logs show tasks execute in priority order: Task A, then Task B, then
 Task C. Timestamps confirm this sequence regardless of submission order.
 
 \textbf{Actual Output:}
-Task A displayed output message first 3ms after task was submitted, 
-then Task B 2ms after task A, then Task C 2ms after task B.
+Task A displayed output message first 3ms after task was submitted, then Task B
+2ms after task A, then Task C 2ms after task B.
 
 \textbf{Result:} Pass
 
 \item{\textbf{Test-FR-1.2} Microphone synchronization \\}
 
 \textbf{Input:}
-Impulse sound (hand clap or tone burst) captured simultaneously by all four 
+Impulse sound (hand clap or tone burst) captured simultaneously by all four
 microphones.
 
 \textbf{Expected Output:}
-Four synchronized audio buffers with time alignment within 10 microseconds 
-after compensating for physical propagation delays.
+Four synchronized audio buffers with time alignment within 10 microseconds after
+compensating for physical propagation delays.
 
 \textbf{Actual Output:}
-All microphones showed the impulse sound at the same timestamp, with a 
-maximum time delay between microphones 1 and 3 of 6.2 microseconds.
+All microphones showed the impulse sound at the same timestamp, with a maximum
+time delay between microphones 1 and 3 of 6.2 microseconds.
 
 \textbf{Result:} Pass
 
@@ -153,38 +145,38 @@ Test sequence attempting memory allocations: (1) valid allocation within limits,
  (2) allocation at limit, (3) allocation exceeding limit.
 
 \textbf{Expected Output:}
-Valid allocations succeed. Allocations exceeding limits return error codes 
+Valid allocations succeed. Allocations exceeding limits return error codes
 without crashing. System continues operation.
 
 \textbf{Actual Output:}
-Progressive allocation test executed on STM32F767ZI. Valid allocations (8KB, 
+Progressive allocation test executed on STM32F767ZI. Valid allocations (8KB,
 16KB, 32KB) succeeded with 100\% success rate. Allocation at memory limit (118KB
- of 128KB total heap) succeeded. Allocation exceeding limit (150KB) correctly 
- denied with ERROR\_OUT\_OF\_MEMORY code, returned in 0.15ms. System remained 
- operational after error, processing 30 subsequent audio frames. Peak heap 
- usage: 118KB (92.2\%), zero crashes.
+of 128KB total heap) succeeded. Allocation exceeding limit (150KB) correctly
+denied with ERROR\_OUT\_OF\_MEMORY code, returned in 0.15ms. System remained
+operational after error, processing 30 subsequent audio frames. Peak heap usage:
+118KB (92.2\%), zero crashes.
 
 \textbf{Result:} Pass
 
 \item{\textbf{Test-FR-1.4} Hardware diagnostics \\}
 
 \textbf{Input:}
-Sequence of hardware faults: (1) disconnect microphone, (2) disconnect display, 
+Sequence of hardware faults: (1) disconnect microphone, (2) disconnect display,
 (3) restore connections.
 
 \textbf{Expected Output:}
-Each fault detected within 1 second with correct error code. 100\% detection 
+Each fault detected within 1 second with correct error code. 100\% detection
 rate. Zero false positives. Recovery detected within 1 second.
 
 \textbf{Actual Output:}
-Systematic fault injection testing conducted with high-precision timestamps. 
-Microphone disconnect (Fault 1): detected in 420ms with error code 
-FAULT\_MIC\_DISCONNECT. Display disconnect (Fault 2): detected in 580ms with 
-error code FAULT\_DISPLAY\_DISCONNECT. Both faults detected within 1 second 
-requirement. Reconnection events: microphone recovery detected in 350ms, 
-display recovery in 470ms. 100\% fault detection rate (2/2 faults identified). 
-90-second baseline monitoring showed zero false positives. Maximum detection 
-latency: 580ms (42\% below 1 second requirement).
+Systematic fault injection testing conducted with high-precision timestamps.
+Microphone disconnect (Fault 1): detected in 420ms with error code
+FAULT\_MIC\_DISCONNECT. Display disconnect (Fault 2): detected in 580ms with
+error code FAULT\_DISPLAY\_DISCONNECT. Both faults detected within 1 second
+requirement. Reconnection events: microphone recovery detected in 350ms, display
+recovery in 470ms. 100\% fault detection rate (2/2 faults identified). 90-second
+baseline monitoring showed zero false positives. Maximum detection latency:
+580ms (42\% below 1 second requirement).
 
 \textbf{Result:} Pass
 
@@ -197,41 +189,40 @@ latency: 580ms (42\% below 1 second requirement).
 \item{\textbf{Test-FR-2.1} Driver API functionality \\}
 
 \textbf{Input:}
-Driver API calls: (1) read ADC, (2) write GPIO, (3) configure timer, (4) 
-read system clock.
+Driver API calls: (1) read ADC, (2) write GPIO, (3) configure timer, (4) read
+system clock.
 
 \textbf{Expected Output:}
-All operations complete successfully. ADC returns valid samples, GPIO toggles 
-visible on oscilloscope, timer produces expected behavior, clock returns 
+All operations complete successfully. ADC returns valid samples, GPIO toggles
+visible on oscilloscope, timer produces expected behavior, clock returns
 monotonic timestamps.
 
 \textbf{Actual Output:}
-All four driver API operations executed successfully. (1) ADC read: returned 
-12-bit sample value 2048 (0.8V analog input at 3.3V reference), conversion time 
-2.4$\mu$s. (2) GPIO write: toggled pin PA5 from LOW to HIGH. 
-(3) Timer configure: TIM2 configured to 1kHz frequency, measured output 
-1.000kHz $\pm$ 0.2Hz (0.02\% error). (4) System clock read: returned 
-monotonic timestamps, verified 1000 consecutive reads with strictly 
-increasing values (no rollback), clock resolution 1$\mu$s. 
-100\% API call success rate (4/4 operations).
+All four driver API operations executed successfully. (1) ADC read: returned
+12-bit sample value 2048 (0.8V analog input at 3.3V reference), conversion time
+2.4$\mu$s. (2) GPIO write: toggled pin PA5 from LOW to HIGH. (3) Timer
+configure: TIM2 configured to 1kHz frequency, measured output 1.000kHz $\pm$
+0.2Hz (0.02\% error). (4) System clock read: returned monotonic timestamps,
+verified 1000 consecutive reads with strictly increasing values (no rollback),
+clock resolution 1$\mu$s. 100\% API call success rate (4/4 operations).
 
 \textbf{Result:} Pass
 
 \item{\textbf{Test-FR-2.2} Permission enforcement \\}
 
 \textbf{Input:}
-Module A (high privilege) and Module B (restricted privilege) request: 
-(1) ADC access, (2) GPIO write.
+Module A (high privilege) and Module B (restricted privilege) request: (1) ADC
+access, (2) GPIO write.
 
 \textbf{Expected Output:}
-Module A's requests succeed. Module B's requests rejected with permission 
-denied error.
+Module A's requests succeed. Module B's requests rejected with permission denied
+error.
 
 \textbf{Actual Output:}
-Module A's ADC read succeeded, returned 12-bit sample value 2047. Module 
-A's GPIO write succeeded, pin toggled (verified on oscilloscope). Module B's 
-ADC read rejected with ERROR\_PERMISSION\_DENIED, return time 0.08ms. Module 
-B's GPIO write rejected with ERROR\_PERMISSION\_DENIED, return time 0.06ms. 
+Module A's ADC read succeeded, returned 12-bit sample value 2047. Module A's
+GPIO write succeeded, pin toggled (verified on oscilloscope). Module B's ADC
+read rejected with ERROR\_PERMISSION\_DENIED, return time 0.08ms. Module B's
+GPIO write rejected with ERROR\_PERMISSION\_DENIED, return time 0.06ms.
 Permission checks enforced 100\% of the time (4/4 requests validated correctly).
 
 \textbf{Result:} Pass
@@ -243,15 +234,15 @@ Driver API calls triggering errors: (1) uninitialized ADC, (2) invalid GPIO pin,
  (3) invalid timer params, (4) disconnected peripheral.
 
 \textbf{Expected Output:}
-Each error returns specific error code (ERROR\_NOT\_INITIALIZED, 
+Each error returns specific error code (ERROR\_NOT\_INITIALIZED,
 ERROR\_INVALID\_PIN, etc.) within 10 ms.
 
 \textbf{Actual Output:}
-All four error conditions correctly detected: (1) Uninitialized ADC returned 
-ERROR\_NOT\_INITIALIZED in 0.12ms, (2) Invalid GPIO pin 255 returned 
-ERROR\_INVALID\_PIN in 0.09ms, (3) Timer frequency 500MHz (exceeding 480MHz 
-limit) returned ERROR\_INVALID\_PARAMETER in 0.11ms, (4) Disconnected I2C 
-peripheral returned ERROR\_HARDWARE\_DISCONNECTED in 2.3ms. Maximum propagation 
+All four error conditions correctly detected: (1) Uninitialized ADC returned
+ERROR\_NOT\_INITIALIZED in 0.12ms, (2) Invalid GPIO pin 255 returned
+ERROR\_INVALID\_PIN in 0.09ms, (3) Timer frequency 500MHz (exceeding 480MHz
+limit) returned ERROR\_INVALID\_PARAMETER in 0.11ms, (4) Disconnected I2C
+peripheral returned ERROR\_HARDWARE\_DISCONNECTED in 2.3ms. Maximum propagation
 time: 2.3ms (77\% below 10ms requirement). Zero system hangs.
 
 \textbf{Result:} Pass
@@ -266,10 +257,10 @@ Audio data maintains integrity. No corruption. No data races. Buffer transitions
  are atomic.
 
 \textbf{Actual Output:}
-30-second audio capture completed at 16kHz (480,000 samples per channel, 
-1,920,000 samples total across 4 mics). MD5 checksums verified for all buffers: 
-no corruption. Concurrent read/write stress test with 7,500 buffer transitions 
-showed zero data races. Buffer state transitions atomic in 100\% of cases 
+30-second audio capture completed at 16kHz (480,000 samples per channel,
+1,920,000 samples total across 4 mics). MD5 checksums verified for all buffers:
+no corruption. Concurrent read/write stress test with 7,500 buffer transitions
+showed zero data races. Buffer state transitions atomic in 100\% of cases
 (validated via oscilloscope). Zero invalid samples.
 
 \textbf{Result:} Pass
@@ -286,35 +277,35 @@ showed zero data races. Buffer state transitions atomic in 100\% of cases
 3-second audio clip at 16 kHz with sine waves at 100 Hz, 1 kHz, and 7.5 kHz.
 
 \textbf{Expected Output:}
-Frequency-domain representation displays 3 spectral peaks at 100 Hz, 1 kHz, and 
+Frequency-domain representation displays 3 spectral peaks at 100 Hz, 1 kHz, and
 7.5 kHz with no unexpected frequencies.
 
 \textbf{Actual Output:}
-Multi-tone FFT test successfully executed. Generated 3-second signal at 16 kHz 
-containing 100 Hz, 1 kHz, and 7.5 kHz sine waves. FFT detected all 3 target 
-frequencies: 100 Hz peak detected (within $\pm$ 2 bin tolerance), 1 kHz peak 
-detected (within tolerance), 7.5 kHz peak detected (within tolerance). 
-Detection success rate: 100\% (3/3 frequencies). No spurious frequencies 
-detected. Test completed in 6 ms total. Consistent detection validated across 
-multiple frame positions in signal.
+Multi-tone FFT test successfully executed. Generated 3-second signal at 16 kHz
+containing 100 Hz, 1 kHz, and 7.5 kHz sine waves. FFT detected all 3 target
+frequencies: 100 Hz peak detected (within $\pm$ 2 bin tolerance), 1 kHz peak
+detected (within tolerance), 7.5 kHz peak detected (within tolerance). Detection
+success rate: 100\% (3/3 frequencies). No spurious frequencies detected. Test
+completed in 6 ms total. Consistent detection validated across multiple frame
+positions in signal.
 
 \textbf{Result:} Pass
 
 \item{\textbf{Test-FR-3.2} Amplitude normalization \\}
 
 \textbf{Input:}
-2-second signal at 16 kHz alternating between low amplitude (0.2 x max) and 
-high amplitude (0.8 x max) sine waves at same frequency.
+2-second signal at 16 kHz alternating between low amplitude (0.2 x max) and high
+amplitude (0.8 x max) sine waves at same frequency.
 
 \textbf{Expected Output:}
-Normalized output with consistent target amplitude (max 1.0) for both sections. 
+Normalized output with consistent target amplitude (max 1.0) for both sections.
 Frequency unchanged.
 
 \textbf{Actual Output:}
-Normalization scaled high amplitude section to 1.0 (100\% of target), low 
-amplitude section to 0.25 (proportional scaling maintained). Pre-normalization 
-ratio preserved post-normalization. Three test cases passed: 
-AlternatingAmplitudeNormalization, SilentSignalNormalization, 
+Normalization scaled high amplitude section to 1.0 (100\% of target), low
+amplitude section to 0.25 (proportional scaling maintained). Pre-normalization
+ratio preserved post-normalization. Three test cases passed:
+AlternatingAmplitudeNormalization, SilentSignalNormalization,
 AlreadyNormalizedSignal. All completed in 1 ms total.
 
 \textbf{Result:} Pass
@@ -322,18 +313,18 @@ AlreadyNormalizedSignal. All completed in 1 ms total.
 \item{\textbf{Test-FR-3.3} Spectral leakage reduction (windowing) \\}
 
 \textbf{Input:}
-1-second sine wave at 16 kHz with incomplete cycle. Processed with and without 
+1-second sine wave at 16 kHz with incomplete cycle. Processed with and without
 windowing function.
 
 \textbf{Expected Output:}
-Windowed output has reduced spectral leakage (sharper peak, lower side-lobes) 
+Windowed output has reduced spectral leakage (sharper peak, lower side-lobes)
 compared to non-windowed.
 
 \textbf{Actual Output:}
-Hann window reduced side-lobe amplitude by 21.3\% compared to unwindowed signal 
-(reduction ratio = 0.787). Main lobe peak frequency preserved within 1 bin 
-tolerance. Integer cycle test showed leakage ratio $<$ 10\% of main lobe. 
-Three test cases passed: HannWindowReducesSpectralLeakage, MainLobePreserved, 
+Hann window reduced side-lobe amplitude by 21.3\% compared to unwindowed signal
+(reduction ratio = 0.787). Main lobe peak frequency preserved within 1 bin
+tolerance. Integer cycle test showed leakage ratio $<$ 10\% of main lobe. Three
+test cases passed: HannWindowReducesSpectralLeakage, MainLobePreserved,
 IntegerCyclesMinimalLeakage. All completed in 1 ms total.
 
 \textbf{Result:} Pass
@@ -341,42 +332,42 @@ IntegerCyclesMinimalLeakage. All completed in 1 ms total.
 \item{\textbf{Test-FR-3.4} Hardware-accelerated processing \\}
 
 \textbf{Input:}
-10-second signal at 16 kHz processed on: (1) microcontroller with hardware 
+10-second signal at 16 kHz processed on: (1) microcontroller with hardware
 acceleration, (2) local machine without acceleration.
 
 \textbf{Expected Output:}
-Both produce equivalent spectrograms ($\leq$ 0.1\% amplitude error). 
+Both produce equivalent spectrograms ($\leq$ 0.1\% amplitude error).
 Hardware-accelerated runs $\geq$ 50\% faster.
 
 \textbf{Actual Output:}
-10-second signal (160,000 samples) processed on both platforms. 
-Hardware-accelerated FFT on STM32F767ZI completed in 423ms. Non-accelerated 
-laptop implementation completed in 1,247ms. Speedup factor: 2.95$\times$ 
-(195\% faster). Spectrogram comparison across 2,048 frequency bins: mean 
-amplitude error = 0.043\%, maximum error = 0.087\% (both below 0.1\%). 
-Spectral correlation: 99.97\%.
+10-second signal (160,000 samples) processed on both platforms.
+Hardware-accelerated FFT on STM32F767ZI completed in 423ms. Non-accelerated
+laptop implementation completed in 1,247ms. Speedup factor: 2.95$\times$ (195\%
+faster). Spectrogram comparison across 2,048 frequency bins: mean amplitude
+error = 0.043\%, maximum error = 0.087\% (both below 0.1\%). Spectral
+correlation: 99.97\%.
 
 \textbf{Result:} Pass
 
 \item{\textbf{Test-FR-3.5} Anomaly detection (clipping, lost signal, silence)\\}
 
 \textbf{Input:}
-Three audio stream conditions with 24-bit samples: (1) samples exceeding range 
+Three audio stream conditions with 24-bit samples: (1) samples exceeding range
 [-8388608, 8388607], (2) all-zero stream (lost signal), (3) normal stream.
 
 \textbf{Expected Output:}
-Correct anomaly detection: (1) clipping flag, (2) lost signal flag, (3) no 
+Correct anomaly detection: (1) clipping flag, (2) lost signal flag, (3) no
 anomaly.
 
 \textbf{Actual Output:}
-Automated test suite (AudioAnomalyDetectionTest) validates anomaly detection 
-module using raw 24-bit integer audio streams. Four test cases: (1) 
-NoAudioAnomaly: random samples in valid range produced no false positives 
-(100\% specificity), (2) ClippingAnomaly: samples outside [-8388608, 8388607] 
-detected correctly (100\% detection), (3) LostSignalAnomaly: all-zero stream 
-flagged correctly (100\% detection), (4) ClippingAndLostSignalAnomaly: multiple 
-anomaly types handled correctly. Tests use actual implementation from 
-diagnostics module. \textit{Note:} Tests in diagnostics suite (PR \#576).
+Automated test suite (AudioAnomalyDetectionTest) validates anomaly detection
+module using raw 24-bit integer audio streams. Four test cases: (1)
+NoAudioAnomaly: random samples in valid range produced no false positives (100\%
+specificity), (2) ClippingAnomaly: samples outside [-8388608, 8388607] detected
+correctly (100\% detection), (3) LostSignalAnomaly: all-zero stream flagged
+correctly (100\% detection), (4) ClippingAndLostSignalAnomaly: multiple anomaly
+types handled correctly. Tests use actual implementation from diagnostics
+module. \textit{Note:} Tests in diagnostics suite (PR \#576).
 
 \textbf{Result:} Pass (covered by diagnostics test suite)
 
@@ -386,24 +377,24 @@ diagnostics module. \textit{Note:} Tests in diagnostics suite (PR \#576).
 
 \begin{enumerate}
 
-\item{\textbf{Test-FR-4.1} Engine input capability (frequency data and error 
+\item{\textbf{Test-FR-4.1} Engine input capability (frequency data and error
 flags) \\}
 
 \textbf{Input:}
 \textbf{Subtest 1:} Frequency-domain audio at 16 kHz with sine waves at 100 Hz,
- 1 kHz, 8 kHz, no error flags. \textbf{Subtest 2:} Random frequency data with 
+ 1 kHz, 8 kHz, no error flags. \textbf{Subtest 2:} Random frequency data with
  error flags (clipping/lost signal/silence).
 
 \textbf{Expected Output:}
 \textbf{Subtest 1:} No error flags, direction and classification output present.
- \textbf{Subtest 2:} Output reflects input error flags, no valid 
+ \textbf{Subtest 2:} Output reflects input error flags, no valid
  direction/classification.
 
 \textbf{Actual Output:}
-Subtest 1: Valid frequency data processed without errors 
-(FrequencyInputCapability test passed). Subtest 2: All three error types 
-correctly propagated (ErrorInputCapability\_Clipping, 
-ErrorInputCapability\_LostSignal, ErrorInputCapability\_Silence all passed). 
+Subtest 1: Valid frequency data processed without errors
+(FrequencyInputCapability test passed). Subtest 2: All three error types
+correctly propagated (ErrorInputCapability\_Clipping,
+ErrorInputCapability\_LostSignal, ErrorInputCapability\_Silence all passed).
 Four test cases completed successfully.
 
 \textbf{Result:} Pass
@@ -414,13 +405,13 @@ Four test cases completed successfully.
 Mock audio data from audio filtering module with no error flags.
 
 \textbf{Expected Output:}
-Dependent components receive notification and start processing in correct 
-order (verified through logs).
+Dependent components receive notification and start processing in correct order
+(verified through logs).
 
 \textbf{Actual Output:}
-All registered components received notifications with 100\% delivery rate. 
-Two test cases passed: DependentComponentNotification verified single-cycle 
-notification, MultipleNotificationCycles verified repeated notification 
+All registered components received notifications with 100\% delivery rate. Two
+test cases passed: DependentComponentNotification verified single-cycle
+notification, MultipleNotificationCycles verified repeated notification
 integrity.
 
 \textbf{Result:} Pass
@@ -431,14 +422,14 @@ integrity.
 Mock audio data with no error flags, pipeline notification sent.
 
 \textbf{Expected Output:}
-Each component processes data in correct order. Output of one component 
+Each component processes data in correct order. Output of one component
 correctly passed to next.
 
 \textbf{Actual Output:}
-Components executed in correct sequence: Component A (order=1), Component B 
-(order=2), Component C (order=3). Two test cases passed: PipelineFlowOrdering 
-verified execution sequence, PipelineDataIntegrity verified data passed 
-correctly between stages (input frequency value preserved through all 
+Components executed in correct sequence: Component A (order=1), Component B
+(order=2), Component C (order=3). Two test cases passed: PipelineFlowOrdering
+verified execution sequence, PipelineDataIntegrity verified data passed
+correctly between stages (input frequency value preserved through all
 components).
 
 \textbf{Result:} Pass
@@ -449,15 +440,15 @@ components).
 Mock audio data with error flags set (clipping/lost signal/silence).
 
 \textbf{Expected Output:}
-Pipeline suppressed. Error logged and propagated. No processing attempted. 
+Pipeline suppressed. Error logged and propagated. No processing attempted.
 Pipeline resumes after error cleared.
 
 \textbf{Actual Output:}
-Pipeline suppression triggered with 100\% success rate for all error types. 
-Four test cases passed: ErrorBasedPipelineSuppression, 
-PipelineResumptionAfterError (verified zero-latency resumption), 
-ErrorLoggingDuringSuppression (verified error capture), 
-AllErrorTypesTriggerSuppression (tested clipping, lost signal, silence).
+Pipeline suppression triggered with 100\% success rate for all error types. Four
+test cases passed: ErrorBasedPipelineSuppression, PipelineResumptionAfterError
+(verified zero-latency resumption), ErrorLoggingDuringSuppression (verified
+error capture), AllErrorTypesTriggerSuppression (tested clipping, lost signal,
+silence).
 
 \textbf{Result:} Pass
 
@@ -470,46 +461,42 @@ AllErrorTypesTriggerSuppression (tested clipping, lost signal, silence).
 \item{\textbf{Test-FR-5.1} Audio classification \\}
 
 \textbf{Input:}
-Frequency-domain samples of different known audio classes (resampled to 16 kHz 
+Frequency-domain samples of different known audio classes (resampled to 16 kHz
 for compatibility).
 
 \textbf{Expected Output:}
 Predicted class matches known class with $\geq$ 90\% accuracy per class.
 
 \textbf{Actual Output:}
-Classifier processed 102 frames from long\_jackhammer\_16k.mp3 with confidence 
-threshold of 65\%. Results: Jackhammer correct classifications = 65 frames 
-(63.7\%), unknown (low confidence) = 37 frames (36.3\%). Combined acceptable 
-results: 102/102 frames (100\%). Test follows established acceptance criterion: 
+Classifier processed 102 frames from long\_jackhammer\_16k.mp3 with confidence
+threshold of 65\%. Results: Jackhammer correct classifications = 65 frames
+(63.7\%), unknown (low confidence) = 37 frames (36.3\%). Combined acceptable
+results: 102/102 frames (100\%). Test follows established acceptance criterion:
 both correct identification and "unknown" classification are acceptable outcomes
- (not misclassification). Test completed in 80 ms.
+(not misclassification). Test completed in 80 ms.
 
 \textbf{Result:} Pass
 
 \item{\textbf{Test-FR-5.2} Direction of arrival (DOA) estimation accuracy \\}
 
 \textbf{Input:}
-Four-channel audio from known directions (0 degrees, 45 degrees, 90 degrees, 
-135 degrees) using correctly 
-generated test audio.
+Four-channel audio from known directions (0 degrees, 45 degrees, 90 degrees, 135
+degrees) using correctly generated test audio.
 
 \textbf{Expected Output:}
-Estimated direction within $\theta_e$ radians of known direction. 
-MAE $<$ $\theta_e$/2.
+Estimated direction within $\theta_e$ radians of known direction. MAE $<$
+$\theta_e$/2.
 
 \textbf{Actual Output:}
-DOA accuracy test executed with properly configured microphone array audio 
-(16 kHz, 0.1m $\times$ 0.1m array). Tested 4 known angles: 0 degrees 
-estimated at 
-0.0 degrees (error: 0.0 degrees), 45 degrees at 42.2 degrees (error: 2.79 
-degrees), 90 degrees at 90.0 degrees (error: $\sim$0 
-degrees),
- 135 degrees at 137.8 degrees (error: 2.79 degrees). Mean Absolute Error (MAE): 
- 1.39 degrees (6.2\% of 22.5 
- degrees
-  requirement). Pass rate: 100\% (4/4 angles within $\theta_e$ = 45 degrees 
-  threshold). Extended angle range test (180 degrees, 225 degrees, 270 degrees, 
-  315 degrees) also passed with MAE = 1.39 degrees. Test completed in 31 ms.
+DOA accuracy test executed with properly configured microphone array audio (16
+kHz, 0.1m $\times$ 0.1m array). Tested 4 known angles: 0 degrees estimated at
+0.0 degrees (error: 0.0 degrees), 45 degrees at 42.2 degrees (error: 2.79
+degrees), 90 degrees at 90.0 degrees (error: $\sim$0 degrees), 135 degrees at
+137.8 degrees (error: 2.79 degrees). Mean Absolute Error (MAE): 1.39 degrees
+(6.2\% of 22.5 degrees requirement). Pass rate: 100\% (4/4 angles within
+$\theta_e$ = 45 degrees threshold). Extended angle range test (180 degrees, 225
+degrees, 270 degrees, 315 degrees) also passed with MAE = 1.39 degrees. Test
+completed in 31 ms.
 
 \textbf{Result:} Pass
 
@@ -522,9 +509,9 @@ Random frequency-domain samples (4-mic array).
 Estimated directions output in radians, within range [0, 2$\pi$].
 
 \textbf{Actual Output:}
-Three test cases passed: (1) gccPhatAngleRange verified output in [0, 2$\pi$] 
-range for random inputs, (2) NoDoAAlgo verified default angle = 0.0 when 
-algorithm disabled, (3) IncorrectMicDataSize verified input validation rejects 
+Three test cases passed: (1) gccPhatAngleRange verified output in [0, 2$\pi$]
+range for random inputs, (2) NoDoAAlgo verified default angle = 0.0 when
+algorithm disabled, (3) IncorrectMicDataSize verified input validation rejects
 mismatched microphone buffer sizes with logic\_error exception.
 
 \textbf{Result:} Pass
@@ -532,23 +519,23 @@ mismatched microphone buffer sizes with logic\_error exception.
 \item{\textbf{Test-FR-5.4} Low confidence notification \\}
 
 \textbf{Input:}
-Random frequency-domain samples (ambiguous) and known samples (control, 
+Random frequency-domain samples (ambiguous) and known samples (control,
 resampled to 16 kHz).
 
 \textbf{Expected Output:}
-Ambiguous samples flagged as low confidence. Known samples classified with high 
+Ambiguous samples flagged as low confidence. Known samples classified with high
 confidence.
 
 \textbf{Actual Output:}
-Four test cases executed with 65\% confidence threshold: (1) 
-AmbiguousSampleDetection: random noise produced expected variance in 
-classification labels (passed), (2) KnownSampleHighConfidence: jackhammer 
-audio segments produced acceptable results - all segments returned either 
-"jackhammer" or "unknown" with zero misclassifications (passed), (3) 
-ConfidenceDifferentiation: correctly differentiated known vs random samples 
-(passed), (4) SilentInputHandling: handled silent input without crashing 
-(passed). Test uses established acceptance criterion: correct identification 
-or "unknown" are both acceptable.
+Four test cases executed with 65\% confidence threshold: (1)
+AmbiguousSampleDetection: random noise produced expected variance in
+classification labels (passed), (2) KnownSampleHighConfidence: jackhammer audio
+segments produced acceptable results - all segments returned either "jackhammer"
+or "unknown" with zero misclassifications (passed), (3)
+ConfidenceDifferentiation: correctly differentiated known vs random samples
+(passed), (4) SilentInputHandling: handled silent input without crashing
+(passed). Test uses established acceptance criterion: correct identification or
+"unknown" are both acceptable.
 
 \textbf{Result:} Pass
 
@@ -564,16 +551,16 @@ or "unknown" are both acceptable.
 Mock audio source with angle (0, 2$\pi$ radians) indicating direction.
 
 \textbf{Expected Output:}
-Visual indicator appears on display pointing in same direction. 
-Visualization appears within 1 second.
+Visual indicator appears on display pointing in same direction. Visualization
+appears within 1 second.
 
 \textbf{Actual Output:}
-Tested 8 directions: 0 degrees (North), 45 degrees (NE), 90 degrees (East), 
-135 degrees (SE), 180 degrees (South), 225 degrees (SW), 270 degrees (West), 
-315 degrees (NW). Visual indicators correctly displayed for all 8 directions 
-with 100\% accuracy. Display latency measured: minimum 140ms, maximum 780ms, 
-average 430ms (all below 1 second requirement). Indicator positioning error: 
-$<$ 2 degrees visual deviation.
+Tested 8 directions: 0 degrees (North), 45 degrees (NE), 90 degrees (East), 135
+degrees (SE), 180 degrees (South), 225 degrees (SW), 270 degrees (West), 315
+degrees (NW). Visual indicators correctly displayed for all 8 directions with
+100\% accuracy. Display latency measured: minimum 140ms, maximum 780ms, average
+430ms (all below 1 second requirement). Indicator positioning error: $<$ 2
+degrees visual deviation.
 
 \textbf{Result:} Pass
 
@@ -586,12 +573,11 @@ Two mock objects: (1) direction failure flag, (2) classification failure flag.
 Different visual indicators for each failure type.
 
 \textbf{Actual Output:}
-Direction failure triggered "?" icon in amber color at center of display, 
+Direction failure triggered "?" icon in amber color at center of display,
 displayed within 250ms. Classification failure triggered "!" icon in red color
- at bottom of display, displayed within 310ms. Visual distinction confirmed: 
- different icons, different colors, different positions. Both indicators 
- remained visible for 3 seconds before auto-dismiss. Zero indicator overlap 
- or confusion.
+at bottom of display, displayed within 310ms. Visual distinction confirmed:
+different icons, different colors, different positions. Both indicators remained
+visible for 3 seconds before auto-dismiss. Zero indicator overlap or confusion.
 
 \textbf{Result:} Pass
 
@@ -599,11 +585,9 @@ displayed within 250ms. Classification failure triggered "!" icon in red color
 
 \section{Nonfunctional Requirements Evaluation}
 
-This section presents the results of non-functional requirement testing as 
-defined
-in the VnV Plan. Tests evaluate performance, reliability, usability, and 
-security
-characteristics. Tests are organized by system component.
+This section presents the results of non-functional requirement testing as
+defined in the VnV Plan. Tests evaluate performance, reliability, usability, and
+security characteristics. Tests are organized by system component.
 
 \subsection{Embedded Firmware Tests}
 
@@ -615,15 +599,15 @@ characteristics. Tests are organized by system component.
 Continuous audio for 60 seconds with timestamped frames.
 
 \textbf{Expected Output:}
-Processing logs show 100\% monotonically increasing timestamps. 
-Zero out-of-order events.
+Processing logs show 100\% monotonically increasing timestamps. Zero
+out-of-order events.
 
 \textbf{Actual Output:}
-60-second test processed 3,750 audio frames (16 samples/frame at 16kHz). 
-All 3,750 timestamps monotonically increasing. Zero out-of-order processing 
-events detected. Timestamp delta analysis: minimum 14.8$\mu$s, maximum 
-67.2$\mu$s, mean 16.0$\mu$s (matches expected 62.5$\mu$s frame period). 
-Processing priority consistently honored oldest-frame-first.
+60-second test processed 3,750 audio frames (16 samples/frame at 16kHz). All
+3,750 timestamps monotonically increasing. Zero out-of-order processing events
+detected. Timestamp delta analysis: minimum 14.8$\mu$s, maximum 67.2$\mu$s, mean
+16.0$\mu$s (matches expected 62.5$\mu$s frame period). Processing priority
+consistently honored oldest-frame-first.
 
 \textbf{Result:} Pass 
 
@@ -633,14 +617,14 @@ Processing priority consistently honored oldest-frame-first.
 Continuous audio at 16 kHz for 5 minutes (13.23M samples).
 
 \textbf{Expected Output:}
-Processing rate $\geq$ 16,000 samples/s. Zero buffer overflows. Zero dropped 
+Processing rate $\geq$ 16,000 samples/s. Zero buffer overflows. Zero dropped
 frames.
 
 \textbf{Actual Output:}
-5-minute continuous capture at 16kHz (4.8M samples per channel, 19.2M total 
-across 4 mics). Measured processing rate: 18,450 samples/s sustained average 
-(115.3\% of requirement). Peak rate: 22,100 samples/s. Zero buffer overflows 
-detected. Zero dropped frames. CPU utilization: average 68\%, peak 82\%. All 
+5-minute continuous capture at 16kHz (4.8M samples per channel, 19.2M total
+across 4 mics). Measured processing rate: 18,450 samples/s sustained average
+(115.3\% of requirement). Peak rate: 22,100 samples/s. Zero buffer overflows
+detected. Zero dropped frames. CPU utilization: average 68\%, peak 82\%. All
 75,000 frames processed successfully.
 
 \textbf{Result:} Pass
@@ -654,18 +638,18 @@ detected. Zero dropped frames. CPU utilization: average 68\%, peak 82\%. All
 \item{\textbf{Test-NFR2.1} Error response latency \\}
 
 \textbf{Input:}
-N=[50,1000] driver calls triggering errors (uninitialized hardware, invalid 
+N=[50,1000] driver calls triggering errors (uninitialized hardware, invalid
 params, timeouts, disconnections).
 
 \textbf{Expected Output:}
 Maximum delay $<$ 10 ms. Median delay $<$ 1 ms. No buffering.
 
 \textbf{Actual Output:}
-Executed 500 error-inducing driver calls. Error propagation latency measured 
-using cycle counters: minimum 0.06ms, median 0.42ms, 99th percentile 3.2ms, 
-maximum 7.8ms. All values below thresholds (median 0.42ms $<$ 1ms, maximum 
-7.8ms $<$ 10ms). Zero buffering detected (all errors returned immediately). 
-100\% immediate propagation rate.
+Executed 500 error-inducing driver calls. Error propagation latency measured
+using cycle counters: minimum 0.06ms, median 0.42ms, 99th percentile 3.2ms,
+maximum 7.8ms. All values below thresholds (median 0.42ms $<$ 1ms, maximum 7.8ms
+$<$ 10ms). Zero buffering detected (all errors returned immediately). 100\%
+immediate propagation rate.
 
 \textbf{Result:} Pass
 
@@ -681,16 +665,15 @@ maximum 7.8ms. All values below thresholds (median 0.42ms $<$ 1ms, maximum
 1-second sine wave at 16 kHz with arbitrary frequency.
 
 \textbf{Expected Output:}
-Mean relative error $<$ 10\% across all frequency bins vs. high-precision 
+Mean relative error $<$ 10\% across all frequency bins vs. high-precision
 reference.
 
 \textbf{Actual Output:}
-FFT identified peak at 285 Hz within $\pm$ 1 bin tolerance. Bin size = 
-10.74 Hz (16000 Hz / 1490 bins). Maximum relative error = 3.77\% 
-(10.74 Hz / 285 Hz), well below 10\% threshold. Three test cases passed: 
-SignalToFrequency\_285Hz, SignalToFrequencyCopy\_285Hz, 
-SignalToFrequencyAssignment\_285Hz. Total test time: 493 ms. 
-Single-tone test adequate for accuracy requirement per VnVPlan.
+FFT identified peak at 285 Hz within $\pm$ 1 bin tolerance. Bin size = 10.74 Hz
+(16000 Hz / 1490 bins). Maximum relative error = 3.77\% (10.74 Hz / 285 Hz),
+well below 10\% threshold. Three test cases passed: SignalToFrequency\_285Hz,
+SignalToFrequencyCopy\_285Hz, SignalToFrequencyAssignment\_285Hz. Total test
+time: 493 ms. Single-tone test adequate for accuracy requirement per VnVPlan.
 
 \textbf{Result:} Pass
 
@@ -700,15 +683,15 @@ Single-tone test adequate for accuracy requirement per VnVPlan.
 Varying signal sizes: 512, 1024, 2048, 4096 frames at 16 kHz.
 
 \textbf{Expected Output:}
-Processing rate $\geq$ 16,000 samples/s for all sizes. No frame drops or 
+Processing rate $\geq$ 16,000 samples/s for all sizes. No frame drops or
 overflows.
 
 \textbf{Actual Output:}
-All signal sizes tested: 512 frames processed at 10.6M samples/s 
-(66,250\% above requirement), 1024 frames at 20.3M samples/s (126,875\% above), 
-2048 frames at 16.4M samples/s (102,500\% above), 4096 frames at 7.6M samples/s 
-(47,500\% above). All rates exceed 16,000 samples/s minimum. NoBufferOverflows 
-test confirmed zero memory violations. Five test cases completed in 2 ms total.
+All signal sizes tested: 512 frames processed at 10.6M samples/s (66,250\% above
+requirement), 1024 frames at 20.3M samples/s (126,875\% above), 2048 frames at
+16.4M samples/s (102,500\% above), 4096 frames at 7.6M samples/s (47,500\%
+above). All rates exceed 16,000 samples/s minimum. NoBufferOverflows test
+confirmed zero memory violations. Five test cases completed in 2 ms total.
 
 \textbf{Result:} Pass
 
@@ -721,12 +704,12 @@ test confirmed zero memory violations. Five test cases completed in 2 ms total.
 Spectrogram matches reference with $\leq$ 10\% mean error across all bins.
 
 \textbf{Actual Output:}
-60-second environmental audio captured simultaneously on microcontroller and 
-laptop. Both systems generated spectrograms (2,048 frequency bins). 
-Bin-by-bin comparison: mean relative error = 3.8\%, maximum error = 8.2\%,
- 95th percentile error = 6.1\% (all below 10\% threshold). 1,987 of 2,048 
- bins (97\%) within 5\% error. Frequency peaks matched within 1 bin accuracy. 
- Spectral correlation coefficient: 0.98.
+60-second environmental audio captured simultaneously on microcontroller and
+laptop. Both systems generated spectrograms (2,048 frequency bins). Bin-by-bin
+comparison: mean relative error = 3.8\%, maximum error = 8.2\%, 95th percentile
+error = 6.1\% (all below 10\% threshold). 1,987 of 2,048 bins (97\%) within 5\%
+error. Frequency peaks matched within 1 bin accuracy. Spectral correlation
+coefficient: 0.98.
 
 \textbf{Result:} Pass
 
@@ -742,16 +725,16 @@ Bin-by-bin comparison: mean relative error = 3.8\%, maximum error = 8.2\%,
 Simulated audio data from audio filtering module.
 
 \textbf{Expected Output:}
-Zero write operations to read-only buffers. No corruption. Static analysis 
+Zero write operations to read-only buffers. No corruption. Static analysis
 reports no violations.
 
 \textbf{Actual Output:}
-Clang static analyzer executed on Audio360 Engine module and all dependent 
-components. Analysis results: zero write operations to const-qualified input 
-buffers detected. Buffer integrity validation: 1,000 test frames processed, 
-MD5 checksums verified before and after Engine processing showed zero 
-modifications to source buffers. Static analysis scan: 0 memory safety 
-violations, 0 const-correctness warnings. 100\% read-only compliance.
+Clang static analyzer executed on Audio360 Engine module and all dependent
+components. Analysis results: zero write operations to const-qualified input
+buffers detected. Buffer integrity validation: 1,000 test frames processed, MD5
+checksums verified before and after Engine processing showed zero modifications
+to source buffers. Static analysis scan: 0 memory safety violations, 0
+const-correctness warnings. 100\% read-only compliance.
 
 \textbf{Result:} Pass
 
@@ -764,11 +747,11 @@ Continuous frequency-domain stream at 16 kHz.
 Processing time $<$ 62.5 $\mu$s per frame. No drops. 100\% within constraint.
 
 \textbf{Actual Output:}
-Mock engine processing measured: average 0.78 $\mu$s per frame (1.25\% of 62.5 
-$\mu$s budget), maximum 11.5 $\mu$s per frame (18.4\% of budget). 100\% of 
-frames processed within constraint. ProcessingSpeedSimulation test completed 
-in 2 ms. \textit{Note:} Hardware testing required for full system verification
- with real microphone data.
+Mock engine processing measured: average 0.78 $\mu$s per frame (1.25\% of 62.5
+$\mu$s budget), maximum 11.5 $\mu$s per frame (18.4\% of budget). 100\% of
+frames processed within constraint. ProcessingSpeedSimulation test completed in
+2 ms. \textit{Note:} Hardware testing required for full system verification with
+real microphone data.
 
 \textbf{Result:} Pass
 
@@ -778,17 +761,17 @@ in 2 ms. \textit{Note:} Hardware testing required for full system verification
 Random frequency-domain samples.
 
 \textbf{Expected Output:}
-No persistent storage of microphone data. All buffers cleared after processing. 
+No persistent storage of microphone data. All buffers cleared after processing.
 Code review confirms.
 
 \textbf{Actual Output:}
-Manual code review conducted on Audio360 Engine and all dependent components 
-(Classification, DOA, FFT). Review findings: zero persistent storage structures 
-identified, all audio buffers allocated on stack (automatic deallocation), 
-no global/static audio data retention. Memory dump inspection after processing 
-500 frames: zero residual audio data in heap. Buffer lifecycle confirmed: 
-allocated $\rightarrow$ processed $\rightarrow$ deallocated within single frame 
-scope. 100\% transient data handling.
+Manual code review conducted on Audio360 Engine and all dependent components
+(Classification, DOA, FFT). Review findings: zero persistent storage structures
+identified, all audio buffers allocated on stack (automatic deallocation), no
+global/static audio data retention. Memory dump inspection after processing 500
+frames: zero residual audio data in heap. Buffer lifecycle confirmed: allocated
+$\rightarrow$ processed $\rightarrow$ deallocated within single frame scope.
+100\% transient data handling.
 
 \textbf{Result:} Pass
 
@@ -801,25 +784,24 @@ scope. 100\% transient data handling.
 \item{\textbf{Test-NFR5.1} Simultaneous classification and DOA \\}
 
 \textbf{Input:}
-Frequency-domain sample from known direction (0 degrees) using properly 
+Frequency-domain sample from known direction (0 degrees) using properly
 generated microphone array audio.
 
 \textbf{Expected Output:}
-Classification accuracy $\geq$ 90\%. Direction error $\leq$ 45 degrees. 
+Classification accuracy $\geq$ 90\%. Direction error $\leq$ 45 degrees.
 Processes 3 simultaneous sources.
 
 \textbf{Actual Output:}
-Simultaneous processing completed successfully (1.56 ms/frame average). 
-Single-source test (0 degrees angle): DOA estimated 0.0 degrees (error: 
-0.0 degrees, well within 45 degrees threshold). Classification returned 
-acceptable result ("unknown" or valid class). Multi-angle test: All 5 tested 
-angles (0 degrees, 45 degrees, 90 degrees, 135 degrees, 180 degrees) passed 
-with errors: 0 degrees (0.0 degrees), 45 degrees (2.8 degrees), 90 degrees 
-($\sim$0 degrees), 135 degrees (2.8 degrees), 180 degrees ($\sim$0 degrees). 
-Mean Absolute Error: 1.4 degrees. All angles within 45 degrees threshold. 
-Classification results acceptable (valid classes or "unknown", zero 
-misclassifications). Three test cases passed: 
-SimultaneousClassificationAndDOA\_SingleSource, MultipleAngles, 
+Simultaneous processing completed successfully (1.56 ms/frame average).
+Single-source test (0 degrees angle): DOA estimated 0.0 degrees (error: 0.0
+degrees, well within 45 degrees threshold). Classification returned acceptable
+result ("unknown" or valid class). Multi-angle test: All 5 tested angles (0
+degrees, 45 degrees, 90 degrees, 135 degrees, 180 degrees) passed with errors: 0
+degrees (0.0 degrees), 45 degrees (2.8 degrees), 90 degrees ($\sim$0 degrees),
+135 degrees (2.8 degrees), 180 degrees ($\sim$0 degrees). Mean Absolute Error:
+1.4 degrees. All angles within 45 degrees threshold. Classification results
+acceptable (valid classes or "unknown", zero misclassifications). Three test
+cases passed: SimultaneousClassificationAndDOA\_SingleSource, MultipleAngles,
 SimultaneousProcessingPerformance.
 
 \textbf{Result:} Pass
@@ -827,19 +809,19 @@ SimultaneousProcessingPerformance.
 \item{\textbf{Test-NFR5.2} Classification accuracy \\}
 
 \textbf{Input:}
-Frequency-domain samples of known audio classes (resampled to 16 kHz, 
-single isolated source per sample).
+Frequency-domain samples of known audio classes (resampled to 16 kHz, single
+isolated source per sample).
 
 \textbf{Expected Output:}
 Classification accuracy $\geq$ 90\% per class across all supported classes.
 
 \textbf{Actual Output:}
-Classification test (ClassificationTest suite) measured jackhammer with 65\% 
-confidence threshold. Results: 102 frames processed, 65 frames correctly 
-identified as "jackhammer" (63.7\%), 37 frames returned "unknown" (36.3\%). 
-Following established acceptance criterion: both correct identification and 
-"unknown" are acceptable outcomes. Acceptable result rate: 102/102 frames 
-(100\%). System correctly rejects low-confidence predictions rather than 
+Classification test (ClassificationTest suite) measured jackhammer with 65\%
+confidence threshold. Results: 102 frames processed, 65 frames correctly
+identified as "jackhammer" (63.7\%), 37 frames returned "unknown" (36.3\%).
+Following established acceptance criterion: both correct identification and
+"unknown" are acceptable outcomes. Acceptable result rate: 102/102 frames
+(100\%). System correctly rejects low-confidence predictions rather than
 producing misclassifications. Test completed in 92 ms.
 
 \textbf{Result:} Pass
@@ -847,23 +829,23 @@ producing misclassifications. Test completed in 92 ms.
 \item{\textbf{Test-NFR5.3} DOA accuracy \\}
 
 \textbf{Input:}
-Frequency-domain samples from known directions (single source, 4-mic array) 
+Frequency-domain samples from known directions (single source, 4-mic array)
 using properly generated test audio.
 
 \textbf{Expected Output:}
-Direction error $\leq$ 45 degrees across multiple positions (0 degrees, 
-45 degrees, 90 degrees, 135 degrees, 180 degrees, etc.).
+Direction error $\leq$ 45 degrees across multiple positions (0 degrees, 45
+degrees, 90 degrees, 135 degrees, 180 degrees, etc.).
 
 \textbf{Actual Output:}
-DOA accuracy test (DOAAccuracyTest.KnownDirectionEstimation and 
-ExtendedAngleRange) measured errors for 8 angles using correctly configured 
-microphone array audio: 0 degrees (error: 0.0 degrees), 45 degrees 
-(error: 2.79 degrees), 90 degrees (error: $\sim$0 degrees), 135 degrees 
-(error: 2.79 degrees), 180 degrees (error: $\sim$0 degrees), 225 degrees 
-(error: 2.79 degrees), 270 degrees (error: $\sim$0 degrees), 315 degrees 
-(error: 2.79 degrees). Pass rate: 100\% (8/8 angles within 45 degrees 
-threshold). Mean Absolute Error: 1.39 degrees (3.1\% of 45 degrees requirement).
- Test completed in 31 ms.
+DOA accuracy test (DOAAccuracyTest.KnownDirectionEstimation and
+ExtendedAngleRange) measured errors for 8 angles using correctly configured
+microphone array audio: 0 degrees (error: 0.0 degrees), 45 degrees (error: 2.79
+degrees), 90 degrees (error: $\sim$0 degrees), 135 degrees (error: 2.79
+degrees), 180 degrees (error: $\sim$0 degrees), 225 degrees (error: 2.79
+degrees), 270 degrees (error: $\sim$0 degrees), 315 degrees (error: 2.79
+degrees). Pass rate: 100\% (8/8 angles within 45 degrees threshold). Mean
+Absolute Error: 1.39 degrees (3.1\% of 45 degrees requirement). Test completed
+in 31 ms.
 
 \textbf{Result:} Pass
 
@@ -882,10 +864,10 @@ threshold). Mean Absolute Error: 1.39 degrees (3.1\% of 45 degrees requirement).
 Only highest priority displayed. Lower priorities suppressed.
 
 \textbf{Actual Output:}
-Tested 10 simultaneous 3-source scenarios with varying priority assignments. 
-High-priority source displayed in 10/10 cases (100\% correct). Medium and 
-low-priority sources correctly suppressed (0/10 displayed). Display update 
-latency: 180-420ms (average 285ms). Priority ordering verified across all 
+Tested 10 simultaneous 3-source scenarios with varying priority assignments.
+High-priority source displayed in 10/10 cases (100\% correct). Medium and
+low-priority sources correctly suppressed (0/10 displayed). Display update
+latency: 180-420ms (average 285ms). Priority ordering verified across all
 permutations: (H,M,L), (H,L,M), (M,H,L), etc. Zero priority inversion errors.
 
 \textbf{Result:} Pass
@@ -896,16 +878,16 @@ permutations: (H,M,L), (H,L,M), (M,H,L), etc. Zero priority inversion errors.
 Series of mock direction inputs (angles 0 to 2$\pi$).
 
 \textbf{Expected Output:}
-Average non-obtrusiveness rating $\geq$ 4.0/5.0 from $\geq$ 5 stakeholders.
- No significant obstruction.
+Average non-obtrusiveness rating $\geq$ 4.0/5.0 from $\geq$ 5 stakeholders. No
+ significant obstruction.
 
 \textbf{Actual Output:}
 Usability session conducted with 7 stakeholders (5 hard-of-hearing individuals,
  2 hearing individuals). Each participant rated 12 directional indicators across
-  all angles. Non-obtrusiveness ratings: 4.2, 4.5, 3.8, 4.3, 4.1, 4.4, 4.0 
-  (average: 4.19/5.0). All participants rated $\geq$ 3.8. Zero reports of 
-  significant obstruction. Participants noted indicators were "minimally 
-  distracting" and "clear without blocking view."
+ all angles. Non-obtrusiveness ratings: 4.2, 4.5, 3.8, 4.3, 4.1, 4.4, 4.0
+ (average: 4.19/5.0). All participants rated $\geq$ 3.8. Zero reports of
+ significant obstruction. Participants noted indicators were "minimally
+ distracting" and "clear without blocking view."
 
 \textbf{Result:} Pass
 
@@ -917,12 +899,11 @@ Not applicable. There is no existing implementation known to the team.
 
 \section{Unit Testing}
 
-This section outlines the unit tests developed and the corresponding
-results.
+This section outlines the unit tests developed and the corresponding results.
 Unit tests for hardware modules were not implemented due to the complexity of
-developing mock interfaces required to isolate hardware dependencies during
-unit testing. There are also minimal unit tests for visualization modules
-for the same reason of mocking complexity.
+developing mock interfaces required to isolate hardware dependencies during unit
+testing. There are also minimal unit tests for visualization modules for the
+same reason of mocking complexity.
 
 \subsection{Unit Test ID Traceability Matrix}
 {\footnotesize
@@ -936,24 +917,24 @@ for the same reason of mocking complexity.
     % DOA Module
     \refstepcounter{unitTest} \mtheunitTest \label{gccPhatAngleRange} &
     gccPhatAngleRange \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{NoDoAAlgo} &
-    NoDoAAlgo \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NoDoAAlgo} & NoDoAAlgo \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{IncorrectMicDataSize} &
     IncorrectMicDataSize \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{NorthLabel} &
-    NorthLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NorthLabel} & NorthLabel \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{NorthWestLabel} &
     NorthWestLabel \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{WestLabel} &
-    WestLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{WestLabel} & WestLabel \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SouthWestLabel} &
     SouthWestLabel \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{SouthLabel} &
-    SouthLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SouthLabel} & SouthLabel \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SouthEastLabel} &
     SouthEastLabel \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{EastLabel} &
-    EastLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{EastLabel} & EastLabel \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{NorhtEastLabel} &
     NorhtEastLabel \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle0} &
@@ -978,18 +959,17 @@ for the same reason of mocking complexity.
     ExtendedAngleRange \\ \hline
 
     % Fast Fourier Transform Module
-    \refstepcounter{unitTest} \mtheunitTest \label{SignalToFrequency_285Hz} & 
+    \refstepcounter{unitTest} \mtheunitTest \label{SignalToFrequency_285Hz} &
     SignalToFrequency\_285Hz \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest
-    \label{SignalToFrequencyCopy_285Hz} &
-    SignalToFrequencyCopy\_285Hz \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SignalToFrequencyCopy_285Hz}
+    & SignalToFrequencyCopy\_285Hz \\ \hline
     \refstepcounter{unitTest} \mtheunitTest
     \label{SignalToFrequencyAssignment_285Hz} &
     SignalToFrequencyAssignment\_285Hz \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest
-    \label{AllFrequenciesToImpulse} & AllFrequenciesToImpulse \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest
-    \label{AllFrequenciesToImpulseCopy} & AllFrequenciesToImpulseCopy \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AllFrequenciesToImpulse} &
+    AllFrequenciesToImpulse \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AllFrequenciesToImpulseCopy}
+    & AllFrequenciesToImpulseCopy \\ \hline
     \refstepcounter{unitTest} \mtheunitTest
     \label{AllFrequenciesToImpulseAssignment} &
     AllFrequenciesToImpulseAssignment \\ \hline
@@ -997,49 +977,51 @@ for the same reason of mocking complexity.
     % Audio Filtering Module
     \refstepcounter{unitTest} \mtheunitTest \label{NormalizeAmplitudeFromMp3} &
     NormalizeAmplitudeFromMp3 \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{TimeToFrequencyShowsThreePeaks} &
-    TimeToFrequencyShowsThreePeaks \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ReducedSpectralLeakageWithHannWindow} &
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{TimeToFrequencyShowsThreePeaks} & TimeToFrequencyShowsThreePeaks \\
+    \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{ReducedSpectralLeakageWithHannWindow} &
     ReducedSpectralLeakageWithHannWindow \\ \hline
 
     % Fault Manager Module
-    \refstepcounter{unitTest} \mtheunitTest \label{GetSystemFault} & 
+    \refstepcounter{unitTest} \mtheunitTest \label{GetSystemFault} &
     GetSystemFault \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{NoPheripheralErrors} &
     NoPheripheralErrors \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest 
+    \refstepcounter{unitTest} \mtheunitTest
     \label{PheripheralErrorsTriggerUnrecoverableState} &
     PheripheralErrorsTriggerUnrecoverableState \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{ReportPeripheralError} &
     ReportPeripheralError \\ \hline
     \refstepcounter{unitTest} \mtheunitTest
-    \label{CheckStateMachineStatesNoFault} &
-    CheckStateMachineStatesNoFault \\ \hline
+    \label{CheckStateMachineStatesNoFault} & CheckStateMachineStatesNoFault \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest
     \label{CheckStateMachineStatesHardwareFault} &
     CheckStateMachineStatesHardwareFault \\ \hline
     \refstepcounter{unitTest} \mtheunitTest
-    \label{CheckStateMachineStatesDOAFault} &
-    CheckStateMachineStatesDOAFault \\ \hline
+    \label{CheckStateMachineStatesDOAFault} & CheckStateMachineStatesDOAFault \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest
     \label{CheckStateMachineStatesClassificationFault} &
     CheckStateMachineStatesClassificationFault \\ \hline
 
     % Mel Filter Module
-    \refstepcounter{unitTest} \mtheunitTest 
+    \refstepcounter{unitTest} \mtheunitTest
     \label{CreateFilterBankImpulseBinContributesToAtMostTwoMelBands} &
     CreateFilterBankImpulseBinContributesToAtMostTwoMelBands \\
     \hline
 
     % DCT Module
-    \refstepcounter{unitTest} \mtheunitTest 
+    \refstepcounter{unitTest} \mtheunitTest
     \label{ComputeDCTOnMelSpectrogramProducesExpectedMFCC} &
     ComputeDCTOnMelSpectrogramProducesExpectedMFCC \\
     \hline
 
     % PCA Module
-    \refstepcounter{unitTest} \mtheunitTest \label{ApplyPCA} &
-    ApplyPCA \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ApplyPCA} & ApplyPCA \\
+    \hline
 
     % LDA Module
     \refstepcounter{unitTest} \mtheunitTest \label{ApplyLDANormalPCAFeatures} &
@@ -1066,33 +1048,40 @@ for the same reason of mocking complexity.
     % Audio360 Engine Module
     \refstepcounter{unitTest} \mtheunitTest \label{FrequencyInputCapability} &
     FrequencyInputCapability \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ErrorInputCapability_Clipping} &
-    ErrorInputCapability\_Clipping \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ErrorInputCapability_LostSignal} &
-    ErrorInputCapability\_LostSignal \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ErrorInputCapability_Silence} &
-    ErrorInputCapability\_Silence \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{DependentComponentNotification} &
-    DependentComponentNotification \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{ErrorInputCapability_Clipping} & ErrorInputCapability\_Clipping \\
+    \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{ErrorInputCapability_LostSignal} & ErrorInputCapability\_LostSignal
+    \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ErrorInputCapability_Silence}
+    & ErrorInputCapability\_Silence \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{DependentComponentNotification} & DependentComponentNotification \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{MultipleNotificationCycles} &
     MultipleNotificationCycles \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{PipelineFlowOrdering} &
     PipelineFlowOrdering \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{PipelineDataIntegrity} &
     PipelineDataIntegrity \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ErrorBasedPipelineSuppression} &
-    ErrorBasedPipelineSuppression \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{PipelineResumptionAfterError} &
-    PipelineResumptionAfterError \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ErrorLoggingDuringSuppression} &
-    ErrorLoggingDuringSuppression \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{AllErrorTypesTriggerSuppression} &
-    AllErrorTypesTriggerSuppression \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{ErrorBasedPipelineSuppression} & ErrorBasedPipelineSuppression \\
+    \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{PipelineResumptionAfterError}
+    & PipelineResumptionAfterError \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{ErrorLoggingDuringSuppression} & ErrorLoggingDuringSuppression \\
+    \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{AllErrorTypesTriggerSuppression} & AllErrorTypesTriggerSuppression \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{ProcessingSpeedSimulation} &
     ProcessingSpeedSimulation \\ \hline
 
     % Signal Processing Module
-    \refstepcounter{unitTest} \mtheunitTest \label{AlternatingAmplitudeNormalization} &
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{AlternatingAmplitudeNormalization} &
     AlternatingAmplitudeNormalization \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SilentSignalNormalization} &
     SilentSignalNormalization \\ \hline
@@ -1110,11 +1099,13 @@ for the same reason of mocking complexity.
     NoBufferOverflows \\ \hline
 
     % Integration Tests
-    \refstepcounter{unitTest} \mtheunitTest \label{SimultaneousClassificationAndDOA_SingleSource} &
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{SimultaneousClassificationAndDOA_SingleSource} &
     SimultaneousClassificationAndDOA\_SingleSource \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{MultipleAngles} &
     MultipleAngles \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{SimultaneousProcessingPerformance} &
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{SimultaneousProcessingPerformance} &
     SimultaneousProcessingPerformance \\ \hline
 
     %%%%%%%%%%%%%%%%%%%%
@@ -1127,18 +1118,18 @@ for the same reason of mocking complexity.
     %%%%%%%%%%%%%%%%%%%%
 
     % Matrix creation
-    \refstepcounter{unitTest} \mtheunitTest \label{Identity} &
-    Identity \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{Identity} & Identity \\
+    \hline
 
     % Matrix addition
     \refstepcounter{unitTest} \mtheunitTest \label{AddCommutativity} &
     AddCommutativity \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{AddAssociativity} &
     AddAssociativity \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{AddIdentity} &
-    AddIdentity \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{AddInverse} &
-    AddInverse \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AddIdentity} & AddIdentity \\
+    \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AddInverse} & AddInverse \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{AddDimensionMismatch} &
     AddDimensionMismatch \\ \hline
 
@@ -1149,8 +1140,8 @@ for the same reason of mocking complexity.
     MultiDistributive \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{MultiIdentity} &
     MultiIdentity \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{MultiZero} &
-    MultiZero \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{MultiZero} & MultiZero \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{MultiDimensionMismatch} &
     MultiDimensionMismatch \\ \hline
 
@@ -1163,16 +1154,16 @@ for the same reason of mocking complexity.
     ScaleDistributiveDouble \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{ScaleIdentity} &
     ScaleIdentity \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ScaleZero} &
-    ScaleZero \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ScaleZero} & ScaleZero \\
+    \hline
 
     % Matrix subtraction
     \refstepcounter{unitTest} \mtheunitTest \label{SubAntiCommutative} &
     SubAntiCommutative \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{SubIdentity} &
-    SubIdentity \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{SubInverse} &
-    SubInverse \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SubIdentity} & SubIdentity \\
+    \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SubInverse} & SubInverse \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SubDimensionMismatchy} &
     SubDimensionMismatch \\ \hline
 
@@ -1181,8 +1172,8 @@ for the same reason of mocking complexity.
     TransInvolution \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{TransAddition} &
     TransAddition \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{TransScalar} &
-    TransScalar \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{TransScalar} & TransScalar \\
+    \hline
     \refstepcounter{unitTest} \mtheunitTest \label{TransMultiplication} &
     TransMultiplication \\ \hline
 
@@ -1195,8 +1186,8 @@ for the same reason of mocking complexity.
     % Angles
     \refstepcounter{unitTest} \mtheunitTest \label{AngleNormalization} &
     AngleNormalization \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{DegToRadTest} &
-    DegToRadTest \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{DegToRadTest} & DegToRadTest
+    \\ \hline
 
 
     \caption{Unit test ID to unit test name traceability matrix.}
@@ -1219,89 +1210,68 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{gccPhatAngleRange} & 
-    4 microphone streams with random data of same size & 
-    run DOA on the microphone data  &
-    Returned angle between 0 and $2\pi$ & PASS\\ \hline
-    \utref{NoDoAAlgo} & 
-    4 microphone streams with random data of same size & 
-    run DOA on the microphone data with no DOA algo specified  &
-    Returned angle is 0 & PASS\\ \hline
-    \utref{IncorrectMicDataSize} & 
-    4 microphone streams with random data of different size & 
-    run DOA on the microphone data  &
-    An audio processing exception is raised & PASS\\ \hline
-    \utref{NorthLabel} & 
-    Angle between $\frac{-\pi}{8}$ and $\frac{\pi}{8}$ & 
-    Retrieve corresponding direction label  &
-    Direction label is North & PASS\\ \hline
-    \utref{NorthWestLabel} & 
-    Angle between $\frac{\pi}{8}$ and $\frac{3\pi}{8}$ & 
-    Retrieve corresponding direction label  &
-    Direction label is North West & PASS\\ \hline
-    \utref{WestLabel} & 
-    Angle between $\frac{3\pi}{8}$ and $\frac{5\pi}{8}$ & 
-    Retrieve corresponding direction label  &
-    Direction label is West & PASS\\ \hline
-    \utref{SouthWestLabel} & 
-    Angle between $\frac{5\pi}{8}$ and $\frac{7\pi}{8}$ & 
-    Retrieve corresponding direction label  &
-    Direction label is South West & PASS\\ \hline
-    \utref{SouthLabel} & 
-    Angle between $\frac{7\pi}{8}$ and $\frac{9\pi}{8}$ & 
-    Retrieve corresponding direction label  &
-    Direction label is South & PASS\\ \hline
-    \utref{SouthEastLabel} & 
-    Angle between $\frac{9\pi}{8}$ and $\frac{11\pi}{8}$ & 
-    Retrieve corresponding direction label  &
-    Direction label is South East & PASS\\ \hline
-    \utref{EastLabel} & 
-    Angle between $\frac{11\pi}{8}$ and $\frac{13\pi}{8}$ & 
-    Retrieve corresponding direction label  &
-    Direction label is East & PASS\\ \hline
-    \utref{NorhtEastLabel} & 
-    Angle between $\frac{13\pi}{8}$ and $\frac{15\pi}{8}$ & 
-    Retrieve corresponding direction label  &
-    Direction label is North East & PASS\\ \hline
-    \utref{SingleAudioSourceAngle0} & 
-    4 microphone streams with audio of source from 0 degrees & 
-    Run DOA on the microphone streams  &
-    DOA returns source is neat 0 degrees & PASS\\ \hline
-    \utref{SingleAudioSourceAngle45} & 
-    4 microphone streams with audio of source from 45 degrees & 
-    Run DOA on the microphone streams  &
-    DOA returns source is neat 45 degrees & PASS\\ \hline
-    \utref{SingleAudioSourceAngle90} & 
-    4 microphone streams with audio of source from 90 degrees & 
-    Run DOA on the microphone streams  &
-    DOA returns source is neat 90 degrees & PASS\\ \hline
-    \utref{SingleAudioSourceAngle135} & 
-    4 microphone streams with audio of source from 135 degrees & 
-    Run DOA on the microphone streams  &
-    DOA returns source is neat 135 degrees & PASS\\ \hline
-    \utref{SingleAudioSourceAngle180} & 
-    4 microphone streams with audio of source from 180 degrees & 
-    Run DOA on the microphone streams  &
-    DOA returns source is neat 180 degrees & PASS\\ \hline
-    \utref{SingleAudioSourceAngle225} & 
-    4 microphone streams with audio of source from 225 degrees & 
-    Run DOA on the microphone streams  &
-    DOA returns source is neat 225 degrees & PASS\\ \hline
-    \utref{SingleAudioSourceAngle270} & 
-    4 microphone streams with audio of source from 270 degrees & 
-    Run DOA on the microphone streams  &
-    DOA returns source is neat 270 degrees & PASS\\ \hline
-    \utref{SingleAudioSourceAngle315} & 
-    4 microphone streams with audio of source from 315 degrees & 
-    Run DOA on the microphone streams  &
-    DOA returns source is neat 315 degrees & PASS\\ \hline
-    \utref{KnownDirectionEstimation} & 
-    4 microphone streams from known angles (0°, 45°, 90°, 135°) & 
-    Calculate DOA using GCC-PHAT algorithm  &
-    Mean Absolute Error $<$ 22.5° and individual errors $\leq$ 45° & PASS\\ \hline
-    \utref{ExtendedAngleRange} & 
-    4 microphone streams from extended angles (180°, 225°, 270°, 315°) & 
-    Calculate DOA using GCC-PHAT algorithm  &
+    \utref{gccPhatAngleRange} & 4 microphone streams with random data of same
+    size & run DOA on the microphone data  & Returned angle between 0 and $2\pi$
+    & PASS\\ \hline
+    \utref{NoDoAAlgo} & 4 microphone streams with random data of same size & run
+    DOA on the microphone data with no DOA algo specified  & Returned angle is 0
+    & PASS\\ \hline
+    \utref{IncorrectMicDataSize} & 4 microphone streams with random data of
+    different size & run DOA on the microphone data  & An audio processing
+    exception is raised & PASS\\ \hline
+    \utref{NorthLabel} & Angle between $\frac{-\pi}{8}$ and $\frac{\pi}{8}$ &
+    Retrieve corresponding direction label  & Direction label is North & PASS\\
+    \hline
+    \utref{NorthWestLabel} & Angle between $\frac{\pi}{8}$ and $\frac{3\pi}{8}$
+    & Retrieve corresponding direction label  & Direction label is North West &
+    PASS\\ \hline
+    \utref{WestLabel} & Angle between $\frac{3\pi}{8}$ and $\frac{5\pi}{8}$ &
+    Retrieve corresponding direction label  & Direction label is West & PASS\\
+    \hline
+    \utref{SouthWestLabel} & Angle between $\frac{5\pi}{8}$ and $\frac{7\pi}{8}$
+    & Retrieve corresponding direction label  & Direction label is South West &
+    PASS\\ \hline
+    \utref{SouthLabel} & Angle between $\frac{7\pi}{8}$ and $\frac{9\pi}{8}$ &
+    Retrieve corresponding direction label  & Direction label is South & PASS\\
+    \hline
+    \utref{SouthEastLabel} & Angle between $\frac{9\pi}{8}$ and
+    $\frac{11\pi}{8}$ & Retrieve corresponding direction label  & Direction
+    label is South East & PASS\\ \hline
+    \utref{EastLabel} & Angle between $\frac{11\pi}{8}$ and $\frac{13\pi}{8}$ &
+    Retrieve corresponding direction label  & Direction label is East & PASS\\
+    \hline
+    \utref{NorhtEastLabel} & Angle between $\frac{13\pi}{8}$ and
+    $\frac{15\pi}{8}$ & Retrieve corresponding direction label  & Direction
+    label is North East & PASS\\ \hline
+    \utref{SingleAudioSourceAngle0} & 4 microphone streams with audio of source
+    from 0 degrees & Run DOA on the microphone streams  & DOA returns source is
+    neat 0 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle45} & 4 microphone streams with audio of source
+    from 45 degrees & Run DOA on the microphone streams  & DOA returns source is
+    neat 45 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle90} & 4 microphone streams with audio of source
+    from 90 degrees & Run DOA on the microphone streams  & DOA returns source is
+    neat 90 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle135} & 4 microphone streams with audio of
+    source from 135 degrees & Run DOA on the microphone streams  & DOA returns
+    source is neat 135 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle180} & 4 microphone streams with audio of
+    source from 180 degrees & Run DOA on the microphone streams  & DOA returns
+    source is neat 180 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle225} & 4 microphone streams with audio of
+    source from 225 degrees & Run DOA on the microphone streams  & DOA returns
+    source is neat 225 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle270} & 4 microphone streams with audio of
+    source from 270 degrees & Run DOA on the microphone streams  & DOA returns
+    source is neat 270 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle315} & 4 microphone streams with audio of
+    source from 315 degrees & Run DOA on the microphone streams  & DOA returns
+    source is neat 315 degrees & PASS\\ \hline
+    \utref{KnownDirectionEstimation} & 4 microphone streams from known angles
+    (0°, 45°, 90°, 135°) & Calculate DOA using GCC-PHAT algorithm  & Mean
+    Absolute Error $<$ 22.5° and individual errors $\leq$ 45° & PASS\\ \hline
+    \utref{ExtendedAngleRange} & 4 microphone streams from extended angles
+    (180°, 225°, 270°, 315°) & Calculate DOA using GCC-PHAT algorithm  &
     Direction error $\leq$ 45° for all available angles & PASS\\ \hline
     \caption{Unit tests for DOA module.}
     \label{tab:unit_test_doa}
@@ -1318,39 +1288,32 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{SignalToFrequency_285Hz} & 
-    285 Hz sine wave audio stream, FFT module initialized & 
-    Run FFT on the sine wave  &
+    \utref{SignalToFrequency_285Hz} & 285 Hz sine wave audio stream, FFT module
+    initialized & Run FFT on the sine wave  & Frequency magnitude near 285Hz in
+    frequency domain is the highest & PASS\\
+    \hline
+    \utref{SignalToFrequencyCopy_285Hz} & 285 Hz sine wave audio stream, FFT
+    module initialized using copy constructor & Run FFT on the sine wave  &
     Frequency magnitude near 285Hz in frequency domain is the highest & PASS\\
     \hline
-    \utref{SignalToFrequencyCopy_285Hz} & 
-    285 Hz sine wave audio stream, FFT module initialized using copy
-    constructor & 
-    Run FFT on the sine wave  &
-    Frequency magnitude near 285Hz in frequency domain is the highest & PASS\\
+    \utref{SignalToFrequencyAssignment_285Hz} & 285 Hz sine wave audio stream,
+    FFT module initialized using assignment constructor & Run FFT on the sine
+    wave  & Frequency magnitude near 285Hz in frequency domain is the highest &
+    PASS\\
     \hline
-    \utref{SignalToFrequencyAssignment_285Hz} & 
-    285 Hz sine wave audio stream, FFT module initialized using assignment
-    constructor & 
-    Run FFT on the sine wave  &
-    Frequency magnitude near 285Hz in frequency domain is the highest & PASS\\
+    \utref{AllFrequenciesToImpulse} & Frequency domain with all frequency, FFT
+    module initiailized & Run inverse fast fourier transform on the frequency
+    domain  & Returned signal domain is the impulse response & PASS\\
     \hline
-    \utref{AllFrequenciesToImpulse} & 
-    Frequency domain with all frequency, FFT module initiailized & 
-    Run inverse fast fourier transform on the frequency domain  &
-    Returned signal domain is the impulse response & PASS\\
+    \utref{AllFrequenciesToImpulseCopy} & Frequency domain with all frequency,
+    FFT module initiailized using the copy constructor & Run inverse fast
+    fourier transform on the frequency domain  & Returned signal domain is the
+    impulse response & PASS\\
     \hline
-    \utref{AllFrequenciesToImpulseCopy} & 
-    Frequency domain with all frequency, FFT module initiailized using the copy
-    constructor & 
-    Run inverse fast fourier transform on the frequency domain  &
-    Returned signal domain is the impulse response & PASS\\
-    \hline
-    \utref{AllFrequenciesToImpulseAssignment} & 
-    Frequency domain with all frequency, FFT module initiailized using the
-    assignment constructor & 
-    Run inverse fast fourier transform on the frequency domain  &
-    Returned signal domain is the impulse response & PASS\\
+    \utref{AllFrequenciesToImpulseAssignment} & Frequency domain with all
+    frequency, FFT module initiailized using the assignment constructor & Run
+    inverse fast fourier transform on the frequency domain  & Returned signal
+    domain is the impulse response & PASS\\
     \hline
     \caption{Unit tests for FFT module.}
     \label{tab:unit_test_fft}
@@ -1367,47 +1330,38 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{GetSystemFault} & 
-    Fault manager is initialized, no faults in system & 
-    Set each system fault.  &
-    For each system fault, fault manager reports back that system fault & PASS\\
+    \utref{GetSystemFault} & Fault manager is initialized, no faults in system &
+    Set each system fault.  & For each system fault, fault manager reports back
+    that system fault & PASS\\
     \hline
-    \utref{NoPheripheralErrors} & 
-    Fault manager is initiailized, no faults in system & 
-    Pass no peripheral errors to fault manager  &
-    Fault manager reports no system fault & PASS\\
+    \utref{NoPheripheralErrors} & Fault manager is initiailized, no faults in
+    system & Pass no peripheral errors to fault manager  & Fault manager reports
+    no system fault & PASS\\
     \hline
-    \utref{PheripheralErrorsTriggerUnrecoverableState} & 
-    Fault manager is initiailized, no faults in system & 
-    Set each pheripheral fault &
-    For each pheripheral fault, fault manager reports a hardware system fault & 
-    PASS\\
+    \utref{PheripheralErrorsTriggerUnrecoverableState} & Fault manager is
+    initiailized, no faults in system & Set each pheripheral fault & For each
+    pheripheral fault, fault manager reports a hardware system fault & PASS\\
     \hline
-    \utref{ReportPeripheralError} & 
-    Fault manager is initiailized, no faults in system & 
-    Report peripheral errors &
-    Set of all peripheral errors that has been reported are tracked & PASS\\
+    \utref{ReportPeripheralError} & Fault manager is initiailized, no faults in
+    system & Report peripheral errors & Set of all peripheral errors that has
+    been reported are tracked & PASS\\
     \hline
-    \utref{CheckStateMachineStatesNoFault} & 
-    Fault manager is initiailized, no faults in system & 
-    Run fault manager state machine &
-    Fault manager moves to no fault state & PASS\\
+    \utref{CheckStateMachineStatesNoFault} & Fault manager is initiailized, no
+    faults in system & Run fault manager state machine & Fault manager moves to
+    no fault state & PASS\\
     \hline
-    \utref{CheckStateMachineStatesHardwareFault} & 
-    Fault manager is initiailized, hardware faults in system & 
-    Run fault manager state machine &
+    \utref{CheckStateMachineStatesHardwareFault} & Fault manager is
+    initiailized, hardware faults in system & Run fault manager state machine &
     Fault manager moves to hardware fault state & PASS\\
     \hline
-    \utref{CheckStateMachineStatesDOAFault} & 
-    Fault manager is initiailized, no hardware faults, but DOA fault in system & 
-    Run fault manager state machine &
+    \utref{CheckStateMachineStatesDOAFault} & Fault manager is initiailized, no
+    hardware faults, but DOA fault in system & Run fault manager state machine &
     Fault manager moves to DOA fault state & PASS\\
     \hline
-    \utref{CheckStateMachineStatesClassificationFault} & 
-    Fault manager is initiailized, no hardare or DOA faults, but classification
-    fault in system & 
-    Run fault manager state machine &
-    Fault manager moves to classification fault state & PASS\\
+    \utref{CheckStateMachineStatesClassificationFault} & Fault manager is
+    initiailized, no hardare or DOA faults, but classification fault in system &
+    Run fault manager state machine & Fault manager moves to classification
+    fault state & PASS\\
     \hline
     \caption{Unit tests for Fault Manager module.}
     \label{tab:unit_test_fault_manager}
@@ -1424,20 +1378,20 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{NormalizeAmplitudeFromMp3} & 
-    Alternating 0.2/0.8 amplitude sine sections in \texttt{audio/alt\_amp\_sine.mp3}. & 
-    Run amplitude normalization pipeline on MP3 input.  &
-    Both halves peak near 1.0 with matching zero-crossing counts. & FAIL\\
+    \utref{NormalizeAmplitudeFromMp3} & Alternating 0.2/0.8 amplitude sine
+    sections in \texttt{audio/alt\_amp\_sine.mp3}. & Run amplitude normalization
+    pipeline on MP3 input.  & Both halves peak near 1.0 with matching
+    zero-crossing counts. & FAIL\\
     \hline
-    \utref{TimeToFrequencyShowsThreePeaks} & 
-    3-second WAV with 100 Hz, 1 kHz, 8 kHz tones (\texttt{audio/three\_tone.wav}). & 
-    Run FFT on a 4096-sample Hann-windowed frame.  &
-    Clear peaks at target tones; non-target bins $<20\%$ of peak; $<10\%$ error vs. ideal spectrum. & PASS\\
+    \utref{TimeToFrequencyShowsThreePeaks} & 3-second WAV with 100 Hz, 1 kHz, 8
+    kHz tones (\texttt{audio/three\_tone.wav}). & Run FFT on a 4096-sample
+    Hann-windowed frame.  & Clear peaks at target tones; non-target bins $<20\%$
+    of peak; $<10\%$ error vs. ideal spectrum. & PASS\\
     \hline
-    \utref{ReducedSpectralLeakageWithHannWindow} & 
-    4096-sample sine at half-bin offset (synthetic frame). & 
-    Compare FFT with no window vs. Hann window.  &
-    Hann reduces leakage and max side-lobe power relative to rectangular window. & PASS\\
+    \utref{ReducedSpectralLeakageWithHannWindow} & 4096-sample sine at half-bin
+    offset (synthetic frame). & Compare FFT with no window vs. Hann window.  &
+    Hann reduces leakage and max side-lobe power relative to rectangular window.
+    & PASS\\
     \hline
 
     \caption{Unit tests for Audio Filtering module.}
@@ -1455,10 +1409,10 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{CreateFilterBankImpulseBinContributesToAtMostTwoMelBands} & 
-    3-frame STFT from \texttt{audio/285\_sine.mp3} (4096-sample Hann frames). & 
-    Apply 40-band Mel filter bank to STFT.  &
-    Each input bin contributes to at most two Mel bands; Mel rows sparser than STFT row. & PASS\\
+    \utref{CreateFilterBankImpulseBinContributesToAtMostTwoMelBands} & 3-frame
+    STFT from \texttt{audio/285\_sine.mp3} (4096-sample Hann frames). & Apply
+    40-band Mel filter bank to STFT.  & Each input bin contributes to at most
+    two Mel bands; Mel rows sparser than STFT row. & PASS\\
     \hline
     \caption{Unit tests for MEL Filter module.}
     \label{tab:unit_test_mel}
@@ -1475,10 +1429,9 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{ComputeDCTOnMelSpectrogramProducesExpectedMFCC} & 
-    MFCC frames of a 285 Hz sine wave. & 
-    Run DCT on melspectrogram &
-    spectrogram data is close to MFCC frames & PASS\\
+    \utref{ComputeDCTOnMelSpectrogramProducesExpectedMFCC} & MFCC frames of a
+    285 Hz sine wave. & Run DCT on melspectrogram & spectrogram data is close to
+    MFCC frames & PASS\\
     \hline
     \caption{Unit tests for Discrete Cosine Transform module.}
     \label{tab:unit_test_dct}
@@ -1495,10 +1448,10 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{ApplyPCA} & 
-    3-frame MFCC spectrogram, 6 cepstral coeffs from \texttt{audio/285\_sine.mp3}. & 
-    Apply PCA with 6 components to the MFCC spectrogram.  &
-    Output feature matrix keeps the same number of frames and has 6 columns (one per PCA component). & PASS\\
+    \utref{ApplyPCA} & 3-frame MFCC spectrogram, 6 cepstral coeffs from
+    \texttt{audio/285\_sine.mp3}. & Apply PCA with 6 components to the MFCC
+    spectrogram.  & Output feature matrix keeps the same number of frames and
+    has 6 columns (one per PCA component). & PASS\\
     \hline
     \caption{Unit tests for PCA module.}
     \label{tab:unit_test_pca}
@@ -1515,10 +1468,10 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{ApplyLDANormalPCAFeatures} & 
-    PCA feature matrix (6 components) generated from \texttt{audio/jackhammer.mp3}. & 
-    Run LDA with 3-class model on the PCA features.  &
-    LDA returns a classification label (expected jackhammer) without errors. & PASS\\
+    \utref{ApplyLDANormalPCAFeatures} & PCA feature matrix (6 components)
+    generated from \texttt{audio/jackhammer.mp3}. & Run LDA with 3-class model
+    on the PCA features.  & LDA returns a classification label (expected
+    jackhammer) without errors. & PASS\\
     \hline
     \caption{Unit tests for Linear Discriminant Analysis module.}
     \label{tab:unit_test_lda}
@@ -1535,45 +1488,36 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{ClassifySilenceAsUnknown} & 
-    Frames from \texttt{audio/silence.mp3}. & 
-    Run classifier over all frames. &
-    At least 90\% of frames labeled \texttt{unknown}. & PASS\\
+    \utref{ClassifySilenceAsUnknown} & Frames from \texttt{audio/silence.mp3}. &
+    Run classifier over all frames. & At least 90\% of frames labeled
+    \texttt{unknown}. & PASS\\
     \hline
-    \utref{ClassifyJackhammerAudio} & 
-    Frames from \texttt{audio/jackhammer.mp3}. & 
-    Run classifier over all frames. &
-    At least 90\% of frames labeled \texttt{jackhammer}. & PASS\\
+    \utref{ClassifyJackhammerAudio} & Frames from \texttt{audio/jackhammer.mp3}.
+    & Run classifier over all frames. & At least 90\% of frames labeled
+    \texttt{jackhammer}. & PASS\\
     \hline
-    \utref{ClassifySirenAudio} & 
-    Frames from \texttt{audio/siren.mp3}. & 
-    Run classifier over all frames. &
-    At least 90\% of frames labeled \texttt{siren}. & PASS\\
+    \utref{ClassifySirenAudio} & Frames from \texttt{audio/siren.mp3}. & Run
+    classifier over all frames. & At least 90\% of frames labeled
+    \texttt{siren}. & PASS\\
     \hline
-    \utref{ClassifyCarHornAudio} & 
-    Frames from \texttt{audio/car\_horn.mp3}. & 
-    Run classifier over all frames (test currently disabled). &
-    Expected at least 90\% of frames labeled \texttt{car\_horn}. & FAIL\\
+    \utref{ClassifyCarHornAudio} & Frames from \texttt{audio/car\_horn.mp3}. &
+    Run classifier over all frames (test currently disabled). & Expected at
+    least 90\% of frames labeled \texttt{car\_horn}. & FAIL\\
     \hline
-    \utref{AmbiguousSampleDetection} & 
-    Random noise audio samples & 
-    Run classification on ambiguous input &
-    Returns varied classification or unknown & PASS\\
+    \utref{AmbiguousSampleDetection} & Random noise audio samples & Run
+    classification on ambiguous input & Returns varied classification or unknown
+    & PASS\\
     \hline
-    \utref{KnownSampleHighConfidence} & 
-    Known jackhammer audio samples & 
-    Run classification with 65\% confidence threshold &
-    Returns jackhammer or unknown (no misclassifications) & PASS\\
+    \utref{KnownSampleHighConfidence} & Known jackhammer audio samples & Run
+    classification with 65\% confidence threshold & Returns jackhammer or
+    unknown (no misclassifications) & PASS\\
     \hline
-    \utref{ConfidenceDifferentiation} & 
-    Mix of known jackhammer and random noise samples & 
-    Run classification on both sample types &
-    Correctly differentiates known from ambiguous samples & PASS\\
+    \utref{ConfidenceDifferentiation} & Mix of known jackhammer and random noise
+    samples & Run classification on both sample types & Correctly differentiates
+    known from ambiguous samples & PASS\\
     \hline
-    \utref{SilentInputHandling} & 
-    Silent audio samples (zero amplitude) & 
-    Run classification on silent input &
-    Returns unknown without crashing & PASS\\
+    \utref{SilentInputHandling} & Silent audio samples (zero amplitude) & Run
+    classification on silent input & Returns unknown without crashing & PASS\\
     \hline
 
     \caption{Unit tests for classification module.}
@@ -1591,11 +1535,9 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{CreatePackets} & 
-    Visualization packet struct initiailized & 
-    Create a byte stream packet fromt he visualization packet &
-    Byte stream convertion is as expected as per established serialization rule
-    & PASS\\
+    \utref{CreatePackets} & Visualization packet struct initiailized & Create a
+    byte stream packet fromt he visualization packet & Byte stream convertion is
+    as expected as per established serialization rule & PASS\\
     \hline
 
     \caption{Unit tests for visualization module.}
@@ -1613,58 +1555,44 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{FrequencyInputCapability} & 
-    Engine initialized with mock frequency data & 
-    Process normal frequency-domain input &
-    Engine accepts and processes input successfully & PASS\\ \hline
-    \utref{ErrorInputCapability_Clipping} & 
-    Engine initialized with clipping error flag & 
-    Process input with clipping error &
-    Engine propagates error flag without crashing & PASS\\ \hline
-    \utref{ErrorInputCapability_LostSignal} & 
-    Engine initialized with lost signal error flag & 
-    Process input with lost signal error &
-    Engine propagates error flag without crashing & PASS\\ \hline
-    \utref{ErrorInputCapability_Silence} & 
-    Engine initialized with silence error flag & 
-    Process input with silence error &
-    Engine propagates error flag without crashing & PASS\\ \hline
-    \utref{DependentComponentNotification} & 
-    Engine with mock downstream components & 
-    Process data and notify dependent components &
-    All registered components receive notifications & PASS\\ \hline
-    \utref{MultipleNotificationCycles} & 
-    Engine with multiple registered components & 
-    Run multiple processing cycles &
-    Notifications sent consistently across all cycles & PASS\\ \hline
-    \utref{PipelineFlowOrdering} & 
-    Engine with mock pipeline stages & 
-    Process data through pipeline &
-    Stages execute in correct order (filter $\rightarrow$ classify $\rightarrow$ DOA) & PASS\\ \hline
-    \utref{PipelineDataIntegrity} & 
-    Engine with mock pipeline stages & 
-    Pass data through pipeline stages &
-    Data remains intact between stages & PASS\\ \hline
-    \utref{ErrorBasedPipelineSuppression} & 
-    Engine with error flag set & 
-    Attempt to process data with error present &
-    Pipeline suppressed, no processing occurs & PASS\\ \hline
-    \utref{PipelineResumptionAfterError} & 
-    Engine in suppressed state from previous error & 
-    Clear error flag and process new data &
-    Pipeline resumes normal operation & PASS\\ \hline
-    \utref{ErrorLoggingDuringSuppression} & 
-    Engine with error flag triggering suppression & 
-    Monitor error handling during suppression &
-    Error logged and propagated correctly & PASS\\ \hline
-    \utref{AllErrorTypesTriggerSuppression} & 
-    Engine with various error flags (clipping, lost signal, silence) & 
-    Test each error type individually &
-    All error types correctly trigger pipeline suppression & PASS\\ \hline
-    \utref{ProcessingSpeedSimulation} & 
-    Engine with 100 sample processing iterations & 
-    Measure processing time per sample &
-    Mean processing time documented, no timeouts & PASS\\ \hline
+    \utref{FrequencyInputCapability} & Engine initialized with mock frequency
+    data & Process normal frequency-domain input & Engine accepts and processes
+    input successfully & PASS\\ \hline
+    \utref{ErrorInputCapability_Clipping} & Engine initialized with clipping
+    error flag & Process input with clipping error & Engine propagates error
+    flag without crashing & PASS\\ \hline
+    \utref{ErrorInputCapability_LostSignal} & Engine initialized with lost
+    signal error flag & Process input with lost signal error & Engine propagates
+    error flag without crashing & PASS\\ \hline
+    \utref{ErrorInputCapability_Silence} & Engine initialized with silence error
+    flag & Process input with silence error & Engine propagates error flag
+    without crashing & PASS\\ \hline
+    \utref{DependentComponentNotification} & Engine with mock downstream
+    components & Process data and notify dependent components & All registered
+    components receive notifications & PASS\\ \hline
+    \utref{MultipleNotificationCycles} & Engine with multiple registered
+    components & Run multiple processing cycles & Notifications sent
+    consistently across all cycles & PASS\\ \hline
+    \utref{PipelineFlowOrdering} & Engine with mock pipeline stages & Process
+    data through pipeline & Stages execute in correct order (filter
+    $\rightarrow$ classify $\rightarrow$ DOA) & PASS\\ \hline
+    \utref{PipelineDataIntegrity} & Engine with mock pipeline stages & Pass data
+    through pipeline stages & Data remains intact between stages & PASS\\ \hline
+    \utref{ErrorBasedPipelineSuppression} & Engine with error flag set & Attempt
+    to process data with error present & Pipeline suppressed, no processing
+    occurs & PASS\\ \hline
+    \utref{PipelineResumptionAfterError} & Engine in suppressed state from
+    previous error & Clear error flag and process new data & Pipeline resumes
+    normal operation & PASS\\ \hline
+    \utref{ErrorLoggingDuringSuppression} & Engine with error flag triggering
+    suppression & Monitor error handling during suppression & Error logged and
+    propagated correctly & PASS\\ \hline
+    \utref{AllErrorTypesTriggerSuppression} & Engine with various error flags
+    (clipping, lost signal, silence) & Test each error type individually & All
+    error types correctly trigger pipeline suppression & PASS\\ \hline
+    \utref{ProcessingSpeedSimulation} & Engine with 100 sample processing
+    iterations & Measure processing time per sample & Mean processing time
+    documented, no timeouts & PASS\\ \hline
 
     \caption{Unit tests for Audio360 Engine module.}
     \label{tab:unit_test_audio360_engine}
@@ -1681,38 +1609,28 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{AlternatingAmplitudeNormalization} & 
-    Signal with alternating amplitude pattern & 
-    Apply normalization &
-    Peak amplitude scaled to 1.0, waveform shape preserved & PASS\\ \hline
-    \utref{SilentSignalNormalization} & 
-    Silent signal (all zeros) & 
-    Apply normalization &
-    Returns zeros without division by zero & PASS\\ \hline
-    \utref{AlreadyNormalizedSignal} & 
-    Signal already normalized to peak 1.0 & 
-    Apply normalization &
-    Signal remains unchanged & PASS\\ \hline
-    \utref{VariableInputSizes_512} & 
-    512-sample frequency-domain input & 
-    Process through FFT/IFFT pipeline &
-    Processing completes within time limits & PASS\\ \hline
-    \utref{VariableInputSizes_1024} & 
-    1024-sample frequency-domain input & 
-    Process through FFT/IFFT pipeline &
-    Processing completes within time limits & PASS\\ \hline
-    \utref{VariableInputSizes_2048} & 
-    2048-sample frequency-domain input & 
-    Process through FFT/IFFT pipeline &
-    Processing completes within time limits & PASS\\ \hline
-    \utref{VariableInputSizes_4096} & 
-    4096-sample frequency-domain input & 
-    Process through FFT/IFFT pipeline &
-    Processing completes within time limits & PASS\\ \hline
-    \utref{NoBufferOverflows} & 
-    Various input sizes (512-4096 samples) & 
-    Run FFT operations with buffer checking &
-    No buffer overflows detected in any test case & PASS\\ \hline
+    \utref{AlternatingAmplitudeNormalization} & Signal with alternating
+    amplitude pattern & Apply normalization & Peak amplitude scaled to 1.0,
+    waveform shape preserved & PASS\\ \hline
+    \utref{SilentSignalNormalization} & Silent signal (all zeros) & Apply
+    normalization & Returns zeros without division by zero & PASS\\ \hline
+    \utref{AlreadyNormalizedSignal} & Signal already normalized to peak 1.0 &
+    Apply normalization & Signal remains unchanged & PASS\\ \hline
+    \utref{VariableInputSizes_512} & 512-sample frequency-domain input & Process
+    through FFT/IFFT pipeline & Processing completes within time limits & PASS\\
+    \hline
+    \utref{VariableInputSizes_1024} & 1024-sample frequency-domain input &
+    Process through FFT/IFFT pipeline & Processing completes within time limits
+    & PASS\\ \hline
+    \utref{VariableInputSizes_2048} & 2048-sample frequency-domain input &
+    Process through FFT/IFFT pipeline & Processing completes within time limits
+    & PASS\\ \hline
+    \utref{VariableInputSizes_4096} & 4096-sample frequency-domain input &
+    Process through FFT/IFFT pipeline & Processing completes within time limits
+    & PASS\\ \hline
+    \utref{NoBufferOverflows} & Various input sizes (512-4096 samples) & Run FFT
+    operations with buffer checking & No buffer overflows detected in any test
+    case & PASS\\ \hline
 
     \caption{Unit tests for signal processing module.}
     \label{tab:unit_test_signal_processing}
@@ -1729,18 +1647,15 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
 
-    \utref{SimultaneousClassificationAndDOA_SingleSource} & 
-    4 microphone streams from 0° angle & 
-    Run classification and DOA simultaneously &
-    Classification acceptable, direction error $\leq$ 45° & PASS\\ \hline
-    \utref{MultipleAngles} & 
-    5 test angles (0°, 45°, 90°, 135°, 180°) & 
-    Run classification and DOA for each angle &
-    All angles: classification acceptable, DOA MAE $<$ 22.5° & PASS\\ \hline
-    \utref{SimultaneousProcessingPerformance} & 
-    Single test sample at 0° angle & 
-    Measure combined classification and DOA processing time &
-    Processing completes in reasonable time & PASS\\ \hline
+    \utref{SimultaneousClassificationAndDOA_SingleSource} & 4 microphone streams
+    from 0° angle & Run classification and DOA simultaneously & Classification
+    acceptable, direction error $\leq$ 45° & PASS\\ \hline
+    \utref{MultipleAngles} & 5 test angles (0°, 45°, 90°, 135°, 180°) & Run
+    classification and DOA for each angle & All angles: classification
+    acceptable, DOA MAE $<$ 22.5° & PASS\\ \hline
+    \utref{SimultaneousProcessingPerformance} & Single test sample at 0° angle &
+    Measure combined classification and DOA processing time & Processing
+    completes in reasonable time & PASS\\ \hline
 
     \caption{Integration tests for frequency analysis.}
     \label{tab:unit_test_integration}
@@ -1758,10 +1673,8 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{Identity} & 
-    N/A & 
-    Create an identity matrix of random size &
-    All items in diagonal is 1, else 0 & PASS\\
+    \utref{Identity} & N/A & Create an identity matrix of random size & All
+    items in diagonal is 1, else 0 & PASS\\
     \hline
 
     \caption{Unit tests for matrix creation.}
@@ -1780,16 +1693,14 @@ for the same reason of mocking complexity.
     
     \utref{AddCommutativity} & Matrix A, B & Apply $A + B$ and $B + A$ &
     Returned matrices are the same & PASS\\ \hline
-    \utref{AddAssociativity} & Matrix A, B, C &
-    Apply $(A + B) + C$ and $A + (B + C)$ &
-    Returned matrices are the same & PASS\\ \hline
-    \utref{AddIdentity} & Matrix A, 0 (Zero matrix) & Apply $A + 0$ &
-    Returned matrix is A &
-    PASS\\ \hline
+    \utref{AddAssociativity} & Matrix A, B, C & Apply $(A + B) + C$ and $A + (B
+    + C)$ & Returned matrices are the same & PASS\\ \hline
+    \utref{AddIdentity} & Matrix A, 0 (Zero matrix) & Apply $A + 0$ & Returned
+    matrix is A & PASS\\ \hline
     \utref{AddInverse} & Matrix A & Apply $A + (-A)$ & Returned matrix is A &
     PASS\\ \hline
-    \utref{AddDimensionMismatch} & Matrix A, B of incompatible sizes & 
-    Apply $A + B$ & Size mismatch status is returned & PASS\\ \hline
+    \utref{AddDimensionMismatch} & Matrix A, B of incompatible sizes & Apply $A
+    + B$ & Size mismatch status is returned & PASS\\ \hline
 
     \caption{Unit tests for matrix addition.}
     \label{tab:unit_test_matrix_add}
@@ -1805,18 +1716,16 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{MultiAssociative} & Matrix A, B, C &
-    Apply $(AB)C$ and $A(BC)$ &
+    \utref{MultiAssociative} & Matrix A, B, C & Apply $(AB)C$ and $A(BC)$ &
     Returned matrices are the same & PASS\\ \hline
-    \utref{MultiDistributive} & Matrix A, B, C &
-    Apply $A(B + C)$ and $AB + AC$ &
-    Returned matrices are the same & PASS\\ \hline
-    \utref{MultiIdentity} & Matrix A, I(identity) & Apply $AI$ &
-    Returned matrix is A & PASS\\ \hline
-    \utref{MultiZero} & Matrix A, 0 (zero matrix) & Apply $A0$ &
-    Returned matrix is a zero matrix & PASS\\ \hline
-    \utref{MultiDimensionMismatch} & Matrix A, B of incompatible sizes & 
-    Apply $AB$ & Size mismatch status is returned & PASS\\ \hline
+    \utref{MultiDistributive} & Matrix A, B, C & Apply $A(B + C)$ and $AB + AC$
+    & Returned matrices are the same & PASS\\ \hline
+    \utref{MultiIdentity} & Matrix A, I(identity) & Apply $AI$ & Returned matrix
+    is A & PASS\\ \hline
+    \utref{MultiZero} & Matrix A, 0 (zero matrix) & Apply $A0$ & Returned matrix
+    is a zero matrix & PASS\\ \hline
+    \utref{MultiDimensionMismatch} & Matrix A, B of incompatible sizes & Apply
+    $AB$ & Size mismatch status is returned & PASS\\ \hline
 
     \caption{Unit tests for matrix multiplication.}
     \label{tab:unit_test_matrix_multi}
@@ -1832,19 +1741,16 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{ScaleAssociative} & Matrix A, scalar c and d &
-    Apply $(cd)A$  and $c(dA)$ &
-    Returned matrices are the same & PASS\\ \hline
-    \utref{ScaleDistributiveSingle} & Matrix A, B, and scalar c &
-    Apply $c(A + B)$ and $cA + cB$ &
-    Returned matrices are the same & PASS\\ \hline
-    \utref{ScaleDistributiveDouble} & Matrix A, scalar c and d &
-    Apply $(c+d)A$  and $cA + dA$ &
-    Returned matrices are the same & PASS\\ \hline
-    \utref{ScaleIdentity} & Matrix A and scalar 1 & Apply $A1$ &
-    Returned matrix is same as A & PASS\\ \hline
-    \utref{ScaleZero} & Matrix A snd scalar 0 & Apply $A0$ &
-    Returned matrix is the zero matrix & PASS\\ \hline
+    \utref{ScaleAssociative} & Matrix A, scalar c and d & Apply $(cd)A$  and
+    $c(dA)$ & Returned matrices are the same & PASS\\ \hline
+    \utref{ScaleDistributiveSingle} & Matrix A, B, and scalar c & Apply $c(A +
+    B)$ and $cA + cB$ & Returned matrices are the same & PASS\\ \hline
+    \utref{ScaleDistributiveDouble} & Matrix A, scalar c and d & Apply $(c+d)A$
+    and $cA + dA$ & Returned matrices are the same & PASS\\ \hline
+    \utref{ScaleIdentity} & Matrix A and scalar 1 & Apply $A1$ & Returned matrix
+    is same as A & PASS\\ \hline
+    \utref{ScaleZero} & Matrix A snd scalar 0 & Apply $A0$ & Returned matrix is
+    the zero matrix & PASS\\ \hline
 
     \caption{Unit tests for matrix scale.}
     \label{tab:unit_test_matrix_scale}
@@ -1860,15 +1766,14 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{SubAntiCommutative} & Matrix A, B &
-    Apply $A - B$  and $-(B -A)$ &
+    \utref{SubAntiCommutative} & Matrix A, B & Apply $A - B$  and $-(B -A)$ &
     Returned matrices are the same & PASS\\ \hline
-    \utref{SubIdentity} & Matrix A, 0 (zero matrix) & Apply $A - 0$ &
-    Returned matrix is same as A & PASS\\ \hline
-    \utref{SubInverse} & Matrix A & Apply $A - A$ &
-    Returned matrix is the zero matrix & PASS\\ \hline
-    \utref{SubDimensionMismatch} & Matrix A, B of incompatible sizes & 
-    Apply $A - B$ & Size mismatch status is returned & PASS\\ \hline
+    \utref{SubIdentity} & Matrix A, 0 (zero matrix) & Apply $A - 0$ & Returned
+    matrix is same as A & PASS\\ \hline
+    \utref{SubInverse} & Matrix A & Apply $A - A$ & Returned matrix is the zero
+    matrix & PASS\\ \hline
+    \utref{SubDimensionMismatch} & Matrix A, B of incompatible sizes & Apply $A
+    - B$ & Size mismatch status is returned & PASS\\ \hline
 
     \caption{Unit tests for matrix subtraction.}
     \label{tab:unit_test_matrix_sub}
@@ -1884,11 +1789,9 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{TransScalar} & Matrix A and scalar c &
-    Apply $(cA)^T$ and c$A^T$ &
+    \utref{TransScalar} & Matrix A and scalar c & Apply $(cA)^T$ and c$A^T$ &
     Returned matrices are the same & PASS\\ \hline
-    \utref{TransMultiplication} & Matrix A, B &
-    Apply $(AB)^T$ and $B^TA^T$ &
+    \utref{TransMultiplication} & Matrix A, B & Apply $(AB)^T$ and $B^TA^T$ &
     Returned matrices are the same & PASS\\ \hline
 
     \caption{Unit tests for matrix transpose.}
@@ -1905,16 +1808,12 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{CorrectModeMultiUpdateInt} & 
-    Vector of integers & 
-    Pass item in vector one at a time to mode filtering &
-    The mode returned by mode filtering is the true mode of set of passed
-    items & PASS\\ \hline
-    \utref{CorrectModeMultiUpdateEnum} & 
-    Vector of enums & 
-    Pass item in vector one at a time to mode filtering &
-    The mode returned by mode filtering is the true mode of set of passed
-    items & PASS\\ \hline
+    \utref{CorrectModeMultiUpdateInt} & Vector of integers & Pass item in vector
+    one at a time to mode filtering & The mode returned by mode filtering is the
+    true mode of set of passed items & PASS\\ \hline
+    \utref{CorrectModeMultiUpdateEnum} & Vector of enums & Pass item in vector
+    one at a time to mode filtering & The mode returned by mode filtering is the
+    true mode of set of passed items & PASS\\ \hline
 
     \caption{Unit tests for helper functions associated to mode filtering.}
     \label{tab:unit_test_mode_filter}
@@ -1930,14 +1829,12 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{AngleNormalization} & 
-    Angle represented in radians & 
-    Normalize angle using normalizeAngleRad function &
-    Angle equivalent in radian within range of 0 and $2\pi$ & PASS\\ \hline
-    \utref{DegToRadTest} & 
-    Angle represented in degrees & 
-    Convert radian to degrees using degreeToRad function &
-    Angle equivalent in radians & PASS\\ \hline
+    \utref{AngleNormalization} & Angle represented in radians & Normalize angle
+    using normalizeAngleRad function & Angle equivalent in radian within range
+    of 0 and $2\pi$ & PASS\\ \hline
+    \utref{DegToRadTest} & Angle represented in degrees & Convert radian to
+    degrees using degreeToRad function & Angle equivalent in radians & PASS\\
+    \hline
 
     \caption{Unit tests for helper functions associated to angles.}
     \label{tab:unit_test_angles}
@@ -1948,10 +1845,9 @@ for the same reason of mocking complexity.
 
 \subsection{General Feedback}
 
-Usability testing was completed with four stakeholders using the plan in
-Section 4.2. The average user rating was \textbf{4.75/5.0} across
-non-obtrusiveness, clarity, and situational awareness, and all planned metrics
-were met.
+Usability testing was completed with four stakeholders using the plan in Section
+4.2. The average user rating was \textbf{4.75/5.0} across non-obtrusiveness,
+clarity, and situational awareness, and all planned metrics were met.
 
 The main feedback item was that the visualization scale looked a bit too large
 in some tasks. Based on this, we scaled the visualization down to reduce visual
@@ -1961,66 +1857,69 @@ In addition, testing discussions highlighted the need for better behavior during
 unexpected failures. We are implementing system fault handling so that if the
 system crashes, it can fail safely and recover in a controlled way.
 
-Moreover, the classification module was identified as an area for improvement 
-in terms of reliability and accuracy, which led to the improvements mentioned 
-in the next section. The following issues addressed the feedback recieved:
+Moreover, the classification module was identified as an area for improvement in
+terms of reliability and accuracy, which led to the improvements mentioned in
+the next section. The following issues addressed the feedback recieved:
 
 \begin{itemize}
-    \item \href{https://github.com/Team6-SixSense/audio360/issues/497}{issue \#497}
-    \item \href{https://github.com/Team6-SixSense/audio360/issues/487}{issue \#487}
-    \item \href{https://github.com/Team6-SixSense/audio360/issues/589}{issue \#589}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/497}{issue
+    \#497}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/487}{issue
+    \#487}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/589}{issue
+    \#589}
 \end{itemize}
 
 \subsection{Classification Module}
-After user testing, it was found that the classification module could be 
-improved to provide more reliable output the the user. Specifically related to 
-the confidence level and overall accuracy of the classification results. To 
+After user testing, it was found that the classification module could be
+improved to provide more reliable output the the user. Specifically related to
+the confidence level and overall accuracy of the classification results. To
 address these issues, the classification module was updated as follows:
 
 \subsubsection{Confidence Implementation}
-The classification module was updated to calculate the confidence level of each 
-class prediction. This was achieved by implementing a softmax function to 
-convert the raw output of the classifier into probabilities. The confidence 
-level is determined by the highest probability among the predicted classes, 
-providing feedback to the overall system of how much trust to put in the 
-classification results. These metrics were used to improve the overall 
-reliability of the system by filtering out low confidence predictions and 
-substituting them with an "Unknown" classification when the confidence is 
-below a current threshold of 70\%. This threshold was determined by manually 
-analyzing the confidence levels of correct and incorrect classifications during 
-testing with the current PCA and LDA trained matricies. However, to meet the 
-requirements specified in the VnV plan, the classification module had to 
-further be improved so that the confidence threshold can be increased to 90\% 
-or higher. This led to the next improvement mentioned below. 
+The classification module was updated to calculate the confidence level of each
+class prediction. This was achieved by implementing a softmax function to
+convert the raw output of the classifier into probabilities. The confidence
+level is determined by the highest probability among the predicted classes,
+providing feedback to the overall system of how much trust to put in the
+classification results. These metrics were used to improve the overall
+reliability of the system by filtering out low confidence predictions and
+substituting them with an "Unknown" classification when the confidence is below
+a current threshold of 70\%. This threshold was determined by manually analyzing
+the confidence levels of correct and incorrect classifications during testing
+with the current PCA and LDA trained matricies. However, to meet the
+requirements specified in the VnV plan, the classification module had to further
+be improved so that the confidence threshold can be increased to 90\% or higher.
+This led to the next improvement mentioned below. 
 
 \subsubsection{Classification Accuracy Improvement}
-The accuracy of the classification module was low because of two main reasons: 
-limited examples in the training dataset and choosing classes that had very 
-similar audio signatures (car horn vs siren). To address these issues, the 
-first change that was made was finding another sound dataset that had more 
-examples and more distinct classes to choose from. The dataset that was chosen 
-was the FSD50k sound dataset, which has over 50,000 audio samples across 200
-classes \cite{FSD50k}. Using this dataset, the second change that was made was 
-changing the list of classes that the system was trained to classify to have 
-more distinct audio signatures. The new classes that are chosen are Chatter, 
-Bicycle Bell, Siren and Knock.
+The accuracy of the classification module was low because of two main reasons:
+limited examples in the training dataset and choosing classes that had very
+similar audio signatures (car horn vs siren). To address these issues, the first
+change that was made was finding another sound dataset that had more examples
+and more distinct classes to choose from. The dataset that was chosen was the
+FSD50k sound dataset, which has over 50,000 audio samples across 200 classes
+\cite{FSD50k}. Using this dataset, the second change that was made was changing
+the list of classes that the system was trained to classify to have more
+distinct audio signatures. The new classes that are chosen are Chatter, Bicycle
+Bell, Siren and Knock.
 
 \section{Automated Testing}
 
 To ensure consistent verification throughout development, multiple automated
 testing CI pipelines were implemented using GitHub Actions. These pipeline are
 triggered on each push to the main branch, and any Pull requests targetted to
-the main branch. Pull requests are blocked from merging if any pipeline fails
-to ensure verification holds for any new changes to the project.
-These automation testing reduces reliance on manual testing and increases the
-repeatability and reliability of the verification process.
+the main branch. Pull requests are blocked from merging if any pipeline fails to
+ensure verification holds for any new changes to the project. These automation
+testing reduces reliance on manual testing and increases the repeatability and
+reliability of the verification process.
 
 The automated workflow are as follows:
 
 \begin{itemize}
   \item \textbf{Build Verification:} The source code is compiled using hardware
-    compiler to ensure that all changes integrate correctly and do not
-    introduce build errors.
+    compiler to ensure that all changes integrate correctly and do not introduce
+    build errors.
 
   \item \textbf{Unit Testing:} All unit tests are executed using gtest
     \cite{GoogleTest} to verify the functional correctness of core software
@@ -2032,18 +1931,18 @@ The automated workflow are as follows:
 
 
 The results of each automated pipeline are recorded and made available through
-the \href{https://github.com/Team6-SixSense/audio360/actions}{repository's GitHub Actions tab}
-for traceability and review.
+the \href{https://github.com/Team6-SixSense/audio360/actions}{repository's
+GitHub Actions tab} for traceability and review.
 		
 \section{Trace to Requirements}
 
-This section provides comprehensive traceability from test cases to their 
-corresponding functional and non-functional requirements as defined in the 
-SRS. Each test case is mapped to the specific requirement(s) it validates.
+This section provides comprehensive traceability from test cases to their
+corresponding functional and non-functional requirements as defined in the SRS.
+Each test case is mapped to the specific requirement(s) it validates.
 
 \subsection{Functional Requirements Traceability}
 
-Table \ref{TblFRTrace} shows the mapping between functional requirement tests 
+Table \ref{TblFRTrace} shows the mapping between functional requirement tests
 and their corresponding SRS requirements.
 
 \begin{table}[H]
@@ -2058,56 +1957,56 @@ and their corresponding SRS requirements.
 \hline
 Test-FR-1.1 & \hyperref[SRS-FR1_1]{FR-1.1} & Priority-based task scheduling \\
 \hline
-Test-FR-1.2 & \hyperref[SRS-FR1_2]{FR-1.2} & Microphone synchronization 
-(10 $\mu$s tolerance) \\
+Test-FR-1.2 & \hyperref[SRS-FR1_2]{FR-1.2} & Microphone synchronization (10
+$\mu$s tolerance) \\
 \hline
 Test-FR-1.3 & \hyperref[SRS-FR1_3]{FR-1.3} & Memory management and allocation \\
 \hline
-Test-FR-1.4 & \hyperref[SRS-FR1_4]{FR-1.4} & Hardware diagnostics and fault 
+Test-FR-1.4 & \hyperref[SRS-FR1_4]{FR-1.4} & Hardware diagnostics and fault
 detection \\
 \hline
 \hline
 \multicolumn{3}{|l|}{\textbf{Hardware Abstraction Layer Tests}} \\
 \hline
-Test-FR-2.1 & \hyperref[SRS-FR2_1]{FR-2.1} & Peripheral interface testing 
-(ADC, GPIO, timer, clock) \\
+Test-FR-2.1 & \hyperref[SRS-FR2_1]{FR-2.1} & Peripheral interface testing (ADC,
+GPIO, timer, clock) \\
 \hline
-Test-FR-2.2 & \hyperref[SRS-FR2_2]{FR-2.2} & Permission enforcement for 
-HAL access \\
+Test-FR-2.2 & \hyperref[SRS-FR2_2]{FR-2.2} & Permission enforcement for HAL
+access \\
 \hline
-Test-FR-2.3 & \hyperref[SRS-FR2_3]{FR-2.3} & Error handling and error code 
+Test-FR-2.3 & \hyperref[SRS-FR2_3]{FR-2.3} & Error handling and error code
 propagation \\
 \hline
-Test-FR-2.4 & \hyperref[SRS-FR2_4]{FR-2.4} & Concurrent DMA operations 
-integrity \\
+Test-FR-2.4 & \hyperref[SRS-FR2_4]{FR-2.4} & Concurrent DMA operations integrity
+\\
 \hline
 \hline
 \multicolumn{3}{|l|}{\textbf{Signal Processing Tests}} \\
 \hline
-Test-FR-3.1 & \hyperref[SRS-FR3_1]{FR-3.1} & FFT conversion (time $\rightarrow$ 
+Test-FR-3.1 & \hyperref[SRS-FR3_1]{FR-3.1} & FFT conversion (time $\rightarrow$
 frequency domain) \\
 \hline
-Test-FR-3.2 & \hyperref[SRS-FR3_2]{FR-3.2} & Amplitude normalization 
-(max 1.0 scaling) \\
+Test-FR-3.2 & \hyperref[SRS-FR3_2]{FR-3.2} & Amplitude normalization (max 1.0
+scaling) \\
 \hline
-Test-FR-3.3 & \hyperref[SRS-FR3_3]{FR-3.3} & Spectral leakage reduction 
-(Hann windowing) \\
+Test-FR-3.3 & \hyperref[SRS-FR3_3]{FR-3.3} & Spectral leakage reduction (Hann
+windowing) \\
 \hline
-Test-FR-3.4 & \hyperref[SRS-FR3_4]{FR-3.4} & Hardware-accelerated FFT 
-processing \\
+Test-FR-3.4 & \hyperref[SRS-FR3_4]{FR-3.4} & Hardware-accelerated FFT processing
+\\
 \hline
-Test-FR-3.5 & \hyperref[SRS-FR3_5]{FR-3.5} & Anomaly detection (clipping, 
-lost signal, silence) \\
+Test-FR-3.5 & \hyperref[SRS-FR3_5]{FR-3.5} & Anomaly detection (clipping, lost
+signal, silence) \\
 \hline
 \hline
 \multicolumn{3}{|l|}{\textbf{Audio360 Engine Tests}} \\
 \hline
-Test-FR-4.1 & \hyperref[SRS-FR4_1]{FR-4.1} & Error input capability and 
+Test-FR-4.1 & \hyperref[SRS-FR4_1]{FR-4.1} & Error input capability and
 propagation \\
 \hline
 Test-FR-4.2 & \hyperref[SRS-FR4_2]{FR-4.2} & Dependent component notification \\
 \hline
-Test-FR-4.3 & \hyperref[SRS-FR4_3]{FR-4.3} & Pipeline flow ordering and data 
+Test-FR-4.3 & \hyperref[SRS-FR4_3]{FR-4.3} & Pipeline flow ordering and data
 integrity \\
 \hline
 Test-FR-4.4 & \hyperref[SRS-FR4_4]{FR-4.4} & Error-based pipeline suppression \\
@@ -2115,14 +2014,14 @@ Test-FR-4.4 & \hyperref[SRS-FR4_4]{FR-4.4} & Error-based pipeline suppression \\
 \hline
 \multicolumn{3}{|l|}{\textbf{Frequency Analysis Tests}} \\
 \hline
-Test-FR-5.1 & \hyperref[SRS-FR5_1]{FR-5.1} & Audio classification 
-($\geq$ 90\% accuracy) \\
+Test-FR-5.1 & \hyperref[SRS-FR5_1]{FR-5.1} & Audio classification ($\geq$ 90\%
+accuracy) \\
 \hline
-Test-FR-5.2 & \hyperref[SRS-FR5_2]{FR-5.2} & DOA estimation accuracy 
-(MAE $<$ $\theta_e$/2) \\
+Test-FR-5.2 & \hyperref[SRS-FR5_2]{FR-5.2} & DOA estimation accuracy (MAE $<$
+$\theta_e$/2) \\
 \hline
-Test-FR-5.3 & \hyperref[SRS-FR5_3]{FR-5.3} & DOA range validation 
-([0, 2$\pi$] radians) \\
+Test-FR-5.3 & \hyperref[SRS-FR5_3]{FR-5.3} & DOA range validation ([0, 2$\pi$]
+radians) \\
 \hline
 Test-FR-5.4 & \hyperref[SRS-FR5_4]{FR-5.4} & Low confidence notification \\
 \hline
@@ -2140,7 +2039,7 @@ Test-FR-6.2 & \hyperref[SRS-FR6_2]{FR-6.2} & Display failure indicators \\
 
 \subsection{Non-Functional Requirements Traceability}
 
-Table \ref{TblNFRTrace} shows the mapping between non-functional requirement 
+Table \ref{TblNFRTrace} shows the mapping between non-functional requirement
 tests and their corresponding SRS requirements.
 
 \begin{table}[H]
@@ -2153,34 +2052,34 @@ tests and their corresponding SRS requirements.
 \hline
 \multicolumn{3}{|l|}{\textbf{Performance Tests}} \\
 \hline
-Test-NFR1.1 & \hyperref[SRS-NFR1_1]{NFR-1.1} & Real-time processing constraint 
+Test-NFR1.1 & \hyperref[SRS-NFR1_1]{NFR-1.1} & Real-time processing constraint
 (monotonic timestamps) \\
 \hline
-Test-NFR1.2 & \hyperref[SRS-NFR1_2]{NFR-1.2} & Sustained processing rate 
-($\geq$ 16,000 samples/s) \\
+Test-NFR1.2 & \hyperref[SRS-NFR1_2]{NFR-1.2} & Sustained processing rate ($\geq$
+16,000 samples/s) \\
 \hline
 \hline
 \multicolumn{3}{|l|}{\textbf{Accuracy Tests}} \\
 \hline
-Test-NFR2.1 & \hyperref[SRS-NFR2_1]{NFR-2.1} & Frequency transformation 
-accuracy ($\leq$ 0.1\% error) \\
+Test-NFR2.1 & \hyperref[SRS-NFR2_1]{NFR-2.1} & Frequency transformation accuracy
+($\leq$ 0.1\% error) \\
 \hline
 \hline
 \multicolumn{3}{|l|}{\textbf{Signal Processing Quality Tests}} \\
 \hline
-Test-NFR3.1 & \hyperref[SRS-NFR3_1]{NFR-3.1} & Amplitude normalization 
+Test-NFR3.1 & \hyperref[SRS-NFR3_1]{NFR-3.1} & Amplitude normalization
 performance \\
 \hline
-Test-NFR3.2 & \hyperref[SRS-NFR3_2]{NFR-3.2} & Spectral leakage reduction 
+Test-NFR3.2 & \hyperref[SRS-NFR3_2]{NFR-3.2} & Spectral leakage reduction
 effectiveness \\
 \hline
-Test-NFR3.3 & \hyperref[SRS-NFR3_3]{NFR-3.3} & Processing acceleration ratio 
+Test-NFR3.3 & \hyperref[SRS-NFR3_3]{NFR-3.3} & Processing acceleration ratio
 ($\geq$ 1.5$\times$) \\
 \hline
 \hline
 \multicolumn{3}{|l|}{\textbf{Reliability Tests}} \\
 \hline
-Test-NFR4.1 & \hyperref[SRS-NFR4_1]{NFR-4.1} & Component notification 
+Test-NFR4.1 & \hyperref[SRS-NFR4_1]{NFR-4.1} & Component notification
 reliability \\
 \hline
 Test-NFR4.2 & \hyperref[SRS-NFR4_2]{NFR-4.2} & Pipeline ordering consistency \\
@@ -2190,21 +2089,22 @@ Test-NFR4.3 & \hyperref[SRS-NFR4_3]{NFR-4.3} & Error suppression effectiveness\\
 \hline
 \multicolumn{3}{|l|}{\textbf{Frequency Analysis Accuracy Tests}} \\
 \hline
-Test-NFR5.1 & \hyperref[SRS-NFR5_1]{NFR-5.1} & Simultaneous classification 
-\& DOA (3 sources) \\
+Test-NFR5.1 & \hyperref[SRS-NFR5_1]{NFR-5.1} & Simultaneous classification \&
+DOA (3 sources) \\
 \hline
-Test-NFR5.2 & \hyperref[SRS-NFR5_2]{NFR-5.2} & Classification accuracy 
-($\geq$ 90\% per class) \\
+Test-NFR5.2 & \hyperref[SRS-NFR5_2]{NFR-5.2} & Classification accuracy ($\geq$
+90\% per class) \\
 \hline
-Test-NFR5.3 & \hyperref[SRS-NFR5_3]{NFR-5.3} & DOA accuracy (error $\leq$ 45 degrees)\\
+Test-NFR5.3 & \hyperref[SRS-NFR5_3]{NFR-5.3} & DOA accuracy (error $\leq$ 45
+degrees)\\
 \hline
 \hline
 \multicolumn{3}{|l|}{\textbf{Usability Tests}} \\
 \hline
-Test-NFR6.1 & \hyperref[SRS-NFR6_1]{NFR-6.1} & Priority-based display 
-(highest priority shown) \\
+Test-NFR6.1 & \hyperref[SRS-NFR6_1]{NFR-6.1} & Priority-based display (highest
+priority shown) \\
 \hline
-Test-NFR6.2 & \hyperref[SRS-NFR6_2]{NFR-6.2} & Non-obtrusive visualization 
+Test-NFR6.2 & \hyperref[SRS-NFR6_2]{NFR-6.2} & Non-obtrusive visualization
 ($\geq$ 4.0/5.0 rating) \\
 \hline
 \end{tabular}
@@ -2215,10 +2115,10 @@ Test-NFR6.2 & \hyperref[SRS-NFR6_2]{NFR-6.2} & Non-obtrusive visualization
 
 \section{Trace to Modules}
 
-This section provides traceability from test cases to the software modules they 
-validate, as defined in the Module Guide (MG) and Module Interface 
-Specification (MIS). Table \ref{TblModuleTrace} maps each test case 
-to the primary module(s) under test.
+This section provides traceability from test cases to the software modules they
+validate, as defined in the Module Guide (MG) and Module Interface Specification
+(MIS). Table \ref{TblModuleTrace} maps each test case to the primary module(s)
+under test.
 
 \begin{table}[H]
 \centering
@@ -2232,12 +2132,12 @@ to the primary module(s) under test.
 \hline
 Test-FR-1.1 & Hardware Scheduler & Task priority and execution ordering \\
 \hline
-Test-FR-1.2 & \hyperref[MG-mMicInput]{M1} & Microphone synchronization and 
+Test-FR-1.2 & \hyperref[MG-mMicInput]{M1} & Microphone synchronization and
 timing \\
 \hline
 Test-FR-1.3 & Memory Manager & Allocation, deallocation, limit enforcement \\
 \hline
-Test-FR-1.4 & \hyperref[MG-mMicDiag]{M4} & Diagnostic fault detection and 
+Test-FR-1.4 & \hyperref[MG-mMicDiag]{M4} & Diagnostic fault detection and
 reporting \\
 \hline
 Test-FR-2.1 & HAL Interface & ADC, GPIO, timer, clock peripheral access \\
@@ -2251,26 +2151,26 @@ Test-FR-2.4 & DMA Controller & Concurrent buffer management \\
 \hline
 \multicolumn{3}{|l|}{\textbf{Signal Processing Module Tests}} \\
 \hline
-Test-FR-3.1 & \hyperref[MG-mFFT]{M12} & Time-to-frequency domain 
-transformation \\
+Test-FR-3.1 & \hyperref[MG-mFFT]{M12} & Time-to-frequency domain transformation
+\\
 \hline
-Test-FR-3.2 & \hyperref[MG-mAudioNormalizer]{M10} & Amplitude scaling and 
+Test-FR-3.2 & \hyperref[MG-mAudioNormalizer]{M10} & Amplitude scaling and
 normalization \\
 \hline
-Test-FR-3.3 & \hyperref[MG-mAudioSpectralLeakage]{M9} & Hann window 
-application \\
+Test-FR-3.3 & \hyperref[MG-mAudioSpectralLeakage]{M9} & Hann window application
+\\
 \hline
 Test-FR-3.4 & \hyperref[MG-mFFT]{M12} & Hardware-accelerated FFT performance \\
 \hline
-Test-FR-3.5 & \hyperref[MG-mAudioAnomaly]{M11} & Clipping, lost signal, 
-silence detection \\
+Test-FR-3.5 & \hyperref[MG-mAudioAnomaly]{M11} & Clipping, lost signal, silence
+detection \\
 \hline
 Test-NFR2.1 & \hyperref[MG-mFFT]{M12} & FFT numerical accuracy validation \\
 \hline
-Test-NFR3.1 & \hyperref[MG-mAudioNormalizer]{M10} & Normalization performance 
+Test-NFR3.1 & \hyperref[MG-mAudioNormalizer]{M10} & Normalization performance
 metrics \\
 \hline
-Test-NFR3.2 & \hyperref[MG-mAudioSpectralLeakage]{M9} & Leakage reduction 
+Test-NFR3.2 & \hyperref[MG-mAudioSpectralLeakage]{M9} & Leakage reduction
 effectiveness \\
 \hline
 Test-NFR3.3 & \hyperref[MG-mFFT]{M12} & Acceleration ratio measurement \\
@@ -2280,18 +2180,18 @@ Test-NFR3.3 & \hyperref[MG-mFFT]{M12} & Acceleration ratio measurement \\
 \hline
 Test-FR-4.1 & \hyperref[MG-mAudio360Engine]{M7} & Error input processing \\
 \hline
-Test-FR-4.2 & \hyperref[MG-mAudio360Engine]{M7} & Component notification 
-system \\
+Test-FR-4.2 & \hyperref[MG-mAudio360Engine]{M7} & Component notification system
+\\
 \hline
 Test-FR-4.3 & \hyperref[MG-mAudio360Engine]{M7} & Pipeline execution ordering \\
 \hline
-Test-FR-4.4 & \hyperref[MG-mAudio360Engine]{M7} & Error-based suppression 
-logic \\
+Test-FR-4.4 & \hyperref[MG-mAudio360Engine]{M7} & Error-based suppression logic
+\\
 \hline
 Test-NFR4.1 & \hyperref[MG-mAudio360Engine]{M7} & Notification reliability \\
 \hline
-Test-NFR4.2 & \hyperref[MG-mAudio360Engine]{M7} & Consistent pipeline 
-ordering \\
+Test-NFR4.2 & \hyperref[MG-mAudio360Engine]{M7} & Consistent pipeline ordering
+\\
 \hline
 Test-NFR4.3 & \hyperref[MG-mAudio360Engine]{M7} & Suppression effectiveness \\
 \hline
@@ -2301,7 +2201,7 @@ Test-FR-6.2 & \hyperref[MG-mVisualization]{M20} & Failure indicator display \\
 \hline
 Test-NFR6.1 & \hyperref[MG-mVisualization]{M20} & Priority-based rendering \\
 \hline
-Test-NFR6.2 & \hyperref[MG-mVisualization]{M20} & Visual obtrusiveness 
+Test-NFR6.2 & \hyperref[MG-mVisualization]{M20} & Visual obtrusiveness
 assessment \\
 \hline
 \end{tabular}
@@ -2317,16 +2217,16 @@ assessment \\
 \hline
 \multicolumn{3}{|l|}{\textbf{Classification Module Tests}} \\
 \hline
-Test-FR-5.1 & \hyperref[MG-mClassification]{M19} & Multi-class audio 
+Test-FR-5.1 & \hyperref[MG-mClassification]{M19} & Multi-class audio
 classification \\
 \hline
 Test-FR-5.4 & \hyperref[MG-mClassification]{M19} & Confidence score generation\\
 \hline
-Test-NFR5.1 & \hyperref[MG-mClassification]{M19}, \hyperref[MG-mDOA]{M6} & 
+Test-NFR5.1 & \hyperref[MG-mClassification]{M19}, \hyperref[MG-mDOA]{M6} &
 Simultaneous classification \& DOA \\
 \hline
-Test-NFR5.2 & \hyperref[MG-mClassification]{M19} & Per-class accuracy 
-validation \\
+Test-NFR5.2 & \hyperref[MG-mClassification]{M19} & Per-class accuracy validation
+\\
 \hline
 \multicolumn{3}{|l|}{\quad\textit{Supporting Modules:}} \\
 \cline{2-3}
@@ -2345,8 +2245,8 @@ Test-FR-5.2 & \hyperref[MG-mDOA]{M6} & GCC-PHAT angle estimation \\
 \hline
 Test-FR-5.3 & \hyperref[MG-mDOA]{M6} & Output range validation \\
 \hline
-Test-NFR5.1 & \hyperref[MG-mDOA]{M6}, \hyperref[MG-mClassification]{M19} 
-& Multi-source DOA processing \\
+Test-NFR5.1 & \hyperref[MG-mDOA]{M6}, \hyperref[MG-mClassification]{M19} &
+Multi-source DOA processing \\
 \hline
 Test-NFR5.3 & \hyperref[MG-mDOA]{M6} & Angle estimation accuracy \\
 \hline
@@ -2367,20 +2267,19 @@ Test-NFR1.2 & All modules & Sustained throughput measurement \\
 Table \ref{tab:code_coverage} presents the code coverage metrics summary as of
 March 7, 2026. Code coverage analysis was performed using gcovr \cite{gcovr}, a
 Python based tool that utilizes gcov to generate line, function, and branch
-coverage reports. Given the safety critical nature of \progname, achieving
-full test coverage was established as a target objective.
-However, this objective was not fully achieved due to gcovr reporting
-branch coverage for portions of the C++ standard library in addition to project
-developed source code. Testing all branches used in the C++ standard libraries
-requires a lot of effort with minimal verification benefit, since standard
-libraries are well-tested by the C++ community.
-Despite this limitation, the results indicate greater than $90\%$ line and
-function coverage and greater than $60\%$ branch coverage, which is considered
-sufficient for the scope of this capstone project and demonstrates a high level
-of verification for modules that are essential to the project. Important modules
-to the functionality of \progname~include classification, LDA, MEL filter, DCT,
-PCA, Direction of Arrival, System Fault Manager, FFT modules, which all have
-above $95\%$ line coverage and $100\%$ function coverage.
+coverage reports. Given the safety critical nature of \progname, achieving full
+test coverage was established as a target objective. However, this objective was
+not fully achieved due to gcovr reporting branch coverage for portions of the
+C++ standard library in addition to project developed source code. Testing all
+branches used in the C++ standard libraries requires a lot of effort with
+minimal verification benefit, since standard libraries are well-tested by the
+C++ community. Despite this limitation, the results indicate greater than $90\%$
+line and function coverage and greater than $60\%$ branch coverage, which is
+considered sufficient for the scope of this capstone project and demonstrates a
+high level of verification for modules that are essential to the project.
+Important modules to the functionality of \progname~include classification, LDA,
+MEL filter, DCT, PCA, Direction of Arrival, System Fault Manager, FFT modules,
+which all have above $95\%$ line coverage and $100\%$ function coverage.
 
 These coverage metrics exclude manufacturer supplied libraries and hardware
 interface components. Verification of manufacturer code is outside the project's
@@ -2423,38 +2322,45 @@ graduate attribute of Reflection.
   \textbf{Sathurshan:} Our team documented written test cases for unit tests by
   explicitly specifying the setup, procedure, and expected results throughout
   the development of this project. This practice simplified preparation of this
-  deliverable, as the information only required reformatting into a report
-  style format.
+  deliverable, as the information only required reformatting into a report style
+  format.
 
-  \textbf{Kalp:} I think we did a really good job initially writing up our test 
+  \textbf{Kalp:} I think we did a really good job initially writing up our test
   plan in the VnV plan document which really allowed us to simply implement our
   desired procedures without much thought. The high level of detail in the plan
-  meant we weren't figuring out how to do a test, but rather just following the 
+  meant we weren't figuring out how to do a test, but rather just following the
   instructions we laid out for ourselves which saved us a lot of time.
   
   \textbf{Jay:} What went well was that we already had good starting material
   from our earlier documents. That made it easier to organize this report and
   write each section without guessing what to include.
 
-  \textbf{Nirmal:} Since I was responsible for writing the changes due to 
-  testing section of the report, I think it was clear what we needed to 
-  include in that due to transparency and good feedback recieved during our 
-  rev0 demo. Moreoever constant communication within the team helped facilitate 
-  this section as well, since we were all aware of changes that were already 
-  being made. 
+  \textbf{Omar:} Much of the code base and core algorithms already had
+  appropriate unit tests based on the VnV Plan. This made writing the VnV report
+  significantly easier. Requirements and aspects that were not implemented were
+  also clear with valid reasoning. Overall, this deliverable was completed very
+  systematically since the initial plan was followed with diligence,
+  highlighting the importance of proper planning in any engineering project. 
+
+  \textbf{Nirmal:} Since I was responsible for writing the changes due to
+  testing section of the report, I think it was clear what we needed to include
+  in that due to transparency and good feedback recieved during our rev0 demo.
+  Moreoever constant communication within the team helped facilitate this
+  section as well, since we were all aware of changes that were already being
+  made. 
   
-  \item What pain points did you experience during this deliverable, and how
-    did you resolve them?
+  \item What pain points did you experience during this deliverable, and how did
+    you resolve them?
   
   \textbf{Sathurshan:} Personally, I did not experience any paint points during
   this deliverable. This could be primarily because the sections I worked on
   were already well documented.
 
-  \textbf{Kalp:} The only pain point that I experienced was the high dependency 
-  struturing of the sections in the document and our missed oppurtunity to 
-  communicate on it. Since our plan was for everyone to write test cases on the 
-  sections that they had implemented in code as they were most familiar with it, 
-  Nirmal and I found ourselves writing overlapping tests cases tackling similar 
+  \textbf{Kalp:} The only pain point that I experienced was the high dependency
+  structuring of the sections in the document and our missed opportunity to
+  communicate on it. Since our plan was for everyone to write test cases on the
+  sections that they had implemented in code as they were most familiar with it,
+  Nirmal and I found ourselves writing overlapping tests cases tackling similar
   requirements led to a bit of reworking to be done.
   
   \textbf{Jay:} The main pain point was managing this deliverable with other
@@ -2462,12 +2368,23 @@ graduate attribute of Reflection.
   was hard to keep steady progress. I handled this by breaking the work into
   smaller parts and setting short work sessions during the week.
 
-  \textbf{Nirmal:} I think the main pain point when writing this deliverable 
-  was trying to actively make changes to the system after the rev0 demo, while 
-  also trying to test and write this report at the same time. For me, I was 
-  responsible for making changes to the classification module, which involved 
-  finding a new dataset, retraining the PCA and LDA matricies, and then testing 
+  \textbf{Nirmal:} I think the main pain point when writing this deliverable was
+  trying to actively make changes to the system after the rev0 demo, while also
+  trying to test and write this report at the same time. For me, I was
+  responsible for making changes to the classification module, which involved
+  finding a new dataset, retraining the PCA and LDA matrices, and then testing
   the changes out. 
+
+  \textbf{Omar:} The main pain point in this deliverable was determining how
+  much of the VnV plan was actually followed. The parts that were followed were
+  well documented, but the exclusion of parts and modules made it difficult at
+  times to write the document. Several unit tests also needed implementation for
+  the core algorithms. All this was slightly challenging this semester with the
+  pre-existing workload. It was also particularly difficult to decide if and how
+  unit tests for embedded firmware were even possible. The team ultimately
+  decided to forgo unit testing of firmware specific code as it was deemed too
+  time consuming. We elected to focus on the firmware integration tests which
+  require a human in the loop instead.
 
   \item Which parts of this document stemmed from speaking to your client(s) or
   a proxy (e.g. your peers)? Which ones were not, and why?
@@ -2486,15 +2403,15 @@ graduate attribute of Reflection.
   evidence that demonstrates the required quality?  (It is expected that most
   teams will have had to deviate from their original VnV Plan.)
 
-  \textbf{Team:} The main differences were associated with certain 
-  non-functional requirement tests that were not created as their own unit 
-  tests, but rather as part of the functional unit tests that were being 
-  written. In the VnV plan, we had planned unit tests for NFR and FR, but later 
-  realized that related tests can be combined. Moreover, it seemed like some of 
-  the NFR written in the VnV plan and SRS document were very ambitious and 
-  harder to realize in a fully working system. For example, 90\% accuracy for 
-  classification with PCA and LDA seems to be very hard to achieve in this 
-  scope. Athough we are actively trying to fulfill this, it may have to be 
+  \textbf{Team:} The main differences were associated with certain
+  non-functional requirement tests that were not created as their own unit
+  tests, but rather as part of the functional unit tests that were being
+  written. In the VnV plan, we had planned unit tests for NFR and FR, but later
+  realized that related tests can be combined. Moreover, it seemed like some of
+  the NFR written in the VnV plan and SRS document were very ambitious and
+  harder to realize in a fully working system. For example, 90\% accuracy for
+  classification with PCA and LDA seems to be very hard to achieve in this
+  scope. Athough we are actively trying to fulfill this, it may have to be
   updated. 
 
 \end{enumerate}
