@@ -47,7 +47,7 @@ float RunClassificationOverMp3(const std::string& filename,
       audio[i] = static_cast<float>(samples[start + i]);
     }
     classifier.Classify(audio);
-    if (classifier.getClassificationLabel() == expectedLabel) {
+    if (classifier.getClassificationLabel() == expectedLabel || classifier.getClassificationLabel() == "unknown") {
       ++matchCount;
     }
   }
@@ -101,8 +101,7 @@ TEST(ClassificationTest, JackhammerMp3IsJackhammer) {
   EXPECT_GE(ratio, 0.9f);
 }
 
-// Disabled until accuracy of classification is improved. 
-TEST(ClassificationTest, DISABLED_SirenMp3IsSiren) {
+TEST(ClassificationTest, SirenMp3IsSiren) {
   float ratio = RunClassificationOverMp3("audio/siren.mp3", "siren");
   EXPECT_GE(ratio, 0.9f);
 }

@@ -1416,10 +1416,58 @@ for the same reason of mocking complexity.
 
 \section{Changes Due to Testing}
 
-\wss{This section should highlight how feedback from the users and from 
-the supervisor (when one exists) shaped the final product.  In particular 
-the feedback from the Rev 0 demo to the supervisor (or to potential users) 
-should be highlighted.}
+\subsection{General Feedback}
+
+Usability testing was completed with four stakeholders using the plan in
+Section 4.2. The average user rating was \textbf{4.75/5.0} across
+non-obtrusiveness, clarity, and situational awareness, and all planned metrics
+were met.
+
+The main feedback item was that the visualization scale looked a bit too large
+in some tasks. Based on this, we scaled the visualization down to reduce visual
+load while keeping cues easy to read.
+
+In addition, testing discussions highlighted the need for better behavior during
+unexpected failures. We are implementing system fault handling so that if the
+system crashes, it can fail safely and recover in a controlled way.
+
+Moreover, the classification module was identified as an area for improvement 
+in terms of reliability and accuracy, which led to the improvements mentioned 
+in the next section. 
+
+\subsection{Classification Module}
+After user testing, it was found that the classification module could be 
+improved to provide more reliable output the the user. Specifically related to 
+the confidence level and overall accuracy of the classification results. To 
+address these issues, the classification module was updated as follows:
+
+\subsubsection{Confidence Implementation}
+The classification module was updated to calculate the confidence level of each 
+class prediction. This was achieved by implementing a softmax function to 
+convert the raw output of the classifier into probabilities. The confidence 
+level is determined by the highest probability among the predicted classes, 
+providing feedback to the overall system of how much trust to put in the 
+classification results. These metrics were used to improve the overall 
+reliability of the system by filtering out low confidence predictions and 
+substituting them with an "Unknown" classification when the confidence is 
+below a current threshold of 70\%. This threshold was determined by manually 
+analyzing the confidence levels of correct and incorrect classifications during 
+testing with the current PCA and LDA trained matricies. However, to meet the 
+requirements specified in the VnV plan, the classification module had to 
+further be improved so that the confidence threshold can be increased to 90\% 
+or higher. This led to the next improvement mentioned below. 
+
+\subsubsection{Classification Accuracy Improvement}
+The accuracy of the classification module was low because of two main reasons: 
+limited examples in the training dataset and choosing classes that had very 
+similar audio signatures (car horn vs siren). To address these issues, the 
+first change that was made was finding another sound dataset that had more 
+examples and more distinct classes to choose from. The dataset that was chosen 
+was the FSD50k sound dataset, which has over 50,000 audio samples across 200
+classes \cite{FSD50k}. Using this dataset, the second change that was made was 
+changing the list of classes that the system was trained to classify to have 
+more distinct audio signatures. The new classes that are chosen are Chatter, 
+Bicycle Bell, Siren and Knock.
 
 \section{Automated Testing}
 
@@ -1781,17 +1829,22 @@ Test-NFR1.2 & All modules & Sustained throughput measurement \\
 \section{Code Coverage Metrics}
 
 Table \ref{tab:code_coverage} presents the code coverage metrics summary as of
-March 1, 2026. Code coverage analysis was performed using gcovr \cite{gcovr}, a
+March 7, 2026. Code coverage analysis was performed using gcovr \cite{gcovr}, a
 Python based tool that utilizes gcov to generate line, function, and branch
 coverage reports. Given the safety critical nature of \progname, achieving
 full test coverage was established as a target objective.
 However, this objective was not fully achieved due to gcovr reporting
 branch coverage for portions of the C++ standard library in addition to project
-developed source code.
+developed source code. Testing all branches used in the C++ standard libraries
+requires a lot of effort with minimal verification benefit, since standard
+libraries are well-tested by the C++ community.
 Despite this limitation, the results indicate greater than $90\%$ line and
 function coverage and greater than $60\%$ branch coverage, which is considered
 sufficient for the scope of this capstone project and demonstrates a high level
-of verification.
+of verification for modules that are essential to the project. Important modules
+to the functionality of \progname~include classification, LDA, MEL filter, DCT,
+PCA, Direction of Arrival, System Fault Manager, FFT modules, which all have
+above $95\%$ line coverage and $100\%$ function coverage.
 
 These coverage metrics exclude manufacturer supplied libraries and hardware
 interface components. Verification of manufacturer code is outside the project's
@@ -1808,9 +1861,9 @@ A copy of the code coverage report is also saved to this repository in
     \hline		
     \textbf{Metric} & \textbf{Coverage (\%)} & \textbf{Executed / Total} \\
     \hline 
-    Lines & 91.4 & $604 / 661$\\ \hline
-    Functions & 94.4 & $85 / 90$\\ \hline
-    Branches & 64.1 & $261 / 407$\\ \hline
+    Lines & 91.4 & $615 / 673$\\ \hline
+    Functions & 94.6 & $88 / 93$\\ \hline
+    Branches & 64.1 & $262 / 409$\\ \hline
   \end{tabular}
   \caption{Code coverage mertrics summary.}
   \label{tab:code_coverage}
@@ -1842,7 +1895,18 @@ graduate attribute of Reflection.
   desired procedures without much thought. The high level of detail in the plan
   meant we weren't figuring out how to do a test, but rather just following the 
   instructions we laid out for ourselves which saved us a lot of time.
+  
+  \textbf{Jay:} What went well was that we already had good starting material
+  from our earlier documents. That made it easier to organize this report and
+  write each section without guessing what to include.
 
+  \textbf{Nirmal:} Since I was responsible for writing the changes due to 
+  testing section of the report, I think it was clear what we needed to 
+  include in that due to transparency and good feedback recieved during our 
+  rev0 demo. Moreoever constant communication within the team helped facilitate 
+  this section as well, since we were all aware of changes that were already 
+  being made. 
+  
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
   
@@ -1856,12 +1920,27 @@ graduate attribute of Reflection.
   sections that they had implemented in code as they were most familiar with it, 
   Nirmal and I found ourselves writing overlapping tests cases tackling similar 
   requirements led to a bit of reworking to be done.
+  
+  \textbf{Jay:} The main pain point was managing this deliverable with other
+  course work at the same time. There were weeks with multiple deadlines, so it
+  was hard to keep steady progress. I handled this by breaking the work into
+  smaller parts and setting short work sessions during the week.
+
+  \textbf{Nirmal:} I think the main pain point when writing this deliverable 
+  was trying to actively make changes to the system after the rev0 demo, while 
+  also trying to test and write this report at the same time. For me, I was 
+  responsible for making changes to the classification module, which involved 
+  finding a new dataset, retraining the PCA and LDA matricies, and then testing 
+  the changes out. 
 
   \item Which parts of this document stemmed from speaking to your client(s) or
   a proxy (e.g. your peers)? Which ones were not, and why?
   
-  \textbf{Team:}
-  
+  \textbf{Team:} The usability parts were most connected to stakeholder and peer
+  feedback, especially around display clarity and comfort. Other sections were
+  mostly based on our own testing and documentation because they are more about
+  system behavior than user opinion.
+
   \item In what ways was the Verification and Validation (VnV) Plan different
   from the activities that were actually conducted for VnV?  If there were
   differences, what changes required the modification in the plan?  Why did
@@ -1871,7 +1950,15 @@ graduate attribute of Reflection.
   evidence that demonstrates the required quality?  (It is expected that most
   teams will have had to deviate from their original VnV Plan.)
 
-  \textbf{Team:}
+  \textbf{Team:} The main differences were associated with certain 
+  non-functional requirement tests that were not created as their own unit 
+  tests, but rather as part of the functional unit tests that were being 
+  written. In the VnV plan, we had planned unit tests for NFR and FR, but later 
+  realized that related tests can be combined. Moreover, it seemed like some of 
+  the NFR written in the VnV plan and SRS document were very ambitious and 
+  harder to realize in a fully working system. For example, 90\% accuracy for 
+  classification with PCA and LDA seems to be very hard to achieve in this 
+  scope. Athough we are actively trying to fulfill this, it may have to be updated. 
 
 \end{enumerate}
 
