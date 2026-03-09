@@ -972,6 +972,10 @@ for the same reason of mocking complexity.
     SingleAudioSourceAngle270 \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle315} &
     SingleAudioSourceAngle315 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{KnownDirectionEstimation} &
+    KnownDirectionEstimation \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ExtendedAngleRange} &
+    ExtendedAngleRange \\ \hline
 
     % Fast Fourier Transform Module
     \refstepcounter{unitTest} \mtheunitTest \label{SignalToFrequency_285Hz} & 
@@ -1036,8 +1040,71 @@ for the same reason of mocking complexity.
     % Classification Module
     \refstepcounter{unitTest} \mtheunitTest \label{ClassifyJackhammerAudio} &
     ClassifyJackhammerAudio \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AmbiguousSampleDetection} &
+    AmbiguousSampleDetection \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{KnownSampleHighConfidence} &
+    KnownSampleHighConfidence \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ConfidenceDifferentiation} &
+    ConfidenceDifferentiation \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SilentInputHandling} &
+    SilentInputHandling \\ \hline
 
-    % Visualization Module
+    % Audio360 Engine Module
+    \refstepcounter{unitTest} \mtheunitTest \label{FrequencyInputCapability} &
+    FrequencyInputCapability \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ErrorInputCapability_Clipping} &
+    ErrorInputCapability\_Clipping \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ErrorInputCapability_LostSignal} &
+    ErrorInputCapability\_LostSignal \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ErrorInputCapability_Silence} &
+    ErrorInputCapability\_Silence \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{DependentComponentNotification} &
+    DependentComponentNotification \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{MultipleNotificationCycles} &
+    MultipleNotificationCycles \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{PipelineFlowOrdering} &
+    PipelineFlowOrdering \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{PipelineDataIntegrity} &
+    PipelineDataIntegrity \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ErrorBasedPipelineSuppression} &
+    ErrorBasedPipelineSuppression \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{PipelineResumptionAfterError} &
+    PipelineResumptionAfterError \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ErrorLoggingDuringSuppression} &
+    ErrorLoggingDuringSuppression \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AllErrorTypesTriggerSuppression} &
+    AllErrorTypesTriggerSuppression \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ProcessingSpeedSimulation} &
+    ProcessingSpeedSimulation \\ \hline
+
+    % Signal Processing Module
+    \refstepcounter{unitTest} \mtheunitTest \label{AlternatingAmplitudeNormalization} &
+    AlternatingAmplitudeNormalization \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SilentSignalNormalization} &
+    SilentSignalNormalization \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AlreadyNormalizedSignal} &
+    AlreadyNormalizedSignal \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{VariableInputSizes_512} &
+    VariableInputSizes\_512 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{VariableInputSizes_1024} &
+    VariableInputSizes\_1024 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{VariableInputSizes_2048} &
+    VariableInputSizes\_2048 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{VariableInputSizes_4096} &
+    VariableInputSizes\_4096 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NoBufferOverflows} &
+    NoBufferOverflows \\ \hline
+
+    % Integration Tests
+    \refstepcounter{unitTest} \mtheunitTest \label{SimultaneousClassificationAndDOA_SingleSource} &
+    SimultaneousClassificationAndDOA\_SingleSource \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{MultipleAngles} &
+    MultipleAngles \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SimultaneousProcessingPerformance} &
+    SimultaneousProcessingPerformance \\ \hline
+
+    %%%%%%%%%%%%%%%%%%%%
+    % Helper Functions %
     \refstepcounter{unitTest} \mtheunitTest \label{CreatePackets} &
     CreatePackets \\ \hline
 
@@ -1214,6 +1281,14 @@ for the same reason of mocking complexity.
     4 microphone streams with audio of source from 315 degrees & 
     Run DOA on the microphone streams  &
     DOA returns source is neat 315 degrees & PASS\\ \hline
+    \utref{KnownDirectionEstimation} & 
+    4 microphone streams from known angles (0°, 45°, 90°, 135°) & 
+    Calculate DOA using GCC-PHAT algorithm  &
+    Mean Absolute Error $<$ 22.5° and individual errors $\leq$ 45° & PASS\\ \hline
+    \utref{ExtendedAngleRange} & 
+    4 microphone streams from extended angles (180°, 225°, 270°, 315°) & 
+    Calculate DOA using GCC-PHAT algorithm  &
+    Direction error $\leq$ 45° for all available angles & PASS\\ \hline
     \caption{Unit tests for DOA module.}
     \label{tab:unit_test_doa}
 \end{longtable}
@@ -1420,6 +1495,26 @@ for the same reason of mocking complexity.
     Run classification on microphone data &
     classify Jack hammer & PASS\\
     \hline
+    \utref{AmbiguousSampleDetection} & 
+    Random noise audio samples & 
+    Run classification on ambiguous input &
+    Returns varied classification or unknown & PASS\\
+    \hline
+    \utref{KnownSampleHighConfidence} & 
+    Known jackhammer audio samples & 
+    Run classification with 65\% confidence threshold &
+    Returns jackhammer or unknown (no misclassifications) & PASS\\
+    \hline
+    \utref{ConfidenceDifferentiation} & 
+    Mix of known jackhammer and random noise samples & 
+    Run classification on both sample types &
+    Correctly differentiates known from ambiguous samples & PASS\\
+    \hline
+    \utref{SilentInputHandling} & 
+    Silent audio samples (zero amplitude) & 
+    Run classification on silent input &
+    Returns unknown without crashing & PASS\\
+    \hline
 
     \caption{Unit tests for classification module.}
     \label{tab:unit_test_classification}
@@ -1445,6 +1540,150 @@ for the same reason of mocking complexity.
 
     \caption{Unit tests for visualization module.}
     \label{tab:unit_test_viz}
+\end{longtable}
+}
+
+% Audio360 Engine Module
+\subsection{Audio360 Engine Module}
+{\footnotesize
+\begin{longtable}{|p{0.8cm}|p{5cm}|p{5cm}|p{4cm}|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{FrequencyInputCapability} & 
+    Engine initialized with mock frequency data & 
+    Process normal frequency-domain input &
+    Engine accepts and processes input successfully & PASS\\ \hline
+    \utref{ErrorInputCapability_Clipping} & 
+    Engine initialized with clipping error flag & 
+    Process input with clipping error &
+    Engine propagates error flag without crashing & PASS\\ \hline
+    \utref{ErrorInputCapability_LostSignal} & 
+    Engine initialized with lost signal error flag & 
+    Process input with lost signal error &
+    Engine propagates error flag without crashing & PASS\\ \hline
+    \utref{ErrorInputCapability_Silence} & 
+    Engine initialized with silence error flag & 
+    Process input with silence error &
+    Engine propagates error flag without crashing & PASS\\ \hline
+    \utref{DependentComponentNotification} & 
+    Engine with mock downstream components & 
+    Process data and notify dependent components &
+    All registered components receive notifications & PASS\\ \hline
+    \utref{MultipleNotificationCycles} & 
+    Engine with multiple registered components & 
+    Run multiple processing cycles &
+    Notifications sent consistently across all cycles & PASS\\ \hline
+    \utref{PipelineFlowOrdering} & 
+    Engine with mock pipeline stages & 
+    Process data through pipeline &
+    Stages execute in correct order (filter $\rightarrow$ classify $\rightarrow$ DOA) & PASS\\ \hline
+    \utref{PipelineDataIntegrity} & 
+    Engine with mock pipeline stages & 
+    Pass data through pipeline stages &
+    Data remains intact between stages & PASS\\ \hline
+    \utref{ErrorBasedPipelineSuppression} & 
+    Engine with error flag set & 
+    Attempt to process data with error present &
+    Pipeline suppressed, no processing occurs & PASS\\ \hline
+    \utref{PipelineResumptionAfterError} & 
+    Engine in suppressed state from previous error & 
+    Clear error flag and process new data &
+    Pipeline resumes normal operation & PASS\\ \hline
+    \utref{ErrorLoggingDuringSuppression} & 
+    Engine with error flag triggering suppression & 
+    Monitor error handling during suppression &
+    Error logged and propagated correctly & PASS\\ \hline
+    \utref{AllErrorTypesTriggerSuppression} & 
+    Engine with various error flags (clipping, lost signal, silence) & 
+    Test each error type individually &
+    All error types correctly trigger pipeline suppression & PASS\\ \hline
+    \utref{ProcessingSpeedSimulation} & 
+    Engine with 100 sample processing iterations & 
+    Measure processing time per sample &
+    Mean processing time documented, no timeouts & PASS\\ \hline
+
+    \caption{Unit tests for Audio360 Engine module.}
+    \label{tab:unit_test_audio360_engine}
+\end{longtable}
+}
+
+% Signal Processing Module
+\subsection{Signal Processing Module}
+{\footnotesize
+\begin{longtable}{|p{0.8cm}|p{5cm}|p{5cm}|p{4cm}|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{AlternatingAmplitudeNormalization} & 
+    Signal with alternating amplitude pattern & 
+    Apply normalization &
+    Peak amplitude scaled to 1.0, waveform shape preserved & PASS\\ \hline
+    \utref{SilentSignalNormalization} & 
+    Silent signal (all zeros) & 
+    Apply normalization &
+    Returns zeros without division by zero & PASS\\ \hline
+    \utref{AlreadyNormalizedSignal} & 
+    Signal already normalized to peak 1.0 & 
+    Apply normalization &
+    Signal remains unchanged & PASS\\ \hline
+    \utref{VariableInputSizes_512} & 
+    512-sample frequency-domain input & 
+    Process through FFT/IFFT pipeline &
+    Processing completes within time limits & PASS\\ \hline
+    \utref{VariableInputSizes_1024} & 
+    1024-sample frequency-domain input & 
+    Process through FFT/IFFT pipeline &
+    Processing completes within time limits & PASS\\ \hline
+    \utref{VariableInputSizes_2048} & 
+    2048-sample frequency-domain input & 
+    Process through FFT/IFFT pipeline &
+    Processing completes within time limits & PASS\\ \hline
+    \utref{VariableInputSizes_4096} & 
+    4096-sample frequency-domain input & 
+    Process through FFT/IFFT pipeline &
+    Processing completes within time limits & PASS\\ \hline
+    \utref{NoBufferOverflows} & 
+    Various input sizes (512-4096 samples) & 
+    Run FFT operations with buffer checking &
+    No buffer overflows detected in any test case & PASS\\ \hline
+
+    \caption{Unit tests for signal processing module.}
+    \label{tab:unit_test_signal_processing}
+\end{longtable}
+}
+
+% Integration Tests
+\subsection{Integration Tests}
+{\footnotesize
+\begin{longtable}{|p{0.8cm}|p{5cm}|p{5cm}|p{4cm}|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{SimultaneousClassificationAndDOA_SingleSource} & 
+    4 microphone streams from 0° angle & 
+    Run classification and DOA simultaneously &
+    Classification acceptable, direction error $\leq$ 45° & PASS\\ \hline
+    \utref{MultipleAngles} & 
+    5 test angles (0°, 45°, 90°, 135°, 180°) & 
+    Run classification and DOA for each angle &
+    All angles: classification acceptable, DOA MAE $<$ 22.5° & PASS\\ \hline
+    \utref{SimultaneousProcessingPerformance} & 
+    Single test sample at 0° angle & 
+    Measure combined classification and DOA processing time &
+    Processing completes in reasonable time & PASS\\ \hline
+
+    \caption{Integration tests for frequency analysis.}
+    \label{tab:unit_test_integration}
 \end{longtable}
 }
 
