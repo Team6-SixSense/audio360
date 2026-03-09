@@ -13,7 +13,7 @@
  *  @brief Tests matrix anti-commutative  property holds.
  * Property: A – B = –(B – A).
  */
-TEST(MatrixSubtraction, AntiCommutative) {
+TEST(MatrixSubtraction, SubAntiCommutative) {
   const int numRows = 4, numCols = 4;
   matrix A, B, R1, R2;
 
@@ -41,7 +41,7 @@ TEST(MatrixSubtraction, AntiCommutative) {
  *  @brief Tests matrix subtractive identity property holds.
  * Property: A - 0 = A.
  */
-TEST(MatrixSubtraction, Identity) {
+TEST(MatrixSubtraction, SubIdentity) {
   const int numRows = 4, numCols = 4;
   matrix A, Zero, Result;
 
@@ -68,7 +68,7 @@ TEST(MatrixSubtraction, Identity) {
  * operation.
  * Property: A − A = 0.
  */
-TEST(MatrixSubtraction, Inverse) {
+TEST(MatrixSubtraction, SubInverse) {
   const int numRows = 4, numCols = 4;
   matrix A, Zero;
 
@@ -88,7 +88,7 @@ TEST(MatrixSubtraction, Inverse) {
 
 /** @brief Test that matrix subtraction fails when matrices size are not
  * compatible. */
-TEST(MatrixSubtraction, DimensionMismatch) {
+TEST(MatrixSubtraction, SubDimensionMismatch) {
   matrix A, B, C;
 
   // Create matrices.

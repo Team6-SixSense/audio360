@@ -2,43 +2,35 @@
 hide empty description
 left to right direction
 
-state Hardware {
-    state Microcontroller
-    state "Microphone Input Module" as micInput
-    state "USART Communication Module" as usart
-    state "SD Card Interface Module" as sd
-    
-    micInput --> Microcontroller
-    usart --> Microcontroller
-    sd --> Microcontroller
-}
-
-state Mocks {
-    state "Audio Generation Module" as AudioGen
-}
-
-state Output {
-
-}
-
 state Audio360Software {
-    state "Microphone Diagnostic Module" as MicDiag
-    state "DOA Processor Module" as DOA
-    state "Audio360 Engine Module" as Audio360Eng
-    state "Audio Sampling Module" as AudioSampling
-    state "Audio Spectral Leakage Prevention Module" as SpectralLeakage
-    state "Audio Normalizer Module" as AudioNormalize
-    state "Audio Anomaly Detection Module" as AudioAnomaly
-    state "Logging Module" as Logging
-    state "Fast Fourier Transform Module" as fft
-    state "Fault Manager Module" as FaultManager
-    state "Mel Filter Module" as Mel
-    state "Discret Cosine Transform Module" as DisreteCos
-    state "Principle Component Analysis Module" as PCA
-    state "Linear Discriminant Analysis Module" as LDA
-    state "Classification Module" as Classification
-    state "Independent Component Analysis Module" as ICA
-    state "Visualization Module" as Viz
+    ' Hardware Modules
+    state Microcontroller #lightblue
+    state "Microphone Input Module" as micInput #lightblue
+    state "USART Communication Module" as usart #lightblue
+    state "SD Card Interface Module" as sd #lightblue
+
+
+    ' Software Modules
+    state "Microphone Diagnostic Module" as MicDiag #lightgreen
+    state "DOA Processor Module" as DOA #lightgreen
+    state "Audio360 Engine Module" as Audio360Eng #lightgreen
+    state "Audio Sampling Module" as AudioSampling #lightgreen
+    state "Audio Spectral Leakage Prevention Module" as SpectralLeakage #lightgreen
+    state "Audio Normalizer Module" as AudioNormalize #lightgreen
+    state "Audio Anomaly Detection Module" as AudioAnomaly #lightgreen
+    state "Logging Module" as Logging #lightgreen
+    state "Fast Fourier Transform Module" as fft #lightgreen
+    state "Fault Manager Module" as FaultManager #lightgreen
+    state "Mel Filter Module" as Mel #lightgreen
+    state "Discret Cosine Transform Module" as DisreteCos #lightgreen
+    state "Principle Component Analysis Module" as PCA #lightgreen
+    state "Linear Discriminant Analysis Module" as LDA #lightgreen
+    state "Classification Module" as Classification #lightgreen
+    state "Independent Component Analysis Module" as ICA #lightgreen
+    state "Visualization Module" as Viz #lightgreen
+
+    ' Mocks
+    state "Audio Generation Module" as AudioGen #MOTIVATION
 
     DOA --> AudioGen
     MicDiag --> micInput
@@ -67,7 +59,10 @@ state Audio360Software {
     Classification --> fft
     Classification --> ICA
     Viz --> Audio360Eng
-    Viz --> Output
+
+    micInput --> Microcontroller
+    usart --> Microcontroller
+    sd --> Microcontroller
 }
 
 @enduml

@@ -8,9 +8,14 @@
 #include "system_fault_manager.h"
 
 #include "logging.hpp"
+#include "packet.h"
 
 #ifdef STM_BUILD
 #include "stm32f7xx_hal_cortex.h"
+#endif
+
+#ifdef BUILD_GLASSES_HOST
+#include "bluetooth_manager.h"
 #endif
 
 SystemFaultManager::SystemFaultManager() {}
@@ -18,8 +23,11 @@ SystemFaultManager::SystemFaultManager() {}
 void SystemFaultManager::handlePeripheralSetupFaults(
     std::set<PeripheralError>* errors) {
   if (errors->empty()) {
+    this->clearHardwareError();
     return;
   }
+
+  this->reportHardwareError();
 
   for (PeripheralError error : *errors) {
     std::string errorString = peripheralErrorStrings[static_cast<int>(error)];
@@ -54,6 +62,39 @@ void SystemFaultManager::handlePeripheralSetupFaults(
   }
 }
 
+void SystemFaultManager::runFaultAnalysis() {
+  // System Fault priority:
+  // 1. Hardware fault since software depends on hardware.
+  // 2. DOA fault since safety critical feature if hardware is working
+  // 3. Classification
+
+  if (this->hardwareError) {
+    this->state = HARDWARE_FAULT;
+  } else if (this->doaError) {
+    this->state = DIRECTIONAL_ANALYSIS_FAULT;
+  } else if (this->classificationError) {
+    this->state = CLASSIFICATION_FAULT;
+  } else {
+    this->state = NO_FAULT;
+  }
+}
+
+void SystemFaultManager::reportHardwareError() { this->hardwareError = true; }
+
+void SystemFaultManager::clearHardwareError() { this->hardwareError = false; }
+
+void SystemFaultManager::reportClassificationError() {
+  this->classificationError = true;
+}
+
+void SystemFaultManager::clearClassficationError() {
+  this->classificationError = false;
+}
+
+void SystemFaultManager::reportDoaError() { this->doaError = true; }
+
+void SystemFaultManager::clearDoaError() { this->doaError = false; }
+
 SystemFaultState SystemFaultManager::getSystemFaultState() {
   return this->state;
 }
@@ -64,6 +105,15 @@ void SystemFaultManager::updateFaultState(SystemFaultState faultState) {
 
 void SystemFaultManager::enterUnrecoverableState(std::string error) {
   ERROR("Entering unrecoverable state due to %s", error);
+
+#ifdef BUILD_GLASSES_HOST
+  // Transmit system fault error to visualization before entering unrecoverable
+  // state.
+  VisualizationPacket vizPacket{};
+  vizPacket.systemFaultState = this->state;
+  std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
+  Bluetooth_Manager_Send(packet.data(), static_cast<uint16_t>(packet.size()));
+#endif
 
   // Enter infinite loop to prevent any further execution.
   while (true) {

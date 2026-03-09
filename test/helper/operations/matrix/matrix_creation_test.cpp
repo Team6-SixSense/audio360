@@ -11,7 +11,7 @@
 #include "test_helper.h"
 
 /** @brief Test for creating an identity matrix */
-TEST(MatrixCreation, Indentity) {
+TEST(MatrixCreation, Identity) {
   const int MIN_NUM = 5;
   const int MAX_NUM = 100;
 
