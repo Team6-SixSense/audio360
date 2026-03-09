@@ -994,6 +994,14 @@ for the same reason of mocking complexity.
     \label{AllFrequenciesToImpulseAssignment} &
     AllFrequenciesToImpulseAssignment \\ \hline
 
+    % Audio Filtering Module
+    \refstepcounter{unitTest} \mtheunitTest \label{NormalizeAmplitudeFromMp3} &
+    NormalizeAmplitudeFromMp3 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{TimeToFrequencyShowsThreePeaks} &
+    TimeToFrequencyShowsThreePeaks \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ReducedSpectralLeakageWithHannWindow} &
+    ReducedSpectralLeakageWithHannWindow \\ \hline
+
     % Fault Manager Module
     \refstepcounter{unitTest} \mtheunitTest \label{GetSystemFault} & 
     GetSystemFault \\ \hline
@@ -1048,6 +1056,12 @@ for the same reason of mocking complexity.
     ConfidenceDifferentiation \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SilentInputHandling} &
     SilentInputHandling \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ClassifySilenceAsUnknown} &
+    ClassifySilenceAsUnknown \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ClassifySirenAudio} &
+    ClassifySirenAudio \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ClassifyCarHornAudio} &
+    ClassifyCarHornAudio \\ \hline
 
     % Audio360 Engine Module
     \refstepcounter{unitTest} \mtheunitTest \label{FrequencyInputCapability} &
@@ -1400,6 +1414,37 @@ for the same reason of mocking complexity.
 \end{longtable}
 }
 
+% Audio Filtering Module
+\subsection{Audio Filtering Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{NormalizeAmplitudeFromMp3} & 
+    Alternating 0.2/0.8 amplitude sine sections in \texttt{audio/alt\_amp\_sine.mp3}. & 
+    Run amplitude normalization pipeline on MP3 input.  &
+    Both halves peak near 1.0 with matching zero-crossing counts. & FAIL\\
+    \hline
+    \utref{TimeToFrequencyShowsThreePeaks} & 
+    3-second WAV with 100 Hz, 1 kHz, 8 kHz tones (\texttt{audio/three\_tone.wav}). & 
+    Run FFT on a 4096-sample Hann-windowed frame.  &
+    Clear peaks at target tones; non-target bins <20\% of peak; <10\% error vs. ideal spectrum. & PASS\\
+    \hline
+    \utref{ReducedSpectralLeakageWithHannWindow} & 
+    4096-sample sine at half-bin offset (synthetic frame). & 
+    Compare FFT with no window vs. Hann window.  &
+    Hann reduces leakage and max side-lobe power relative to rectangular window. & PASS\\
+    \hline
+
+    \caption{Unit tests for Audio Filtering module.}
+    \label{tab:unit_test_audio_filtering}
+\end{xltabular}
+}
+
 % MEL Filter Module
 \subsection{MEL Filter Module}
 {\footnotesize
@@ -1411,9 +1456,9 @@ for the same reason of mocking complexity.
     \hline
 
     \utref{CreateFilterBankImpulseBinContributesToAtMostTwoMelBands} & 
-    ?? & 
-    ???  &
-    ??? & PASS\\
+    3-frame STFT from \texttt{audio/285\_sine.mp3} (4096-sample Hann frames). & 
+    Apply 40-band Mel filter bank to STFT.  &
+    Each input bin contributes to at most two Mel bands; Mel rows sparser than STFT row. & PASS\\
     \hline
     \caption{Unit tests for MEL Filter module.}
     \label{tab:unit_test_mel}
@@ -1451,9 +1496,9 @@ for the same reason of mocking complexity.
     \hline
 
     \utref{ApplyPCA} & 
-    ?? & 
-    ???  &
-    ??? & PASS\\
+    3-frame MFCC spectrogram, 6 cepstral coeffs from \texttt{audio/285\_sine.mp3}. & 
+    Apply PCA with 6 components to the MFCC spectrogram.  &
+    Output feature matrix keeps the same number of frames and has 6 columns (one per PCA component). & PASS\\
     \hline
     \caption{Unit tests for PCA module.}
     \label{tab:unit_test_pca}
@@ -1471,9 +1516,9 @@ for the same reason of mocking complexity.
     \hline
 
     \utref{ApplyLDANormalPCAFeatures} & 
-    Audio data of jackhammer. & 
-    Run LDA on audio?  &
-    ??? & PASS\\
+    PCA feature matrix (6 components) generated from \texttt{audio/jackhammer.mp3}. & 
+    Run LDA with 3-class model on the PCA features.  &
+    LDA returns a classification label (expected jackhammer) without errors. & PASS\\
     \hline
     \caption{Unit tests for Linear Discriminant Analysis module.}
     \label{tab:unit_test_lda}
@@ -1490,10 +1535,25 @@ for the same reason of mocking complexity.
     \endfirsthead
     \hline
     
+    \utref{ClassifySilenceAsUnknown} & 
+    Frames from \texttt{audio/silence.mp3}. & 
+    Run classifier over all frames. &
+    At least 90\% of frames labeled \texttt{unknown}. & PASS\\
+    \hline
     \utref{ClassifyJackhammerAudio} & 
-    Microphone holds audio samples from a jackhammer & 
-    Run classification on microphone data &
-    classify Jack hammer & PASS\\
+    Frames from \texttt{audio/jackhammer.mp3}. & 
+    Run classifier over all frames. &
+    At least 90\% of frames labeled \texttt{jackhammer}. & PASS\\
+    \hline
+    \utref{ClassifySirenAudio} & 
+    Frames from \texttt{audio/siren.mp3}. & 
+    Run classifier over all frames. &
+    At least 90\% of frames labeled \texttt{siren}. & PASS\\
+    \hline
+    \utref{ClassifyCarHornAudio} & 
+    Frames from \texttt{audio/car\_horn.mp3}. & 
+    Run classifier over all frames (test currently disabled). &
+    Expected at least 90\% of frames labeled \texttt{car\_horn}. & FAIL\\
     \hline
     \utref{AmbiguousSampleDetection} & 
     Random noise audio samples & 
@@ -1903,7 +1963,13 @@ system crashes, it can fail safely and recover in a controlled way.
 
 Moreover, the classification module was identified as an area for improvement 
 in terms of reliability and accuracy, which led to the improvements mentioned 
-in the next section. 
+in the next section. The following issues addressed the feedback recieved:
+
+\begin{itemize}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/497}{issue \#497}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/487}{issue \#487}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/589}{issue \#589}
+\end{itemize}
 
 \subsection{Classification Module}
 After user testing, it was found that the classification module could be 
