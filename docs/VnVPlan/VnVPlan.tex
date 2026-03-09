@@ -56,6 +56,7 @@ eye movement\\
 2026-02-18 & 3.4 & Integrate TA feedback (primarily removing implementation 
 details from test cases). \\
 2025-02-18 & 3.5 & Update code coverage tools. \\
+2025-03-09 & 4.0 & Test-FR-2.3 Error handling test procedure updated. \\
 \hline
 \end{tabularx}
 
@@ -761,19 +762,17 @@ permission checks for all requests.
 					
 \textbf{Initial State:} 
 The driver layer is running on the microcontroller. Hardware is in a state where
-specific error conditions can be triggered (e.g., ADC not initialized, invalid
-GPIO pin specified).
+specific error conditions can be triggered (e.g., invalid GPIO pin specified).
 					
 \textbf{Input:}
-A sequence of driver API calls designed to trigger various error conditions: (1)
-read from uninitialized ADC channel, (2) write to invalid GPIO pin number, (3)
-configure timer with out-of-range parameters, (4) read from disconnected
+Inject fault by changing source code to: (1) write to invalid GPIO pin number,
+(2) configure timer with out-of-range parameters, (3) read from disconnected
 peripheral.
 					
 \textbf{Output:}
 For each error condition, the driver returns a specific error code identifying
-the failure type (e.g., ERROR\_NOT\_INITIALIZED, ERROR\_INVALID\_PIN,
-ERROR\_INVALID\_PARAMETER, \\ ERROR\_HARDWARE\_DISCONNECTED). Error codes are
+the failure type (e.g., HAL\_RCC\_OSCILLATOR\_INIT\_FAIL,
+HAL\_SAI\_A1\_INIT\_FAIL, HAL\_PCD\_INIT). Error codes are
 returned immediately without hanging or crashing. 
 
 \textbf{Test Case Derivation:} 
@@ -783,8 +782,9 @@ the failure cause. Immediate return of error codes (without blocking) maintains
 real-time system responsiveness.
 					
 \textbf{How test will be performed:}
-Execute test sequence that triggers each error condition. Capture return codes
-from driver API calls. Verify each return code matches the expected error type.
+Modify source code that inject specific faults.Execute test sequence and
+capture return codes from driver API calls. Verify each return code matches
+the expected error type.
 Measure time from API call to return to confirm immediate propagation (less than
 10 milliseconds). The test passes if all error conditions return correct,
 specific error codes within timing constraints.
@@ -1074,8 +1074,8 @@ domain data.
 
 \textbf{Input:}
 A stream of random frequency-domain audio data sampled with a 16 kHz sample
-rate. The input data will have error flags set, indicating either clipping, lost
-signal, or silence.
+rate. The input data will have error flags set, indicating either clipping, 
+or lost signal.
 
 \textbf{Output:}
 The Audio360 Engine module accepts the input data with error flags. The output
@@ -1169,7 +1169,7 @@ module with error flags set.
 
 \textbf{Input:}
 Mock audio data from the audio filtering module with error flags set, indicating
-either clipping, lost signal, or silence.
+either clipping, or lost signal.
 
 \textbf{Output:}
 The Audio360 Engine module detects the error flags in the input data and

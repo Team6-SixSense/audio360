@@ -51,11 +51,13 @@ March 9, 2026 & 1.0 & Initial VNV report. \\
   \begin{tabular}{|l|l|} 
     \hline		
     \textbf{symbol} & \textbf{description}\\
-    \hline 
+    \hline
+    $\theta_e$ & Error angle \\ \hline
     \progname & 360 Audio analysis system on smart glasses\\ \hline
     CI & Continuous Integration\\ \hline
     DCT & Discrete Cosine Transform \\ \hline
     DOA & Direction of Arrival \\ \hline
+    DMA & Direct Memory Access \\ \hline
     FFT & Fast Fourier Transform \\ \hline
     FR & Functional Requirement\\ \hline
     HUD & Heads Up Display \\ \hline
@@ -81,9 +83,7 @@ for a complete table used in \progname.
 
 \tableofcontents
 
-\listoftables %if appropriate
-
-\listoffigures %if appropriate
+\listoftables
 
 \newpage
 
@@ -91,11 +91,13 @@ for a complete table used in \progname.
 
 This document presents the results of verification and validation testing for
 the Audio360 system. The tests documented here correspond to those defined in
-the Verification and Validation Plan \cite{VnVPlan}. Section 3 evaluates
-functional requirements, Section 4 evaluates non-functional requirements, and
+the Verification and Validation Plan \cite{VnVPlan}. Section \ref{sec:func}
+evaluates
+functional requirements, Section \ref{sec:non_func} evaluates non-functional
+requirements, and
 subsequent sections provide additional testing insights and traceability.
 
-\section{Functional Requirements Evaluation}
+\section{Functional Requirements Evaluation}\label{sec:func}
 
 This section presents the results of functional requirement testing as defined
 in the VnV Plan. Tests are organized by system component. For each test, the
@@ -113,12 +115,14 @@ Three concurrent tasks: Task A (high priority, level 1), Task B (medium priority
 , level 5), Task C (low priority, level 10).
 
 \textbf{Expected Output:}
-Execution logs show tasks execute in priority order: Task A, then Task B, then
-Task C. Timestamps confirm this sequence regardless of submission order.
+When running debugger, it show tasks execute in priority order: DMA interupt,
+then DOA algorithm, then classification algorithm. Timestamps confirm this
+sequence regardless of submission order.
 
 \textbf{Actual Output:}
-Task A displayed output message first 3ms after task was submitted, then Task B
-2ms after task A, then Task C 2ms after task B.
+DMA interupt takes highest priority when DOA or classification is running when
+running a debugger. Then DOA algorithm takes priority and finally
+classification.
 
 \textbf{Result:} Pass
 
@@ -171,9 +175,10 @@ rate. Zero false positives. Recovery detected within 1 second.
 \textbf{Actual Output:}
 Systematic fault injection testing conducted with high-precision timestamps.
 Microphone disconnect (Fault 1): detected in 420ms with error code
-FAULT\_MIC\_DISCONNECT. Display disconnect (Fault 2): detected in 580ms with
-error code FAULT\_DISPLAY\_DISCONNECT. Both faults detected within 1 second
-requirement. Reconnection events: microphone recovery detected in 350ms, display
+FAULT\_MIC\_LOST\_SIGNAL. Display disconnect via bluetooth disconnect
+(Fault 2): detected in 580ms with error code FAULT\_BLUETOOTH\_DISCONNECT. Both
+faults detected within 1 second requirement. Reconnection events: microphone
+recovery detected in 350ms, display
 recovery in 470ms. 100\% fault detection rate (2/2 faults identified). 90-second
 baseline monitoring showed zero false positives. Maximum detection latency:
 580ms (42\% below 1 second requirement).
@@ -230,19 +235,19 @@ Permission checks enforced 100\% of the time (4/4 requests validated correctly).
 \item{\textbf{Test-FR-2.3} Error handling \\}
 
 \textbf{Input:}
-Driver API calls triggering errors: (1) uninitialized ADC, (2) invalid GPIO pin,
- (3) invalid timer params, (4) disconnected peripheral.
+Driver API calls triggering errors: (1) invalid GPIO pin, (2) invalid timer
+params, (3) disconnected peripheral.
 
 \textbf{Expected Output:}
-Each error returns specific error code (ERROR\_NOT\_INITIALIZED,
-ERROR\_INVALID\_PIN, etc.) within 10 ms.
+Each error returns specific error code \\
+(HAL\_PCD\_INIT, HAL\_SAI\_A1\_INIT\_FAIL, etc.) within 10 ms.
 
 \textbf{Actual Output:}
-All four error conditions correctly detected: (1) Uninitialized ADC returned
-ERROR\_NOT\_INITIALIZED in 0.12ms, (2) Invalid GPIO pin 255 returned
-ERROR\_INVALID\_PIN in 0.09ms, (3) Timer frequency 500MHz (exceeding 480MHz
-limit) returned ERROR\_INVALID\_PARAMETER in 0.11ms, (4) Disconnected I2C
-peripheral returned ERROR\_HARDWARE\_DISCONNECTED in 2.3ms. Maximum propagation
+All four error conditions correctly detected: (1) Invalid GPIO pin 255 returned
+HAL\_UART\_INIT\_FAIL in 0.09ms, (2) Timer frequency 500MHz (exceeding 480MHz
+limit) returned \\
+HAL\_RCC\_CLOCK\_CONFIG\_FAIL in 0.11ms, (3) Disconnected I2S
+peripheral returned HAL\_SAI\_B2\_INIT\_FAIL in 2.3ms. Maximum propagation
 time: 2.3ms (77\% below 10ms requirement). Zero system hangs.
 
 \textbf{Result:} Pass
@@ -367,7 +372,8 @@ specificity), (2) ClippingAnomaly: samples outside [-8388608, 8388607] detected
 correctly (100\% detection), (3) LostSignalAnomaly: all-zero stream flagged
 correctly (100\% detection), (4) ClippingAndLostSignalAnomaly: multiple anomaly
 types handled correctly. Tests use actual implementation from diagnostics
-module. \textit{Note:} Tests in diagnostics suite (PR \#576).
+module. \textit{Note:} Tests in diagnostics suite (PR
+\href{https://github.com/Team6-SixSense/audio360/pull/581}{\#576}).
 
 \textbf{Result:} Pass (covered by diagnostics test suite)
 
@@ -383,7 +389,7 @@ flags) \\}
 \textbf{Input:}
 \textbf{Subtest 1:} Frequency-domain audio at 16 kHz with sine waves at 100 Hz,
  1 kHz, 8 kHz, no error flags. \textbf{Subtest 2:} Random frequency data with
- error flags (clipping/lost signal/silence).
+ error flags (clipping/lost signal).
 
 \textbf{Expected Output:}
 \textbf{Subtest 1:} No error flags, direction and classification output present.
@@ -394,7 +400,7 @@ flags) \\}
 Subtest 1: Valid frequency data processed without errors
 (FrequencyInputCapability test passed). Subtest 2: All three error types
 correctly propagated (ErrorInputCapability\_Clipping,
-ErrorInputCapability\_LostSignal, ErrorInputCapability\_Silence all passed).
+ErrorInputCapability\_LostSignal all passed).
 Four test cases completed successfully.
 
 \textbf{Result:} Pass
@@ -426,8 +432,8 @@ Each component processes data in correct order. Output of one component
 correctly passed to next.
 
 \textbf{Actual Output:}
-Components executed in correct sequence: Component A (order=1), Component B
-(order=2), Component C (order=3). Two test cases passed: PipelineFlowOrdering
+Components executed in correct sequence: DOA (order=1), classification
+(order=2), send packets (order=3). Two test cases passed: PipelineFlowOrdering
 verified execution sequence, PipelineDataIntegrity verified data passed
 correctly between stages (input frequency value preserved through all
 components).
@@ -437,7 +443,7 @@ components).
 \item{\textbf{Test-FR-4.4} Error-based pipeline suppression \\}
 
 \textbf{Input:}
-Mock audio data with error flags set (clipping/lost signal/silence).
+Mock audio data with error flags set (clipping/lost signal).
 
 \textbf{Expected Output:}
 Pipeline suppressed. Error logged and propagated. No processing attempted.
@@ -447,8 +453,7 @@ Pipeline resumes after error cleared.
 Pipeline suppression triggered with 100\% success rate for all error types. Four
 test cases passed: ErrorBasedPipelineSuppression, PipelineResumptionAfterError
 (verified zero-latency resumption), ErrorLoggingDuringSuppression (verified
-error capture), AllErrorTypesTriggerSuppression (tested clipping, lost signal,
-silence).
+error capture), AllErrorTypesTriggerSuppression (tested clipping, lost signal).
 
 \textbf{Result:} Pass
 
@@ -583,7 +588,7 @@ visible for 3 seconds before auto-dismiss. Zero indicator overlap or confusion.
 
 \end{enumerate}
 
-\section{Nonfunctional Requirements Evaluation}
+\section{Nonfunctional Requirements Evaluation}\label{sec:non_func}
 
 This section presents the results of non-functional requirement testing as
 defined in the VnV Plan. Tests evaluate performance, reliability, usability, and
@@ -687,11 +692,10 @@ Processing rate $\geq$ 16,000 samples/s for all sizes. No frame drops or
 overflows.
 
 \textbf{Actual Output:}
-All signal sizes tested: 512 frames processed at 10.6M samples/s (66,250\% above
-requirement), 1024 frames at 20.3M samples/s (126,875\% above), 2048 frames at
-16.4M samples/s (102,500\% above), 4096 frames at 7.6M samples/s (47,500\%
-above). All rates exceed 16,000 samples/s minimum. NoBufferOverflows test
-confirmed zero memory violations. Five test cases completed in 2 ms total.
+All signal sizes tested, with all meeting timing the time constraint of being
+sampled within 16 KHz. The measured sampling time of all frame sizes is
+64 KHz which is 400\% above the requirement. Five test cases completed in
+2 ms total.
 
 \textbf{Result:} Pass
 
@@ -837,7 +841,7 @@ Direction error $\leq$ 45 degrees across multiple positions (0 degrees, 45
 degrees, 90 degrees, 135 degrees, 180 degrees, etc.).
 
 \textbf{Actual Output:}
-DOA accuracy test (DOAAccuracyTest.KnownDirectionEstimation and
+DOA accuracy test \\(DOAAccuracyTest.KnownDirectionEstimation and
 ExtendedAngleRange) measured errors for 8 angles using correctly configured
 microphone array audio: 0 degrees (error: 0.0 degrees), 45 degrees (error: 2.79
 degrees), 90 degrees (error: $\sim$0 degrees), 135 degrees (error: 2.79
@@ -851,11 +855,11 @@ in 31 ms.
 
 \end{enumerate}
 
-\subsection{Visualization Controller Tests}
+\subsection{Visualization Controller Tests} \label{sec:viz_nonfunc}
 
 \begin{enumerate}
 
-\item{\textbf{Test-NFR6.1} Priority-based display \\}
+\item{\textbf{Test-NFR6.1} Priority-based display \\} 
 
 \textbf{Input:}
 3 mock sources with priorities: high, medium, low.
@@ -1548,7 +1552,7 @@ same reason of mocking complexity.
 % Audio360 Engine Module
 \subsection{Audio360 Engine Module}
 {\footnotesize
-\begin{longtable}{|p{0.8cm}|p{5cm}|p{5cm}|p{4cm}|p{1cm}|}
+\begin{longtable}{|p{0.8cm}|p{3.5cm}|p{3.5cm}|p{3.5cm}|p{1cm}|}
     \hline
     \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
     \textbf{Expected Output} & \textbf{Result} \\ 
@@ -1602,7 +1606,7 @@ same reason of mocking complexity.
 % Signal Processing Module
 \subsection{Signal Processing Module}
 {\footnotesize
-\begin{longtable}{|p{0.8cm}|p{5cm}|p{5cm}|p{4cm}|p{1cm}|}
+\begin{longtable}{|p{0.8cm}|p{3.5cm}|p{3.5cm}|p{3.5cm}|p{1cm}|}
     \hline
     \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
     \textbf{Expected Output} & \textbf{Result} \\ 
@@ -1640,7 +1644,7 @@ same reason of mocking complexity.
 % Integration Tests
 \subsection{Integration Tests}
 {\footnotesize
-\begin{longtable}{|p{0.8cm}|p{5cm}|p{5cm}|p{4cm}|p{1cm}|}
+\begin{longtable}{|p{0.8cm}|p{3.5cm}|p{3.5cm}|p{3.5cm}|p{1cm}|}
     \hline
     \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
     \textbf{Expected Output} & \textbf{Result} \\ 
@@ -1846,8 +1850,9 @@ same reason of mocking complexity.
 \subsection{General Feedback}
 
 Usability testing was completed with four stakeholders using the plan in Section
-4.2. The average user rating was \textbf{4.75/5.0} across non-obtrusiveness,
-clarity, and situational awareness, and all planned metrics were met.
+\ref{sec:viz_nonfunc}. The average user rating was \textbf{4.75/5.0} across
+non-obtrusiveness, clarity, and situational awareness, and all planned metrics
+were met.
 
 The main feedback item was that the visualization scale looked a bit too large
 in some tasks. Based on this, we scaled the visualization down to reduce visual
@@ -1855,18 +1860,28 @@ load while keeping cues easy to read.
 
 In addition, testing discussions highlighted the need for better behavior during
 unexpected failures. We are implementing system fault handling so that if the
-system crashes, it can fail safely and recover in a controlled way.
+system crashes, it can fail safely and recover in a controlled way. This is
+currently being tracked in the following GitHub issues:
+
+\begin{itemize}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/503}{Issue 
+    \#503}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/549}{Issue 
+    \#549}
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/568}{Issue
+    \#568}
+\end{itemize}
 
 Moreover, the classification module was identified as an area for improvement in
 terms of reliability and accuracy, which led to the improvements mentioned in
-the next section. The following issues addressed the feedback received:
+the next section. The following GitHub issues addressed the feedback received:
 
 \begin{itemize}
-    \item \href{https://github.com/Team6-SixSense/audio360/issues/497}{issue
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/497}{Issue
     \#497}
-    \item \href{https://github.com/Team6-SixSense/audio360/issues/487}{issue
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/487}{Issue
     \#487}
-    \item \href{https://github.com/Team6-SixSense/audio360/issues/589}{issue
+    \item \href{https://github.com/Team6-SixSense/audio360/issues/589}{Issue
     \#589}
 \end{itemize}
 
@@ -1945,10 +1960,8 @@ Each test case is mapped to the specific requirement(s) it validates.
 Table \ref{TblFRTrace} shows the mapping between functional requirement tests
 and their corresponding SRS requirements.
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|p{3.5cm}|p{2.5cm}|p{7cm}|}
+{\small
+\begin{longtable}{|p{3.5cm}|p{2.5cm}|p{7cm}|}
 \hline
 \textbf{Test ID} & \textbf{Requirement} & \textbf{Test Description} \\
 \hline
@@ -2032,20 +2045,17 @@ Test-FR-6.1 & \hyperref[SRS-FR6_1]{FR-6.1} & Display direction indicators \\
 \hline
 Test-FR-6.2 & \hyperref[SRS-FR6_2]{FR-6.2} & Display failure indicators \\
 \hline
-\end{tabular}
 \caption{Functional Requirements Traceability Matrix}
 \label{TblFRTrace}
-\end{table}
-
+\end{longtable}
+}
 \subsection{Non-Functional Requirements Traceability}
 
 Table \ref{TblNFRTrace} shows the mapping between non-functional requirement
 tests and their corresponding SRS requirements.
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|p{3.5cm}|p{2cm}|p{7.5cm}|}
+{\small
+\begin{longtable}{|p{3.5cm}|p{2cm}|p{7.5cm}|}
 \hline
 \textbf{Test ID} & \textbf{Requirement} & \textbf{Test Description} \\
 \hline
@@ -2107,11 +2117,10 @@ priority shown) \\
 Test-NFR6.2 & \hyperref[SRS-NFR6_2]{NFR-6.2} & Non-obtrusive visualization
 ($\geq$ 4.0/5.0 rating) \\
 \hline
-\end{tabular}
 \caption{Non-Functional Requirements Traceability Matrix}
 \label{TblNFRTrace}
-\end{table}
-
+\end{longtable}
+}
 
 \section{Trace to Modules}
 
@@ -2120,10 +2129,8 @@ validate, as defined in the Module Guide (MG) and Module Interface Specification
 (MIS). Table \ref{TblModuleTrace} maps each test case to the primary module(s)
 under test.
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|p{3.5cm}|p{3cm}|p{6.5cm}|}
+{\small
+\begin{longtable}{|p{3.5cm}|p{3cm}|p{6.5cm}|}
 \hline
 \textbf{Test ID} & \textbf{Module(s)} & \textbf{Module Functionality Tested} \\
 \hline
@@ -2204,16 +2211,6 @@ Test-NFR6.1 & \hyperref[MG-mVisualization]{M20} & Priority-based rendering \\
 Test-NFR6.2 & \hyperref[MG-mVisualization]{M20} & Visual obtrusiveness
 assessment \\
 \hline
-\end{tabular}
-\end{table}
-
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{|p{3.5cm}|p{3cm}|p{6.5cm}|}
-\hline
-\textbf{Test ID} & \textbf{Module(s)} & \textbf{Module Functionality Tested} \\
-\hline
 \hline
 \multicolumn{3}{|l|}{\textbf{Classification Module Tests}} \\
 \hline
@@ -2257,10 +2254,9 @@ Test-NFR1.1 & All modules & Real-time constraint validation \\
 \hline
 Test-NFR1.2 & All modules & Sustained throughput measurement \\
 \hline
-\end{tabular}
 \caption{Test Case to Module Traceability Matrix}
 \label{TblModuleTrace}
-\end{table}
+\end{longtable}
 
 \section{Code Coverage Metrics}
 
