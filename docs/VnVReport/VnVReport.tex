@@ -1417,7 +1417,7 @@ for the same reason of mocking complexity.
 % Audio Filtering Module
 \subsection{Audio Filtering Module}
 {\footnotesize
-\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+\begin{longtable}{|p{0.8cm}|p{3.5cm}|p{3.5cm}|p{3.5cm}|p{1cm}|}
     \hline
     \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
     \textbf{Expected Output} & \textbf{Result} \\ 
@@ -1432,7 +1432,7 @@ for the same reason of mocking complexity.
     \utref{TimeToFrequencyShowsThreePeaks} & 
     3-second WAV with 100 Hz, 1 kHz, 8 kHz tones (\texttt{audio/three\_tone.wav}). & 
     Run FFT on a 4096-sample Hann-windowed frame.  &
-    Clear peaks at target tones; non-target bins <20\% of peak; <10\% error vs. ideal spectrum. & PASS\\
+    Clear peaks at target tones; non-target bins $<20\%$ of peak; $<10\%$ error vs. ideal spectrum. & PASS\\
     \hline
     \utref{ReducedSpectralLeakageWithHannWindow} & 
     4096-sample sine at half-bin offset (synthetic frame). & 
@@ -1442,7 +1442,7 @@ for the same reason of mocking complexity.
 
     \caption{Unit tests for Audio Filtering module.}
     \label{tab:unit_test_audio_filtering}
-\end{xltabular}
+\end{longtable}
 }
 
 % MEL Filter Module
