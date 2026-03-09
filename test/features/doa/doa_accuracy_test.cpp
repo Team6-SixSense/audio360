@@ -16,17 +16,8 @@
 #include <vector>
 
 #include "AudioFile.h"
+#include "angles.hpp"
 #include "constants.h"
-
-/**
- * @brief Convert radians to degrees.
- */
-static double radianToDegree(double radian) { return radian * 180.0 / M_PI; }
-
-/**
- * @brief Convert degrees to radians.
- */
-static double degreeToRadian(double degree) { return degree * M_PI / 180.0; }
 
 /**
  * @brief Calculate angular error with proper wrapping.
@@ -66,7 +57,7 @@ static std::vector<float> ToFloatSamples(const std::vector<double>& samples,
  */
 TEST(DOAAccuracyTest, KnownDirectionEstimation) {
   // Test parameters
-  const double THETA_E = degreeToRadian(45.0);  // θ_e = 45° (π/4 radians)
+  const double THETA_E = degreeToRad(45.0);  // θ_e = 45° (π/4 radians)
   const double MAE_THRESHOLD = THETA_E / 2.0;   // MAE < 22.5°
 
   // Known test angles (in degrees, will be converted to radians)
@@ -104,21 +95,21 @@ TEST(DOAAccuracyTest, KnownDirectionEstimation) {
       float estimatedAngleRad = doa.calculateDirection(
           mic0Data, mic1Data, mic2Data, mic3Data, DOA_Algorithms::GCC_PHAT);
 
-      double knownAngleRad = degreeToRadian(knownAngleDeg);
+      double knownAngleRad = degreeToRad(knownAngleDeg);
       double errorRad = calculateAngularError(estimatedAngleRad, knownAngleRad);
-      double errorDeg = radianToDegree(errorRad);
+      double errorDeg = radToDegree(errorRad);
 
       estimatedAngles.push_back(estimatedAngleRad);
       errors.push_back(errorRad);
 
       std::cout << "Known: " << knownAngleDeg << "°, Estimated: "
-                << radianToDegree(estimatedAngleRad) << "°, Error: " << errorDeg
+                << radToDegree(estimatedAngleRad) << "°, Error: " << errorDeg
                 << "°" << std::endl;
 
       // Verify error is within θ_e threshold for this sample
       EXPECT_LE(errorRad, THETA_E)
           << "DOA error " << errorDeg << "° exceeds θ_e threshold "
-          << radianToDegree(THETA_E) << "° for known angle " << knownAngleDeg
+          << radToDegree(THETA_E) << "° for known angle " << knownAngleDeg
           << "°";
 
     } catch (const std::exception& e) {
@@ -139,8 +130,8 @@ TEST(DOAAccuracyTest, KnownDirectionEstimation) {
   }
   mae /= errors.size();
 
-  double maeDeg = radianToDegree(mae);
-  double maeThresholdDeg = radianToDegree(MAE_THRESHOLD);
+  double maeDeg = radToDegree(mae);
+  double maeThresholdDeg = radToDegree(MAE_THRESHOLD);
 
   std::cout << "\nDOA Accuracy Summary:" << std::endl;
   std::cout << "  Samples tested: " << errors.size() << std::endl;
@@ -157,7 +148,7 @@ TEST(DOAAccuracyTest, KnownDirectionEstimation) {
  * @details Tests additional angles (180°, 225°, 270°, 315°) if available.
  */
 TEST(DOAAccuracyTest, ExtendedAngleRange) {
-  const double THETA_E = degreeToRadian(45.0);
+  const double THETA_E = degreeToRad(45.0);
 
   std::vector<double> extendedAngles = {180.0, 225.0, 270.0, 315.0};
 
@@ -188,9 +179,9 @@ TEST(DOAAccuracyTest, ExtendedAngleRange) {
       float estimatedAngleRad = doa.calculateDirection(
           mic0Data, mic1Data, mic2Data, mic3Data, DOA_Algorithms::GCC_PHAT);
 
-      double knownAngleRad = degreeToRadian(knownAngleDeg);
+      double knownAngleRad = degreeToRad(knownAngleDeg);
       double errorRad = calculateAngularError(estimatedAngleRad, knownAngleRad);
-      double errorDeg = radianToDegree(errorRad);
+      double errorDeg = radToDegree(errorRad);
 
       testedAngles++;
       if (errorRad <= THETA_E) {

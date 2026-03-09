@@ -39,15 +39,6 @@ static std::vector<float> ToFloatSamples(const std::vector<double>& samples,
 }
 
 /**
- * @brief Converts radians to degrees.
- * @param angleRad Angle in radians.
- * @return Angle in degrees.
- */
-static float radianToDegree(float angleRad) {
-  return angleRad * 180.0f / PI_32;
-}
-
-/**
  * @brief Calculate angular error with proper wrapping.
  * @details Handles angle wrapping to ensure error is always the shortest
  *          angular distance between estimated and known direction.
@@ -132,15 +123,15 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousClassificationAndDOA_SingleSo
   // Test-NFR5.1 Pass Criteria: Direction error ≤ 45° (0.785 radians)
   const double MAX_DIRECTION_ERROR = degreeToRad(45.0);
   EXPECT_LE(directionError, MAX_DIRECTION_ERROR)
-      << "Direction error " << radianToDegree(directionError) 
+      << "Direction error " << radToDegree(directionError) 
       << "° exceeds 45° threshold";
 
   std::cout << "Integration test results:" << std::endl;
   std::cout << "  Classification: " << classLabel 
             << (classificationAcceptable ? " (acceptable)" : " (UNEXPECTED)") << std::endl;
   std::cout << "  Direction: " << directionRad << " rad ("
-            << radianToDegree(directionRad) << "°)" << std::endl;
-  std::cout << "  Direction error: " << radianToDegree(directionError) << "°"
+            << radToDegree(directionRad) << "°)" << std::endl;
+  std::cout << "  Direction error: " << radToDegree(directionError) << "°"
             << std::endl;
 }
 
@@ -192,8 +183,8 @@ TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
     double expectedRad = degreeToRad(static_cast<double>(angle));
     double error = calculateAngularError(direction, expectedRad);
     EXPECT_LE(error, degreeToRad(45.0))
-        << "Angle: " << angle << "°, Direction: " << radianToDegree(direction)
-        << "°, Error: " << radianToDegree(error) << "°";
+        << "Angle: " << angle << "°, Direction: " << radToDegree(direction)
+        << "°, Error: " << radToDegree(error) << "°";
   }
 }
 
