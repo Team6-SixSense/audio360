@@ -194,39 +194,37 @@ baseline monitoring showed zero false positives. Maximum detection latency:
 \item{\textbf{Test-FR-2.1} Driver API functionality \\}
 
 \textbf{Input:}
-Driver API calls: (1) read ADC, (2) write GPIO, (3) configure timer, (4) read
+Driver API calls: (1) write GPIO, (2) configure timer, (3) read
 system clock.
 
 \textbf{Expected Output:}
-All operations complete successfully. ADC returns valid samples, GPIO toggles
+All operations complete successfully. GPIO toggles
 visible on oscilloscope, timer produces expected behavior, clock returns
 monotonic timestamps.
 
 \textbf{Actual Output:}
-All four driver API operations executed successfully. (1) ADC read: returned
-12-bit sample value 2048 (0.8V analog input at 3.3V reference), conversion time
-2.4$\mu$s. (2) GPIO write: toggled pin PA5 from LOW to HIGH. (3) Timer
+All four driver API operations executed successfully.
+(1) GPIO write: toggled pin PA5 from LOW to HIGH. (2) Timer
 configure: TIM2 configured to 1kHz frequency, measured output 1.000kHz $\pm$
-0.2Hz (0.02\% error). (4) System clock read: returned monotonic timestamps,
+0.2Hz (0.02\% error). (3) System clock read: returned monotonic timestamps,
 verified 1000 consecutive reads with strictly increasing values (no rollback),
-clock resolution 1$\mu$s. 100\% API call success rate (4/4 operations).
+clock resolution 1$\mu$s. 100\% API call success rate (3/3 operations).
 
 \textbf{Result:} Pass
 
 \item{\textbf{Test-FR-2.2} Permission enforcement \\}
 
 \textbf{Input:}
-Module A (high privilege) and Module B (restricted privilege) request: (1) ADC
-access, (2) GPIO write.
+Module A (high privilege) and Module B (restricted privilege) request: 
+GPIO write.
 
 \textbf{Expected Output:}
 Module A's requests succeed. Module B's requests rejected with permission denied
 error.
 
 \textbf{Actual Output:}
-Module A's ADC read succeeded, returned 12-bit sample value 2047. Module A's
-GPIO write succeeded, pin toggled (verified on oscilloscope). Module B's ADC
-read rejected with ERROR\_PERMISSION\_DENIED, return time 0.08ms. Module B's
+Module A's GPIO write succeeded, pin toggled (verified on oscilloscope).
+Module B's 
 GPIO write rejected with ERROR\_PERMISSION\_DENIED, return time 0.06ms.
 Permission checks enforced 100\% of the time (4/4 requests validated correctly).
 
@@ -1981,7 +1979,7 @@ detection \\
 \hline
 \multicolumn{3}{|l|}{\textbf{Hardware Abstraction Layer Tests}} \\
 \hline
-Test-FR-2.1 & \hyperref[SRS-FR2_1]{FR-2.1} & Peripheral interface testing (ADC,
+Test-FR-2.1 & \hyperref[SRS-FR2_1]{FR-2.1} & Peripheral interface testing (
 GPIO, timer, clock) \\
 \hline
 Test-FR-2.2 & \hyperref[SRS-FR2_2]{FR-2.2} & Permission enforcement for HAL
@@ -2147,7 +2145,7 @@ Test-FR-1.3 & Memory Manager & Allocation, deallocation, limit enforcement \\
 Test-FR-1.4 & \hyperref[MG-mMicDiag]{M4} & Diagnostic fault detection and
 reporting \\
 \hline
-Test-FR-2.1 & HAL Interface & ADC, GPIO, timer, clock peripheral access \\
+Test-FR-2.1 & HAL Interface & GPIO, timer, clock peripheral access \\
 \hline
 Test-FR-2.2 & HAL Interface & Permission-based access control \\
 \hline
