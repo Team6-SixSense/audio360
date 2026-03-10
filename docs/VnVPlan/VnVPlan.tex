@@ -697,13 +697,13 @@ application with driver API access is ready to execute.
 					
 \textbf{Input:}
 A test sequence that invokes driver API functions for different hardware
-operations: (1) read from ADC channel, (2) write to GPIO pin, (3) configure
-timer, (4) read system clock. Each operation uses the driver's abstracted
+operations: (1) write to GPIO pin, (2) configure
+timer, (3) read system clock. Each operation uses the driver's abstracted
 interface rather than direct hardware register access.
 					
 \textbf{Output:}
-All driver API calls complete successfully and return expected data. ADC reads
-return valid voltage samples. GPIO writes toggle pin states visible on
+All driver API calls complete successfully and return expected data.
+GPIO writes toggle pin states visible on
 oscilloscope. Timer configuration produces expected timing behavior. System
 clock reads return monotonically increasing timestamps. 
 
@@ -717,8 +717,8 @@ functionality for all hardware operations required by application components.
 Compile test application that uses only driver API calls (no direct register
 access). Deploy to microcontroller. Execute test sequence exercising each driver
 function. Verify all operations complete successfully through return codes. Use
-oscilloscope to verify GPIO toggles. Use serial logging to verify ADC readings
-are within expected ranges. The test passes if all driver operations execute
+oscilloscope to verify GPIO toggles.
+The test passes if all driver operations execute
 correctly and provide expected functionality. Note that no direct hardware
 register access is required by the test application.
 
@@ -733,9 +733,7 @@ Module B with restricted privilege (limited hardware access).
 					
 \textbf{Input:}
 Test requests from both modules attempting to access hardware resources: (1)
-Module A requests ADC access, (2) Module B requests ADC
-access, (3) Module A requests GPIO write, (4)
-Module B requests GPIO write.
+Module A requests GPIO write, (2) Module B requests GPIO write.
 					
 \textbf{Output:}
 Module A's requests complete successfully with hardware operations executed.
@@ -746,7 +744,7 @@ denied error codes without executing hardware operations.
 Permission-based access control prevents unauthorized or unintended hardware
 operations that could compromise system safety or stability. The driver must
 enforce access policies to maintain system integrity. Only authorized components
-should control critical hardware like ADCs and display interfaces.
+should control critical hardware like PIN writes and display interfaces.
 					
 \textbf{How test will be performed:}
 Configure driver with permission rules for test modules. Execute test requests
@@ -795,7 +793,7 @@ specific error codes within timing constraints.
 					
 \textbf{Initial State:} 
 The driver layer is managing multiple memory regions for audio buffers, each
-actively being written by ADC DMA (Direct Memory Access) and read by audio
+actively being written by DMA (Direct Memory Access) and read by audio
 processing software. System is configured for continuous audio capture.
 					
 \textbf{Input:}
