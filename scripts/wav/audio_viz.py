@@ -10,14 +10,14 @@ import threading
 import time
 
 # --- CONFIGURATION ---
-SERIAL_PORT = 'COM6'
+SERIAL_PORT = 'COM5'
 BAUD_RATE = 115200
 SAMPLE_RATE = 16000
 WINDOW_DURATION = 0.2
 
 # Volume Scaling
 # Since we are doing manual math now, we can push this up.
-VOLUME = 0.3
+VOLUME = 1.0
 
 # We now have 4 channels interleaved: A1, B1, A2, B2
 CHANNELS = 4
@@ -132,18 +132,14 @@ def process_data_thread():
                 # 2. Convert to Float immediately for safe math
                 samples_float = channel_data.astype(np.float32)
 
-                # 3. DC Offset Removal (Safe now because we are in Float)
-                dc_offset = np.mean(samples_float)
-                samples_centered = samples_float - dc_offset
-
                 # 4. Apply Gain (x256 to simulate the 8-bit shift)
                 # We scale by 256 to restore the volume, then apply your VOLUME knob.
-                samples_scaled = samples_centered * 256.0 * VOLUME
+                samples_scaled = (samples_float)  * VOLUME
 
                 # 5. Hard Clip Limiter (Prevent wrapping noise)
                 # We clamp values to the 32-bit valid range so they simply "flat top"
                 # instead of wrapping around to static.
-                np.clip(samples_scaled, -2147483647, 2147483647, out=samples_scaled)
+                #np.clip(samples_scaled, -2147483647, 2147483647, out=samples_scaled)
 
                 # 6. Convert back to Int32 for the speakers
                 final_samples = samples_scaled.astype(np.int32)

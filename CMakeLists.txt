@@ -10,7 +10,7 @@ set(LOGGING_ENABLED ON)
 
 option(ARM_BUILD "ON to build for ARM target." OFF)
 option(BUILD_TESTS "ON to build tests job." OFF)
-option(BUILD_GLASSES_HOST "ON to enable USB host mode to communicate with glasses" ON)
+option(BUILD_GLASSES_HOST "ON to enable USB host mode to communicate with glasses" OFF)
 option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
 
 if (BUILD_TESTS AND ENABLE_COVERAGE)

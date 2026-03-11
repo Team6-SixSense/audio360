@@ -12,11 +12,11 @@
 
 #ifdef STM_BUILD
 #include "stm32f7xx_hal_cortex.h"
-#endif
-
-#ifdef BUILD_GLASSES_HOST
 #include "bluetooth_manager.h"
 #endif
+
+
+
 
 SystemFaultManager::SystemFaultManager() {}
 
@@ -106,14 +106,13 @@ void SystemFaultManager::updateFaultState(SystemFaultState faultState) {
 void SystemFaultManager::enterUnrecoverableState(std::string error) {
   ERROR("Entering unrecoverable state due to %s", error);
 
-#ifdef BUILD_GLASSES_HOST
   // Transmit system fault error to visualization before entering unrecoverable
   // state.
   VisualizationPacket vizPacket{};
   vizPacket.systemFaultState = this->state;
   std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
   Bluetooth_Manager_Send(packet.data(), static_cast<uint16_t>(packet.size()));
-#endif
+
 
   // Enter infinite loop to prevent any further execution.
   while (true) {
