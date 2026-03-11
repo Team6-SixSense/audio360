@@ -13,11 +13,13 @@
 #include "system_fault_states.h"
 
 struct ErrorStatesParamType {
-  bool hardwareError;  // true for hardware error.
+  bool hardwareError;  // True for hardware error.
 
-  bool doaError;  // true for DOA error.
+  bool doaError;  // True for DOA error.
 
-  bool classificationError;  // true for audio classification error.
+  bool classificationError;  // True for audio classification error.
+
+  bool audioAnomalyDetected;  // True for audio anomaly detected.
 
   SystemFaultState expectedState;  // Expected system fault state for
                                    // combination of errors above.
@@ -52,6 +54,12 @@ TEST_P(SystemFaultStateMachineTest, CheckStateMachineStates) {
     this->clearClassficationError();
   }
 
+  if (params.audioAnomalyDetected) {
+    this->reportAudioAnomalyDetected();
+  } else {
+    this->reportAudioAnomalyUndetected();
+  }
+
   // Run the state machine and assert the correct state.
   this->runFaultAnalysis();
   ASSERT_EQ(this->getSystemFaultState(), params.expectedState);
@@ -61,11 +69,21 @@ TEST_P(SystemFaultStateMachineTest, CheckStateMachineStates) {
 INSTANTIATE_TEST_SUITE_P(
     SystemErrors, SystemFaultStateMachineTest,
     ::testing::Values(
-        ErrorStatesParamType{false, false, false, NO_FAULT},
-        ErrorStatesParamType{false, false, true, CLASSIFICATION_FAULT},
-        ErrorStatesParamType{false, true, false, DIRECTIONAL_ANALYSIS_FAULT},
-        ErrorStatesParamType{false, true, true, DIRECTIONAL_ANALYSIS_FAULT},
-        ErrorStatesParamType{true, false, false, HARDWARE_FAULT},
-        ErrorStatesParamType{true, false, true, HARDWARE_FAULT},
-        ErrorStatesParamType{true, true, false, HARDWARE_FAULT},
-        ErrorStatesParamType{true, true, true, HARDWARE_FAULT}));
+        ErrorStatesParamType{false, false, false, false, NO_FAULT},
+        ErrorStatesParamType{false, false, true, false, CLASSIFICATION_FAULT},
+        ErrorStatesParamType{false, true, false, false,
+                             DIRECTIONAL_ANALYSIS_FAULT},
+        ErrorStatesParamType{false, true, true, false,
+                             DIRECTIONAL_ANALYSIS_FAULT},
+        ErrorStatesParamType{true, false, false, false, HARDWARE_FAULT},
+        ErrorStatesParamType{true, false, true, false, HARDWARE_FAULT},
+        ErrorStatesParamType{true, true, false, false, HARDWARE_FAULT},
+        ErrorStatesParamType{true, true, true, false, HARDWARE_FAULT},
+        ErrorStatesParamType{false, false, false, true, HARDWARE_FAULT},
+        ErrorStatesParamType{false, false, true, true, HARDWARE_FAULT},
+        ErrorStatesParamType{false, true, false, true, HARDWARE_FAULT},
+        ErrorStatesParamType{false, true, true, true, HARDWARE_FAULT},
+        ErrorStatesParamType{true, false, false, true, HARDWARE_FAULT},
+        ErrorStatesParamType{true, false, true, true, HARDWARE_FAULT},
+        ErrorStatesParamType{true, true, false, true, HARDWARE_FAULT},
+        ErrorStatesParamType{true, true, true, true, HARDWARE_FAULT}));

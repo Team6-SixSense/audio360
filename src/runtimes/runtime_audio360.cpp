@@ -8,6 +8,7 @@
 
 #include <cstdint>
 
+#include "audio_anomaly_detection.h"
 #include "bluetooth_manager.h"
 #include "classification.h"
 #include "doa.h"
@@ -42,6 +43,7 @@ static uint8_t micMainHalf{0}, micMainFull{0}, micDummyHalf{0}, micDummyFull{0};
 
 // Audio360 features.
 static SystemFaultManager systemFaultManager{};
+static AudioAnomalyDectection audioAnomalyDectection{};
 static DOA doa{DOA_SAMPLES};
 static Classification classifier{MIC_BUFFER_SIZE / 2, NUM_MEL_FILTERS,
                                  NUM_DCT_COEFF, NUM_PCA_COMPONENTS,
@@ -97,6 +99,9 @@ void mainAudio360() {
       ClassificationLabel classification = StringToClassification(prediction);
       classificationModeFilter.update(classification);
 
+      INFO("Running System Fault Manager's state machine.");
+      systemFaultManager.runFaultAnalysis();
+
       INFO("Creating visualization packet.");
       vizPacket.classification = classificationModeFilter.getMostOccurring();
       vizPacket.direction = directionModeFilter.getMostOccurring();
@@ -114,8 +119,6 @@ void mainAudio360() {
       }
     }
 
-    systemFaultManager.runFaultAnalysis();
-
     INFO("Audio360 loop end.");
   }
 }
@@ -131,6 +134,7 @@ bool extractMicData() {
   check_mic_buffers(micB2, &micDummyHalf, &micDummyFull);
 
   // Store microphone data in larger buffer when dma buffer is full.
+  bool audioAnolmaliesOccurred = false;
   for (int step = 0; step < 2; step++) {
     bool process = false;
     int offset = 0;
@@ -172,7 +176,21 @@ bool extractMicData() {
       SCB_CleanDCache_by_Addr((uint32_t*)micB1Buffer[startPos], numBytes);
       SCB_CleanDCache_by_Addr((uint32_t*)micA2Buffer[startPos], numBytes);
       SCB_CleanDCache_by_Addr((uint32_t*)micB2Buffer[startPos], numBytes);
+
+      // Check audio anomalies.
+      std::vector<int32_t*> audioStreams{
+          &micA1Buffer[startPos], &micB1Buffer[startPos],
+          &micA2Buffer[startPos], &micB2Buffer[startPos]};
+      audioAnolmaliesOccurred |= audioAnomalyDectection.checkAnomalies(
+          audioStreams, MIC_HALF_BUFFER_SIZE);
     }
+  }
+
+  // Report any audio anomalies.
+  if (audioAnolmaliesOccurred) {
+    systemFaultManager.reportAudioAnomalyDetected();
+  } else {
+    systemFaultManager.reportAudioAnomalyUndetected();
   }
 
   return newData;
