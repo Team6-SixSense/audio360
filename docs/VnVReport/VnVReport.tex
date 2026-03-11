@@ -39,6 +39,8 @@
 {\bf Notes}\\
 \hline
 March 9, 2026 & 1.0 & Initial VNV report. \\
+March 11, 2026 & 2.0 & Code coverage exclusion clarification. \\
+March 11, 2026 & 2.1 & Code coverage per module. \\
 \hline
 \end{tabularx}
 
@@ -84,6 +86,8 @@ for a complete table used in \progname.
 \tableofcontents
 
 \listoftables
+
+\listoffigures
 
 \newpage
 
@@ -2267,7 +2271,11 @@ not fully achieved due to gcovr reporting branch coverage for portions of the
 C++ standard library in addition to project developed source code. Testing all
 branches used in the C++ standard libraries requires a lot of effort with
 minimal verification benefit, since standard libraries are well-tested by the
-C++ community. Despite this limitation, the results indicate greater than $90\%$
+C++ community. 
+Excluding C++ standard library from code coverage is also not desirable as
+knowing the missing branch cases (ex. cases of empty vector) has helped the team
+identified edge cases that was initially missed.
+Despite this limitation, the results indicate greater than $90\%$
 line and function coverage and greater than $60\%$ branch coverage, which is
 considered sufficient for the scope of this capstone project and demonstrates a
 high level of verification for modules that are essential to the project.
@@ -2283,6 +2291,8 @@ objectives and available resources.
 
 A copy of the code coverage report is also saved to this repository in
 \href{https://github.com/Team6-SixSense/audio360/blob/main/docs/VnVReport/coverage.html}{\path{docs/VnVReport/coverage.html}}.
+Figure \ref{fig:coverage1} and \ref{fig:coverage2} are screenshots of the
+coverage report.
 
 \begin{table}[h]
   \centering
@@ -2297,6 +2307,21 @@ A copy of the code coverage report is also saved to this repository in
   \caption{Code coverage metrics summary.}
   \label{tab:code_coverage}
 \end{table}
+
+\begin{figure}[H]     
+    \centering 
+    \includegraphics[width=\textwidth]{images/coverage_page1.png}
+    \caption{Screenshot of code coverage report page 1.}
+    \label{fig:coverage1}
+\end{figure}
+
+
+\begin{figure}[H]     
+    \centering 
+    \includegraphics[width=\textwidth]{images/coverage_page2.png}
+    \caption{Screenshot of code coverage report page 2.}
+    \label{fig:coverage2}
+\end{figure}
 
 \newpage
 \bibliographystyle{IEEEtran}
