@@ -6,6 +6,7 @@
 */
 #pragma once
 
+#include "stm32f7xx_hal.h"
 #include "stm32f7xx_hal_uart.h"
 
 #pragma once
@@ -13,6 +14,7 @@
 #include "constants.h"
 #include "directionLabel.h"
 #include "packet.h"
+#include "peripheral.h"
 extern UART_HandleTypeDef huart5;
 
 char* cmd = "AT\r\n";

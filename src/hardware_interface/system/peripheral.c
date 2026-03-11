@@ -75,35 +75,10 @@ void setupPeripherals() {
   MX_USB_HOST_Init();
 #else
 
-  USB_OTG_FS->GUSBCFG |= USB_OTG_GUSBCFG_FDMOD;
-
-  /* Force the Physical Layer to stay in Peripheral mode regardless of the OTG
-   * cable */
-  USB_OTG_FS->GUSBCFG &=
-      ~USB_OTG_GUSBCFG_HNPCAP;  // Disable Host Negotiation Protocol
-  USB_OTG_FS->GUSBCFG &=
-      ~USB_OTG_GUSBCFG_SRPCAP;  // Disable Session Request Protocol
-
-  /* 1. Power up the transceiver (1 = Power On, 0 = Power Down) */
-  USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_PWRDWN;
-
-  /* 2. Disable VBUS sensing (tells the PHY to ignore the VBUS pin) */
-  USB_OTG_FS->GCCFG &= ~USB_OTG_GCCFG_VBDEN;
-
-  /* 3. Force B-Device Session (Ignore the physical ID pin grounded by the
-   * adapter) */
-  USB_OTG_FS->GOTGCTL |= USB_OTG_GOTGCTL_BVALOVAL;
-  USB_OTG_FS->GOTGCTL |= USB_OTG_GOTGCTL_BVALOEN;
-
   MX_USB_DEVICE_Init();
 
   /* Wait for glasses' power to stabilize */
   HAL_Delay(1000);
-
-  /* Force the laptop/glasses to see a 'New' device by toggling the pull-up */
-  HAL_PCD_DevDisconnect(&hpcd_USB_OTG_FS);
-  HAL_Delay(500);
-  HAL_PCD_DevConnect(&hpcd_USB_OTG_FS);
 #endif
 }
 
@@ -201,7 +176,6 @@ static void MX_GPIO_Init() {
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
 }
 
 /**
@@ -266,9 +240,7 @@ static void MX_USART3_UART_Init() {
   }
 }
 
-static void MX_UART5_Init(void)
-{
-
+static void MX_UART5_Init(void) {
   /* USER CODE BEGIN UART5_Init 0 */
 
   /* USER CODE END UART5_Init 0 */
@@ -286,14 +258,12 @@ static void MX_UART5_Init(void)
   huart5.Init.OverSampling = UART_OVERSAMPLING_16;
   huart5.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart5.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart5) != HAL_OK)
-  {
+  if (HAL_UART_Init(&huart5) != HAL_OK) {
     Report_Error(HAL_UART_INIT_FAIL);
   }
   /* USER CODE BEGIN UART5_Init 2 */
 
   /* USER CODE END UART5_Init 2 */
-
 }
 
 #endif

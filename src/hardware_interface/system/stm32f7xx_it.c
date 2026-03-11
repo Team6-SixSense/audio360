@@ -27,8 +27,12 @@
 /******************************************************************************/
 /*           Cortex-M7 Processor Interruption and Exception Handlers          */
 /******************************************************************************/
-extern HCD_HandleTypeDef hhcd_USB_OTG_FS;
 
+#ifdef BUILD_GLASSES_HOST
+extern HCD_HandleTypeDef hhcd_USB_OTG_FS;
+#else
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+#endif
 /**
  * @brief This function handles Non maskable interrupt.
  */
@@ -95,7 +99,7 @@ void SysTick_Handler(void) { HAL_IncTick(); }
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f7xx.s).                    */
 /******************************************************************************/
-#ifdef BUILD_GLASSES_HOST
+
 /**
  * @brief This function handles USB On The Go FS global interrupt.
  */
@@ -103,12 +107,17 @@ void OTG_FS_IRQHandler(void) {
   /* USER CODE BEGIN OTG_FS_IRQn 0 */
 
   /* USER CODE END OTG_FS_IRQn 0 */
+#ifdef BUILD_GLASSES_HOST
   HAL_HCD_IRQHandler(&hhcd_USB_OTG_FS);
+#else
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
+
+  HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
+
+#endif
 
   /* USER CODE END OTG_FS_IRQn 1 */
 }
-#endif
 
 /**
  * @brief This function handles DMA2 stream0 global interrupt.

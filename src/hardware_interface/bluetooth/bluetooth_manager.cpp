@@ -56,9 +56,17 @@ void Bluetooth_Manager_Process() {
 }
 
 uint8_t Is_Bluetooth_Connected() {
+#ifdef BUILD_BLUETOOTH
   return bluetooth_manager.state == BLUETOOTH_CONNECTED;
+#else
+  return 1U;  // Mocks bluetooth connected state.
+#endif
 }
 
 HAL_StatusTypeDef Bluetooth_Manager_Send(uint8_t* data, uint16_t numBytes) {
+#ifdef BUILD_BLUETOOTH
   return HAL_UART_Transmit(bluetooth_manager.uart_handle, data, numBytes, 100);
+#else
+  return HAL_OK;
+#endif
 }

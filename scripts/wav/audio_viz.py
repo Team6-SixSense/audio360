@@ -17,7 +17,11 @@ WINDOW_DURATION = 0.2
 
 # Volume Scaling
 # Since we are doing manual math now, we can push this up.
-VOLUME = 0.3
+VOLUME = 1.0
+
+# DC offset removal (ICS43434 MEMS mics have a natural DC bias)
+DC_ALPHA = 0.999  # Smoothing factor for DC tracking (higher = slower tracking)
+dc_offset = [0.0] * 4  # Per-channel DC estimate
 
 # We now have 4 channels interleaved: A1, B1, A2, B2
 CHANNELS = 4
@@ -130,19 +134,17 @@ def process_data_thread():
                 channel_data = reshaped_samples[:, i]
 
                 # 2. Convert to Float immediately for safe math
-                samples_float = channel_data.astype(np.float32)
+                samples_float = channel_data.astype(np.float64)
 
-                # 3. DC Offset Removal (Safe now because we are in Float)
-                dc_offset = np.mean(samples_float)
-                samples_centered = samples_float - dc_offset
+                # 3. Remove DC offset — subtract running mean estimate, then
+                # update the estimate from this chunk's mean (fast, vectorized)
+                samples_float -= dc_offset[i]
+                dc_offset[i] += DC_ALPHA * np.mean(samples_float)
 
-                # 4. Apply Gain (x256 to simulate the 8-bit shift)
-                # We scale by 256 to restore the volume, then apply your VOLUME knob.
-                samples_scaled = samples_centered * 256.0 * VOLUME
+                # 4. Apply Gain
+                samples_scaled = samples_float * VOLUME
 
-                # 5. Hard Clip Limiter (Prevent wrapping noise)
-                # We clamp values to the 32-bit valid range so they simply "flat top"
-                # instead of wrapping around to static.
+                # 5. Hard Clip Limiter
                 np.clip(samples_scaled, -2147483647, 2147483647, out=samples_scaled)
 
                 # 6. Convert back to Int32 for the speakers
@@ -161,6 +163,7 @@ def process_data_thread():
                     else:
                         y_data_buffers[i] = np.roll(y_data_buffers[i], -shift)
                         y_data_buffers[i][-shift:] = final_samples
+
 
 def update_plot(frame):
     with data_lock:
