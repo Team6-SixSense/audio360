@@ -78,9 +78,7 @@ void mainAudio360() {
   while (1) {
     Bluetooth_Manager_Process();
 
-    //Is_Bluetooth_Connected() == BLUTOOTH_CONNECTED
-    if (true) {
-
+    if (Is_Bluetooth_Connected() == BLUTOOTH_CONNECTED) {
       INFO("Audio360 loop start.");
 
       // Extract microphone data if ready.
@@ -106,10 +104,8 @@ void mainAudio360() {
 
       std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
 
-
       Bluetooth_Manager_Send(packet.data(),
                              static_cast<uint16_t>(packet.size()));
-
 
       // Reset half and full bool flags.
       if (micMainFull == 1U) {
@@ -122,7 +118,6 @@ void mainAudio360() {
 
     INFO("Audio360 loop end.");
   }
-
 }
 
 bool extractMicData() {

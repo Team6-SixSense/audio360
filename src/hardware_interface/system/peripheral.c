@@ -65,14 +65,14 @@ void setupPeripherals() {
 #ifdef BUILD_GLASSES_HOST
   /* FORCE HOST MODE & DISABLE VBUS SENSING */
   /* 1. Force the hardware into Host Mode (Grounds the ID pin logically) */
-  // USB_OTG_HS->GUSBCFG &= ~USB_OTG_GUSBCFG_FDMOD;
-  // USB_OTG_HS->GUSBCFG |= USB_OTG_GUSBCFG_FHMOD;
-  //
-  // /* 2. DISABLE VBUS SENSING (Crucial!) */
-  // /* This prevents the "Illegal Voltage" error. */
-  // /* The STM32 will now ignore the 5V LED and just start the data clock. */
-  // USB_OTG_HS->GCCFG &= ~(USB_OTG_GCCFG_VBDEN);
-  // MX_USB_HOST_Init();
+  USB_OTG_HS->GUSBCFG &= ~USB_OTG_GUSBCFG_FDMOD;
+  USB_OTG_HS->GUSBCFG |= USB_OTG_GUSBCFG_FHMOD;
+
+  /* 2. DISABLE VBUS SENSING (Crucial!) */
+  /* This prevents the "Illegal Voltage" error. */
+  /* The STM32 will now ignore the 5V LED and just start the data clock. */
+  USB_OTG_HS->GCCFG &= ~(USB_OTG_GCCFG_VBDEN);
+  MX_USB_HOST_Init();
 #else
 
   MX_USB_DEVICE_Init();
@@ -176,7 +176,6 @@ static void MX_GPIO_Init() {
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
 }
 
 /**
@@ -241,9 +240,7 @@ static void MX_USART3_UART_Init() {
   }
 }
 
-static void MX_UART5_Init(void)
-{
-
+static void MX_UART5_Init(void) {
   /* USER CODE BEGIN UART5_Init 0 */
 
   /* USER CODE END UART5_Init 0 */
@@ -261,14 +258,12 @@ static void MX_UART5_Init(void)
   huart5.Init.OverSampling = UART_OVERSAMPLING_16;
   huart5.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart5.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart5) != HAL_OK)
-  {
+  if (HAL_UART_Init(&huart5) != HAL_OK) {
     Report_Error(HAL_UART_INIT_FAIL);
   }
   /* USER CODE BEGIN UART5_Init 2 */
 
   /* USER CODE END UART5_Init 2 */
-
 }
 
 #endif
