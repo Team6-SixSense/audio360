@@ -119,7 +119,6 @@ void OTG_FS_IRQHandler(void) {
   /* USER CODE END OTG_FS_IRQn 1 */
 }
 
-
 /**
  * @brief This function handles DMA2 stream0 global interrupt.
  */

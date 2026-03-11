@@ -6,7 +6,7 @@
  */
 
 #ifdef STM_BUILD
-#define RUNTIME_USB_TX
+#define RUNTIME_AUDIO360
 #else
 #define RUNTIME_FFT
 #endif

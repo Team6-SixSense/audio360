@@ -34,13 +34,11 @@ inline uint32_t swapByteOrder32(uint32_t raw) {
 
 /**
  * @brief Re-order raw microphone data. The ICS43434 stores 24-bit I2S data
- * left-aligned in the SAI data register: audio in bits [31:8], bits [7:0]
+ * left-aligned in the SAI data register: audio in bits [23:0], bits [31:24]
  * may contain noise from tri-state. The raw value is already a valid signed
- * int32 — just mask the noisy trailing byte.
+ * int32.
  *
  * @param raw raw microphone data from the DMA buffer.
  * @return int32_t PCM data in the scale of int32.
  */
-inline int32_t reorderMicData(uint32_t raw) {
-  return (int32_t)(raw << 8);
-}
+inline int32_t reorderMicData(uint32_t raw) { return (int32_t)(raw << 8); }

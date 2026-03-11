@@ -11,12 +11,9 @@
 #include "packet.h"
 
 #ifdef STM_BUILD
-#include "stm32f7xx_hal_cortex.h"
 #include "bluetooth_manager.h"
+#include "stm32f7xx_hal_cortex.h"
 #endif
-
-
-
 
 SystemFaultManager::SystemFaultManager() {}
 
@@ -112,7 +109,6 @@ void SystemFaultManager::enterUnrecoverableState(std::string error) {
   vizPacket.systemFaultState = this->state;
   std::array<uint8_t, PACKET_BYTE_SIZE> packet = createPacket(vizPacket);
   Bluetooth_Manager_Send(packet.data(), static_cast<uint16_t>(packet.size()));
-
 
   // Enter infinite loop to prevent any further execution.
   while (true) {
