@@ -6,8 +6,6 @@
  ******************************************************************************
  */
 
-#pragma once
-
 #include "matrix.h"
 
 #include "arm_math.h"
@@ -40,8 +38,4 @@ arm_status matrix_mult_f32(const matrix* pSrcA, const matrix* pSrcB,
 
 arm_status matrix_transpose_f32(const matrix* pSrc, matrix* pDst) {
   return arm_mat_trans_f32(pSrc, pDst);
-}
-
-arm_status matrix_inverse_f32(const matrix* pSrc, matrix* pDst) {
-  return arm_mat_inverse_f32(pSrc, pDst);
 }

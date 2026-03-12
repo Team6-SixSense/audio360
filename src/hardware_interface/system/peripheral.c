@@ -9,6 +9,7 @@
 
 #include "embedded_mic.h"
 #include "fatfs.h"
+#include "peripheral_error.h"
 
 #ifdef BUILD_GLASSES_HOST
 #include "usb_host.h"
@@ -22,8 +23,10 @@ static void MX_SPI1_Init();
 static void MX_USART3_UART_Init();
 
 static void MX_DMA_Init();
+static void MX_UART5_Init(void);
 
 UART_HandleTypeDef huart3;
+UART_HandleTypeDef huart5;
 SPI_HandleTypeDef SD_SPI_HANDLE;
 
 #define SD_CS_Pin GPIO_PIN_4
@@ -49,6 +52,7 @@ void setupPeripherals() {
 
   // Set up and intial UART pherrials.
   MX_USART3_UART_Init();
+  MX_UART5_Init();
 
   MX_DMA_Init();
   // Set up the microphone SAI peripherals
@@ -57,9 +61,6 @@ void setupPeripherals() {
   // Set up logging sd card and FATFS
   MX_SPI1_Init();
   MX_FATFS_Init();
-
-
-
 
 #ifdef BUILD_GLASSES_HOST
   /* FORCE HOST MODE & DISABLE VBUS SENSING */
@@ -76,9 +77,12 @@ void setupPeripherals() {
 
   USB_OTG_FS->GUSBCFG |= USB_OTG_GUSBCFG_FDMOD;
 
-  /* Force the Physical Layer to stay in Peripheral mode regardless of the OTG cable */
-  USB_OTG_FS->GUSBCFG &= ~USB_OTG_GUSBCFG_HNPCAP; // Disable Host Negotiation Protocol
-  USB_OTG_FS->GUSBCFG &= ~USB_OTG_GUSBCFG_SRPCAP; // Disable Session Request Protocol
+  /* Force the Physical Layer to stay in Peripheral mode regardless of the OTG
+   * cable */
+  USB_OTG_FS->GUSBCFG &=
+      ~USB_OTG_GUSBCFG_HNPCAP;  // Disable Host Negotiation Protocol
+  USB_OTG_FS->GUSBCFG &=
+      ~USB_OTG_GUSBCFG_SRPCAP;  // Disable Session Request Protocol
 
   /* 1. Power up the transceiver (1 = Power On, 0 = Power Down) */
   USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_PWRDWN;
@@ -101,8 +105,6 @@ void setupPeripherals() {
   HAL_Delay(500);
   HAL_PCD_DevConnect(&hpcd_USB_OTG_FS);
 #endif
-
-
 }
 
 /** @brief Sets up clock for the entire system. */
@@ -130,12 +132,12 @@ void SystemClock_Config(void) {
   RCC_OscInitStruct.PLL.PLLQ = 8;
   RCC_OscInitStruct.PLL.PLLR = 2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_RCC_OSCILLATOR_INIT_FAIL);
   }
 
   /** Activate the Over-Drive mode */
   if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_PWR_ENABLE_OVERDRIVE_FAIL);
   }
 
   /** Initializes the CPU, AHB and APB buses clocks */
@@ -146,7 +148,7 @@ void SystemClock_Config(void) {
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_RCC_CLOCK_CONFIG_FAIL);
   }
 }
 
@@ -167,7 +169,7 @@ void PeriphCommonClock_Config(void) {
   PeriphClkInitStruct.Sai2ClockSelection = RCC_SAI2CLKSOURCE_PLLSAI;
 
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_RCC_PERI_CLOCK_CONFIG_FAIL);
   }
 }
 
@@ -193,6 +195,13 @@ static void MX_GPIO_Init() {
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(SD_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
 }
 
 /**
@@ -235,7 +244,7 @@ static void MX_SPI1_Init() {
   SD_SPI_HANDLE.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
   SD_SPI_HANDLE.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
   if (HAL_SPI_Init(&SD_SPI_HANDLE) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_SPI_INIT_FAIL);
   }
 }
 
@@ -253,15 +262,38 @@ static void MX_USART3_UART_Init() {
   huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 
   if (HAL_UART_Init(&huart3) != HAL_OK) {
-    Error_Handler();
+    Report_Error(HAL_UART_INIT_FAIL);
   }
 }
 
-void Error_Handler() {
-  // Turn LED3 on.
-  BSP_LED_On(LED3);
-  while (1) {
+static void MX_UART5_Init(void)
+{
+
+  /* USER CODE BEGIN UART5_Init 0 */
+
+  /* USER CODE END UART5_Init 0 */
+
+  /* USER CODE BEGIN UART5_Init 1 */
+
+  /* USER CODE END UART5_Init 1 */
+  huart5.Instance = UART5;
+  huart5.Init.BaudRate = 9600;
+  huart5.Init.WordLength = UART_WORDLENGTH_8B;
+  huart5.Init.StopBits = UART_STOPBITS_1;
+  huart5.Init.Parity = UART_PARITY_NONE;
+  huart5.Init.Mode = UART_MODE_TX_RX;
+  huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart5.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart5.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart5.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart5) != HAL_OK)
+  {
+    Report_Error(HAL_UART_INIT_FAIL);
   }
+  /* USER CODE BEGIN UART5_Init 2 */
+
+  /* USER CODE END UART5_Init 2 */
+
 }
 
 #endif

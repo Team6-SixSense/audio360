@@ -290,3 +290,6 @@ cmake-build-debug-x86
 
 venv
 *.egg-info/
+
+# Code coverage data.
+coverage/*

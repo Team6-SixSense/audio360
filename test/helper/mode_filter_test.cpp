@@ -14,7 +14,7 @@
 /* ============================== INTEGER TESTS ============================= */
 
 /** @brief Verifiy that updating the buffer will return the correct mode. */
-TEST_P(ModeFilterIntTest, CorrectModeMultiUpdate) {
+TEST_P(ModeFilterIntTest, CorrectModeMultiUpdateInt) {
   const auto& param = this->GetParam();
 
   // Assert correct test parameter sizes.
@@ -39,7 +39,7 @@ INSTANTIATE_TEST_SUITE_P(IntModeFilterValues, ModeFilterIntTest,
 /* ================================ ENUM TESTS ============================== */
 
 /** @brief Verifiy that updating the buffer will return the correct mode. */
-TEST_P(ModeFilterEnumTest, CorrectModeMultiUpdate) {
+TEST_P(ModeFilterEnumTest, CorrectModeMultiUpdateEnum) {
   const auto& param = this->GetParam();
 
   // Assert correct test parameter sizes.

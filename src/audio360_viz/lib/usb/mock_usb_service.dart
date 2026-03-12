@@ -2,21 +2,20 @@ import 'dart:async';
 import 'dart:math';
 import '../models/packet.dart';
 import '../models/enums.dart';
+import '../base_data_service.dart';
 
-typedef PacketCallback = void Function(Packet packet);
-typedef StatusCallback = void Function(String status);
 
 /// Mock USB service for testing without hardware.
 /// Simulates packet data with random classifications and directions.
-class MockUsbService {
+final class MockUsbService extends BaseDataService {
   Timer? _timer;
-  final PacketCallback onPacket;
-  final StatusCallback onStatus;
+
   final Random _random = Random();
 
-  MockUsbService({required this.onPacket, required this.onStatus});
+  MockUsbService({required super.onPacket, required super.onStatus});
 
-  Future<void> connect() async {
+  @override
+  Future<void> initialize() async {
     // Simulate connection delay
     await Future.delayed(const Duration(milliseconds: 500));
     onStatus("Connected (Mock Mode)");
@@ -52,19 +51,30 @@ class MockUsbService {
     ];
     final quadrant = quadrants[_random.nextInt(quadrants.length)];
 
+    final systemFaults = [
+      SystemFault.none,
+      SystemFault.hardware,
+      SystemFault.classification,
+      SystemFault.doa
+    ];
+
+    final systemFault = systemFaults[_random.nextInt(systemFaults.length)];
+
     // Random priority (1-5)
     final priority = _random.nextInt(5) + 1;
 
     final packet = Packet(
       classification: classification,
       quadrant: quadrant,
+      systemFault: systemFault,
       priority: priority,
     );
 
     onPacket(packet);
   }
 
-  void dispose() {
+  @override
+  void close() {
     _timer?.cancel();
     _timer = null;
     onStatus("Disconnected");

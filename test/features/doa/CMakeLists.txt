@@ -3,5 +3,6 @@
 # Define test executable files.
 target_sources(${TestExecutable} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/directionLabel_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/doa_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gccPhat_test.cpp
 )

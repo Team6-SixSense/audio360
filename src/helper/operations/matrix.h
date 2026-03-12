@@ -83,12 +83,3 @@ arm_status matrix_mult_f32(const matrix* pSrcA, const matrix* pSrcB,
  * @return arm_status The status of the operation.
  */
 arm_status matrix_transpose_f32(const matrix* pSrc, matrix* pDst);
-
-/**
- * @brief Determines the inverse of input matrix.
- *
- * @param[in] pSrc Input matrix.
- * @param[out] pDst Inversed matrix.
- * @return arm_status The status of the operation.
- */
-arm_status matrix_inverse_f32(const matrix* pSrc, matrix* pDst);

@@ -39,5 +39,41 @@ TEST(RealTimePolling, RealTimePollingMemory) {
   }
 
   // Expect the real time data to be completed.
+  ASSERT_TRUE(realTimePolling.getCurrentData().empty());
+  ASSERT_TRUE(realTimePolling.isDone());
+}
+
+/** @brief Given a data of pre-recorded data and initial window size 0. The real
+ * time polling can simulate real time data without any memory errors.*/
+TEST(RealTimePolling, RealTimePollingMemoryWindowSize0) {
+  // Prepare pre-recorded data and real time processing object.
+  std::vector<double> preRecordedData = {1.0, 2.0, 3.0, 4.0, 5.0,
+                                         6.0, 7.0, 8.0, 9.0, 10.0};
+  RealTimePolling realTimePolling = RealTimePolling(0, preRecordedData);
+
+  // Expect to simulate real time data 1 time when window size is set to 0.
+  std::vector<double> realTimeData = realTimePolling.getCurrentData();
+  ASSERT_EQ(preRecordedData.size(), realTimeData.size());
+
+  // Expect the real time data to be completed.
+  ASSERT_TRUE(realTimePolling.isDone());
+}
+
+/** @brief Given a data of pre-recorded data and initial window size is larger
+ * than the pre-recorded data. The real time polling can simulate real time data
+ * without any memory errors.*/
+TEST(RealTimePolling, RealTimePollingMemoryLargeWindow) {
+  // Prepare pre-recorded data and real time processing object.
+  std::vector<double> preRecordedData = {1.0, 2.0, 3.0, 4.0, 5.0,
+                                         6.0, 7.0, 8.0, 9.0, 10.0};
+  size_t window = preRecordedData.size() + 1;
+  RealTimePolling realTimePolling = RealTimePolling(window, preRecordedData);
+
+  // Expect to simulate real time data 1 time when window size is larger than
+  // the pre-recorded data.
+  std::vector<double> realTimeData = realTimePolling.getCurrentData();
+  ASSERT_EQ(preRecordedData.size(), realTimeData.size());
+
+  // Expect the real time data to be completed.
   ASSERT_TRUE(realTimePolling.isDone());
 }

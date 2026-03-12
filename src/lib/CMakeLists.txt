@@ -41,7 +41,7 @@ else()
         ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-DSP/Source/CommonTables/arm_common_tables.c
         ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-DSP/Source/CommonTables/arm_const_structs.c
 
-                # Matrix operations.
+        # Matrix operations.
         ${CMAKE_CURRENT_LIST_DIR}/CMSIS-DSP/Source/MatrixFunctions/arm_mat_add_f32.c
         ${CMAKE_CURRENT_LIST_DIR}/CMSIS-DSP/Source/MatrixFunctions/arm_mat_init_f32.c
         ${CMAKE_CURRENT_LIST_DIR}/CMSIS-DSP/Source/MatrixFunctions/arm_mat_inverse_f32.c
@@ -66,5 +66,8 @@ else()
         # FFT functions.
         ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-DSP/Include
         ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS-DSP/PrivateInclude
+
+        # Compiler.
+        ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/CMSIS/Core/Include
     )
 endif()

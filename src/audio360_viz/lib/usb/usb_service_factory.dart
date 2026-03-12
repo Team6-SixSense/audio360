@@ -19,8 +19,8 @@ class UsbServiceFactory {
       );
     } else {
       return UsbService(
-        onPacket: onPacket,
-        onStatus: onStatus,
+        p: onPacket,
+        s: onStatus,
       );
     }
   }

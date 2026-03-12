@@ -46,17 +46,15 @@ void HAL_MspInit(void) {
  * @param huart: UART handle pointer
  * @retval None
  */
-void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
+void HAL_UART_MspInit(UART_HandleTypeDef* huart) {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
   if (huart->Instance == USART3) {
-
     /** Initializes the peripherals clock*/
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART3;
     PeriphClkInitStruct.Usart3ClockSelection = RCC_USART3CLKSOURCE_PCLK1;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-      while (1) {
-      }
+      Report_Error(HAL_UART_INIT_FAIL);
     }
 
     /* Peripheral clock enable */
@@ -74,6 +72,42 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
     GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
   }
+
+  if(huart->Instance==UART5)
+  {
+    /* USER CODE BEGIN UART5_MspInit 0 */
+
+    /* USER CODE END UART5_MspInit 0 */
+
+    /** Initializes the peripherals clock
+    */
+    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_UART5;
+    PeriphClkInitStruct.Uart5ClockSelection = RCC_UART5CLKSOURCE_PCLK1;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+    {
+      Report_Error(HAL_UART_INIT_FAIL);
+    }
+
+    /* Peripheral clock enable */
+    __HAL_RCC_UART5_CLK_ENABLE();
+
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    /**UART5 GPIO Configuration
+    PB12     ------> UART5_RX
+    PB13     ------> UART5_TX
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF8_UART5;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    /* USER CODE BEGIN UART5_MspInit 1 */
+
+    /* USER CODE END UART5_MspInit 1 */
+
+  }
 }
 
 /**
@@ -82,7 +116,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
  * @param huart: UART handle pointer
  * @retval None
  */
-void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
+void HAL_UART_MspDeInit(UART_HandleTypeDef* huart) {
   if (huart->Instance == USART3) {
     /* Peripheral clock disable */
     __HAL_RCC_USART3_CLK_DISABLE();
@@ -93,10 +127,28 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart) {
     */
     HAL_GPIO_DeInit(GPIOD, GPIO_PIN_8 | GPIO_PIN_9);
   }
+
+  if(huart->Instance==UART5)
+  {
+    /* USER CODE BEGIN UART5_MspDeInit 0 */
+
+    /* USER CODE END UART5_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_UART5_CLK_DISABLE();
+
+    /**UART5 GPIO Configuration
+    PB12     ------> UART5_RX
+    PB13     ------> UART5_TX
+    */
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12|GPIO_PIN_13);
+
+    /* USER CODE BEGIN UART5_MspDeInit 1 */
+
+    /* USER CODE END UART5_MspDeInit 1 */
+  }
 }
 
-void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
-
+void HAL_SAI_MspInit(SAI_HandleTypeDef* hsai) {
   GPIO_InitTypeDef GPIO_InitStruct;
 
   // SAI 1 Block A.
@@ -133,16 +185,16 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     hdma_sai1_a.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
     hdma_sai1_a.Init.MemBurst = DMA_MBURST_SINGLE;
     hdma_sai1_a.Init.PeriphBurst = DMA_PBURST_SINGLE;
-    if (HAL_DMA_Init(&hdma_sai1_a) != HAL_OK)
-    {
-      Error_Handler();
+    if (HAL_DMA_Init(&hdma_sai1_a) != HAL_OK) {
+      Report_Error(DMA_INIT);
     }
 
     /* Several peripheral DMA handle pointers point to the same DMA handle.
-     Be aware that there is only one stream to perform all the requested DMAs. */
-    __HAL_LINKDMA(hsai,hdmarx,hdma_sai1_a);
+     Be aware that there is only one stream to perform all the requested DMAs.
+   */
+    __HAL_LINKDMA(hsai, hdmarx, hdma_sai1_a);
 
-    __HAL_LINKDMA(hsai,hdmatx,hdma_sai1_a);
+    __HAL_LINKDMA(hsai, hdmatx, hdma_sai1_a);
   }
 
   // SAI 1 Block B.
@@ -177,15 +229,15 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     hdma_sai1_b.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
     hdma_sai1_b.Init.MemBurst = DMA_MBURST_SINGLE;
     hdma_sai1_b.Init.PeriphBurst = DMA_PBURST_SINGLE;
-    if (HAL_DMA_Init(&hdma_sai1_b) != HAL_OK)
-    {
-      Error_Handler();
+    if (HAL_DMA_Init(&hdma_sai1_b) != HAL_OK) {
+      Report_Error(DMA_INIT);
     }
 
     /* Several peripheral DMA handle pointers point to the same DMA handle.
-     Be aware that there is only one stream to perform all the requested DMAs. */
-    __HAL_LINKDMA(hsai,hdmarx,hdma_sai1_b);
-    __HAL_LINKDMA(hsai,hdmatx,hdma_sai1_b);
+     Be aware that there is only one stream to perform all the requested DMAs.
+   */
+    __HAL_LINKDMA(hsai, hdmarx, hdma_sai1_b);
+    __HAL_LINKDMA(hsai, hdmatx, hdma_sai1_b);
   }
 
   // SAI 2 Block A.
@@ -220,16 +272,16 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     hdma_sai2_a.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
     hdma_sai2_a.Init.MemBurst = DMA_MBURST_SINGLE;
     hdma_sai2_a.Init.PeriphBurst = DMA_PBURST_SINGLE;
-    if (HAL_DMA_Init(&hdma_sai2_a) != HAL_OK)
-    {
-      Error_Handler();
+    if (HAL_DMA_Init(&hdma_sai2_a) != HAL_OK) {
+      Report_Error(DMA_INIT);
     }
 
     /* Several peripheral DMA handle pointers point to the same DMA handle.
-     Be aware that there is only one stream to perform all the requested DMAs. */
-    __HAL_LINKDMA(hsai,hdmarx,hdma_sai2_a);
+     Be aware that there is only one stream to perform all the requested DMAs.
+   */
+    __HAL_LINKDMA(hsai, hdmarx, hdma_sai2_a);
 
-    __HAL_LINKDMA(hsai,hdmatx,hdma_sai2_a);
+    __HAL_LINKDMA(hsai, hdmatx, hdma_sai2_a);
   }
 
   // SAI 2 Block B.
@@ -264,20 +316,19 @@ void HAL_SAI_MspInit(SAI_HandleTypeDef *hsai) {
     hdma_sai2_b.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
     hdma_sai2_b.Init.MemBurst = DMA_MBURST_SINGLE;
     hdma_sai2_b.Init.PeriphBurst = DMA_PBURST_SINGLE;
-    if (HAL_DMA_Init(&hdma_sai2_b) != HAL_OK)
-    {
-      Error_Handler();
+    if (HAL_DMA_Init(&hdma_sai2_b) != HAL_OK) {
+      Report_Error(DMA_INIT);
     }
 
     /* Several peripheral DMA handle pointers point to the same DMA handle.
-     Be aware that there is only one stream to perform all the requested DMAs. */
-    __HAL_LINKDMA(hsai,hdmarx,hdma_sai2_b);
-    __HAL_LINKDMA(hsai,hdmatx,hdma_sai2_b);
+     Be aware that there is only one stream to perform all the requested DMAs.
+   */
+    __HAL_LINKDMA(hsai, hdmarx, hdma_sai2_b);
+    __HAL_LINKDMA(hsai, hdmatx, hdma_sai2_b);
   }
 }
 
-void HAL_SAI_MspDeInit(SAI_HandleTypeDef *hsai) {
-
+void HAL_SAI_MspDeInit(SAI_HandleTypeDef* hsai) {
   // SAI 1 Block A.
   if (hsai->Instance == SAI1_Block_A) {
     SAI1_client--;
@@ -359,7 +410,7 @@ void HAL_SAI_MspDeInit(SAI_HandleTypeDef *hsai) {
  * @param hspi: SPI handle pointer
  * @retval None
  */
-void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi) {
+void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi) {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   if (hspi->Instance == SPI1) {
     /* Peripheral clock enable */
@@ -388,7 +439,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi) {
   }
 }
 
-void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi) {
+void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi) {
   if (hspi->Instance == SPI1) {
     /* Peripheral clock disable */
     __HAL_RCC_SPI1_CLK_DISABLE();

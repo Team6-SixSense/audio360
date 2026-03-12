@@ -6,7 +6,7 @@
 
     ```bash
     cmake -B build -S .
-    cmake -G "Visual Studio 17 2022" -B build -S . # Run this if working on Windows
+    cmake -G "MinGW Makefiles" -B build -S . # Run this if working on Windows
 
     cmake --build build --config Release
     ```

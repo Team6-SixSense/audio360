@@ -16,7 +16,7 @@
 
 ### Windows
 
-1. Install the Visual Studio Compiler (MSVC)
+1. Install the MinGW compiler.
 
 ### MacOS
 

@@ -50,6 +50,8 @@ IFFT& IFFT::operator=(const IFFT& other) {
   std::copy(other.out, other.out + this->numSamples, this->out);
 
   this->initializeFFTInstance();
+
+  return *this;
 }
 
 IFFT::~IFFT() {

@@ -6,27 +6,18 @@
  */
 
 #ifdef STM_BUILD
-#include "peripheral.h"
-#endif
-
-#include <stdio.h>
-
-#ifdef STM_BUILD
 #define RUNTIME_AUDIO360
 #else
 #define RUNTIME_FFT
 #endif
 
-#if defined(STM_BUILD) && defined(RUNTIME_FFT)
-#error "The SimpleFFT runtime is not meant for the STM32 MCU".
-#endif
-
 #ifdef STM_BUILD
-#include "runtimes/runtime_android_comm.hpp"
-#include "runtimes/runtime_audio360.hpp"
-#include "runtimes/runtime_usb_tx.hpp"
+#include "runtime_android_comm.hpp"
+#include "runtime_audio360.hpp"
+#include "runtime_bluetooth_test.hpp"
+#include "runtime_usb_tx.hpp"
 #else
-#include "runtimes/runtime_fft.hpp"
+#include "runtime_fft.hpp"
 #endif
 
 #ifdef BUILD_GLASSES_HOST
@@ -35,13 +26,6 @@
 #endif
 
 int main() {
-#ifdef STM_BUILD
-  // Set-up peripherals. Must call before any hardware function calls.
-  setupPeripherals();
-
-
-#endif
-
 #ifdef RUNTIME_AUDIO360
   mainAudio360();
 #endif
@@ -56,6 +40,10 @@ int main() {
 
 #ifdef RUNTIME_FFT
   mainRuntimeFFT();
+#endif
+
+#ifdef RUNTIME_BLUETOOTH_TEST
+  main_bluetooth_test();
 #endif
 
   return 0;

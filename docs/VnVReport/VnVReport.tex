@@ -3,6 +3,13 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\usepackage{cite}
+\usepackage{xr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{url}
+\usepackage{tabularx}
+\usepackage{xltabular}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -10,10 +17,16 @@
     linkcolor=red,
     urlcolor=blue
 }
-\usepackage[round]{natbib}
+
+
+\newcounter{unitTest}
+\newcommand{\mtheunitTest}{UT\theunitTest}
+\newcommand{\utref}[1]{UT\ref{#1}}
 
 \input{../Comments}
 \input{../Common}
+
+\externaldocument[SRS-]{../SRS/SRS}
 
 \begin{document}
 
@@ -28,27 +41,46 @@
 \section{Revision History}
 
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
-\midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
-\bottomrule
+\hline {\bf Date} & {\bf Version} & {\bf Notes}\\
+\hline
+March 9, 2026 & 1.0 & Initial VNV report. \\
+\hline
 \end{tabularx}
 
 ~\newpage
 
 \section{Symbols, Abbreviations and Acronyms}
 
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l l} 
-  \toprule		
-  \textbf{symbol} & \textbf{description}\\
-  \midrule 
-  T & Test\\
-  \bottomrule
-\end{tabular}\\
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|} 
+    \hline		
+    \textbf{symbol} & \textbf{description}\\
+    \hline 
+    \progname & 360 Audio analysis system on smart glasses\\ \hline
+    CI & Continuous Integration\\ \hline
+    DCT & Discrete Cosine Transform \\ \hline
+    DOA & Direction of Arrival \\ \hline
+    FFT & Fast Fourier Transform \\ \hline
+    FR & Functional Requirement\\ \hline
+    HUD & Heads Up Display \\ \hline
+    LDA & Linear Discriminant Analysis \\ \hline
+    M & Module \\ \hline
+    NFR & Non-Functional Requirement\\ \hline
+    PCA & Priniciple Component Analysis \\ \hline
+    R/Req & Requirement\\ \hline    
+    SRS & Software Requirements Specification\\ \hline
+    T & Test\\ \hline
+    UT & Unit Test\\ \hline
+    VnV & Verification and Validation \\ \hline
+  \end{tabular}
+  \caption{Table of abbreviations and acronyms used in \progname.}
+\end{table}
 
-\wss{symbols, abbreviations or acronyms -- you can reference the SRS tables if needed}
+See SRS Documentation at
+\hyperref[SRS-sec:symbols]{Symbols, Abbreviations, and Acronyms}
+for a complete table used in \progname.
+
 
 \newpage
 
@@ -69,25 +101,863 @@ This document ...
 \section{Nonfunctional Requirements Evaluation}
 
 \subsection{Usability}
-		
+This subsection outlines the usability testing plan for non-functional
+requirement NFR6.2.
+
+The current implementation includes packet-level support for source priority,
+but project-level priority definitions and decision rules are not finalized.
+Because of this, formal validation of NFR6.1 is deferred and not included in
+this usability test cycle.
+
+\textbf{Evaluation scope:}
+\begin{itemize}
+  \item \textbf{Non-intrusive display (NFR6.2):}
+  confirm that users can continue normal visual tasks without major
+  obstruction or discomfort.
+\end{itemize}
+
+\textbf{Usability testing procedure:}
+\begin{enumerate}
+  \item Recruit at least 4 stakeholders from the target user group.
+  \item Provide a short orientation on HUD indicator meaning and test steps.
+  \item Run directional cue scenarios during typical visual tasks (walking,
+  reading signs, and obstacle awareness simulation) to assess NFR6.2.
+  \item Record observations on cue correctness, user hesitation, distraction,
+  and discomfort reports.
+  \item Collect post-session survey ratings (1--5 scale) for
+  non-obtrusiveness, clarity, and situational awareness.
+\end{enumerate}
+
+\textbf{Planned acceptance criteria:}
+\begin{itemize}
+  \item NFR6.2: average non-obtrusiveness rating is at least 4.0/5.0.
+  \item NFR6.2: no stakeholder reports significant visual obstruction or
+  discomfort during normal task flow.
+  \item Minimum participant count requirement is met ($n \geq 4$).
+\end{itemize}
+
 \subsection{Performance}
 
 \subsection{etc.}
 	
 \section{Comparison to Existing Implementation}	
 
-This section will not be appropriate for every project.
+Not applicable. There is no existing implementation known to the team.
 
 \section{Unit Testing}
 
+This section outlines the unit tests developed and the corresponding
+results.
+Unit tests for hardware modules were not implemented due to the complexity of
+developing mock interfaces required to isolate hardware dependencies during
+unit testing. There are also minimal unit tests for visualization modules
+for the same reason of mocking complexity.
+
+\subsection{Unit Test ID Traceability Matrix}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{2cm}|X|}
+
+    \hline
+    \textbf{Test ID} & \textbf{Test Name} \\ 
+    \endfirsthead
+    \hline
+
+    % DOA Module
+    \refstepcounter{unitTest} \mtheunitTest \label{gccPhatAngleRange} &
+    gccPhatAngleRange \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NoDoAAlgo} &
+    NoDoAAlgo \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{IncorrectMicDataSize} &
+    IncorrectMicDataSize \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NorthLabel} &
+    NorthLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NorthWestLabel} &
+    NorthWestLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{WestLabel} &
+    WestLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SouthWestLabel} &
+    SouthWestLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SouthLabel} &
+    SouthLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SouthEastLabel} &
+    SouthEastLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{EastLabel} &
+    EastLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NorhtEastLabel} &
+    NorhtEastLabel \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle0} &
+    SingleAudioSourceAngle0 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle45} &
+    SingleAudioSourceAngle45 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle90} &
+    SingleAudioSourceAngle90 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle135} &
+    SingleAudioSourceAngle135 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle180} &
+    SingleAudioSourceAngle180 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle225} &
+    SingleAudioSourceAngle225 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle270} &
+    SingleAudioSourceAngle270 \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SingleAudioSourceAngle315} &
+    SingleAudioSourceAngle315 \\ \hline
+
+    % Fast Fourier Transform Module
+    \refstepcounter{unitTest} \mtheunitTest \label{SignalToFrequency_285Hz} & 
+    SignalToFrequency\_285Hz \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{SignalToFrequencyCopy_285Hz} &
+    SignalToFrequencyCopy\_285Hz \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{SignalToFrequencyAssignment_285Hz} &
+    SignalToFrequencyAssignment\_285Hz \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{AllFrequenciesToImpulse} & AllFrequenciesToImpulse \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{AllFrequenciesToImpulseCopy} & AllFrequenciesToImpulseCopy \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{AllFrequenciesToImpulseAssignment} &
+    AllFrequenciesToImpulseAssignment \\ \hline
+
+    % Fault Manager Module
+    \refstepcounter{unitTest} \mtheunitTest \label{GetSystemFault} & 
+    GetSystemFault \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{NoPheripheralErrors} &
+    NoPheripheralErrors \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest 
+    \label{PheripheralErrorsTriggerUnrecoverableState} &
+    PheripheralErrorsTriggerUnrecoverableState \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ReportPeripheralError} &
+    ReportPeripheralError \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{CheckStateMachineStatesNoFault} &
+    CheckStateMachineStatesNoFault \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{CheckStateMachineStatesHardwareFault} &
+    CheckStateMachineStatesHardwareFault \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{CheckStateMachineStatesDOAFault} &
+    CheckStateMachineStatesDOAFault \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest
+    \label{CheckStateMachineStatesClassificationFault} &
+    CheckStateMachineStatesClassificationFault \\ \hline
+
+    % Mel Filter Module
+    \refstepcounter{unitTest} \mtheunitTest 
+    \label{CreateFilterBankImpulseBinContributesToAtMostTwoMelBands} &
+    CreateFilterBankImpulseBinContributesToAtMostTwoMelBands \\
+    \hline
+
+    % DCT Module
+    \refstepcounter{unitTest} \mtheunitTest 
+    \label{ComputeDCTOnMelSpectrogramProducesExpectedMFCC} &
+    ComputeDCTOnMelSpectrogramProducesExpectedMFCC \\
+    \hline
+
+    % PCA Module
+    \refstepcounter{unitTest} \mtheunitTest \label{ApplyPCA} &
+    ApplyPCA \\ \hline
+
+    % LDA Module
+    \refstepcounter{unitTest} \mtheunitTest \label{ApplyLDANormalPCAFeatures} &
+    ApplyLDANormalPCAFeatures \\ \hline
+
+    % Classification Module
+    \refstepcounter{unitTest} \mtheunitTest \label{ClassifyJackhammerAudio} &
+    ClassifyJackhammerAudio \\ \hline
+
+    % Visualization Module
+    \refstepcounter{unitTest} \mtheunitTest \label{CreatePackets} &
+    CreatePackets \\ \hline
+
+    %%%%%%%%%%%%%%%%%%%%
+    % Helper Functions %
+    %%%%%%%%%%%%%%%%%%%%
+
+    % Matrix creation
+    \refstepcounter{unitTest} \mtheunitTest \label{Identity} &
+    Identity \\ \hline
+
+    % Matrix addition
+    \refstepcounter{unitTest} \mtheunitTest \label{AddCommutativity} &
+    AddCommutativity \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AddAssociativity} &
+    AddAssociativity \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AddIdentity} &
+    AddIdentity \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AddInverse} &
+    AddInverse \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AddDimensionMismatch} &
+    AddDimensionMismatch \\ \hline
+
+    % Matrix multiplication
+    \refstepcounter{unitTest} \mtheunitTest \label{MultiAssociative} &
+    MultiAssociative \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{MultiDistributive} &
+    MultiDistributive \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{MultiIdentity} &
+    MultiIdentity \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{MultiZero} &
+    MultiZero \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{MultiDimensionMismatch} &
+    MultiDimensionMismatch \\ \hline
+
+    % Matrix scale
+    \refstepcounter{unitTest} \mtheunitTest \label{ScaleAssociative} &
+    ScaleAssociative \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ScaleDistributiveSingle} &
+    ScaleDistributiveSingle \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ScaleDistributiveDouble} &
+    ScaleDistributiveDouble \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ScaleIdentity} &
+    ScaleIdentity \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{ScaleZero} &
+    ScaleZero \\ \hline
+
+    % Matrix subtraction
+    \refstepcounter{unitTest} \mtheunitTest \label{SubAntiCommutative} &
+    SubAntiCommutative \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SubIdentity} &
+    SubIdentity \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SubInverse} &
+    SubInverse \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SubDimensionMismatchy} &
+    SubDimensionMismatch \\ \hline
+
+    % Matrix transpose
+    \refstepcounter{unitTest} \mtheunitTest \label{TransInvolution} &
+    TransInvolution \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{TransAddition} &
+    TransAddition \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{TransScalar} &
+    TransScalar \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{TransMultiplication} &
+    TransMultiplication \\ \hline
+
+    % Mode filtering
+    \refstepcounter{unitTest} \mtheunitTest \label{CorrectModeMultiUpdateInt} &
+    CorrectModeMultiUpdateInt \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{CorrectModeMultiUpdateEnum} &
+    CorrectModeMultiUpdateEnum \\ \hline
+
+    % Angles
+    \refstepcounter{unitTest} \mtheunitTest \label{AngleNormalization} &
+    AngleNormalization \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{DegToRadTest} &
+    DegToRadTest \\ \hline
+
+
+    \caption{Unit test ID to unit test name traceability matrix.}
+    \label{tab:test_id_traceability}
+\end{xltabular}
+}
+% \end{table}
+
+%%%%%%%%%%%%%%
+% UNIT TESTS %
+%%%%%%%%%%%%%%
+
+% DOA Module
+\subsection{DOA Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{gccPhatAngleRange} & 
+    4 microphone streams with random data of same size & 
+    run DOA on the microphone data  &
+    Returned angle between 0 and $2\pi$ & PASS\\ \hline
+    \utref{NoDoAAlgo} & 
+    4 microphone streams with random data of same size & 
+    run DOA on the microphone data with no DOA algo specified  &
+    Returned angle is 0 & PASS\\ \hline
+    \utref{IncorrectMicDataSize} & 
+    4 microphone streams with random data of different size & 
+    run DOA on the microphone data  &
+    An audio processing exception is raised & PASS\\ \hline
+    \utref{NorthLabel} & 
+    Angle between $\frac{-\pi}{8}$ and $\frac{\pi}{8}$ & 
+    Retrieve corresponding direction label  &
+    Direction label is North & PASS\\ \hline
+    \utref{NorthWestLabel} & 
+    Angle between $\frac{\pi}{8}$ and $\frac{3\pi}{8}$ & 
+    Retrieve corresponding direction label  &
+    Direction label is North West & PASS\\ \hline
+    \utref{WestLabel} & 
+    Angle between $\frac{3\pi}{8}$ and $\frac{5\pi}{8}$ & 
+    Retrieve corresponding direction label  &
+    Direction label is West & PASS\\ \hline
+    \utref{SouthWestLabel} & 
+    Angle between $\frac{5\pi}{8}$ and $\frac{7\pi}{8}$ & 
+    Retrieve corresponding direction label  &
+    Direction label is South West & PASS\\ \hline
+    \utref{SouthLabel} & 
+    Angle between $\frac{7\pi}{8}$ and $\frac{9\pi}{8}$ & 
+    Retrieve corresponding direction label  &
+    Direction label is South & PASS\\ \hline
+    \utref{SouthEastLabel} & 
+    Angle between $\frac{9\pi}{8}$ and $\frac{11\pi}{8}$ & 
+    Retrieve corresponding direction label  &
+    Direction label is South East & PASS\\ \hline
+    \utref{EastLabel} & 
+    Angle between $\frac{11\pi}{8}$ and $\frac{13\pi}{8}$ & 
+    Retrieve corresponding direction label  &
+    Direction label is East & PASS\\ \hline
+    \utref{NorhtEastLabel} & 
+    Angle between $\frac{13\pi}{8}$ and $\frac{15\pi}{8}$ & 
+    Retrieve corresponding direction label  &
+    Direction label is North East & PASS\\ \hline
+    \utref{SingleAudioSourceAngle0} & 
+    4 microphone streams with audio of source from 0 degrees & 
+    Run DOA on the microphone streams  &
+    DOA returns source is neat 0 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle45} & 
+    4 microphone streams with audio of source from 45 degrees & 
+    Run DOA on the microphone streams  &
+    DOA returns source is neat 45 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle90} & 
+    4 microphone streams with audio of source from 90 degrees & 
+    Run DOA on the microphone streams  &
+    DOA returns source is neat 90 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle135} & 
+    4 microphone streams with audio of source from 135 degrees & 
+    Run DOA on the microphone streams  &
+    DOA returns source is neat 135 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle180} & 
+    4 microphone streams with audio of source from 180 degrees & 
+    Run DOA on the microphone streams  &
+    DOA returns source is neat 180 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle225} & 
+    4 microphone streams with audio of source from 225 degrees & 
+    Run DOA on the microphone streams  &
+    DOA returns source is neat 225 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle270} & 
+    4 microphone streams with audio of source from 270 degrees & 
+    Run DOA on the microphone streams  &
+    DOA returns source is neat 270 degrees & PASS\\ \hline
+    \utref{SingleAudioSourceAngle315} & 
+    4 microphone streams with audio of source from 315 degrees & 
+    Run DOA on the microphone streams  &
+    DOA returns source is neat 315 degrees & PASS\\ \hline
+    \caption{Unit tests for DOA module.}
+    \label{tab:unit_test_doa}
+\end{xltabular}
+}
+
+% FFT Module
+\subsection{Fast Fourier Transform Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{SignalToFrequency_285Hz} & 
+    285 Hz sine wave audio stream, FFT module initialized & 
+    Run FFT on the sine wave  &
+    Frequency magnitude near 285Hz in frequency domain is the highest & PASS\\
+    \hline
+    \utref{SignalToFrequencyCopy_285Hz} & 
+    285 Hz sine wave audio stream, FFT module initialized using copy
+    constructor & 
+    Run FFT on the sine wave  &
+    Frequency magnitude near 285Hz in frequency domain is the highest & PASS\\
+    \hline
+    \utref{SignalToFrequencyAssignment_285Hz} & 
+    285 Hz sine wave audio stream, FFT module initialized using assignment
+    constructor & 
+    Run FFT on the sine wave  &
+    Frequency magnitude near 285Hz in frequency domain is the highest & PASS\\
+    \hline
+    \utref{AllFrequenciesToImpulse} & 
+    Frequency domain with all frequency, FFT module initiailized & 
+    Run inverse fast fourier transform on the frequency domain  &
+    Returned signal domain is the impulse response & PASS\\
+    \hline
+    \utref{AllFrequenciesToImpulseCopy} & 
+    Frequency domain with all frequency, FFT module initiailized using the copy
+    constructor & 
+    Run inverse fast fourier transform on the frequency domain  &
+    Returned signal domain is the impulse response & PASS\\
+    \hline
+    \utref{AllFrequenciesToImpulseAssignment} & 
+    Frequency domain with all frequency, FFT module initiailized using the
+    assignment constructor & 
+    Run inverse fast fourier transform on the frequency domain  &
+    Returned signal domain is the impulse response & PASS\\
+    \hline
+    \caption{Unit tests for FFT module.}
+    \label{tab:unit_test_fft}
+\end{xltabular}
+}
+
+% Fault Manager Module
+\subsection{Fault Manager Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{GetSystemFault} & 
+    Fault manager is initialized, no faults in system & 
+    Set each system fault.  &
+    For each system fault, fault manager reports back that system fault & PASS\\
+    \hline
+    \utref{NoPheripheralErrors} & 
+    Fault manager is initiailized, no faults in system & 
+    Pass no peripheral errors to fault manager  &
+    Fault manager reports no system fault & PASS\\
+    \hline
+    \utref{PheripheralErrorsTriggerUnrecoverableState} & 
+    Fault manager is initiailized, no faults in system & 
+    Set each pheripheral fault &
+    For each pheripheral fault, fault manager reports a hardware system fault & 
+    PASS\\
+    \hline
+    \utref{ReportPeripheralError} & 
+    Fault manager is initiailized, no faults in system & 
+    Report peripheral errors &
+    Set of all peripheral errors that has been reported are tracked & PASS\\
+    \hline
+    \utref{CheckStateMachineStatesNoFault} & 
+    Fault manager is initiailized, no faults in system & 
+    Run fault manager state machine &
+    Fault manager moves to no fault state & PASS\\
+    \hline
+    \utref{CheckStateMachineStatesHardwareFault} & 
+    Fault manager is initiailized, hardware faults in system & 
+    Run fault manager state machine &
+    Fault manager moves to hardware fault state & PASS\\
+    \hline
+    \utref{CheckStateMachineStatesDOAFault} & 
+    Fault manager is initiailized, no hardware faults, but DOA fault in system & 
+    Run fault manager state machine &
+    Fault manager moves to DOA fault state & PASS\\
+    \hline
+    \utref{CheckStateMachineStatesClassificationFault} & 
+    Fault manager is initiailized, no hardare or DOA faults, but classification
+    fault in system & 
+    Run fault manager state machine &
+    Fault manager moves to classification fault state & PASS\\
+    \hline
+    \caption{Unit tests for Fault Manager module.}
+    \label{tab:unit_test_fault_manager}
+\end{xltabular}
+}
+
+% MEL Filter Module
+\subsection{MEL Filter Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{CreateFilterBankImpulseBinContributesToAtMostTwoMelBands} & 
+    ?? & 
+    ???  &
+    ??? & PASS\\
+    \hline
+    \caption{Unit tests for MEL Filter module.}
+    \label{tab:unit_test_mel}
+\end{xltabular}
+}
+
+% DCT Module
+\subsection{Discrete Cosine Transform Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{ComputeDCTOnMelSpectrogramProducesExpectedMFCC} & 
+    MFCC frames of a 285 Hz sine wave. & 
+    Run DCT on melspectrogram &
+    spectrogram data is close to MFCC frames & PASS\\
+    \hline
+    \caption{Unit tests for Discrete Cosine Transform module.}
+    \label{tab:unit_test_dct}
+\end{xltabular}
+}
+
+% PCA Module
+\subsection{Prinicipal Component Analysis Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{ApplyPCA} & 
+    ?? & 
+    ???  &
+    ??? & PASS\\
+    \hline
+    \caption{Unit tests for PCA module.}
+    \label{tab:unit_test_pca}
+\end{xltabular}
+}
+
+% LDA Module
+\subsection{Linear Discriminant Analysis Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+
+    \utref{ApplyLDANormalPCAFeatures} & 
+    Audio data of jackhammer. & 
+    Run LDA on audio?  &
+    ??? & PASS\\
+    \hline
+    \caption{Unit tests for Linear Discriminant Analysis module.}
+    \label{tab:unit_test_lda}
+\end{xltabular}
+}
+
+% Classification Module
+\subsection{Classification Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{ClassifyJackhammerAudio} & 
+    Microphone holds audio samples from a jackhammer & 
+    Run classification on microphone data &
+    classify Jack hammer & PASS\\
+    \hline
+
+    \caption{Unit tests for classification module.}
+    \label{tab:unit_test_classification}
+\end{xltabular}
+}
+
+% Visualization Module
+\subsection{Visualization Module}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{CreatePackets} & 
+    Visualization packet struct initiailized & 
+    Create a byte stream packet fromt he visualization packet &
+    Byte stream convertion is as expected as per established serialization rule
+    & PASS\\
+    \hline
+
+    \caption{Unit tests for visualization module.}
+    \label{tab:unit_test_viz}
+\end{xltabular}
+}
+
+\subsection{Helper Functions}
+
+\subsubsection{Matrix Creation}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{Identity} & 
+    N/A & 
+    Create an identity matrix of random size &
+    All items in diagonal is 1, else 0 & PASS\\
+    \hline
+
+    \caption{Unit tests for matrix creation.}
+    \label{tab:unit_test_matrix_creation}
+\end{xltabular}
+}
+
+\subsubsection{Matrix Addition}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{AddCommutativity} & Matrix A, B & Apply $A + B$ and $B + A$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{AddAssociativity} & Matrix A, B, C &
+    Apply $(A + B) + C$ and $A + (B + C)$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{AddIdentity} & Matrix A, 0 (Zero matrix) & Apply $A + 0$ &
+    Returned matrix is A &
+    PASS\\ \hline
+    \utref{AddInverse} & Matrix A & Apply $A + (-A)$ & Returned matrix is A &
+    PASS\\ \hline
+    \utref{AddDimensionMismatch} & Matrix A, B of incompatible sizes & 
+    Apply $A + B$ & Size mismatch status is returned & PASS\\ \hline
+
+    \caption{Unit tests for matrix addition.}
+    \label{tab:unit_test_matrix_add}
+\end{xltabular}
+}
+
+\subsubsection{Matrix Multiplication}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{MultiAssociative} & Matrix A, B, C &
+    Apply $(AB)C$ and $A(BC)$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{MultiDistributive} & Matrix A, B, C &
+    Apply $A(B + C)$ and $AB + AC$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{MultiIdentity} & Matrix A, I(identity) & Apply $AI$ &
+    Returned matrix is A & PASS\\ \hline
+    \utref{MultiZero} & Matrix A, 0 (zero matrix) & Apply $A0$ &
+    Returned matrix is a zero matrix & PASS\\ \hline
+    \utref{MultiDimensionMismatch} & Matrix A, B of incompatible sizes & 
+    Apply $AB$ & Size mismatch status is returned & PASS\\ \hline
+
+    \caption{Unit tests for matrix multiplication.}
+    \label{tab:unit_test_matrix_multi}
+\end{xltabular}
+}
+
+\subsubsection{Matrix Scale}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{ScaleAssociative} & Matrix A, scalar c and d &
+    Apply $(cd)A$  and $c(dA)$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{ScaleDistributiveSingle} & Matrix A, B, and scalar c &
+    Apply $c(A + B)$ and $cA + cB$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{ScaleDistributiveDouble} & Matrix A, scalar c and d &
+    Apply $(c+d)A$  and $cA + dA$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{ScaleIdentity} & Matrix A and scalar 1 & Apply $A1$ &
+    Returned matrix is same as A & PASS\\ \hline
+    \utref{ScaleZero} & Matrix A snd scalar 0 & Apply $A0$ &
+    Returned matrix is the zero matrix & PASS\\ \hline
+
+    \caption{Unit tests for matrix scale.}
+    \label{tab:unit_test_matrix_scale}
+\end{xltabular}
+}
+
+\subsubsection{Matrix Subtraction}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{SubAntiCommutative} & Matrix A, B &
+    Apply $A - B$  and $-(B -A)$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{SubIdentity} & Matrix A, 0 (zero matrix) & Apply $A - 0$ &
+    Returned matrix is same as A & PASS\\ \hline
+    \utref{SubInverse} & Matrix A & Apply $A - A$ &
+    Returned matrix is the zero matrix & PASS\\ \hline
+    \utref{SubDimensionMismatch} & Matrix A, B of incompatible sizes & 
+    Apply $A - B$ & Size mismatch status is returned & PASS\\ \hline
+
+    \caption{Unit tests for matrix subtraction.}
+    \label{tab:unit_test_matrix_sub}
+\end{xltabular}
+}
+
+\subsubsection{Matrix Transpose}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{TransScalar} & Matrix A and scalar c &
+    Apply $(cA)^T$ and c$A^T$ &
+    Returned matrices are the same & PASS\\ \hline
+    \utref{TransMultiplication} & Matrix A, B &
+    Apply $(AB)^T$ and $B^TA^T$ &
+    Returned matrices are the same & PASS\\ \hline
+
+    \caption{Unit tests for matrix transpose.}
+    \label{tab:unit_test_matrix_trans}
+\end{xltabular}
+}
+
+\subsubsection{Mode Filtering}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{CorrectModeMultiUpdateInt} & 
+    Vector of integers & 
+    Pass item in vector one at a time to mode filtering &
+    The mode returned by mode filtering is the true mode of set of passed
+    items & PASS\\ \hline
+    \utref{CorrectModeMultiUpdateEnum} & 
+    Vector of enums & 
+    Pass item in vector one at a time to mode filtering &
+    The mode returned by mode filtering is the true mode of set of passed
+    items & PASS\\ \hline
+
+    \caption{Unit tests for helper functions associated to mode filtering.}
+    \label{tab:unit_test_mode_filter}
+\end{xltabular}
+}
+
+\subsubsection{Angles}
+{\footnotesize
+\begin{xltabular}{\textwidth}{|p{0.8cm}|X|X|X|p{1cm}|}
+    \hline
+    \textbf{Test ID} & \textbf{Initial State} & \textbf{Action} &
+    \textbf{Expected Output} & \textbf{Result} \\ 
+    \endfirsthead
+    \hline
+    
+    \utref{AngleNormalization} & 
+    Angle represented in radians & 
+    Normalize angle using normalizeAngleRad function &
+    Angle equivalent in radian within range of 0 and $2\pi$ & PASS\\ \hline
+    \utref{DegToRadTest} & 
+    Angle represented in degrees & 
+    Convert radian to degrees using degreeToRad function &
+    Angle equivalent in radians & PASS\\ \hline
+
+    \caption{Unit tests for helper functions associated to angles.}
+    \label{tab:unit_test_angles}
+\end{xltabular}
+}
+
 \section{Changes Due to Testing}
 
-\wss{This section should highlight how feedback from the users and from 
-the supervisor (when one exists) shaped the final product.  In particular 
-the feedback from the Rev 0 demo to the supervisor (or to potential users) 
-should be highlighted.}
+\subsection{General Feedback}
+
+Usability testing was completed with four stakeholders using the plan in
+Section 4.2. The average user rating was \textbf{4.75/5.0} across
+non-obtrusiveness, clarity, and situational awareness, and all planned metrics
+were met.
+
+The main feedback item was that the visualization scale looked a bit too large
+in some tasks. Based on this, we scaled the visualization down to reduce visual
+load while keeping cues easy to read.
+
+In addition, testing discussions highlighted the need for better behavior during
+unexpected failures. We are implementing system fault handling so that if the
+system crashes, it can fail safely and recover in a controlled way.
+
+Moreover, the classification module was identified as an area for improvement 
+in terms of reliability and accuracy, which led to the improvements mentioned 
+in the next section. 
+
+\subsection{Classification Module}
+After user testing, it was found that the classification module could be 
+improved to provide more reliable output the the user. Specifically related to 
+the confidence level and overall accuracy of the classification results. To 
+address these issues, the classification module was updated as follows:
+
+\subsubsection{Confidence Implementation}
+The classification module was updated to calculate the confidence level of each 
+class prediction. This was achieved by implementing a softmax function to 
+convert the raw output of the classifier into probabilities. The confidence 
+level is determined by the highest probability among the predicted classes, 
+providing feedback to the overall system of how much trust to put in the 
+classification results. These metrics were used to improve the overall 
+reliability of the system by filtering out low confidence predictions and 
+substituting them with an "Unknown" classification when the confidence is 
+below a current threshold of 70\%. This threshold was determined by manually 
+analyzing the confidence levels of correct and incorrect classifications during 
+testing with the current PCA and LDA trained matricies. However, to meet the 
+requirements specified in the VnV plan, the classification module had to 
+further be improved so that the confidence threshold can be increased to 90\% 
+or higher. This led to the next improvement mentioned below. 
+
+\subsubsection{Classification Accuracy Improvement}
+The accuracy of the classification module was low because of two main reasons: 
+limited examples in the training dataset and choosing classes that had very 
+similar audio signatures (car horn vs siren). To address these issues, the 
+first change that was made was finding another sound dataset that had more 
+examples and more distinct classes to choose from. The dataset that was chosen 
+was the FSD50k sound dataset, which has over 50,000 audio samples across 200
+classes \cite{FSD50k}. Using this dataset, the second change that was made was 
+changing the list of classes that the system was trained to classify to have 
+more distinct audio signatures. The new classes that are chosen are Chatter, 
+Bicycle Bell, Siren and Knock.
 
 \section{Automated Testing}
+
+To ensure consistent verification throughout development, multiple automated
+testing CI pipelines were implemented using GitHub Actions. These pipeline are
+triggered on each push to the main branch, and any Pull requests targetted to
+the main branch. Pull requests are blocked from merging if any pipeline fails
+to ensure verification holds for any new changes to the project.
+These automation testing reduces reliance on manual testing and increases the
+repeatability and reliability of the verification process.
+
+The automated workflow are as follows:
+
+\begin{itemize}
+  \item \textbf{Build Verification:} The source code is compiled using hardware
+    compiler to ensure that all changes integrate correctly and do not
+    introduce build errors.
+
+  \item \textbf{Unit Testing:} All unit tests are executed using gtest
+    \cite{GoogleTest} to verify the functional correctness of core software
+    components.
+  \item \textbf{Static Code Analysis:} A C++ static analysis tool
+    \cite{clangStaticAnalyzer} is run to detect potential programming errors,
+    memory issues, and violations of coding standards.
+\end{itemize}
+
+
+The results of each automated pipeline are recorded and made available through
+the \href{https://github.com/Team6-SixSense/audio360/actions}{repository's GitHub Actions tab}
+for traceability and review.
 		
 \section{Trace to Requirements}
 		
@@ -95,7 +965,49 @@ should be highlighted.}
 
 \section{Code Coverage Metrics}
 
-\bibliographystyle{plainnat}
+Table \ref{tab:code_coverage} presents the code coverage metrics summary as of
+March 7, 2026. Code coverage analysis was performed using gcovr \cite{gcovr}, a
+Python based tool that utilizes gcov to generate line, function, and branch
+coverage reports. Given the safety critical nature of \progname, achieving
+full test coverage was established as a target objective.
+However, this objective was not fully achieved due to gcovr reporting
+branch coverage for portions of the C++ standard library in addition to project
+developed source code. Testing all branches used in the C++ standard libraries
+requires a lot of effort with minimal verification benefit, since standard
+libraries are well-tested by the C++ community.
+Despite this limitation, the results indicate greater than $90\%$ line and
+function coverage and greater than $60\%$ branch coverage, which is considered
+sufficient for the scope of this capstone project and demonstrates a high level
+of verification for modules that are essential to the project. Important modules
+to the functionality of \progname~include classification, LDA, MEL filter, DCT,
+PCA, Direction of Arrival, System Fault Manager, FFT modules, which all have
+above $95\%$ line coverage and $100\%$ function coverage.
+
+These coverage metrics exclude manufacturer supplied libraries and hardware
+interface components. Verification of manufacturer code is outside the project's
+responsibility, and meaningful testing of hardware interfaces would require
+extensive mocking, which was determined to be beyond the scope of the project
+objectives and available resources.
+
+A copy of the code coverage report is also saved to this repository in
+\href{https://github.com/Team6-SixSense/audio360/blob/main/docs/VnVReport/coverage.html}{\path{docs/VnVReport/coverage.html}}.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|} 
+    \hline		
+    \textbf{Metric} & \textbf{Coverage (\%)} & \textbf{Executed / Total} \\
+    \hline 
+    Lines & 91.4 & $615 / 673$\\ \hline
+    Functions & 94.6 & $88 / 93$\\ \hline
+    Branches & 64.1 & $262 / 409$\\ \hline
+  \end{tabular}
+  \caption{Code coverage mertrics summary.}
+  \label{tab:code_coverage}
+\end{table}
+
+\newpage
+\bibliographystyle{IEEEtran}
 \bibliography{../../refs/References}
 
 \newpage{}
@@ -107,11 +1019,52 @@ graduate attribute of Reflection.
 \input{../Reflection.tex}
 
 \begin{enumerate}
-  \item What went well while writing this deliverable? 
+  \item What went well while writing this deliverable?
+  
+  \textbf{Sathurshan:} Our team documented written test cases for unit tests by
+  explicitly specifying the setup, procedure, and expected results throughout
+  the development of this project. This practice simplified preparation of this
+  deliverable, as the information only required reformatting into a report
+  style format.
+  
+  \textbf{Jay:} What went well was that we already had good starting material
+  from our earlier documents. That made it easier to organize this report and
+  write each section without guessing what to include.
+
+  \textbf{Nirmal:} Since I was responsible for writing the changes due to 
+  testing section of the report, I think it was clear what we needed to 
+  include in that due to transparency and good feedback recieved during our 
+  rev0 demo. Moreoever constant communication within the team helped facilitate 
+  this section as well, since we were all aware of changes that were already 
+  being made. 
+  
   \item What pain points did you experience during this deliverable, and how
     did you resolve them?
+  
+  \textbf{Sathurshan:} Personally, I did not experience any paint points during
+  this deliverable. This could be primarily because the sections I worked on
+  were already well documented.
+  
+  \textbf{Jay:} The main pain point was managing this deliverable with other
+  course work at the same time. There were weeks with multiple deadlines, so it
+  was hard to keep steady progress. I handled this by breaking the work into
+  smaller parts and setting short work sessions during the week.
+
+  \textbf{Nirmal:} I think the main pain point when writing this deliverable 
+  was trying to actively make changes to the system after the rev0 demo, while 
+  also trying to test and write this report at the same time. For me, I was 
+  responsible for making changes to the classification module, which involved 
+  finding a new dataset, retraining the PCA and LDA matricies, and then testing 
+  the changes out. 
+
   \item Which parts of this document stemmed from speaking to your client(s) or
   a proxy (e.g. your peers)? Which ones were not, and why?
+  
+  \textbf{Team:} The usability parts were most connected to stakeholder and peer
+  feedback, especially around display clarity and comfort. Other sections were
+  mostly based on our own testing and documentation because they are more about
+  system behavior than user opinion.
+
   \item In what ways was the Verification and Validation (VnV) Plan different
   from the activities that were actually conducted for VnV?  If there were
   differences, what changes required the modification in the plan?  Why did
@@ -120,6 +1073,17 @@ graduate attribute of Reflection.
   predict a feasible amount of effort and the right tasks needed to build the
   evidence that demonstrates the required quality?  (It is expected that most
   teams will have had to deviate from their original VnV Plan.)
+
+  \textbf{Team:} The main differences were associated with certain 
+  non-functional requirement tests that were not created as their own unit 
+  tests, but rather as part of the functional unit tests that were being 
+  written. In the VnV plan, we had planned unit tests for NFR and FR, but later 
+  realized that related tests can be combined. Moreover, it seemed like some of 
+  the NFR written in the VnV plan and SRS document were very ambitious and 
+  harder to realize in a fully working system. For example, 90\% accuracy for 
+  classification with PCA and LDA seems to be very hard to achieve in this 
+  scope. Athough we are actively trying to fulfill this, it may have to be updated. 
+
 \end{enumerate}
 
 \end{document}
