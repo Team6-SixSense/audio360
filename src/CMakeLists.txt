@@ -88,6 +88,11 @@ if(ARM_BUILD)
         )
     endif()
 
+    if (BUILD_BLUETOOTH)
+        target_compile_definitions(${SourceExecutable} PRIVATE BUILD_BLUETOOTH)
+        target_compile_definitions(${SourceLib} PRIVATE BUILD_BLUETOOTH)
+    endif()
+
     target_include_directories(${SourceExecutable} PRIVATE ${USB_INCLUDES})
     target_include_directories(${SourceLib} PRIVATE ${USB_INCLUDES})
 endif()

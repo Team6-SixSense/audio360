@@ -43,8 +43,8 @@ base class BaseDataService {
         continue;
       }
 
-      final payload = _buffer.sublist(1, 4);
-      _buffer = _buffer.sublist(4);
+      final payload = _buffer.sublist(1, 5);
+      _buffer = _buffer.sublist(5);
 
       final packet = deserializePacket(payload);
       onPacket(packet);
