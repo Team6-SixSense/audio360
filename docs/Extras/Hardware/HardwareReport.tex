@@ -5,6 +5,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{gensymb}
 \usepackage{colortbl}
 \usepackage{xr}
 \usepackage{hyperref}
@@ -53,6 +54,52 @@ Dec 21, 2025 & Sathurshan, Omar & Report outline.\\
 \end{table}
 
 \newpage
+
+\section{Symbols, Abbreviations and Acronyms}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|} 
+    \hline		
+    \textbf{symbol} & \textbf{description}\\
+    \hline
+    $\theta_e$ & Error angle \\ \hline
+    \progname & 360 Audio analysis system on smart glasses\\ \hline
+    CI & Continuous Integration\\ \hline
+    DCT & Discrete Cosine Transform \\ \hline
+    DOA & Direction of Arrival \\ \hline
+    DMA & Direct Memory Access \\ \hline
+    FFT & Fast Fourier Transform \\ \hline
+    FR & Functional Requirement\\ \hline
+    GND & Ground \\ \hline
+    HAL & Hardware Abstraction Layer \\ \hline
+    HUD & Heads Up Display \\ \hline
+    I2S & Inter-Integrated Circuit Sound \\ \hline
+    LDA & Linear Discriminant Analysis \\ \hline
+    M & Module \\ \hline
+    MSB & Most Significant Bit \\ \hline
+    NFR & Non-Functional Requirement\\ \hline
+    PCA & Principal Component Analysis \\ \hline
+    PCB & Printed Circuit Board \\ \hline
+    R/Req & Requirement\\ \hline
+    SCK & Serial Clock \\ \hline
+    SD & Serial Data\\ \hline
+    SRS & Software Requirements Specification\\ \hline
+    T & Test\\ \hline
+    USART & Universal Synchronous/Asynchronous Receiver/Transmitter \\ \hline
+    UT & Unit Test\\ \hline
+    VnV & Verification and Validation \\ \hline
+    WS & Word Select \\ \hline
+  \end{tabular}
+  \caption{Table of abbreviations and acronyms used in \progname.}
+\end{table}
+
+See SRS Documentation at
+\hyperref[SRS-sec:symbols]{Symbols, Abbreviations, and Acronyms}
+for a complete table used in \progname.
+
+\newpage
+
 
 \tableofcontents
 
@@ -162,9 +209,8 @@ microcontoller.
 \end{figure}
 
 Figure~\ref{fig:mic} shows the I2S microphone used in this project.
-The device provides dedicated pins for the clock (SCK), word select (WS), and
-serial data (SD) connections, allowing direct interfacing with the
-microcontroller's I2S peripheral.
+The device provides dedicated pins for the SCK, WS, and SD connections,
+allowing direct interfacing with the microcontroller's I2S peripheral.
 
 \begin{figure}[H]
     \centering
@@ -183,7 +229,7 @@ microphone (\hyperref[SRS-FR1_2]{FR1.2}).
 
 The microphones communicate using the I2S protocol and are synchronized through
 a shared clock. The microcontroller operates as the I2S master and generates
-the serial clock (SCK) and word select (WS) signals, while all microphones
+the SCK and WS signals, while all microphones
 operate as slaves. These signals are distributed to each microphone, ensuring
 that all devices sample audio simultaneously and remain phase-aligned.
 Using a common clock eliminates inter-channel clock drift and minimizes
@@ -209,8 +255,8 @@ WS signal. Both signals are common to all microphones in the array.
 \subsection{Wiring}
 
 Figure~\ref{fig:mic_wiring} illustrates the microphone array wiring
-configuration. As described in Section~\ref{sec:mic_sync}, the serial clock
-(SCK) and word select (WS) signals are shared among all microphones to achieve
+configuration. As described in Section~\ref{sec:mic_sync}, the SCK and WS
+signals are shared among all microphones to achieve
 synchronized sampling. The left/right (L/R) channel signal is identical for all
 microphones to ensure that each device stores data within the same channel
 frame. In this project, all microphones are storing to left channel
@@ -295,6 +341,22 @@ In the final phase, the wiring was transitioned from a breadboard based
 prototype to a custom PCB. This reduced the risk of loose connections, and
 enhanced the overall appearance and robustness of the final product.
 
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|X|X|X|X|}
+    \hline
+    {\bf Mic Number} & {\bf Mic Location} & {\bf PCB Pin Out} & {\bf SAI Pin}\\
+    \hline
+    1 & Top Left (45$\degree$) & S2 & Block A1\\
+    2 & Top Right (135$\degree$) & S3 & Block B1\\
+    3 & Bottom Right (225$\degree$) & S4 & Block A2\\
+    4 & Bottom Left (305$\degree$) & S1 & Block B2\\
+    \hline
+    \end{tabularx}
+    \label{tab:pcb_mic_info}
+    \caption{Microphone data link connection on PCB. Angles are relative to
+    glasses coordinate frame (refer to \hyperref[SRS-FR5_4]{FR5.4} from SRS).}
+\end{table}
 
 \section{Software-Hardware Integration}
 
