@@ -34,3 +34,18 @@ Microphones have the following pins:
 For four microphone synchronization, `L/R` input of all microphones must be the same.
 This is because data is sampled on WS signal on either left or right channel. For example,
 when WS = 0, left channel is sampled, and when WS = 1, right channel is sampled.
+
+## Bluetooth
+
+Below is an wiring for the bluetooth module.
+
+![image](./bluetooth_wiring.png)
+
+The pins are connected to the following on the microcontroller:
+
+1. `Enable/Key`: Ground
+2. `VCC`: Voltage (3.3V)
+3. `GND`: Ground
+4. `TXD`: Transfer. Connects to microcontroller's receiver. PB15
+5. `RXD`: Receiver. Connectes to microcontroller's transer. PB13
+6. `State`: PB12
