@@ -39,7 +39,7 @@ state Audio360Software {
 
     DOA --> AudioSampling
     DOA --> ICA
-    Audio360Eng --> FaultManager
+    FaultManager --> Audio360Eng
     Audio360Eng --> DOA
     Audio360Eng --> Classification
     Audio360Eng --> Logging
