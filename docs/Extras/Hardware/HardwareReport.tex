@@ -100,8 +100,11 @@ for a complete table used in \progname.
 
 \newpage
 
-
 \tableofcontents
+
+\listoftables
+
+\listoffigures
 
 \newpage
 
@@ -338,8 +341,17 @@ functionality.
 \subsubsection{Phase 4: PCB Implementation}
 
 In the final phase, the wiring was transitioned from a breadboard based
-prototype to a custom PCB. This reduced the risk of loose connections, and
-enhanced the overall appearance and robustness of the final product.
+prototype to a custom PCB, figure \ref{fig:pb}. This reduced the risk of loose
+connections, and enhanced the overall appearance and robustness of the final
+product. Table \ref{tab:pcb_mic_info} summarizes the pin connections from the
+microphones to the PCB pin outs to the microcontroller.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{pcb.jpg}
+    \caption{PCB for attatching microphones on the glasses.}
+    \label{fig:pb}
+\end{figure}
 
 \begin{table}[H]
     \centering
@@ -353,10 +365,24 @@ enhanced the overall appearance and robustness of the final product.
     4 & Bottom Left (305$\degree$) & S1 & Block B2\\
     \hline
     \end{tabularx}
-    \label{tab:pcb_mic_info}
     \caption{Microphone data link connection on PCB. Angles are relative to
     glasses coordinate frame (refer to \hyperref[SRS-FR5_4]{FR5.4} from SRS).}
+    \label{tab:pcb_mic_info}
 \end{table}
+
+Furthermore, the team changes the microcontroller to glasses communication from
+USB to bluetooth. The reason for this upgrade was because the USB connection
+was not consistent and the available wire connection to the glasses was short.
+Bluetooth gave the team flexibility to connect to the glasses wirelessly with
+more consistent connection. Figure \ref{fig:bluetooth_wiring} demonstrates the
+wiring for the bluetooth module to the microcontroller.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{wiring/bluetooth_wiring.png}
+    \caption{Bluetooth wiring diagram.}
+    \label{fig:bluetooth_wiring}
+\end{figure}
 
 \section{Software-Hardware Integration}
 
