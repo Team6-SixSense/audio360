@@ -214,10 +214,21 @@ float runDoA(bool newData) {
   std::vector<float> mic4Data(MIC_HALF_BUFFER_SIZE);
 
   for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; i++) {
+    // Mic 1 is top left, mic 2 is top right, mic 3 is bottom right and mic 4 is
+    // bottom left.
+
+#ifdef PCB_BUILD
+    mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
+    mic2Data[i] = static_cast<float>(micB1Buffer[start + i]);
+    mic3Data[i] = static_cast<float>(micA2Buffer[start + i]);
+    mic4Data[i] = static_cast<float>(micB2Buffer[start + i]);
+#else
+    // Rev 0 build.
     mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
     mic2Data[i] = static_cast<float>(micA2Buffer[start + i]);
     mic3Data[i] = static_cast<float>(micB2Buffer[start + i]);
     mic4Data[i] = static_cast<float>(micB1Buffer[start + i]);
+#endif
   }
 
   float angle{0.0};
