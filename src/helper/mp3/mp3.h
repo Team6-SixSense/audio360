@@ -40,7 +40,7 @@ struct MP3Data {
  * being ran.
  * @return MP3Data PCM of MP3 file data.
  */
-MP3Data readMP3File(std::string filepath);
+MP3Data readMP3File(std::string filepath, bool resampleTo16k = false);
 
 /**
  * @brief Read MP3 file and return raw binary contents.

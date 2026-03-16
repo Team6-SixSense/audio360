@@ -40,7 +40,7 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
   LDA_CLASS_WEIGHTS = {3, 6, LDA_CLASS_WEIGHTS_DATA.data()};
 
   LDA_CLASS_BIASES = { -1.5f, 0.0f, 21.0f };
-  LDA_CLASS_BIASES_NOT_EMBEDDED = LDA_CLASS_BIASES;
+  LDA_CLASS_BIASES_NOT_EMBEDDED = {1.5f, -24.0f, -37.5f};
 
   LDA_SCALINGS_DATA = {
    -0.04404649f, -0.01851906f, -0.46230766f,  0.01840315f,  0.57647359f, -0.01081683f,
@@ -53,7 +53,15 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
     ClassificationLabel::Fire, ClassificationLabel::Engine, ClassificationLabel::TruckReversing};
 
   this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
+
+  // MCU build (ARM_BUILD) keeps the embedded-friendly biases; host/test builds
+  // use the full-precision biases to match training.
+#if ARM_BUILD
   this->ldaProjection.classBiases = LDA_CLASS_BIASES;
+#else
+  this->ldaProjection.classBiases = LDA_CLASS_BIASES_NOT_EMBEDDED;
+#endif
+
   this->classTypes = CLASSIFICATION_CLASSES;
   this->ldaProjection.scalings     = LDA_SCALINGS;
 }
@@ -161,15 +169,7 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(const matrix& pcaFeatureVe
     }
   }
   totalConfidence /= numFrames;
-
-  // Debug: average LDA scores per class and average confidence over frames.
-  printf("Avg LDA scores:");
-  for (uint16_t c = 0; c < this->numClasses; ++c) {
-    const float avg = scoreSums[c] / static_cast<float>(numFrames);
-    printf(" %s=%.4f", ClassificationClassToString(this->classTypes[c]), avg);
-  }
-  printf(" | Avg confidence=%.4f\n", totalConfidence);
-
+  
   if (totalConfidence < CONFIDENCE_THRESHOLD) {
     return ClassificationLabel::Unknown;
   }
