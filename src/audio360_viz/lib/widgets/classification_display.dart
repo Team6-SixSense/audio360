@@ -18,7 +18,7 @@ class ClassificationDisplay extends StatelessWidget {
     switch (classification) {
       case Classification.fire:
         return Icons.local_fire_department;
-      case Classification.screech:
+      case Classification.engine:
         return Icons.hearing;
       case Classification.truckReversing:
         return Icons.local_shipping;
@@ -33,7 +33,7 @@ class ClassificationDisplay extends StatelessWidget {
     switch (classification) {
       case Classification.fire:
         return const Color(0xFFFF4444); // High alert
-      case Classification.screech:
+      case Classification.engine:
         return const Color(0xFF66FF66); // Medium-bright green
       case Classification.truckReversing:
         return const Color(0xFF33FFCC); // Vehicle motion
@@ -47,8 +47,8 @@ class ClassificationDisplay extends StatelessWidget {
     switch (classification) {
       case Classification.fire:
         return 'FIRE';
-      case Classification.screech:
-        return 'SCREECH';
+      case Classification.engine:
+        return 'ENGINE';
       case Classification.truckReversing:
         return 'TRUCK REVERSING';
       case Classification.unKnown:

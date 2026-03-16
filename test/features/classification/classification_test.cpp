@@ -95,8 +95,8 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
   EXPECT_GE(unknownRatio, 0.9f);
 }
 
-TEST(ClassificationTest, ScreechMp3IsScreech) {
-  float ratio = RunClassificationOverMp3("audio/screech.mp3", "screech");
+TEST(ClassificationTest, EngineMp3IsEngine) {
+  float ratio = RunClassificationOverMp3("audio/engine.mp3", "engine");
   EXPECT_GE(ratio, 0.9f);
 }
 
