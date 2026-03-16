@@ -77,7 +77,7 @@ std::vector<ModeFilterParamType<int>> GetIntTestConfigs() {
 std::vector<ModeFilterParamType<ClassificationLabel>> GetEnumTestConfigs() {
   // Parameterized test 1. Tests that given the same input value, the mode
   // remains that value.
-  std::vector<ClassificationLabel> allSirens(10, ClassificationLabel::Fire);
+  std::vector<ClassificationLabel> allFires(10, ClassificationLabel::Fire);
 
   // Parameterized test 2. Tests that mode changes correctly with different
   // values.
@@ -120,10 +120,10 @@ std::vector<ModeFilterParamType<ClassificationLabel>> GetEnumTestConfigs() {
       ClassificationLabel::Fire};
 
   return {
-      {5, 10, allSirens, allSirens},                   // Test 1.
+      {5, 10, allFires, allFires},                   // Test 1.
       {5, 12, modeChangesInput, modeChangesExpected},  // Test 2.
       {6, 12, equalFreqInput, equalFreqExpected},      // Test 3.
       {1, 5, sizeOneResults, sizeOneResults},          // Test 4.
-      {0, 10, allSirens, allSirens}                    // Filter size 0 test.
+      {0, 10, allFires, allFires}                    // Filter size 0 test.
   };
 }

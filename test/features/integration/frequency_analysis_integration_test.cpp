@@ -227,7 +227,7 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousProcessingPerformance) {
   // Verify both completed (classification can be any non-empty result including "unknown")
   std::string label = classifier.getClassificationLabel();
   EXPECT_FALSE(label.empty());
-  bool classAcceptable = (label == "car_horn" || label == "horn" || label == "siren" || label == "unknown");
+  bool classAcceptable = (label == "fire" || label == "engine" || label == "truck_reversing" || label == "unknown");
   EXPECT_TRUE(classAcceptable) << "Unexpected classification: " << label;
   
   EXPECT_GE(direction, 0.0f);
