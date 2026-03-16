@@ -1,5 +1,7 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+
 import '../models/enums.dart';
 
 /// Transverse-plane (floor) direction reticle for monochrome-green optics.
@@ -76,6 +78,7 @@ class _ReticlePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final scale = (size.width / 240).clamp(0.55, 1.0).toDouble();
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.38;
 
@@ -85,12 +88,12 @@ class _ReticlePainter extends CustomPainter {
       height: radius * 2 * yCompression,
     );
 
-    // Slight vignette to help the reticle read on-lens
+    // Slight vignette to help the reticle read on-lens.
     final vignettePaint = Paint()
       ..shader = RadialGradient(
         colors: [
-          Colors.black.withValues(alpha:0.55),
-          Colors.black.withValues(alpha:0.0),
+          Colors.black.withValues(alpha: 0.32),
+          Colors.black.withValues(alpha: 0.0),
         ],
       ).createShader(Rect.fromCircle(center: center, radius: radius * 1.35));
     canvas.drawRect(Offset.zero & size, vignettePaint);
@@ -99,8 +102,8 @@ class _ReticlePainter extends CustomPainter {
     _drawCrosshairs(canvas, center, radius);
     _drawCardinalTicks(canvas, center, radius);
 
-    // Darker center matte so the arrow doesn’t get lost
-    final matte = Paint()..color = Colors.black.withValues(alpha:0.55);
+    // Darker center matte so the arrow does not get lost.
+    final matte = Paint()..color = Colors.black.withValues(alpha: 0.38);
     canvas.drawOval(
       Rect.fromCenter(
         center: center,
@@ -110,22 +113,24 @@ class _ReticlePainter extends CustomPainter {
       matte,
     );
 
-    // Main outer ellipse, slightly brighter
+    // Main outer ellipse, slightly brighter.
     final outline = Paint()
-      ..color = _gBright.withValues(alpha:0.9)
+      ..color = _gBright.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.5;
+      ..strokeWidth = 2.1 * scale;
     canvas.drawOval(ellipseRect, outline);
 
     if (hasDirection) {
       _drawArrow(canvas, center, radius);
     } else {
-      final dot = Paint()..color = _gDim.withValues(alpha:0.6);
-      canvas.drawCircle(center, 3, dot);
+      final dot = Paint()..color = _gDim.withValues(alpha: 0.5);
+      canvas.drawCircle(center, 2.4 * scale, dot);
     }
   }
 
   void _drawConcentricRings(Canvas canvas, Offset center, double radius) {
+    final scale = (radius / 91.2).clamp(0.55, 1.0).toDouble();
+
     for (int i = 1; i <= 4; i++) {
       final r = radius * (i / 4);
       final rect = Rect.fromCenter(
@@ -134,26 +139,27 @@ class _ReticlePainter extends CustomPainter {
         height: r * 2 * yCompression,
       );
 
-      final opacity = 0.20 + (0.10 * (4 - i));
+      final opacity = (0.20 + (0.10 * (4 - i))) * 0.8;
       final p = Paint()
-        ..color = _gDim.withValues(alpha:opacity)
+        ..color = _gDim.withValues(alpha: opacity)
         ..style = PaintingStyle.stroke
-        ..strokeWidth = i == 1 ? 1.5 : 1.0;
+        ..strokeWidth = (i == 1 ? 1.3 : 0.9) * scale;
       canvas.drawOval(rect, p);
     }
   }
 
   void _drawCrosshairs(Canvas canvas, Offset center, double radius) {
+    final scale = (radius / 91.2).clamp(0.55, 1.0).toDouble();
     final v = Paint()
-      ..color = _gBright.withValues(alpha:0.85)
+      ..color = _gBright.withValues(alpha: 0.72)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.7 * scale;
     final h = Paint()
-      ..color = _gBright.withValues(alpha:0.75)
+      ..color = _gBright.withValues(alpha: 0.62)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.6;
+      ..strokeWidth = 1.4 * scale;
 
-    final extend = radius * 1.25;
+    final extend = radius * 1.05;
     canvas.drawLine(
       Offset(center.dx, center.dy - extend),
       Offset(center.dx, center.dy + extend),
@@ -166,23 +172,24 @@ class _ReticlePainter extends CustomPainter {
     );
 
     final c = Paint()..color = _gBright;
-    canvas.drawCircle(center, 2.5, c);
+    canvas.drawCircle(center, 2.1 * scale, c);
   }
 
   void _drawCardinalTicks(Canvas canvas, Offset center, double radius) {
+    final scale = (radius / 91.2).clamp(0.55, 1.0).toDouble();
     const angles = <double>[0, 90, 180, 270];
     final tickPaint = Paint()
-      ..color = _gBright.withValues(alpha:0.9)
+      ..color = _gBright.withValues(alpha: 0.75)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = 1.5 * scale;
 
-    final tickLen = 12.0;
+    final tickLen = 9.0 * scale;
     for (final deg in angles) {
       final a = deg * (math.pi / 180);
       final x = center.dx + radius * math.cos(a);
       final y = center.dy - radius * math.sin(a) * yCompression;
 
-      // Perpendicular tick
+      // Perpendicular tick.
       final perp = a + math.pi / 2;
       final s = Offset(
         x + tickLen * 0.2 * math.cos(perp),
@@ -197,6 +204,7 @@ class _ReticlePainter extends CustomPainter {
   }
 
   void _drawArrow(Canvas canvas, Offset center, double radius) {
+    final scale = (radius / 91.2).clamp(0.55, 1.0).toDouble();
     final a = (azimuthDeg - 90) * (math.pi / 180);
     final len = radius * 0.62;
 
@@ -205,24 +213,26 @@ class _ReticlePainter extends CustomPainter {
       center.dy + len * math.sin(a) * yCompression,
     );
 
-    // Arrow shaft (thicker + slight glow)
     final shaft = Paint()
-      ..color = _gBright.withValues(alpha:0.95)
+      ..color = _gBright.withValues(alpha: 0.9)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
+      ..strokeWidth = 3.0 * scale
       ..strokeCap = StrokeCap.round;
     canvas.drawLine(center, tip, shaft);
 
     final glow = Paint()
-      ..color = _gBright.withValues(alpha:0.25)
+      ..color = _gBright.withValues(alpha: 0.18)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 10
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
+      ..strokeWidth = 7.0 * scale
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 8 * scale);
     canvas.drawLine(center, tip, glow);
 
-    // Arrowhead: account for yCompression when computing angle
-    final ang = math.atan2((center.dy - tip.dy) / yCompression, tip.dx - center.dx);
-    const head = 14.0;
+    // Arrowhead: account for yCompression when computing angle.
+    final ang = math.atan2(
+      (center.dy - tip.dy) / yCompression,
+      tip.dx - center.dx,
+    );
+    final head = 12.0 * scale;
     final p = Path()
       ..moveTo(tip.dx, tip.dy)
       ..lineTo(
@@ -241,13 +251,12 @@ class _ReticlePainter extends CustomPainter {
     final headPaint = Paint()..color = _gBright;
     canvas.drawPath(p, headPaint);
 
-    // Tip marker (bright + glow)
     final tipGlow = Paint()
-      ..color = _gBright.withValues(alpha:0.35)
+      ..color = _gBright.withValues(alpha: 0.25)
       ..style = PaintingStyle.fill
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
-    canvas.drawCircle(tip, 14, tipGlow);
-    canvas.drawCircle(tip, 5.5, Paint()..color = _gBright);
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 10 * scale);
+    canvas.drawCircle(tip, 10.0 * scale, tipGlow);
+    canvas.drawCircle(tip, 4.2 * scale, Paint()..color = _gBright);
   }
 
   @override
@@ -257,4 +266,3 @@ class _ReticlePainter extends CustomPainter {
         oldDelegate.yCompression != yCompression;
   }
 }
-

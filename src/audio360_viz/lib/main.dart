@@ -1,23 +1,24 @@
 import 'package:audio360_viz/base_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'ble/bluetooth_service.dart';
 import 'models/packet.dart';
-import 'usb/usb_service_factory.dart';
 import 'screens/visualization_screen.dart';
+import 'usb/usb_service_factory.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Set preferred orientations for smart glasses (landscape)
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  
+
   // Set system UI overlay style for immersive experience
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  
+
   runApp(const Audio360VizApp());
 }
 
@@ -48,33 +49,43 @@ class MainVisualizationPage extends StatefulWidget {
 }
 
 class _MainVisualizationPageState extends State<MainVisualizationPage> {
-  late BaseDataService dataService; // Can be UsbService or MockUsbService or BluetoothLEService
+  // Can be UsbService or BluetoothLEService.
+  late BaseDataService dataService;
   Packet? _packet;
-  String _status = "Disconnected";
+  String _status = 'Bluetooth disconnected';
 
   bool useBluetooth = true;
 
-  void onPacket (Packet packet) {
-  setState(() => _packet = packet);
+  bool _isConnectedStatus(String status) {
+    final normalized = status.trim().toLowerCase();
+    return normalized.contains('connected') &&
+        !normalized.contains('disconnected') &&
+        !normalized.contains('connecting');
   }
 
-  void onStatus (String status) {
-  setState(() => _status = status);
+  void onPacket(Packet packet) {
+    setState(() => _packet = packet);
   }
 
+  void onStatus(String status) {
+    setState(() {
+      _status = status;
+      if (!_isConnectedStatus(status)) {
+        _packet = null;
+      }
+    });
+  }
 
   @override
   void initState() {
-
     super.initState();
-    if(!useBluetooth){
+    if (!useBluetooth) {
       dataService = UsbServiceFactory.createUsbService(
         onPacket: onPacket,
         onStatus: onStatus,
       );
     } else {
-      dataService= BluetoothLEService(p: onPacket,
-          s: onStatus);
+      dataService = BluetoothLEService(p: onPacket, s: onStatus);
     }
 
     // Auto-connect on startup
@@ -89,9 +100,6 @@ class _MainVisualizationPageState extends State<MainVisualizationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return VisualizationScreen(
-      packet: _packet,
-      status: _status,
-    );
+    return VisualizationScreen(packet: _packet, status: _status);
   }
 }

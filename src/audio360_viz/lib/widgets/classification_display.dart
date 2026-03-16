@@ -63,68 +63,38 @@ class ClassificationDisplay extends StatelessWidget {
     final name = _getName(classification);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      constraints: const BoxConstraints(maxWidth: 190),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha:0.65),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: color,
-          width: 1.8,
-        ),
+        color: Colors.black.withValues(alpha: 0.58),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color, width: 1.4),
         boxShadow: [
           BoxShadow(
-            // Keep bloom controlled for optical displays
-            color: color.withValues(alpha:0.22),
-            blurRadius: 10,
-            spreadRadius: 1,
+            // Keep bloom controlled for optical displays.
+            color: color.withValues(alpha: 0.16),
+            blurRadius: 8,
+            spreadRadius: 0.6,
           ),
         ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Icon
-          Icon(
-            icon,
-            color: color,
-            size: 26,
-          ),
-          const SizedBox(width: 10),
-          // Text
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                name,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      blurRadius: 4,
-                    ),
-                  ],
-                ),
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              name,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: color,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.0,
+                shadows: const [Shadow(color: Colors.black, blurRadius: 3)],
               ),
-              if (priority > 0)
-                Text(
-                  'Priority: $priority',
-                  style: TextStyle(
-                    color: color.withValues(alpha:0.8), // Use classification color
-                    fontSize: 11,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black,
-                        blurRadius: 2,
-                      ),
-                    ],
-                  ),
-                ),
-            ],
+            ),
           ),
         ],
       ),
