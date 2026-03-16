@@ -11,10 +11,10 @@
 
 /** @brief Enum holding all classification labels. */
 enum class ClassificationLabel {
-  Fire = 0,
-  Engine = 1,
-  TruckReversing = 2,
-  Unknown = 3
+  Unknown = 0,
+  Fire = 1,
+  Engine = 2,
+  TruckReversing = 3,
 };
 
 /**
