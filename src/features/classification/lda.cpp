@@ -56,7 +56,7 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
 
   // MCU build (ARM_BUILD) keeps the embedded-friendly biases; host/test builds
   // use the full-precision biases to match training.
-#if ARM_BUILD
+#ifndef BUILD_TESTS
   this->ldaProjection.classBiases = LDA_CLASS_BIASES;
 #else
   this->ldaProjection.classBiases = LDA_CLASS_BIASES_NOT_EMBEDDED;
