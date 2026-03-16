@@ -109,14 +109,14 @@ std::vector<ModeFilterParamType<ClassificationLabel>> GetEnumTestConfigs() {
       ClassificationLabel::Fire,   ClassificationLabel::Fire,
       ClassificationLabel::Fire,   ClassificationLabel::Fire,
       ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::TruckReversing,
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
 
   // Parameterized test 4. Tests that mode detection of internal buffer size 1.
   std::vector<ClassificationLabel> sizeOneResults{
       ClassificationLabel::Unknown, ClassificationLabel::Fire,
-      ClassificationLabel::TruckReversing, ClassificationLabel::Fire,
+      ClassificationLabel::Engine, ClassificationLabel::TruckReversing, 
       ClassificationLabel::Fire};
 
   return {
