@@ -77,47 +77,47 @@ std::vector<ModeFilterParamType<int>> GetIntTestConfigs() {
 std::vector<ModeFilterParamType<ClassificationLabel>> GetEnumTestConfigs() {
   // Parameterized test 1. Tests that given the same input value, the mode
   // remains that value.
-  std::vector<ClassificationLabel> allSirens(10, ClassificationLabel::Siren);
+  std::vector<ClassificationLabel> allSirens(10, ClassificationLabel::Fire);
 
   // Parameterized test 2. Tests that mode changes correctly with different
   // values.
   std::vector<ClassificationLabel> modeChangesInput{
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn};
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
   std::vector<ClassificationLabel> modeChangesExpected{
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn};
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
 
   // Parameterized test 3. Similar to test 2 but tests when size of internal
   // buffer is even.
   std::vector<ClassificationLabel> equalFreqInput{
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn};
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
   std::vector<ClassificationLabel> equalFreqExpected{
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::Siren,   ClassificationLabel::Siren,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn,
-      ClassificationLabel::CarHorn, ClassificationLabel::CarHorn};
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,   ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
+      ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
 
   // Parameterized test 4. Tests that mode detection of internal buffer size 1.
   std::vector<ClassificationLabel> sizeOneResults{
-      ClassificationLabel::Unknown, ClassificationLabel::Siren,
-      ClassificationLabel::Jackhammer, ClassificationLabel::CarHorn,
-      ClassificationLabel::Clapping};
+      ClassificationLabel::Unknown, ClassificationLabel::Fire,
+      ClassificationLabel::TruckReversing, ClassificationLabel::Fire,
+      ClassificationLabel::Fire};
 
   return {
       {5, 10, allSirens, allSirens},                   // Test 1.

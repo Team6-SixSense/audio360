@@ -20,7 +20,7 @@ void mainAndroidComm() {
   setupPeripherals();
 
   VisualizationPacket vizPacket{};
-  vizPacket.classification = ClassificationLabel::CarHorn;
+  vizPacket.classification = ClassificationLabel::TruckReversing;
   vizPacket.direction = DirectionLabel::North;
   vizPacket.priority = 3U;
 

@@ -13,19 +13,19 @@
 #include "matrix.h"
 
 void Classification::GenerateSTFT(
-    const std::vector<FrequencyDomain>& audioSignal, matrix& stftData,
+    const std::vector<std::vector<float>>& powerSpectra, matrix& stftData,
     std::vector<float>& stftDataVector) const {
-  const uint16_t numFrames = static_cast<uint16_t>(audioSignal.size());
+  const uint16_t numFrames = static_cast<uint16_t>(powerSpectra.size());
   const uint16_t numFreqBins = this->n_fft / 2 + 1;
 
-  stftDataVector.assign(numFrames * numFreqBins, 0.0f);
+  stftDataVector.assign(static_cast<size_t>(numFrames) * numFreqBins, 0.0f);
   matrix_init_f32(&stftData, numFrames, numFreqBins, stftDataVector.data());
 
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * numFreqBins;
+    const auto& src = powerSpectra[frame];
     for (uint16_t bin = 0; bin < numFreqBins; ++bin) {
-      stftData.pData[rowStart + bin] =
-          std::pow(audioSignal[frame].magnitude[bin], 2.0f);
+      stftData.pData[rowStart + bin] = src[bin];
     }
   }
 }
@@ -50,15 +50,25 @@ std::string Classification::getClassificationLabel(){
 }
 
 void Classification::Classify(std::vector<float>& rawAudio) {
-  if (this->fftData.size() < CLASSIFICATION_BUFFER_SIZE) {
-    fftData.push_back(this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW));
-    return;
-  } else {
-    fftData.erase(fftData.begin());
-    fftData.push_back(this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW));
+  const uint16_t numFreqBins = static_cast<uint16_t>(this->n_fft / 2 + 1);
+
+  // Compute FFT and immediately extract power spectrum, discarding other fields.
+  FrequencyDomain freq = this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW);
+  std::vector<float> power(numFreqBins, 0.0f);
+  for (uint16_t i = 0; i < numFreqBins; ++i) {
+    power[i] = freq.powerMagnitude[i];
   }
 
-  this->GenerateSTFT(fftData, stftSpec, stftDataVector);
+  if (this->powerFrames.size() == CLASSIFICATION_BUFFER_SIZE) {
+    this->powerFrames.erase(this->powerFrames.begin());
+  }
+  this->powerFrames.push_back(std::move(power));
+
+  if (this->powerFrames.size() < CLASSIFICATION_BUFFER_SIZE) {
+    return;
+  }
+
+  this->GenerateSTFT(powerFrames, stftSpec, stftDataVector);
 
   this->melFilter.apply(stftSpec, melSpec, melSpectrogramVector);
 

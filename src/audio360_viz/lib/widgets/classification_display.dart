@@ -16,12 +16,12 @@ class ClassificationDisplay extends StatelessWidget {
   /// Get icon for classification
   IconData _getIcon(Classification classification) {
     switch (classification) {
-      case Classification.siren:
-        return Icons.warning;
-      case Classification.carHorn:
-        return Icons.directions_car;
-      case Classification.jackHammer:
-        return Icons.build;
+      case Classification.fire:
+        return Icons.local_fire_department;
+      case Classification.screech:
+        return Icons.hearing;
+      case Classification.truckReversing:
+        return Icons.local_shipping;
       case Classification.unKnown:
         return Icons.help_outline;
     }
@@ -31,12 +31,12 @@ class ClassificationDisplay extends StatelessWidget {
   /// Uses different brightness levels of green to differentiate
   Color _getColor(Classification classification) {
     switch (classification) {
-      case Classification.siren:
-        return const Color(0xFF00FF00); // Bright green - highest priority
-      case Classification.carHorn:
+      case Classification.fire:
+        return const Color(0xFFFF4444); // High alert
+      case Classification.screech:
         return const Color(0xFF66FF66); // Medium-bright green
-      case Classification.jackHammer:
-        return const Color(0xFF33FF33); // Medium green
+      case Classification.truckReversing:
+        return const Color(0xFF33FFCC); // Vehicle motion
       case Classification.unKnown:
         return const Color(0xFF00AA00); // Dim green
     }
@@ -45,12 +45,12 @@ class ClassificationDisplay extends StatelessWidget {
   /// Get display name for classification
   String _getName(Classification classification) {
     switch (classification) {
-      case Classification.siren:
-        return 'SIREN';
-      case Classification.carHorn:
-        return 'CAR HORN';
-      case Classification.jackHammer:
-        return 'JACKHAMMER';
+      case Classification.fire:
+        return 'FIRE';
+      case Classification.screech:
+        return 'SCREECH';
+      case Classification.truckReversing:
+        return 'TRUCK REVERSING';
       case Classification.unKnown:
         return 'UNKNOWN';
     }

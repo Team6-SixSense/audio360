@@ -14,6 +14,7 @@
 #include "lda.h"
 #include "mel_filter.h"
 #include "pca.h"
+#include "frequencyDomain.h"
 
 class Classification {
  public:
@@ -80,8 +81,8 @@ class Classification {
   /** @brief Last inferred classification result. */
   ClassificationLabel currClassification;
 
-  /** @brief buffer for storing the computed fft for each frame */
-  std::vector<FrequencyDomain> fftData;
+  /** @brief Sliding buffer of power spectra per frame (size: n_fft/2 + 1). */
+  std::vector<std::vector<float>> powerFrames;
 
   /** @brief Matrix representation of the fftData vector */
   matrix stftSpec;
@@ -110,12 +111,12 @@ class Classification {
   /**
    * @brief Builds the STFT matrix representation from FFT frames.
    *
-   * @param audioSignal Input vector of FFT frames, of size frames x
+   * @param powerSpectra Input vector of power spectra, of size frames x
    * (fftSize/2 + 1) [nyquist].
    * @param stftData Output STFT matrix, of dimensions frames x
    * (fftSize/2 + 1) [nyquist].
    * @param stftDataVector Backing storage for the matrix values.
    */
-  void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
+  void GenerateSTFT(const std::vector<std::vector<float>>& powerSpectra,
                     matrix& stftData, std::vector<float>& stftDataVector) const;
 };

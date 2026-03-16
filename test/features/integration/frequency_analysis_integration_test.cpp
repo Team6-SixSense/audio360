@@ -107,11 +107,10 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousClassificationAndDOA_SingleSo
   EXPECT_GE(directionRad, 0.0f);
   EXPECT_LE(directionRad, TWO_PI_32);
 
-  // Classification check: Should be car_horn, horn, siren, or unknown
-  // Following existing test logic: correct classification, similar class, or unknown are acceptable
-  bool classificationAcceptable = (classLabel == "car_horn" || 
-                                   classLabel == "horn" || 
-                                   classLabel == "siren" ||
+  // Classification check: Should be fire, screech, truck_reversing, or unknown
+  bool classificationAcceptable = (classLabel == "fire" || 
+                                   classLabel == "screech" || 
+                                   classLabel == "truck_reversing" ||
                                    classLabel == "unknown");
   EXPECT_TRUE(classificationAcceptable)
       << "Classification returned unexpected label: " << classLabel;
@@ -171,7 +170,7 @@ TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
 
     // Verify classification succeeded (correct class, similar class, or unknown acceptable)
     EXPECT_FALSE(label.empty()) << "Classification returned empty label for angle " << angle;
-    bool classAcceptable = (label == "car_horn" || label == "horn" || label == "siren" || label == "unknown");
+    bool classAcceptable = (label == "fire" || label == "screech" || label == "truck_reversing" || label == "unknown");
     EXPECT_TRUE(classAcceptable)
         << "Angle " << angle << "°: unexpected classification " << label;
 
