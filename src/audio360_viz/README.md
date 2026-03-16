@@ -23,6 +23,6 @@ APK output:
 adb install -r build/app/outputs/flutter-apk/app-release.apk
 ```
 
-## Data packet (USB)
+## Data packet (USB/Bluetooth)
 
-4 bytes: `0xAA | classification | direction | priority`
+5 bytes: `0xAA | classification | direction | system fault | priority`
