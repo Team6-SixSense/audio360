@@ -30,7 +30,7 @@ matrix LDA_SCALINGS;
 std::vector<ClassificationLabel> CLASSIFICATION_CLASSES ;
 
 void LinearDiscriminantAnalysis::initializeLDAData() {
-  // Three-class model (fire, engine, truck_reversing) trained on 13 MFCC → 6 PCA features.
+  // Three-class model (fire, screech, truck_reversing) trained on 13 MFCC → 6 PCA features.
   LDA_CLASS_WEIGHTS_DATA = {
     0.02029330f,  0.22484505f, -0.27969456f,  0.04802127f,  0.02491694f,  0.13984840f,
     0.02037128f, -1.14728367f,  1.35300350f, -5.84238291f, -0.02378825f, -5.70755434f,
@@ -50,7 +50,7 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
   LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
 
   CLASSIFICATION_CLASSES = {
-    ClassificationLabel::Fire, ClassificationLabel::Engine, ClassificationLabel::TruckReversing};
+    ClassificationLabel::Fire, ClassificationLabel::Screech, ClassificationLabel::TruckReversing};
 
   this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
 

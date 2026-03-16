@@ -33,7 +33,7 @@ final class MockUsbService extends BaseDataService {
     // Random classification (excluding unknown for better testing)
     final classifications = [
       Classification.fire,
-      Classification.engine,
+      Classification.screech,
       Classification.truckReversing,
     ];
     final classification = classifications[_random.nextInt(classifications.length)];

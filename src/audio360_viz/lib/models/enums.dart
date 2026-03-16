@@ -2,7 +2,7 @@
 /// Must be in sync with src/features/classifcation/classifcationLabel.h
 enum Classification {
   fire,
-  engine,
+  screech,
   truckReversing,
   unKnown,
 }
