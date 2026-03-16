@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Packet buildPacket({
-    Classification classification = Classification.siren,
+    Classification classification = Classification.truckReversing,
     Quadrant quadrant = Quadrant.northEast,
     SystemFault systemFault = SystemFault.none,
     int priority = 1,
@@ -80,7 +80,7 @@ void main() {
     await pumpScreen(
       tester,
       packet: buildPacket(
-        classification: Classification.carHorn,
+        classification: Classification.engine,
         quadrant: Quadrant.east,
         priority: 2,
       ),
