@@ -59,7 +59,7 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
 #if ARM_BUILD
   this->ldaProjection.classBiases = LDA_CLASS_BIASES;
 #else
-  this->ldaProjection.classBiases = LDA_CLASS_BIASES;
+  this->ldaProjection.classBiases = LDA_CLASS_BIASES_NOT_EMBEDDED;
 #endif
 
   this->classTypes = CLASSIFICATION_CLASSES;
