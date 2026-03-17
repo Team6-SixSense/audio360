@@ -52,6 +52,14 @@ void embedded_mic_start(embedded_mic_t* mic_handle) {
   }
 }
 
+uint32_t get_mic_config_sai_size() {
+#ifdef PCB_BUILD
+  return SAI_DATASIZE_32;
+#else
+  return SAI_DATASIZE_24;
+#endif
+}
+
 void init_mic_a1() {
   mics[MIC_A1] = embedded_mic_t();
   mics[MIC_A1].index = MIC_A1;
@@ -71,7 +79,7 @@ void init_mic_a1() {
   hsai_BlockA1.Instance = SAI1_Block_A;
   hsai_BlockA1.Init.Protocol = SAI_FREE_PROTOCOL;
   hsai_BlockA1.Init.AudioMode = SAI_MODEMASTER_RX;
-  hsai_BlockA1.Init.DataSize = SAI_DATASIZE_24;
+  hsai_BlockA1.Init.DataSize = get_mic_config_sai_size();
   hsai_BlockA1.Init.FirstBit = SAI_FIRSTBIT_MSB;
   hsai_BlockA1.Init.ClockStrobing = SAI_CLOCKSTROBING_FALLINGEDGE;
   hsai_BlockA1.Init.Synchro = SAI_ASYNCHRONOUS;
@@ -113,7 +121,7 @@ void init_mic_b1() {
   hsai_BlockB1.Instance = SAI1_Block_B;
   hsai_BlockB1.Init.Protocol = SAI_FREE_PROTOCOL;
   hsai_BlockB1.Init.AudioMode = SAI_MODESLAVE_RX;
-  hsai_BlockB1.Init.DataSize = SAI_DATASIZE_24;
+  hsai_BlockB1.Init.DataSize = get_mic_config_sai_size();
   hsai_BlockB1.Init.FirstBit = SAI_FIRSTBIT_MSB;
   hsai_BlockB1.Init.ClockStrobing = SAI_CLOCKSTROBING_FALLINGEDGE;
   hsai_BlockB1.Init.Synchro = SAI_SYNCHRONOUS;
@@ -155,7 +163,7 @@ void init_mic_a2() {
   hsai_BlockA2.Instance = SAI2_Block_A;
   hsai_BlockA2.Init.Protocol = SAI_FREE_PROTOCOL;
   hsai_BlockA2.Init.AudioMode = SAI_MODESLAVE_RX;
-  hsai_BlockA2.Init.DataSize = SAI_DATASIZE_24;
+  hsai_BlockA2.Init.DataSize = get_mic_config_sai_size();
   hsai_BlockA2.Init.FirstBit = SAI_FIRSTBIT_MSB;
   hsai_BlockA2.Init.ClockStrobing = SAI_CLOCKSTROBING_FALLINGEDGE;
   hsai_BlockA2.Init.Synchro = SAI_SYNCHRONOUS_EXT_SAI1;
@@ -195,7 +203,7 @@ void init_mic_b2() {
   hsai_BlockB2.Instance = SAI2_Block_B;
   hsai_BlockB2.Init.Protocol = SAI_FREE_PROTOCOL;
   hsai_BlockB2.Init.AudioMode = SAI_MODESLAVE_RX;
-  hsai_BlockB2.Init.DataSize = SAI_DATASIZE_24;
+  hsai_BlockB2.Init.DataSize = get_mic_config_sai_size();
   hsai_BlockB2.Init.FirstBit = SAI_FIRSTBIT_MSB;
   hsai_BlockB2.Init.ClockStrobing = SAI_CLOCKSTROBING_FALLINGEDGE;
   hsai_BlockB2.Init.Synchro = SAI_SYNCHRONOUS;

@@ -22,7 +22,11 @@ constexpr inline int WAVEFORM_SAMPLES = 4096;  // Must be power of 2.
 constexpr inline int DOA_SAMPLES = 2048;       // Must be power of 2.
 constexpr inline size_t DIRECTION_MODE_FILTER_SIZE = 3;
 constexpr inline size_t CLASSIFICATION_MODE_FILTER_SIZE = 3;
+#ifdef BUILD_TESTS
 constexpr inline int CLASSIFICATION_BUFFER_SIZE = 8;
+#else
+constexpr inline int CLASSIFICATION_BUFFER_SIZE = 4;
+#endif
 
 constexpr inline float CONFIDENCE_THRESHOLD = 0.9f;
 

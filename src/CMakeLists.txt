@@ -20,6 +20,9 @@ endif()
 target_compile_definitions(${SourceExecutable} PRIVATE LOGGING_ENABLED=$<BOOL:${LOGGING_ENABLED}>)
 target_compile_definitions(${SourceLib} PRIVATE LOGGING_ENABLED=$<BOOL:${LOGGING_ENABLED}>)
 
+
+
+
 # Attach include dirs to the target.
 set(INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -92,6 +95,12 @@ if(ARM_BUILD)
         target_compile_definitions(${SourceExecutable} PRIVATE BUILD_BLUETOOTH)
         target_compile_definitions(${SourceLib} PRIVATE BUILD_BLUETOOTH)
     endif()
+
+    if(PCB_BUILD)
+        target_compile_definitions(${SourceExecutable} PRIVATE PCB_BUILD)
+        target_compile_definitions(${SourceLib} PRIVATE PCB_BUILD)
+    endif ()
+
 
     target_include_directories(${SourceExecutable} PRIVATE ${USB_INCLUDES})
     target_include_directories(${SourceLib} PRIVATE ${USB_INCLUDES})
