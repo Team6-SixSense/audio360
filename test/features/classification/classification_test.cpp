@@ -22,17 +22,17 @@ namespace {
 float RunClassificationOverMp3(const std::string& filename,
                                const std::string& expectedLabel,
                                float minRatio = 0.9f) {
-  const uint16_t numMelFilters = 6;
-  const uint16_t numDCTCoeff = 6;
+  const uint16_t numMelFilters = 13;
+  const uint16_t numDCTCoeff = 13;
   const uint16_t numPCAComponents = 6;
   const uint16_t numClasses = 3;
 
-  Classification classifier(WAVEFORM_SAMPLES, numMelFilters, numDCTCoeff,
+  Classification classifier(WAVEFORM_SAMPLES / 2, numMelFilters, numDCTCoeff,
                             numPCAComponents, numClasses);
 
-  MP3Data data = readMP3File(filename);
+  MP3Data data = readMP3File(filename, true);
   const auto& samples = data.channel1;
-  const size_t frameLen = WAVEFORM_SAMPLES;
+  const size_t frameLen = 2048;
   const size_t numFrames = samples.size() / frameLen;
   if (numFrames == 0) {
     return 0.0f;
@@ -47,11 +47,11 @@ float RunClassificationOverMp3(const std::string& filename,
       audio[i] = static_cast<float>(samples[start + i]);
     }
     classifier.Classify(audio);
-    if (classifier.getClassificationLabel() == expectedLabel || classifier.getClassificationLabel() == "unknown") {
+    if (classifier.getClassificationLabel() == expectedLabel ||
+        classifier.getClassificationLabel() == "unknown") {
       ++matchCount;
     }
   }
-
   return static_cast<float>(matchCount) / static_cast<float>(numFrames);
 }
 
@@ -59,18 +59,18 @@ float RunClassificationOverMp3(const std::string& filename,
 
 /** @brief Silent frames should be labeled unknown. */
 TEST(ClassificationTest, SilenceMp3IsUnknown) {
-  const uint16_t numMelFilters = 6;
-  const uint16_t numDCTCoeff = 6;
+  const uint16_t numMelFilters = 13;
+  const uint16_t numDCTCoeff = 13;
   const uint16_t numPCAComponents = 6;
   const uint16_t numClasses = 3;
 
-  Classification classifier(WAVEFORM_SAMPLES, numMelFilters, numDCTCoeff,
+  Classification classifier(WAVEFORM_SAMPLES / 2, numMelFilters, numDCTCoeff,
                             numPCAComponents, numClasses);
 
-  MP3Data data = readMP3File("audio/silence.mp3");
+  MP3Data data = readMP3File("audio/silence.mp3", true);
   ASSERT_FALSE(data.channel1.empty());
 
-  const size_t frameLen = WAVEFORM_SAMPLES;
+  const size_t frameLen = 2048;
   const size_t numFrames = data.channel1.size() / frameLen;
   ASSERT_GT(numFrames, 0);
 
@@ -92,22 +92,23 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
   const float unknownRatio =
       static_cast<float>(unknownCount) / static_cast<float>(numFrames);
 
-  // Validating the number of times unknown is presented is greater than 90% based on SRS. 
+  // Validating the number of times unknown is presented is greater than 90%
+  // based on SRS.
   EXPECT_GE(unknownRatio, 0.9f);
 }
 
-TEST(ClassificationTest, JackhammerMp3IsJackhammer) {
-  float ratio = RunClassificationOverMp3("audio/jackhammer.mp3", "jackhammer");
+TEST(ClassificationTest, EngineMp3IsEngine) {
+  float ratio = RunClassificationOverMp3("audio/engine.mp3", "engine");
   EXPECT_GE(ratio, 0.9f);
 }
 
-TEST(ClassificationTest, SirenMp3IsSiren) {
-  float ratio = RunClassificationOverMp3("audio/siren.mp3", "siren");
+TEST(ClassificationTest, ReversingMp3IsReversing) {
+  float ratio =
+      RunClassificationOverMp3("audio/reverse.mp3", "truck_reversing");
   EXPECT_GE(ratio, 0.9f);
 }
 
-// Disabled until accuracy of classification is improved. 
-TEST(ClassificationTest, DISABLED_CarHornMp3IsCarHorn) {
-  float ratio = RunClassificationOverMp3("audio/car_horn.mp3", "car_horn");
+TEST(ClassificationTest, FireMp3IsFire) {
+  float ratio = RunClassificationOverMp3("audio/fire.mp3", "fire");
   EXPECT_GE(ratio, 0.9f);
 }

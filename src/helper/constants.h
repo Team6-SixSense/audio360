@@ -22,9 +22,9 @@ constexpr inline int WAVEFORM_SAMPLES = 4096;  // Must be power of 2.
 constexpr inline int DOA_SAMPLES = 2048;       // Must be power of 2.
 constexpr inline size_t DIRECTION_MODE_FILTER_SIZE = 3;
 constexpr inline size_t CLASSIFICATION_MODE_FILTER_SIZE = 3;
-constexpr inline int CLASSIFICATION_BUFFER_SIZE = 4;
+constexpr inline int CLASSIFICATION_BUFFER_SIZE = 8;
 
-constexpr inline float CONFIDENCE_THRESHOLD = 0.65f;
+constexpr inline float CONFIDENCE_THRESHOLD = 0.9f;
 
 // Math constants.
 constexpr inline float FLOAT_EPS = std::numeric_limits<float>::epsilon();
@@ -33,7 +33,7 @@ constexpr inline float PI_32 = 3.14159265358979f;
 constexpr inline float TWO_PI_32 = 2.0 * PI_32;
 
 // Hardware constants.
-#ifndef BUILD_TEST
+#ifndef BUILD_TESTS
 #ifdef PCB_BUILD
 constexpr inline float MIC1_2_DISTANCE_m = 0.134f;
 constexpr inline float MIC2_3_DISTANCE_m = 0.13f;
@@ -51,7 +51,7 @@ constexpr inline float MIC1_2_DISTANCE_m = 0.10f;
 constexpr inline float MIC2_3_DISTANCE_m = 0.10f;
 constexpr inline float MIC3_4_DISTANCE_m = 0.10f;
 constexpr inline float MIC4_1_DISTANCE_m = 0.10f;
-#endif  // BUILD_TEST
+#endif  // BUILD_TESTS
 
 // 24 bit minimum: -2^23
 constexpr inline int32_t MIN_AUDIO_SAMPLE_DATA = -8388608;

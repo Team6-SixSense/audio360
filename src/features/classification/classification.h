@@ -11,9 +11,11 @@
 #include "classificationLabel.h"
 #include "dct.h"
 #include "fft.h"
+#include "frequencyDomain.h"
 #include "lda.h"
 #include "mel_filter.h"
 #include "pca.h"
+
 
 class Classification {
  public:
@@ -39,8 +41,7 @@ class Classification {
    */
   void Classify(std::vector<float>& rawAudio);
 
-
-   /**
+  /**
    * @brief Returns the classification label state value from the classification
    * module
    */
@@ -80,8 +81,8 @@ class Classification {
   /** @brief Last inferred classification result. */
   ClassificationLabel currClassification;
 
-  /** @brief buffer for storing the computed fft for each frame */
-  std::vector<FrequencyDomain> fftData;
+  /** @brief Sliding buffer of power spectra per frame (size: n_fft/2 + 1). */
+  std::vector<std::vector<float>> powerFrames;
 
   /** @brief Matrix representation of the fftData vector */
   matrix stftSpec;
@@ -95,7 +96,8 @@ class Classification {
   /** @brief Helper of melSpec, contains the actual data for the matrix */
   std::vector<float> melSpectrogramVector;
 
-  /** @brief Matrix that will store the computed mfcc coefficients for each frame */
+  /** @brief Matrix that will store the computed mfcc coefficients for each
+   * frame */
   matrix mfccSpec;
 
   /** @brief Helper of mfccSpec, contains the actual data for the matrix */
@@ -110,12 +112,12 @@ class Classification {
   /**
    * @brief Builds the STFT matrix representation from FFT frames.
    *
-   * @param audioSignal Input vector of FFT frames, of size frames x
+   * @param powerSpectra Input vector of power spectra, of size frames x
    * (fftSize/2 + 1) [nyquist].
    * @param stftData Output STFT matrix, of dimensions frames x
    * (fftSize/2 + 1) [nyquist].
    * @param stftDataVector Backing storage for the matrix values.
    */
-  void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
+  void GenerateSTFT(const std::vector<std::vector<float>>& powerSpectra,
                     matrix& stftData, std::vector<float>& stftDataVector) const;
 };

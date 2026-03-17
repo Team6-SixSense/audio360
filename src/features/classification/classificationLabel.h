@@ -12,10 +12,9 @@
 /** @brief Enum holding all classification labels. */
 enum class ClassificationLabel {
   Unknown = 0,
-  Siren = 1,
-  Jackhammer = 2,
-  CarHorn = 3,
-  Clapping = 4,
+  Fire = 1,
+  Engine = 2,
+  TruckReversing = 3,
 };
 
 /**
@@ -27,14 +26,12 @@ enum class ClassificationLabel {
 inline const char* ClassificationClassToString(
     ClassificationLabel classification) {
   switch (classification) {
-    case ClassificationLabel::Siren:
-      return "siren";
-    case ClassificationLabel::Jackhammer:
-      return "jackhammer";
-    case ClassificationLabel::CarHorn:
-      return "car_horn";
-    case ClassificationLabel::Clapping:
-      return "clapping";
+    case ClassificationLabel::Fire:
+      return "fire";
+    case ClassificationLabel::Engine:
+      return "engine";
+    case ClassificationLabel::TruckReversing:
+      return "truck_reversing";
     case ClassificationLabel::Unknown:
       return "unknown";
   }
@@ -48,17 +45,9 @@ inline const char* ClassificationClassToString(
  * @return Enum value corresponding to the input label.
  */
 inline ClassificationLabel StringToClassification(std::string classification) {
-  if (classification == "siren") {
-    return ClassificationLabel::Siren;
-  }
-  if (classification == "jackhammer") {
-    return ClassificationLabel::Jackhammer;
-  }
-  if (classification == "car_horn") {
-    return ClassificationLabel::CarHorn;
-  }
-  if (classification == "clapping") {
-    return ClassificationLabel::Clapping;
-  }
+  if (classification == "fire") return ClassificationLabel::Fire;
+  if (classification == "engine") return ClassificationLabel::Engine;
+  if (classification == "truck_reversing")
+    return ClassificationLabel::TruckReversing;
   return ClassificationLabel::Unknown;
 }

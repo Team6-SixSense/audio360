@@ -13,8 +13,8 @@ const int MIC_BUFFER_SIZE = 4096;
 const int MIC_HALF_BUFFER_SIZE = WAVEFORM_SAMPLES / 2;
 const int MIC_CLASSIFICATION_BUFFER_SIZE = MIC_BUFFER_SIZE * 4;
 
-const int NUM_MEL_FILTERS = 6;
-const int NUM_DCT_COEFF = 6;
+const int NUM_MEL_FILTERS = 13;
+const int NUM_DCT_COEFF = 13;
 const int NUM_PCA_COMPONENTS = 6;
 const int NUM_CLASSES = 3;
 

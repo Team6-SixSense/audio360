@@ -2,9 +2,9 @@
 /// Must be in sync with src/features/classifcation/classifcationLabel.h
 enum Classification {
   unKnown,
-  siren,
-  jackHammer,
-  carHorn
+  fire,
+  engine,
+  truckReversing,
 }
 
 /// Quadrant by the DoA module.
