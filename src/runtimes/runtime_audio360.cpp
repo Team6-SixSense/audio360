@@ -21,7 +21,6 @@
 #include "peripheral_error.hpp"
 #include "system_fault_manager.h"
 
-
 #ifdef STM_BUILD
 #include "arm_math.h"
 #endif
@@ -30,8 +29,6 @@
 #include "usb_host.h"
 #include "usbh_aoa.h"
 #endif
-
-
 
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;
@@ -186,10 +183,14 @@ bool extractMicData() {
 
 #ifdef PCB_BUILD
       // we shift down by 8 on the ics434 build to get actual magnitude
-      arm_shift_q31(&micA1Buffer[startPos], -8, &micA1Buffer[startPos], MIC_HALF_BUFFER_SIZE);
-      arm_shift_q31(&micB1Buffer[startPos], -8, &micB1Buffer[startPos], MIC_HALF_BUFFER_SIZE);
-      arm_shift_q31(&micA2Buffer[startPos], -8, &micA2Buffer[startPos], MIC_HALF_BUFFER_SIZE);
-      arm_shift_q31(&micB2Buffer[startPos], -8, &micB2Buffer[startPos], MIC_HALF_BUFFER_SIZE);
+      arm_shift_q31(&micA1Buffer[startPos], -8, &micA1Buffer[startPos],
+                    MIC_HALF_BUFFER_SIZE);
+      arm_shift_q31(&micB1Buffer[startPos], -8, &micB1Buffer[startPos],
+                    MIC_HALF_BUFFER_SIZE);
+      arm_shift_q31(&micA2Buffer[startPos], -8, &micA2Buffer[startPos],
+                    MIC_HALF_BUFFER_SIZE);
+      arm_shift_q31(&micB2Buffer[startPos], -8, &micB2Buffer[startPos],
+                    MIC_HALF_BUFFER_SIZE);
 #endif
 
       // Check audio anomalies.
