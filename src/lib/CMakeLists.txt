@@ -26,6 +26,9 @@ if (ARM_BUILD)
         ${CMAKE_CURRENT_LIST_DIR}/STM32CubeF7/Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_sub_f32.c
         ${CMAKE_CURRENT_LIST_DIR}/STM32CubeF7/Drivers/CMSIS/DSP/Source/MatrixFunctions/arm_mat_trans_f32.c
 
+        # Bit shifts
+            ${CMAKE_CURRENT_LIST_DIR}/STM32CubeF7/Drivers/CMSIS/DSP/Source/BasicMathFunctions/arm_shift_q31.c
+
     )
 else()
     target_sources(${SourceLib} PUBLIC
@@ -60,6 +63,7 @@ if (ARM_BUILD)
         ${CMAKE_CURRENT_LIST_DIR}/STM32CubeF7/Drivers/CMSIS/Core/Include
         ${CMAKE_CURRENT_LIST_DIR}/STM32CubeF7/Drivers/CMSIS/DSP/Include
         ${CMAKE_CURRENT_LIST_DIR}/STM32CubeF7/Drivers/CMSIS/DSP/DSP_Lib_TestSuite/RefLibs/inc
+
     )
 else()
     target_include_directories(${SourceLib} PUBLIC

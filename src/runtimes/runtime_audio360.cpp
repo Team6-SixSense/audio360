@@ -21,10 +21,17 @@
 #include "peripheral_error.hpp"
 #include "system_fault_manager.h"
 
+
+#ifdef STM_BUILD
+#include "arm_math.h"
+#endif
+
 #ifdef BUILD_GLASSES_HOST
 #include "usb_host.h"
 #include "usbh_aoa.h"
 #endif
+
+
 
 // Microphone definitions.
 static embedded_mic_t* micA1 = nullptr;
@@ -176,6 +183,14 @@ bool extractMicData() {
       SCB_CleanDCache_by_Addr((uint32_t*)micB1Buffer[startPos], numBytes);
       SCB_CleanDCache_by_Addr((uint32_t*)micA2Buffer[startPos], numBytes);
       SCB_CleanDCache_by_Addr((uint32_t*)micB2Buffer[startPos], numBytes);
+
+#ifdef PCB_BUILD
+      // we shift down by 8 on the ics434 build to get actual magnitude
+      arm_shift_q31(&micA1Buffer[startPos], -8, &micA1Buffer[startPos], MIC_HALF_BUFFER_SIZE);
+      arm_shift_q31(&micB1Buffer[startPos], -8, &micB1Buffer[startPos], MIC_HALF_BUFFER_SIZE);
+      arm_shift_q31(&micA2Buffer[startPos], -8, &micA2Buffer[startPos], MIC_HALF_BUFFER_SIZE);
+      arm_shift_q31(&micB2Buffer[startPos], -8, &micB2Buffer[startPos], MIC_HALF_BUFFER_SIZE);
+#endif
 
       // Check audio anomalies.
       std::vector<int32_t*> audioStreams{

@@ -41,4 +41,4 @@ inline uint32_t swapByteOrder32(uint32_t raw) {
  * @param raw raw microphone data from the DMA buffer.
  * @return int32_t PCM data in the scale of int32.
  */
-inline int32_t reorderMicData(uint32_t raw) { return (int32_t)(raw << 8); }
+inline int32_t reorderMicData(uint32_t raw) { return raw; }

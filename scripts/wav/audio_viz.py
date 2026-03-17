@@ -10,7 +10,7 @@ import threading
 import time
 
 # --- CONFIGURATION ---
-SERIAL_PORT = 'COM6'
+SERIAL_PORT = 'COM7'
 BAUD_RATE = 115200
 SAMPLE_RATE = 16000
 WINDOW_DURATION = 0.2
@@ -98,7 +98,7 @@ radio_button = RadioButtons(rax, ('A1', 'A2', 'B1', 'B2'))
 radio_button.on_clicked(select_channel_radio)
 
 def process_data_thread():
-    global byte_buffer, y_data_buffers, running
+    global byte_buffer, y_data_buffers, running, SELECTED_CHANNEL
 
     while running:
         try:
@@ -152,6 +152,7 @@ def process_data_thread():
 
                 if i == SELECTED_CHANNEL:
                     try:
+                        print(f"Writing channel {i}")
                         stream.write(final_samples)
                     except Exception:
                         pass
