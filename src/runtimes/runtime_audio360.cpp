@@ -12,6 +12,7 @@
 #include "bluetooth_manager.h"
 #include "classification.h"
 #include "doa.h"
+#include "doaSmoother.h"
 #include "embedded_mic.h"
 #include "exceptions.hpp"
 #include "filter.hpp"
@@ -48,6 +49,7 @@ static DOA doa{DOA_SAMPLES};
 static Classification classifier{MIC_BUFFER_SIZE / 2, NUM_MEL_FILTERS,
                                  NUM_DCT_COEFF, NUM_PCA_COMPONENTS,
                                  NUM_CLASSES};
+static DoASmoother doaSmoother{};
 static ModeFilter<DirectionLabel> directionModeFilter(
     DIRECTION_MODE_FILTER_SIZE);
 static ModeFilter<ClassificationLabel> classificationModeFilter(
@@ -89,8 +91,10 @@ void mainAudio360() {
 
       INFO("Running DoA estimation.");
       float angle_rad = runDoA(newData);
-      INFO("DoA angle: %f rad.", angle_rad);
-      DirectionLabel direction = angleToDirection(angle_rad);
+      float smoothed_rad =
+          (angle_rad >= 0) ? doaSmoother.update(angle_rad) : angle_rad;
+      INFO("DoA angle: %f rad.", smoothed_rad);
+      DirectionLabel direction = angleToDirection(smoothed_rad);
       directionModeFilter.update(direction);
 
       INFO("Running Audio classification.");
