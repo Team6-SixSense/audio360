@@ -38,6 +38,8 @@ struct MP3Data {
  *
  * @param filename path to MP3 file. This is relative to where the binary is
  * being ran.
+ * @param resampleTo16k True to resample the MP3 file to 16KHz. False to keep
+ * the original sampling rate.
  * @return MP3Data PCM of MP3 file data.
  */
 MP3Data readMP3File(std::string filepath, bool resampleTo16k = false);

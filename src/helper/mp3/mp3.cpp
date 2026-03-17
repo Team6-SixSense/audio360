@@ -20,14 +20,13 @@
 namespace {
 
 // Simple linear resampler from srcHz to SAMPLE_FREQUENCY.
-std::vector<double> resampleToTarget(const std::vector<double>& in,
-                                     int srcHz) {
+std::vector<double> resampleToTarget(const std::vector<double>& in, int srcHz) {
   if (srcHz == SAMPLE_FREQUENCY || in.empty()) {
     return in;
   }
 
-  const double ratio = static_cast<double>(SAMPLE_FREQUENCY) /
-                       static_cast<double>(srcHz);
+  const double ratio =
+      static_cast<double>(SAMPLE_FREQUENCY) / static_cast<double>(srcHz);
   const size_t outLen =
       static_cast<size_t>(std::ceil(static_cast<double>(in.size()) * ratio));
 
@@ -46,7 +45,6 @@ std::vector<double> resampleToTarget(const std::vector<double>& in,
 }
 
 }  // namespace
-
 
 MP3Data readMP3File(std::string filepath, bool resampleTo16k) {
   std::vector<unsigned char> rawMp3Data = readRawMP3(filepath);

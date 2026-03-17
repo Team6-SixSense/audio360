@@ -96,3 +96,9 @@ if(ARM_BUILD)
     target_include_directories(${SourceExecutable} PRIVATE ${USB_INCLUDES})
     target_include_directories(${SourceLib} PRIVATE ${USB_INCLUDES})
 endif()
+
+
+if(BUILD_TESTS)
+    target_compile_definitions(${SourceExecutable} PRIVATE BUILD_TESTS)
+    target_compile_definitions(${SourceLib} PRIVATE BUILD_TESTS)
+endif()

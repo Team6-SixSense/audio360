@@ -82,48 +82,48 @@ std::vector<ModeFilterParamType<ClassificationLabel>> GetEnumTestConfigs() {
   // Parameterized test 2. Tests that mode changes correctly with different
   // values.
   std::vector<ClassificationLabel> modeChangesInput{
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::TruckReversing,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
   std::vector<ClassificationLabel> modeChangesExpected{
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::TruckReversing,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
 
   // Parameterized test 3. Similar to test 2 but tests when size of internal
   // buffer is even.
   std::vector<ClassificationLabel> equalFreqInput{
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::TruckReversing,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
   std::vector<ClassificationLabel> equalFreqExpected{
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
-      ClassificationLabel::Fire,   ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
+      ClassificationLabel::Fire,           ClassificationLabel::Fire,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing,
       ClassificationLabel::TruckReversing, ClassificationLabel::TruckReversing};
 
   // Parameterized test 4. Tests that mode detection of internal buffer size 1.
   std::vector<ClassificationLabel> sizeOneResults{
       ClassificationLabel::Unknown, ClassificationLabel::Fire,
-      ClassificationLabel::Engine, ClassificationLabel::TruckReversing, 
+      ClassificationLabel::Engine, ClassificationLabel::TruckReversing,
       ClassificationLabel::Fire};
 
   return {
-      {5, 10, allFires, allFires},                   // Test 1.
+      {5, 10, allFires, allFires},                     // Test 1.
       {5, 12, modeChangesInput, modeChangesExpected},  // Test 2.
       {6, 12, equalFreqInput, equalFreqExpected},      // Test 3.
       {1, 5, sizeOneResults, sizeOneResults},          // Test 4.
-      {0, 10, allFires, allFires}                    // Filter size 0 test.
+      {0, 10, allFires, allFires}                      // Filter size 0 test.
   };
 }

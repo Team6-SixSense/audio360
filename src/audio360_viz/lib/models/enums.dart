@@ -1,10 +1,10 @@
 /// Classification by the classification module.
 /// Must be in sync with src/features/classifcation/classifcationLabel.h
 enum Classification {
+  unKnown,
   fire,
   engine,
   truckReversing,
-  unKnown,
 }
 
 /// Quadrant by the DoA module.

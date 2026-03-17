@@ -33,7 +33,7 @@ constexpr inline float PI_32 = 3.14159265358979f;
 constexpr inline float TWO_PI_32 = 2.0 * PI_32;
 
 // Hardware constants.
-#ifndef BUILD_TEST
+#ifndef BUILD_TESTS
 #ifdef PCB_BUILD
 constexpr inline float MIC1_2_DISTANCE_m = 0.134f;
 constexpr inline float MIC2_3_DISTANCE_m = 0.13f;
@@ -51,7 +51,7 @@ constexpr inline float MIC1_2_DISTANCE_m = 0.10f;
 constexpr inline float MIC2_3_DISTANCE_m = 0.10f;
 constexpr inline float MIC3_4_DISTANCE_m = 0.10f;
 constexpr inline float MIC4_1_DISTANCE_m = 0.10f;
-#endif  // BUILD_TEST
+#endif  // BUILD_TESTS
 
 // 24 bit minimum: -2^23
 constexpr inline int32_t MIN_AUDIO_SAMPLE_DATA = -8388608;

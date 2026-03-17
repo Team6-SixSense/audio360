@@ -27,7 +27,7 @@ float RunClassificationOverMp3(const std::string& filename,
   const uint16_t numPCAComponents = 6;
   const uint16_t numClasses = 3;
 
-  Classification classifier(WAVEFORM_SAMPLES/2, numMelFilters, numDCTCoeff,
+  Classification classifier(WAVEFORM_SAMPLES / 2, numMelFilters, numDCTCoeff,
                             numPCAComponents, numClasses);
 
   MP3Data data = readMP3File(filename, true);
@@ -47,7 +47,8 @@ float RunClassificationOverMp3(const std::string& filename,
       audio[i] = static_cast<float>(samples[start + i]);
     }
     classifier.Classify(audio);
-    if (classifier.getClassificationLabel() == expectedLabel || classifier.getClassificationLabel() == "unknown") {
+    if (classifier.getClassificationLabel() == expectedLabel ||
+        classifier.getClassificationLabel() == "unknown") {
       ++matchCount;
     }
   }
@@ -63,7 +64,7 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
   const uint16_t numPCAComponents = 6;
   const uint16_t numClasses = 3;
 
-  Classification classifier(WAVEFORM_SAMPLES/2, numMelFilters, numDCTCoeff,
+  Classification classifier(WAVEFORM_SAMPLES / 2, numMelFilters, numDCTCoeff,
                             numPCAComponents, numClasses);
 
   MP3Data data = readMP3File("audio/silence.mp3", true);
@@ -91,7 +92,8 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
   const float unknownRatio =
       static_cast<float>(unknownCount) / static_cast<float>(numFrames);
 
-  // Validating the number of times unknown is presented is greater than 90% based on SRS. 
+  // Validating the number of times unknown is presented is greater than 90%
+  // based on SRS.
   EXPECT_GE(unknownRatio, 0.9f);
 }
 
@@ -101,10 +103,10 @@ TEST(ClassificationTest, EngineMp3IsEngine) {
 }
 
 TEST(ClassificationTest, ReversingMp3IsReversing) {
-  float ratio = RunClassificationOverMp3("audio/reverse.mp3", "truck_reversing");
+  float ratio =
+      RunClassificationOverMp3("audio/reverse.mp3", "truck_reversing");
   EXPECT_GE(ratio, 0.9f);
 }
-
 
 TEST(ClassificationTest, FireMp3IsFire) {
   float ratio = RunClassificationOverMp3("audio/fire.mp3", "fire");

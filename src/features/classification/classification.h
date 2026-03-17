@@ -11,10 +11,11 @@
 #include "classificationLabel.h"
 #include "dct.h"
 #include "fft.h"
+#include "frequencyDomain.h"
 #include "lda.h"
 #include "mel_filter.h"
 #include "pca.h"
-#include "frequencyDomain.h"
+
 
 class Classification {
  public:
@@ -40,8 +41,7 @@ class Classification {
    */
   void Classify(std::vector<float>& rawAudio);
 
-
-   /**
+  /**
    * @brief Returns the classification label state value from the classification
    * module
    */
@@ -96,7 +96,8 @@ class Classification {
   /** @brief Helper of melSpec, contains the actual data for the matrix */
   std::vector<float> melSpectrogramVector;
 
-  /** @brief Matrix that will store the computed mfcc coefficients for each frame */
+  /** @brief Matrix that will store the computed mfcc coefficients for each
+   * frame */
   matrix mfccSpec;
 
   /** @brief Helper of mfccSpec, contains the actual data for the matrix */

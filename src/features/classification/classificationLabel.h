@@ -47,6 +47,7 @@ inline const char* ClassificationClassToString(
 inline ClassificationLabel StringToClassification(std::string classification) {
   if (classification == "fire") return ClassificationLabel::Fire;
   if (classification == "engine") return ClassificationLabel::Engine;
-  if (classification == "truck_reversing") return ClassificationLabel::TruckReversing;
+  if (classification == "truck_reversing")
+    return ClassificationLabel::TruckReversing;
   return ClassificationLabel::Unknown;
 }

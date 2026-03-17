@@ -45,15 +45,17 @@ Classification::Classification(uint16_t n_fft, uint16_t numMelFilters,
       lda(numPCAComponents, numClasses),
       currClassification(ClassificationLabel::Unknown) {}
 
-std::string Classification::getClassificationLabel(){
+std::string Classification::getClassificationLabel() {
   return ClassificationClassToString(this->currClassification);
 }
 
 void Classification::Classify(std::vector<float>& rawAudio) {
   const uint16_t numFreqBins = static_cast<uint16_t>(this->n_fft / 2 + 1);
 
-  // Compute FFT and immediately extract power spectrum, discarding other fields.
-  FrequencyDomain freq = this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW);
+  // Compute FFT and immediately extract power spectrum, discarding other
+  // fields.
+  FrequencyDomain freq =
+      this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW);
   std::vector<float> power(numFreqBins, 0.0f);
   for (uint16_t i = 0; i < numFreqBins; ++i) {
     power[i] = freq.powerMagnitude[i];

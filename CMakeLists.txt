@@ -15,11 +15,6 @@ option(BUILD_GLASSES_HOST "ON to enable USB host mode to communicate with glasse
 option(BUILD_BLUETOOTH "ON to enable bluetooth mode to communicate with glasses" ON)
 option(ENABLE_COVERAGE "Enable coverage reporting" OFF)
 
-add_compile_definitions(
-    BUILD_TESTS=$<BOOL:${BUILD_TESTS}>
-    ARM_BUILD=$<BOOL:${ARM_BUILD}>
-)
-
 if (BUILD_TESTS AND ENABLE_COVERAGE)
     add_compile_options(--coverage -O0 -g)
     add_link_options(--coverage)

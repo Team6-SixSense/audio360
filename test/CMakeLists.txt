@@ -35,6 +35,7 @@ target_link_libraries(${TestExecutable} PRIVATE
 # Link compile definitions.
 target_compile_definitions(${TestExecutable} PUBLIC
     ARM_MATH_MATRIX_CHECK
+    BUILD_TESTS
 )
 
 # Register tests with CTest
