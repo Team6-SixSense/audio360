@@ -49,12 +49,19 @@ class MainVisualizationPage extends StatefulWidget {
 }
 
 class _MainVisualizationPageState extends State<MainVisualizationPage> {
+  static const bool _useMockMode = bool.fromEnvironment(
+    'USE_MOCK_MODE',
+    defaultValue: true,
+  );
+  static const bool _useBluetooth = bool.fromEnvironment(
+    'USE_BLUETOOTH',
+    defaultValue: false,
+  );
+
   // Can be UsbService or BluetoothLEService.
   late BaseDataService dataService;
   Packet? _packet;
   String _status = 'Bluetooth disconnected';
-
-  bool useBluetooth = true;
 
   bool _isConnectedStatus(String status) {
     final normalized = status.trim().toLowerCase();
@@ -79,7 +86,13 @@ class _MainVisualizationPageState extends State<MainVisualizationPage> {
   @override
   void initState() {
     super.initState();
-    if (!useBluetooth) {
+    if (_useMockMode) {
+      dataService = UsbServiceFactory.createUsbService(
+        onPacket: onPacket,
+        onStatus: onStatus,
+        useMock: true,
+      );
+    } else if (!_useBluetooth) {
       dataService = UsbServiceFactory.createUsbService(
         onPacket: onPacket,
         onStatus: onStatus,
