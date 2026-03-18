@@ -4,11 +4,11 @@ import '../models/packet.dart';
 import '../models/enums.dart';
 import '../base_data_service.dart';
 
-
 /// Mock USB service for testing without hardware.
 /// Simulates packet data with random classifications and directions.
 final class MockUsbService extends BaseDataService {
   Timer? _timer;
+  int _packetCount = 0;
 
   final Random _random = Random();
 
@@ -30,35 +30,35 @@ final class MockUsbService extends BaseDataService {
   }
 
   void _sendMockPacket() {
-    // Random classification (excluding unknown for better testing)
-    final classifications = [
-      Classification.siren,
+    // Cycle labels predictably so the main project classes all appear.
+    const classifications = <Classification>[
       Classification.carHorn,
       Classification.jackHammer,
+      Classification.siren,
     ];
-    final classification = classifications[_random.nextInt(classifications.length)];
+    final classification =
+        classifications[_packetCount % classifications.length];
 
-    // Random quadrant (excluding none)
-    final quadrants = [
-      Quadrant.north,
-      Quadrant.northEast,
+    // Keep direction changes predictable as well.
+    const quadrants = <Quadrant>[
       Quadrant.east,
-      Quadrant.southEast,
+      Quadrant.northEast,
       Quadrant.south,
-      Quadrant.southWest,
       Quadrant.west,
-      Quadrant.northWest,
     ];
-    final quadrant = quadrants[_random.nextInt(quadrants.length)];
+    final quadrant = quadrants[_packetCount % quadrants.length];
 
-    final systemFaults = [
+    // Cycle faults predictably so mock mode exercises the fault banner too.
+    const faultSequence = <SystemFault>[
       SystemFault.none,
       SystemFault.hardware,
+      SystemFault.none,
       SystemFault.classification,
-      SystemFault.doa
+      SystemFault.none,
+      SystemFault.doa,
     ];
-
-    final systemFault = systemFaults[_random.nextInt(systemFaults.length)];
+    final systemFault = faultSequence[_packetCount % faultSequence.length];
+    _packetCount++;
 
     // Random priority (1-5)
     final priority = _random.nextInt(5) + 1;
