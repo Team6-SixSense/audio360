@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
+import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
@@ -62,6 +63,12 @@ public class MainActivity extends FlutterActivity {
 
     // Required to send events to Flutter
     private EventChannel.EventSink globalEvents;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {

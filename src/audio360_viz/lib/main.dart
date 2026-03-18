@@ -51,11 +51,11 @@ class MainVisualizationPage extends StatefulWidget {
 class _MainVisualizationPageState extends State<MainVisualizationPage> {
   static const bool _useMockMode = bool.fromEnvironment(
     'USE_MOCK_MODE',
-    defaultValue: false,
+    defaultValue: true,
   );
   static const bool _useBluetooth = bool.fromEnvironment(
     'USE_BLUETOOTH',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   // Can be UsbService or BluetoothLEService.

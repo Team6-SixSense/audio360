@@ -54,13 +54,13 @@ class VisualizationScreen extends StatelessWidget {
             return Stack(
               children: [
                 Positioned(
-                  top: hudMargin,
+                  bottom: hudMargin,
                   right: hudMargin,
                   child: SizedBox(
                     width: hudWidth,
                     height: hudHeight,
                     child: FittedBox(
-                      alignment: Alignment.topRight,
+                      alignment: Alignment.bottomRight,
                       fit: BoxFit.contain,
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 220),
