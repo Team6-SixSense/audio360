@@ -16,11 +16,17 @@ This project was completed for final year software engineering capstone at McMas
 
 **Developer Names:**
 
-- Jay Sharma
-- Kalp Shah
-- Nirmal Chaudhari
-- Omar Alam
-- Sathurshan Arulmohan
+- Jay Sharma :tiger2:
+- Kalp Shah :goat:
+- Nirmal Chaudhari :tropical_fish:
+- Omar Alam :sunglasses:
+- Sathurshan Arulmohan :coffee:
+
+**Supervisor:** Dr. Martin v. Mohrenschildt :hammer:
+
+**Capstone Professor:** Dr. Spencer Smith :apple:
+
+**Teaching Assistant:** Rashad Bhuiyan :rabbit:
 
 ## Project Structure
 
@@ -28,6 +34,7 @@ The folders and files for this project are as follows:
 
     .
     ├── .github     # Contains template and workflows for GitHub
+    ├── .vscode     # Contains VS Code specific configurations
     ├── docs        # Documentation for the project
     ├── refs        # Reference materials used for the project
     ├── scripts     # Custom scripts used for the project
