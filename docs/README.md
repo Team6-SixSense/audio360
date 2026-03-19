@@ -3,7 +3,6 @@
 The folders and files for this project are as follows:
 
     .
-    ├── Checklists                  # Documentation checklist provided by the prof.
     ├── Design                      # Software architecture and design documentation.
     ├── DevelopmentPlan             # Project development plan.
     ├── Extras                      # Extras documentation (Hardware Report + Audio Theory)
@@ -14,6 +13,5 @@ The folders and files for this project are as follows:
     ├── projManagement              # Project management files.
     ├── ReflectAndTrace             # Refelction and traceability report.
     ├── SRS                         # Software requirements specification.
-    ├── UserGuide                   # User guide.
     ├── VnVPlan                     # Verification and Validation plan.
     └── VnVReport                   # Verification and Validation report.

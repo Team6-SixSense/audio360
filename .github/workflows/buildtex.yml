@@ -39,7 +39,7 @@ jobs:
             BEFORE_SHA=$(git rev-parse HEAD~1)
           fi
 
-          CHANGED_FILES=$(git diff --name-only "$BEFORE_SHA" ${{ github.sha }} | grep -E '^docs/.*\.tex$' | xargs || true)
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT "$BEFORE_SHA" ${{ github.sha }} | grep -E '^docs/.*\.tex$' | xargs || true)
           echo "Changed files: $CHANGED_FILES"
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
           CHANGED_FILENAMES=$(for file in $CHANGED_FILES; do basename "$file"; done | xargs)
