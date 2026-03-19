@@ -56,7 +56,7 @@ static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
 /** @brief Builds a 3-frame mel spectrogram from an MP3 segment. */
 static void Make3FrameMelSpecFromMP3(const MP3Data& data, int sampleRate,
                                      int offset0, matrix& melSpec,
-                                     std::vector<float>& melSpectrogramVector) {
+                                     float* melSpectrogramVector) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
   const uint16_t numFilters = 40;
 
@@ -70,9 +70,14 @@ static void Make3FrameMelSpecFromMP3(const MP3Data& data, int sampleRate,
 
   FFT fft(frameSize, static_cast<uint16_t>(sampleRate));
 
-  FrequencyDomain fd0 = fft.signalToFrequency(in0, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd1 = fft.signalToFrequency(in1, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd2 = fft.signalToFrequency(in2, WindowFunction::HANN_WINDOW);
+  FrequencyDomain fd0;
+  fft.signalToFrequency(in0.data(), fd0, WindowFunction::HANN_WINDOW);
+
+  FrequencyDomain fd1;
+  fft.signalToFrequency(in1.data(), fd1, WindowFunction::HANN_WINDOW);
+
+  FrequencyDomain fd2;
+  fft.signalToFrequency(in2.data(), fd2, WindowFunction::HANN_WINDOW);
 
   std::vector<FrequencyDomain> dom;
   dom.push_back(fd0);
@@ -111,12 +116,13 @@ TEST(DCTTest, ComputeDCTOnMelSpectrogramProducesExpectedMFCC) {
   DiscreteCosineTransform dct(numCepstral, numFilters);
 
   matrix melSpec;
-  std::vector<float> melSpectrogramVector;
+  std::vector<float> melSpecVector(CLASSIFICATION_BUFFER_SIZE * numFilters);
+
   Make3FrameMelSpecFromMP3(data, SAMPLE_FREQUENCY, offset0, melSpec,
-                           melSpectrogramVector);
+                           melSpecVector.data());
 
   matrix mfccSpec;
-  std::vector<float> mfccSpectrogramVector;
+  float mfccSpectrogramVector[CLASSIFICATION_BUFFER_SIZE * NUM_DCT_COEFF];
   dct.apply(melSpec, mfccSpec, mfccSpectrogramVector);
 
   ASSERT_EQ(mfccSpec.numCols, numCepstral);

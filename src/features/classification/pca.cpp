@@ -47,7 +47,11 @@ void PrincipleComponentAnalysis::initializePCAData() {
   PCA_PROJECTION_MATRIX = {13, 6, PCA_PROJECTION_MATRIX_DATA.data()};
 
   this->pcaProjection.projectionMatrix = PCA_PROJECTION_MATRIX;
-  this->pcaProjection.meanVector = PCA_MEAN_VECTOR;
+
+  // this->pcaProjection.meanVector = PCA_MEAN_VECTOR.data();
+
+  memcpy(this->pcaProjection.meanVector, PCA_MEAN_VECTOR.data(),
+         sizeof(float) * 13);
 }
 
 PrincipleComponentAnalysis::PrincipleComponentAnalysis(uint16_t numEigenvectors,
@@ -62,18 +66,20 @@ PrincipleComponentAnalysis::PrincipleComponentAnalysis(uint16_t numEigenvectors,
   this->initializePCAData();
 }
 
-void PrincipleComponentAnalysis::apply(
-    const matrix& mfccFeatureVector, matrix& pcaFeature,
-    std::vector<float>& pcaFeatureVector) const {
+void PrincipleComponentAnalysis::apply(const matrix& mfccFeatureVector,
+                                       matrix& pcaFeature,
+                                       float* pcaFeatureVector) {
   const uint16_t numFrames = mfccFeatureVector.numRows;
   const uint16_t numCoeffs = mfccFeatureVector.numCols;
   if (numCoeffs != this->numMFCCCoeffs) {
     return;
   }
 
-  std::vector<float> centeredData(numFrames * numCoeffs, 0.0f);
+  memset(this->centeredData, 0, sizeof(float) * numFrames * numCoeffs);
+
   matrix centeredMatrix;
-  matrix_init_f32(&centeredMatrix, numFrames, numCoeffs, centeredData.data());
+  matrix_init_f32(&centeredMatrix, numFrames, numCoeffs, centeredData);
+
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * numCoeffs;
     for (uint16_t coeff = 0; coeff < numCoeffs; ++coeff) {
@@ -83,9 +89,11 @@ void PrincipleComponentAnalysis::apply(
     }
   }
 
-  pcaFeatureVector.assign(numFrames * this->numEigenvectors, 0.0f);
+  memset(pcaFeatureVector, 0,
+         sizeof(float) * numFrames * this->numEigenvectors);
+
   matrix_init_f32(&pcaFeature, numFrames, this->numEigenvectors,
-                  pcaFeatureVector.data());
+                  pcaFeatureVector);
 
   // Multiply centered MFCCs (numFrames x numCoeffs) by projection (numCoeffs x
   // numEigenvectors)

@@ -8,38 +8,26 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
+
+#include "constants.h"
 
 /** @brief Struct for representing FFT output in the frequency domain. */
 struct FrequencyDomain {
   /** @brief The number of the data in the FFT output. */
-  uint16_t N;
+  uint16_t N = FREQ_DOMAIN_SIZE;
 
   /** @brief The frequency (Hz) */
-  std::vector<float> frequency;
+  float frequency[FREQ_DOMAIN_SIZE];
 
   /** @brief The real component of the frequency contribution. */
-  std::vector<float> real;
+  float real[FREQ_DOMAIN_SIZE];
 
   /** @brief The imaginary component of the frequency contribution. */
-  std::vector<float> img;
+  float img[FREQ_DOMAIN_SIZE];
 
   /** @brief The magnitude of the frequency component. */
-  std::vector<float> magnitude;
+  float magnitude[FREQ_DOMAIN_SIZE];
 
   /** @brief The magnitude squared of the frequency component. */
-  std::vector<float> powerMagnitude;
-
-  /**
-   * @brief Construct a new Frequency Domain struct.
-   *
-   * @param size The number of data points.
-   */
-  FrequencyDomain(uint16_t size)
-      : N(size),
-        frequency(size),
-        real(size),
-        img(size),
-        magnitude(size),
-        powerMagnitude(size) {}
+  float powerMagnitude[FREQ_DOMAIN_SIZE];
 };

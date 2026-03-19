@@ -5,8 +5,6 @@
  ******************************************************************************
  */
 
-#include "fft.h"
-
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -15,6 +13,7 @@
 #include <vector>
 
 #include "constants.h"
+#include "fft.h"
 
 namespace {
 
@@ -33,9 +32,16 @@ constexpr int mainLobeHalfWidth(WindowFunction window) {
 }
 
 /** @brief Returns the index of the maximum element in a vector. */
-int findPeakIndex(const std::vector<float>& values) {
-  return static_cast<int>(std::distance(
-      values.begin(), std::max_element(values.begin(), values.end())));
+int findPeakIndex(const float* values) {
+  int max_index = 0;
+
+  for (int i = 0; i < FREQ_DOMAIN_SIZE; i++) {
+    if (values[i] > values[max_index]) {
+      max_index = i;
+    }
+  }
+
+  return max_index;
 }
 
 /** @brief Calculates the proportion of total spectral power that leaks outside
@@ -45,9 +51,15 @@ double computeLeakage(const FrequencyDomain& spectrum, int halfWidth) {
   const int peakIdx = findPeakIndex(power);
 
   const int start = std::max(0, peakIdx - halfWidth);
-  const int end = std::min(static_cast<int>(spectrum.N - 1), peakIdx + halfWidth);
+  const int end =
+      std::min(static_cast<int>(spectrum.N - 1), peakIdx + halfWidth);
 
-  const double totalPower = std::accumulate(power.begin(), power.end(), 0.0);
+  double totalPower = 0.0;
+
+  for (int i = 0; i < FREQ_DOMAIN_SIZE; ++i) {
+    totalPower += power[i];
+  }
+
   double mainLobePower = 0.0;
   for (int k = start; k <= end; ++k) {
     mainLobePower += power[k];
@@ -63,7 +75,7 @@ double computeMaxSideLobe(const FrequencyDomain& spectrum, int halfWidth) {
   const int peakIdx = findPeakIndex(power);
 
   double maxSide = 0.0;
-  for (size_t k = 0; k < power.size(); ++k) {
+  for (size_t k = 0; k < FREQ_DOMAIN_SIZE; ++k) {
     if (std::abs(static_cast<int>(k) - peakIdx) <= halfWidth) {
       continue;  // Skip main lobe bins.
     }
@@ -83,21 +95,21 @@ TEST(AudioFilteringTest, ReducedSpectralLeakageWithHannWindow) {
   // Use a single analysis frame (4096 samples) cut from a 1 s recording. The
   // FFT implementation only supports power-of-two lengths up to 4096, which
   // matches the waveform buffer size used elsewhere in the pipeline.
-  constexpr int sampleRate = SAMPLE_FREQUENCY;     // 16 kHz
-  constexpr int signalLength = WAVEFORM_SAMPLES;   // 4096 samples (~0.256 s)
+  constexpr int sampleRate = SAMPLE_FREQUENCY;    // 16 kHz
+  constexpr int signalLength = WAVEFORM_SAMPLES;  // 4096 samples (~0.256 s)
 
   // Pick a frequency that lands halfway between FFT bins to maximize leakage
   // in the rectangular (no window) case.
-  const float binSizeHz = static_cast<float>(sampleRate) /
-                          static_cast<float>(signalLength);
+  const float binSizeHz =
+      static_cast<float>(sampleRate) / static_cast<float>(signalLength);
   const float desiredBin = 200.5f;  // Half-bin offset.
   const float testFrequencyHz = desiredBin * binSizeHz;
 
   std::vector<float> baseSignal(signalLength);
   for (int n = 0; n < signalLength; ++n) {
-    baseSignal[n] = std::sin(TWO_PI_32 * testFrequencyHz *
-                             static_cast<float>(n) /
-                             static_cast<float>(sampleRate));
+    baseSignal[n] =
+        std::sin(TWO_PI_32 * testFrequencyHz * static_cast<float>(n) /
+                 static_cast<float>(sampleRate));
   }
 
   // Duplicate signals so windowing does not mutate the shared buffer.
@@ -106,10 +118,14 @@ TEST(AudioFilteringTest, ReducedSpectralLeakageWithHannWindow) {
 
   FFT fft(static_cast<uint16_t>(signalLength), sampleRate);
 
-  FrequencyDomain spectrumRect =
-      fft.signalToFrequency(unwindowedSignal, WindowFunction::NONE);
-  FrequencyDomain spectrumHann =
-      fft.signalToFrequency(hannSignal, WindowFunction::HANN_WINDOW);
+  FrequencyDomain spectrumRect;
+
+  fft.signalToFrequency(unwindowedSignal.data(), spectrumRect,
+                        WindowFunction::NONE);
+  FrequencyDomain spectrumHann;
+
+  fft.signalToFrequency(hannSignal.data(), spectrumHann,
+                        WindowFunction::HANN_WINDOW);
 
   const int rectHalfWidth = mainLobeHalfWidth(WindowFunction::NONE);
   const int hannHalfWidth = mainLobeHalfWidth(WindowFunction::HANN_WINDOW);

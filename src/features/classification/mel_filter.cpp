@@ -26,11 +26,13 @@ static inline float mel_to_hz_f(float mel) {
 void MelFilter::CreateFilterBank() {
   const int numFreq = static_cast<int>(this->fftSize / 2U + 1U);
 
+  memset(this->filterBankTData, 0, sizeof(this->filterBankTData));
+
   // Store TRANSPOSED filter bank directly: (numFreq x numFilters)
-  this->filterBankTData.assign(static_cast<size_t>(numFreq) * this->numFilters,
-                               0.0f);
+  // so apply() can do: (numFrames x numFreq) * (numFreq x numFilters)
+
   matrix_init_f32(&this->filterBankT, static_cast<uint16_t>(numFreq),
-                  this->numFilters, this->filterBankTData.data());
+                  this->numFilters, this->filterBankTData);
 
   const float fmin = 0.0f;
   const float fmax = static_cast<float>(this->sampleFrequency) * 0.5f;
@@ -87,16 +89,14 @@ MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize,
 }
 
 void MelFilter::apply(matrix& stftMatrix, matrix& melSpectrogram,
-                      std::vector<float>& melSpectrogramVector) const {
+                      float* melSpectrogramVector) const {
   const uint16_t numFrames = stftMatrix.numRows;
   // stftMatrix is (numFrames x numFreq)
   // filterBankT is (numFreq x numFilters)
   // result is (numFrames x numFilters)
 
-  melSpectrogramVector.assign(static_cast<size_t>(numFrames) * this->numFilters,
-                              0.0f);
   matrix_init_f32(&melSpectrogram, numFrames, this->numFilters,
-                  melSpectrogramVector.data());
+                  melSpectrogramVector);
 
   // No transpose, no heap allocation here.
   matrix_mult_f32(&stftMatrix, &this->filterBankT, &melSpectrogram);

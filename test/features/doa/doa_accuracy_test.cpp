@@ -7,8 +7,6 @@
  ******************************************************************************
  */
 
-#include "doa.h"
-
 #include <gtest/gtest.h>
 
 #include <cmath>
@@ -18,6 +16,7 @@
 #include "AudioFile.h"
 #include "angles.hpp"
 #include "constants.h"
+#include "doa.h"
 
 /**
  * @brief Calculate angular error with proper wrapping.
@@ -36,16 +35,11 @@ static double calculateAngularError(double estimated, double known) {
 /**
  * @brief Convert double samples to float samples.
  */
-static std::vector<float> ToFloatSamples(const std::vector<double>& samples,
-                                         size_t start, size_t end) {
-  std::vector<float> floatSamples;
-  floatSamples.reserve(end - start);
-
+static void ToFloatSamplesArray(const std::vector<double>& samples,
+                                size_t start, size_t end, float* in) {
   for (size_t i = start; i < end && i < samples.size(); i++) {
-    floatSamples.push_back(static_cast<float>(samples[i]));
+    in[i] = static_cast<float>(samples[i]);
   }
-
-  return floatSamples;
 }
 
 /**
@@ -57,8 +51,8 @@ static std::vector<float> ToFloatSamples(const std::vector<double>& samples,
  */
 TEST(DOAAccuracyTest, KnownDirectionEstimation) {
   // Test parameters
-  const double THETA_E = degreeToRad(45.0);  // θ_e = 45° (π/4 radians)
-  const double MAE_THRESHOLD = THETA_E / 2.0;   // MAE < 22.5°
+  const double THETA_E = degreeToRad(45.0);    // θ_e = 45° (π/4 radians)
+  const double MAE_THRESHOLD = THETA_E / 2.0;  // MAE < 22.5°
 
   // Known test angles (in degrees, will be converted to radians)
   std::vector<double> knownAngles = {0.0, 45.0, 90.0, 135.0};
@@ -80,15 +74,19 @@ TEST(DOAAccuracyTest, KnownDirectionEstimation) {
       mic2.load(folder + "mic2_angle_" + std::to_string(angleInt) + ".wav");
       mic3.load(folder + "mic3_angle_" + std::to_string(angleInt) + ".wav");
 
-      // Extract first frame from each mic (samples is a 2D array [channel][sample])
-      std::vector<float> mic0Data =
-          ToFloatSamples(mic0.samples[0], 0, WAVEFORM_SAMPLES);
-      std::vector<float> mic1Data =
-          ToFloatSamples(mic1.samples[0], 0, WAVEFORM_SAMPLES);
-      std::vector<float> mic2Data =
-          ToFloatSamples(mic2.samples[0], 0, WAVEFORM_SAMPLES);
-      std::vector<float> mic3Data =
-          ToFloatSamples(mic3.samples[0], 0, WAVEFORM_SAMPLES);
+      // Extract first frame from each mic (samples is a 2D array
+      // [channel][sample])
+      float mic0Data[WAVEFORM_SAMPLES];
+      ToFloatSamplesArray(mic0.samples[0], 0, WAVEFORM_SAMPLES, mic0Data);
+
+      float mic1Data[WAVEFORM_SAMPLES];
+      ToFloatSamplesArray(mic1.samples[0], 0, WAVEFORM_SAMPLES, mic1Data);
+
+      float mic2Data[WAVEFORM_SAMPLES];
+      ToFloatSamplesArray(mic2.samples[0], 0, WAVEFORM_SAMPLES, mic2Data);
+
+      float mic3Data[WAVEFORM_SAMPLES];
+      ToFloatSamplesArray(mic3.samples[0], 0, WAVEFORM_SAMPLES, mic3Data);
 
       // Run DOA algorithm
       DOA doa(WAVEFORM_SAMPLES);
@@ -102,9 +100,9 @@ TEST(DOAAccuracyTest, KnownDirectionEstimation) {
       estimatedAngles.push_back(estimatedAngleRad);
       errors.push_back(errorRad);
 
-      std::cout << "Known: " << knownAngleDeg << "°, Estimated: "
-                << radToDegree(estimatedAngleRad) << "°, Error: " << errorDeg
-                << "°" << std::endl;
+      std::cout << "Known: " << knownAngleDeg
+                << "°, Estimated: " << radToDegree(estimatedAngleRad)
+                << "°, Error: " << errorDeg << "°" << std::endl;
 
       // Verify error is within θ_e threshold for this sample
       EXPECT_LE(errorRad, THETA_E)
@@ -139,8 +137,8 @@ TEST(DOAAccuracyTest, KnownDirectionEstimation) {
   std::cout << "  Required MAE: < " << maeThresholdDeg << "°" << std::endl;
 
   // Verify MAE is below threshold
-  EXPECT_LT(mae, MAE_THRESHOLD) << "MAE " << maeDeg << "° exceeds threshold "
-                                << maeThresholdDeg << "°";
+  EXPECT_LT(mae, MAE_THRESHOLD)
+      << "MAE " << maeDeg << "° exceeds threshold " << maeThresholdDeg << "°";
 }
 
 /**
@@ -166,14 +164,19 @@ TEST(DOAAccuracyTest, ExtendedAngleRange) {
       mic2.load(folder + "mic2_angle_" + std::to_string(angleInt) + ".wav");
       mic3.load(folder + "mic3_angle_" + std::to_string(angleInt) + ".wav");
 
-      std::vector<float> mic0Data =
-          ToFloatSamples(mic0.samples[0], 0, WAVEFORM_SAMPLES);
-      std::vector<float> mic1Data =
-          ToFloatSamples(mic1.samples[0], 0, WAVEFORM_SAMPLES);
-      std::vector<float> mic2Data =
-          ToFloatSamples(mic2.samples[0], 0, WAVEFORM_SAMPLES);
-      std::vector<float> mic3Data =
-          ToFloatSamples(mic3.samples[0], 0, WAVEFORM_SAMPLES);
+      // Extract first frame from each mic (samples is a 2D array
+      // [channel][sample])
+      float mic0Data[WAVEFORM_SAMPLES];
+      ToFloatSamplesArray(mic0.samples[0], 0, WAVEFORM_SAMPLES, mic0Data);
+
+      float mic1Data[WAVEFORM_SAMPLES];
+      ToFloatSamplesArray(mic1.samples[0], 0, WAVEFORM_SAMPLES, mic1Data);
+
+      float mic2Data[WAVEFORM_SAMPLES];
+      ToFloatSamplesArray(mic2.samples[0], 0, WAVEFORM_SAMPLES, mic2Data);
+
+      float mic3Data[WAVEFORM_SAMPLES];
+      ToFloatSamplesArray(mic3.samples[0], 0, WAVEFORM_SAMPLES, mic3Data);
 
       DOA doa(WAVEFORM_SAMPLES);
       float estimatedAngleRad = doa.calculateDirection(

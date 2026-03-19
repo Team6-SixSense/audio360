@@ -25,8 +25,8 @@
  * @param end Ending index (exclusive).
  * @return Float vector with converted samples.
  */
-static std::vector<float> ToFloatSamples(const std::vector<double>& samples,
-                                         size_t start, size_t end) {
+static std::vector<float> ToFloatSamplesArray(
+    const std::vector<double>& samples, size_t start, size_t end) {
   std::vector<float> out;
   out.reserve(end - start);
   for (size_t i = start; i < end && i < samples.size(); ++i) {
@@ -69,7 +69,7 @@ TEST(ConfidenceTest, AmbiguousSampleDetection) {
   std::vector<float> ambiguous = generateRandomNoise(WAVEFORM_SAMPLES);
 
   // Classify ambiguous sample
-  classifier.Classify(ambiguous);
+  classifier.classify(ambiguous.data());
   std::string ambiguousLabel = classifier.getClassificationLabel();
 
   // For ambiguous samples, we expect:
@@ -81,7 +81,7 @@ TEST(ConfidenceTest, AmbiguousSampleDetection) {
   std::vector<std::string> ambiguousResults;
   for (int i = 0; i < 5; i++) {
     std::vector<float> noise = generateRandomNoise(WAVEFORM_SAMPLES);
-    classifier.Classify(noise);
+    classifier.classify(noise.data());
     ambiguousResults.push_back(classifier.getClassificationLabel());
   }
 
@@ -122,9 +122,9 @@ TEST(ConfidenceTest, KnownSampleHighConfidence) {
   for (int i = 0; i < NUM_TESTS; i++) {
     int offset = 10000 + i * 5000;
     std::vector<float> segment =
-        ToFloatSamples(data.channel1, offset, offset + WAVEFORM_SAMPLES);
+        ToFloatSamplesArray(data.channel1, offset, offset + WAVEFORM_SAMPLES);
 
-    classifier.Classify(segment);
+    classifier.classify(segment.data());
     std::string label = classifier.getClassificationLabel();
 
     if (label == "siren") {
@@ -162,11 +162,11 @@ TEST(ConfidenceTest, ConfidenceDifferentiation) {
   // Known sample test (using 16kHz resampled version)
   MP3Data knownData = readMP3File("audio/hello.mp3");
   std::vector<float> knownSegment =
-      ToFloatSamples(knownData.channel1, 10000, 10000 + WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(knownData.channel1, 10000, 10000 + WAVEFORM_SAMPLES);
 
   int knownCorrect = 0;
   for (int i = 0; i < 3; i++) {
-    classifier.Classify(knownSegment);
+    classifier.classify(knownSegment.data());
     std::string label = classifier.getClassificationLabel();
     // Accept either correct classification or unknown (not misclassification)
     if (label == "someone_talking" || label == "unknown") {
@@ -178,7 +178,7 @@ TEST(ConfidenceTest, ConfidenceDifferentiation) {
   std::vector<std::string> randomResults;
   for (int i = 0; i < 3; i++) {
     std::vector<float> noise = generateRandomNoise(WAVEFORM_SAMPLES);
-    classifier.Classify(noise);
+    classifier.classify(noise.data());
     randomResults.push_back(classifier.getClassificationLabel());
   }
 
@@ -209,7 +209,7 @@ TEST(ConfidenceTest, SilentInputHandling) {
 
   // Should complete without crashing
   EXPECT_NO_THROW({
-    classifier.Classify(silence);
+    classifier.classify(silence.data());
     std::string label = classifier.getClassificationLabel();
     EXPECT_FALSE(label.empty());
   });

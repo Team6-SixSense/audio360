@@ -14,7 +14,8 @@
 #include "constants.h"
 
 // Use θ_e = π/4 radians (45°) as defined in SRS symbol table
-const float TOLERABLE_ERROR_RAD = M_PI / 4.0f;  // 45 degrees per SRS requirement
+const float TOLERABLE_ERROR_RAD =
+    M_PI / 4.0f;  // 45 degrees per SRS requirement
 
 /** @brief Struct for parameterized testing. */
 struct GCCPhatAngleParamType {
@@ -61,8 +62,8 @@ TEST_P(GCCPhatAngleTest, SingleAudioSourceAngle) {
 
   // Run GCC-PhaT on the audio sample input.
   GCCPhaT gccPhat{WAVEFORM_SAMPLES, sampleFrequency};
-  float angle_rad =
-      gccPhat.calculateDirection(mic1Input, mic2Input, mic3Input, mic4Input);
+  float angle_rad = gccPhat.calculateDirection(
+      mic1Input.data(), mic2Input.data(), mic3Input.data(), mic4Input.data());
 
   // Assert that the angle is approximately 0 degrees from the origin.
   float expectedAngle_rad = degreeToRad(static_cast<float>(angle));

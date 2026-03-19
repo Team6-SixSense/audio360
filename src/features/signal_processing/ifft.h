@@ -8,6 +8,7 @@
 #pragma once
 
 #include "arm_math.h"
+#include "constants.h"
 
 #ifdef STM_BUILD
 // stm32f767xx include must be first include to use CMSIS library.
@@ -34,9 +35,6 @@ class IFFT {
   /** @brief Copy constructor. */
   IFFT(const IFFT& other);
 
-  /** @brief Copy assignment operator. */
-  IFFT& operator=(const IFFT& other);
-
   /** @brief Destroy the IFFT object. */
   ~IFFT();
 
@@ -47,7 +45,8 @@ class IFFT {
 
    * @return  The signal represented in the frequency domain.
    */
-  std::vector<float> frequencyToTime(const FrequencyDomain& frequencyDomain);
+  float* frequencyToTime(const FrequencyDomain& frequencyDomain,
+                         size_t& out_size);
 
  private:
   /** @brief Initializes FFT instance from CMSIS-DSP lib. */
@@ -74,11 +73,11 @@ class IFFT {
   /** @brief The number of time samples after IFFT.*/
   uint16_t numSamples{0U};
 
-  /** @brief input frequency. This memory is shared with fttw_plan plan. */
-  float32_t* in;
+  /** @brief input frequency. This memory is statically allocated. */
+  static float32_t in[FFT_BUFFER_SIZE_IN];
 
-  /** @brief output signal. This memory is shared with fttw_plan plan. */
-  float32_t* out;
+  /** @brief output signal. This memory is statically allocated. */
+  static float32_t out[FFT_BUFFER_SIZE_OUT];
 
   /** @brief Real FFT instance for using CMSIS DSP library */
   arm_rfft_fast_instance_f32 rfft_instance;

@@ -22,11 +22,11 @@ namespace {
 
 /** @brief Finds the index of the highest magnitude bin within a tolerance of
  * the target frequency; returns -1 if no bin is within tolerance. */
-int peakIndexNear(const std::vector<float>& freq, const std::vector<float>& mag,
-                  float targetHz, float toleranceHz) {
+int peakIndexNear(const float* freq, const float* mag, float targetHz,
+                  float toleranceHz) {
   int bestIdx = -1;
   float bestMag = 0.0f;
-  for (size_t i = 0; i < freq.size(); ++i) {
+  for (size_t i = 0; i < FREQ_DOMAIN_SIZE; ++i) {
     if (std::abs(freq[i] - targetHz) <= toleranceHz && mag[i] > bestMag) {
       bestMag = mag[i];
       bestIdx = static_cast<int>(i);
@@ -37,11 +37,10 @@ int peakIndexNear(const std::vector<float>& freq, const std::vector<float>& mag,
 
 /** @brief Computes the largest magnitude outside exclusion windows around the
  * provided peak centers. */
-float maxOutsideWindows(const std::vector<float>& mag,
-                        const std::vector<int>& centers,
+float maxOutsideWindows(const float* mag, const std::vector<int>& centers,
                         int halfWidth) {
   float maxVal = 0.0f;
-  for (size_t i = 0; i < mag.size(); ++i) {
+  for (size_t i = 0; i < FREQ_DOMAIN_SIZE; ++i) {
     bool inWindow = false;
     for (int c : centers) {
       if (std::abs(static_cast<int>(i) - c) <= halfWidth) {
@@ -56,10 +55,11 @@ float maxOutsideWindows(const std::vector<float>& mag,
   return maxVal;
 }
 
-/** @brief Convenience wrapper to run the FFT over a frame using Hann windowing. */
-FrequencyDomain runFft(std::vector<float> frame) {
+/** @brief Convenience wrapper to run the FFT over a frame using Hann windowing.
+ */
+void runFft(FrequencyDomain& out, std::vector<float> frame) {
   FFT fft(static_cast<uint16_t>(frame.size()), SAMPLE_FREQUENCY);
-  return fft.signalToFrequency(frame, WindowFunction::HANN_WINDOW);
+  fft.signalToFrequency(frame.data(), out, WindowFunction::HANN_WINDOW);
 }
 
 }  // namespace
@@ -79,7 +79,7 @@ TEST(AudioFilteringTest, TimeToFrequencyShowsThreePeaks) {
 
   // Grab a clean 4096-sample window from the middle to avoid encoder padding.
   constexpr size_t frameLen = WAVEFORM_SAMPLES;  // 4096
-  const size_t offset = 16000;  // start at 1 second
+  const size_t offset = 16000;                   // start at 1 second
   ASSERT_LE(offset + frameLen, samples.size());
 
   std::vector<float> frame(frameLen);
@@ -87,7 +87,8 @@ TEST(AudioFilteringTest, TimeToFrequencyShowsThreePeaks) {
     frame[i] = samples[offset + i];
   }
 
-  FrequencyDomain spectrum = runFft(frame);
+  FrequencyDomain spectrum;
+  runFft(spectrum, frame);
 
   const float binSize =
       static_cast<float>(SAMPLE_FREQUENCY) / static_cast<float>(frameLen);
@@ -101,8 +102,8 @@ TEST(AudioFilteringTest, TimeToFrequencyShowsThreePeaks) {
     int idx = peakIndexNear(spectrum.frequency, spectrum.magnitude, target,
                             toleranceHz);
     ASSERT_NE(idx, -1) << "No peak near " << target << " Hz";
-    std::cout << "Peak near " << target << " Hz magnitude: "
-              << spectrum.magnitude[idx] << std::endl;
+    std::cout << "Peak near " << target
+              << " Hz magnitude: " << spectrum.magnitude[idx] << std::endl;
     peakCenters.push_back(idx);
   }
 
@@ -115,7 +116,8 @@ TEST(AudioFilteringTest, TimeToFrequencyShowsThreePeaks) {
     EXPECT_GT(spectrum.magnitude[idx], 5.0f * maxOutside);
   }
 
-  // NFR: Compare peak magnitudes against ideal analytical spectrum (<10% error).
+  // NFR: Compare peak magnitudes against ideal analytical spectrum (<10%
+  // error).
   std::vector<float> ideal(frameLen);
   for (size_t i = 0; i < frameLen; ++i) {
     const float n = static_cast<float>(offset + i);
@@ -124,7 +126,8 @@ TEST(AudioFilteringTest, TimeToFrequencyShowsThreePeaks) {
                0.60f * std::sin(TWO_PI_32 * 7500.0f * n / SAMPLE_FREQUENCY);
   }
 
-  FrequencyDomain reference = runFft(ideal);
+  FrequencyDomain reference;
+  runFft(reference, ideal);
 
   for (size_t t = 0; t < peakCenters.size(); ++t) {
     const int measIdx = peakCenters[t];

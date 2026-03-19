@@ -6,8 +6,6 @@
  ******************************************************************************
  */
 
-#include "fft.h"
-
 #include <gtest/gtest.h>
 
 #include <chrono>
@@ -15,11 +13,13 @@
 #include <vector>
 
 #include "constants.h"
+#include "fft.h"
 
 /**
  * @brief Generates a sine wave for performance testing.
  */
-static std::vector<float> generateTestSignal(int numSamples, float frequency = 1000.0f,
+static std::vector<float> generateTestSignal(int numSamples,
+                                             float frequency = 1000.0f,
                                              int sampleRate = 16000) {
   std::vector<float> signal(numSamples);
   for (int i = 0; i < numSamples; i++) {
@@ -32,11 +32,13 @@ static std::vector<float> generateTestSignal(int numSamples, float frequency = 1
 /**
  * @brief Measures FFT processing time in milliseconds.
  */
-static double measureProcessingTime(std::vector<float>& signal, int sampleRate) {
+static double measureProcessingTime(std::vector<float>& signal,
+                                    int sampleRate) {
   auto start = std::chrono::high_resolution_clock::now();
 
   FFT fft(static_cast<uint16_t>(signal.size()), sampleRate);
-  FrequencyDomain result = fft.signalToFrequency(signal, WindowFunction::HANN_WINDOW);
+  FrequencyDomain result;
+  fft.signalToFrequency(signal.data(), result, WindowFunction::HANN_WINDOW);
 
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> duration = end - start;
@@ -54,7 +56,8 @@ TEST(PerformanceTest, VariableInputSizes_512) {
   const int sampleRate = 16000;
   const int numSamples = 512;
 
-  std::vector<float> signal = generateTestSignal(numSamples, 1000.0f, sampleRate);
+  std::vector<float> signal =
+      generateTestSignal(numSamples, 1000.0f, sampleRate);
   double timeMs = measureProcessingTime(signal, sampleRate);
 
   // Calculate processing rate
@@ -71,7 +74,8 @@ TEST(PerformanceTest, VariableInputSizes_1024) {
   const int sampleRate = 16000;
   const int numSamples = 1024;
 
-  std::vector<float> signal = generateTestSignal(numSamples, 1000.0f, sampleRate);
+  std::vector<float> signal =
+      generateTestSignal(numSamples, 1000.0f, sampleRate);
   double timeMs = measureProcessingTime(signal, sampleRate);
 
   double processingRate = (numSamples / (timeMs / 1000.0));
@@ -85,7 +89,8 @@ TEST(PerformanceTest, VariableInputSizes_2048) {
   const int sampleRate = 16000;
   const int numSamples = 2048;
 
-  std::vector<float> signal = generateTestSignal(numSamples, 1000.0f, sampleRate);
+  std::vector<float> signal =
+      generateTestSignal(numSamples, 1000.0f, sampleRate);
   double timeMs = measureProcessingTime(signal, sampleRate);
 
   double processingRate = (numSamples / (timeMs / 1000.0));
@@ -99,7 +104,8 @@ TEST(PerformanceTest, VariableInputSizes_4096) {
   const int sampleRate = 16000;
   const int numSamples = 4096;
 
-  std::vector<float> signal = generateTestSignal(numSamples, 1000.0f, sampleRate);
+  std::vector<float> signal =
+      generateTestSignal(numSamples, 1000.0f, sampleRate);
   double timeMs = measureProcessingTime(signal, sampleRate);
 
   double processingRate = (numSamples / (timeMs / 1000.0));
@@ -122,7 +128,9 @@ TEST(PerformanceTest, NoBufferOverflows) {
     // Processing should not throw or crash
     EXPECT_NO_THROW({
       FFT fft(static_cast<uint16_t>(signal.size()), sampleRate);
-      FrequencyDomain result = fft.signalToFrequency(signal, WindowFunction::HANN_WINDOW);
+      FrequencyDomain result;
+
+      fft.signalToFrequency(signal.data(), result, WindowFunction::HANN_WINDOW);
     });
   }
 }

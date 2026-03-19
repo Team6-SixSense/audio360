@@ -40,11 +40,25 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
       0.28223020f,  -0.12278274f, -2.84530330f, 0.28168017f,  -0.02063890f,
       1.65350235f,  -0.30270889f, -1.21890199f, -0.79680419f, -2.88690639f,
       -1.63528287f, 2.33100653f,  -1.27706242f};
+float LinearDiscriminantAnalysis::LDA_CLASS_WEIGHTS_DATA[NUM_PCA_COMPONENTS *
+                                                         NUM_CLASSES] = {
+    0.02029330f,  0.22484505f,  -0.27969456f, 0.04802127f,  0.02491694f,
+    0.13984840f,  0.02037128f,  -1.14728367f, 1.35300350f,  -5.84238291f,
+    -0.02378825f, -5.70755434f, -0.28557804f, -2.88707638f, 3.60632396f,
+    0.51290333f,  -0.34079650f, -0.78794265f};
 
-  LDA_CLASS_WEIGHTS = {3, 6, LDA_CLASS_WEIGHTS_DATA.data()};
+float LinearDiscriminantAnalysis::LDA_CLASS_BIASES[NUM_CLASSES] = {-1.5f, 0.0f,
+                                                                   21.0f};
 
+float LinearDiscriminantAnalysis::LDA_CLASS_BIASES_NOT_EMBEDDED[NUM_CLASSES] = {
+    1.5f, -24.0f, -37.5f};
   LDA_CLASS_BIASES = {-6.45036364f, 4.38645935f, -8.29020691f};
 
+float LinearDiscriminantAnalysis::LDA_SCALINGS_DATA[NUM_PCA_COMPONENTS *
+                                                    (NUM_CLASSES - 1)] = {
+    -0.04404649f, -0.01851906f, -0.46230766f, 0.01840315f,
+    0.57647359f,  -0.01081683f, 0.00610506f,  0.91545147f,
+    -0.05316798f, -0.01479128f, -0.19400401f, 0.82470751f};
   // Use this configuration when in a room filled with people talking.
   LDA_CLASS_BIASES_ENV = {-3.05036364f, 1.38645935f, -10.29020691f};
   LDA_CLASS_BIASES_NOT_EMBEDDED = {-6.45036364f, 11.38645935f, -8.29020691f};
@@ -53,21 +67,36 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
                        -0.05047226f, -0.33339098f, -0.06615186f, -0.10715678f,
                        0.42568585f,  0.19358982f,  0.16270618f,  0.17846420f};
 
+ClassificationLabel
+    LinearDiscriminantAnalysis::CLASSIFICATION_CLASSES[NUM_CLASSES] = {
+        ClassificationLabel::Fire, ClassificationLabel::Engine,
+        ClassificationLabel::TruckReversing};
   LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
 
   CLASSIFICATION_CLASSES = {ClassificationLabel::SomeoneTalking,
                             ClassificationLabel::Siren,
                             ClassificationLabel::SmokeAlarm};
 
+void LinearDiscriminantAnalysis::initializeLDAData() {
+  // Three-class model (fire, engine, truck_reversing) trained on 13 MFCC → 6
+  // PCA features.
+
+  LDA_CLASS_WEIGHTS = {3, 6, LDA_CLASS_WEIGHTS_DATA};
+
+  LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA};
+
   this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
 
+  // ldaProjection.classWeights.numCols
+
 #ifndef BUILD_TESTS
-  this->ldaProjection.classBiases = LDA_CLASS_BIASES;
+  memcpy(this->ldaProjection.classBiases, LDA_CLASS_BIASES,
+         sizeof(float) * NUM_CLASSES);
 #else
-  this->ldaProjection.classBiases = LDA_CLASS_BIASES_NOT_EMBEDDED;
+  memcpy(this->ldaProjection.classBiases, LDA_CLASS_BIASES_NOT_EMBEDDED,
+         sizeof(float) * NUM_CLASSES);
 #endif
 
-  this->classTypes = CLASSIFICATION_CLASSES;
   this->ldaProjection.scalings = LDA_SCALINGS;
 }
 LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
@@ -81,7 +110,7 @@ LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
 }
 
 ClassificationLabel LinearDiscriminantAnalysis::predictFrameClass(
-    const matrix& pcaFeatureVector, uint16_t frameIndex) const {
+    const matrix& pcaFeatureVector, uint16_t frameIndex) {
   if (pcaFeatureVector.numCols != this->numEigenvectors ||
       frameIndex >= pcaFeatureVector.numRows) {
     return ClassificationLabel::Unknown;
@@ -89,7 +118,8 @@ ClassificationLabel LinearDiscriminantAnalysis::predictFrameClass(
 
   const size_t frameStart =
       static_cast<size_t>(frameIndex) * pcaFeatureVector.numCols;
-  std::vector<float> classPredictions(this->numClasses, 0.0f);
+
+  memset(classPredictions, 0, sizeof(float) * this->numClasses);
   for (int classType = 0; classType < this->numClasses; ++classType) {
     float currClassScore = 0;
     const size_t weightStart =
@@ -112,15 +142,18 @@ ClassificationLabel LinearDiscriminantAnalysis::predictFrameClass(
     }
   }
 
-  return this->classTypes[predictedClassIndex];
+  return CLASSIFICATION_CLASSES[predictedClassIndex];
 }
 
 ClassificationLabel LinearDiscriminantAnalysis::apply(
-    const matrix& pcaFeatureVector) const {
+    const matrix& pcaFeatureVector) {
   const uint16_t numFrames = pcaFeatureVector.numRows;
   if (numFrames == 0 || pcaFeatureVector.numCols != this->numEigenvectors) {
     return ClassificationLabel::Unknown;
   }
+
+  memset(this->classCounts, 0, sizeof(classCounts));
+  memset(this->scoreSums, 0.0f, sizeof(scoreSums));
 
   // Use scikit coef_ directly: classWeights (numClasses x numEigenvectors)
   const uint16_t featLen = this->ldaProjection.classWeights.numCols;
@@ -129,19 +162,16 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(
   }
 
   // scores = X (numFrames x featLen) * W^T (featLen x numClasses)
-  std::vector<float> wTData(static_cast<size_t>(featLen) * this->numClasses,
-                            0.0f);
+
   matrix wT;
-  matrix_init_f32(&wT, featLen, this->numClasses, wTData.data());
+  matrix_init_f32(&wT, featLen, this->numClasses, wTData);
   if (matrix_transpose_f32(&this->ldaProjection.classWeights, &wT) !=
       ARM_MATH_SUCCESS) {
     return ClassificationLabel::Unknown;
   }
 
-  std::vector<float> scoresData(
-      static_cast<size_t>(numFrames) * this->numClasses, 0.0f);
   matrix scores;
-  matrix_init_f32(&scores, numFrames, this->numClasses, scoresData.data());
+  matrix_init_f32(&scores, numFrames, this->numClasses, scoresData);
   if (matrix_mult_f32(&pcaFeatureVector, &wT, &scores) != ARM_MATH_SUCCESS) {
     return ClassificationLabel::Unknown;
   }
@@ -154,10 +184,9 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(
   }
 
   float totalConfidence = 0.0f;
-  std::vector<float> scoreSums(this->numClasses, 0.0f);
 
   // 3) Per-frame argmax + majority vote (same as before)
-  std::vector<int> classCounts(this->numClasses, 0);
+
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * this->numClasses;
     float maxScore = scores.pData[rowStart];
@@ -199,5 +228,5 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(
   }
   // printf(" | avg confidence=%.3f\n", totalConfidence);
 
-  return this->classTypes[bestClass];
+  return this->CLASSIFICATION_CLASSES[bestClass];
 }

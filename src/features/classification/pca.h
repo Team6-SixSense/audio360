@@ -6,7 +6,9 @@
  */
 #include <vector>
 
+#include "constants.h"
 #include "matrix.h"
+#include "runtime_audio360.hpp"
 
 struct pcaProjectionData {
   /** @brief Number of eigenvectors retained in the projection. */
@@ -16,7 +18,7 @@ struct pcaProjectionData {
   matrix projectionMatrix;
 
   /** @brief Mean vector used to center input features. */
-  std::vector<float> meanVector;
+  float meanVector[NUM_DCT_COEFF];
 
   pcaProjectionData(uint16_t eigenvectors)
       : numEigenvectors(eigenvectors), projectionMatrix(), meanVector() {}
@@ -45,7 +47,7 @@ class PrincipleComponentAnalysis {
    * numEigenvectors.
    */
   void apply(const matrix& mfccFeatureVector, matrix& pcaFeature,
-             std::vector<float>& pcaFeatureVector) const;
+             float* pcaFeatureVector);
 
  private:
   /** @brief Number of PCA eigenvectors to keep. */
@@ -56,6 +58,8 @@ class PrincipleComponentAnalysis {
 
   /** @brief Cached PCA projection data (matrix + mean). */
   pcaProjectionData pcaProjection;
+
+  float centeredData[CLASSIFICATION_BUFFER_SIZE * NUM_DCT_COEFF];
 
   void initializePCAData();
 };

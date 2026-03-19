@@ -10,6 +10,7 @@
 
 #include "classificationLabel.h"
 #include "matrix.h"
+#include "runtime_audio360.hpp"
 
 struct ldaProjectionData {
   /** @brief Number of LDA components retained. */
@@ -18,7 +19,8 @@ struct ldaProjectionData {
   /** @brief LDA class weight matrix. */
   matrix classWeights;
   /** @brief Per-class bias terms for LDA. */
-  std::vector<float> classBiases;
+  float classBiases[NUM_CLASSES];
+
   /** @brief Scalings used after data projected into the LDA space */
   matrix scalings;
 
@@ -38,7 +40,7 @@ class LinearDiscriminantAnalysis {
    * @param ldaFrame Output LDA frame, of size numComponents.
    */
   ClassificationLabel predictFrameClass(const matrix& pcaFeatureVector,
-                                uint16_t frameIndex) const;
+                                        uint16_t frameIndex);
 
   /**
    * @brief Apply LDA to the input feature vector.
@@ -46,7 +48,7 @@ class LinearDiscriminantAnalysis {
    * @param inputFeatureVector Input feature vector, of size featureLength.
    * @param ldaFeatureVector Output LDA feature vector, of size numComponents.
    */
-  ClassificationLabel apply(const matrix& pcaFeatureVector) const;
+  ClassificationLabel apply(const matrix& pcaFeatureVector);
 
  private:
   /** @brief Number of PCA eigenvectors expected as input. */
@@ -55,11 +57,31 @@ class LinearDiscriminantAnalysis {
   /** @brief Number of classes supported by the model. */
   uint16_t numClasses;
 
-  /** @brief Class label strings aligned with LDA outputs. */
-  std::vector<ClassificationLabel> classTypes;
-
   /** @brief Cached projection weights and biases for LDA. */
   ldaProjectionData ldaProjection;
+
+  float wTData[NUM_PCA_COMPONENTS * NUM_CLASSES];
+
+  float scoresData[CLASSIFICATION_BUFFER_SIZE * NUM_CLASSES];
+
+  float scoreSums[NUM_CLASSES];
+  int classCounts[NUM_CLASSES];
+
+  float classPredictions[NUM_CLASSES];
+
+  static float LDA_CLASS_WEIGHTS_DATA[NUM_CLASSES * NUM_PCA_COMPONENTS];
+
+  matrix LDA_CLASS_WEIGHTS;
+
+  static float LDA_CLASS_BIASES[NUM_CLASSES];
+
+  static float LDA_CLASS_BIASES_NOT_EMBEDDED[NUM_CLASSES];
+
+  static float LDA_SCALINGS_DATA[NUM_PCA_COMPONENTS * (NUM_CLASSES - 1)];
+
+  matrix LDA_SCALINGS;
+
+  static ClassificationLabel CLASSIFICATION_CLASSES[NUM_CLASSES];
 
   void initializeLDAData();
 };

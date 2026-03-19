@@ -28,8 +28,8 @@ class DoAAlgo {
    * @param algo DOA algorithm to use.
    * @return float Direction of audio source in radians.
    */
-  virtual float calculateDirection(std::vector<float>& mic1Data,
-                                   std::vector<float>& mic2Data,
-                                   std::vector<float>& mic3Data,
-                                   std::vector<float>& mic4Data) = 0;
+  virtual float calculateDirection(float * mic1Data,
+                                   float * mic2Data,
+                                   float * mic3Data,
+                                   float * mic4Data) = 0;
 };
