@@ -79,6 +79,8 @@ class LinearDiscriminantAnalysis {
 
   static float LDA_SCALINGS_DATA[NUM_PCA_COMPONENTS * (NUM_CLASSES - 1)];
 
+  static float LDA_CLASS_BIASES_ENV[NUM_CLASSES];
+
   matrix LDA_SCALINGS;
 
   static ClassificationLabel CLASSIFICATION_CLASSES[NUM_CLASSES];

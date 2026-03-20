@@ -13,7 +13,6 @@
 
 #include "matrix.h"
 
-
 // Use float math to reduce code size + CPU (and avoid double temporaries).
 static inline float hz_to_mel_f(float hz) {
   return 2595.0f * std::log10(1.0f + hz / 700.0f);
@@ -41,7 +40,10 @@ void MelFilter::CreateFilterBank() {
   const float melMax = hz_to_mel_f(fmax);
 
   // Mel breakpoints in Hz, size = numFilters + 2
-  std::vector<float> melHz(static_cast<size_t>(this->numFilters) + 2U, 0.0f);
+
+  float* melHz = new float[this->numFilters + 2U];
+  memset(melHz, 0, sizeof(float) * (this->numFilters + 2U));
+
   for (uint16_t i = 0; i < this->numFilters + 2U; ++i) {
     const float mel = melMin + (melMax - melMin) * static_cast<float>(i) /
                                    static_cast<float>(this->numFilters + 1U);
@@ -78,6 +80,8 @@ void MelFilter::CreateFilterBank() {
           w;
     }
   }
+
+  delete[] melHz;
 }
 
 MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize,

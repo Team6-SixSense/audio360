@@ -16,69 +16,36 @@
 #include "classification_constants.h"
 #include "constants.h"
 
-std::vector<float> LDA_CLASS_WEIGHTS_DATA;
-
-matrix LDA_CLASS_WEIGHTS;
-
-std::vector<float> LDA_CLASS_BIASES;
-
-std::vector<float> LDA_CLASS_BIASES_ENV;
-
-std::vector<float> LDA_CLASS_BIASES_NOT_EMBEDDED;
-
-std::vector<float> LDA_SCALINGS_DATA;
-
-matrix LDA_SCALINGS;
-
-std::vector<ClassificationLabel> CLASSIFICATION_CLASSES;
-
-void LinearDiscriminantAnalysis::initializeLDAData() {
-  // Three-class model (fire, engine, truck_reversing) trained on 13 MFCC →
-  // PCA features.
-  LDA_CLASS_WEIGHTS_DATA = {
-      0.19358437f,  1.38794649f,  0.19732946f,  0.19398162f,  -1.01740980f,
-      0.28223020f,  -0.12278274f, -2.84530330f, 0.28168017f,  -0.02063890f,
-      1.65350235f,  -0.30270889f, -1.21890199f, -0.79680419f, -2.88690639f,
-      -1.63528287f, 2.33100653f,  -1.27706242f};
 float LinearDiscriminantAnalysis::LDA_CLASS_WEIGHTS_DATA[NUM_PCA_COMPONENTS *
                                                          NUM_CLASSES] = {
-    0.02029330f,  0.22484505f,  -0.27969456f, 0.04802127f,  0.02491694f,
-    0.13984840f,  0.02037128f,  -1.14728367f, 1.35300350f,  -5.84238291f,
-    -0.02378825f, -5.70755434f, -0.28557804f, -2.88707638f, 3.60632396f,
-    0.51290333f,  -0.34079650f, -0.78794265f};
-
-float LinearDiscriminantAnalysis::LDA_CLASS_BIASES[NUM_CLASSES] = {-1.5f, 0.0f,
-                                                                   21.0f};
-
-float LinearDiscriminantAnalysis::LDA_CLASS_BIASES_NOT_EMBEDDED[NUM_CLASSES] = {
-    1.5f, -24.0f, -37.5f};
-  LDA_CLASS_BIASES = {-6.45036364f, 4.38645935f, -8.29020691f};
+    0.19358437f,  1.38794649f,  0.19732946f,  0.19398162f,  -1.01740980f,
+    0.28223020f,  -0.12278274f, -2.84530330f, 0.28168017f,  -0.02063890f,
+    1.65350235f,  -0.30270889f, -1.21890199f, -0.79680419f, -2.88690639f,
+    -1.63528287f, 2.33100653f,  -1.27706242f};
 
 float LinearDiscriminantAnalysis::LDA_SCALINGS_DATA[NUM_PCA_COMPONENTS *
                                                     (NUM_CLASSES - 1)] = {
-    -0.04404649f, -0.01851906f, -0.46230766f, 0.01840315f,
-    0.57647359f,  -0.01081683f, 0.00610506f,  0.91545147f,
-    -0.05316798f, -0.01479128f, -0.19400401f, 0.82470751f};
-  // Use this configuration when in a room filled with people talking.
-  LDA_CLASS_BIASES_ENV = {-3.05036364f, 1.38645935f, -10.29020691f};
-  LDA_CLASS_BIASES_NOT_EMBEDDED = {-6.45036364f, 11.38645935f, -8.29020691f};
+    -0.06232077f, -0.17988630f, -0.54079854f, 0.10227066f,
+    -0.05047226f, -0.33339098f, -0.06615186f, -0.10715678f,
+    0.42568585f,  0.19358982f,  0.16270618f,  0.17846420f};
 
-  LDA_SCALINGS_DATA = {-0.06232077f, -0.17988630f, -0.54079854f, 0.10227066f,
-                       -0.05047226f, -0.33339098f, -0.06615186f, -0.10715678f,
-                       0.42568585f,  0.19358982f,  0.16270618f,  0.17846420f};
+float LinearDiscriminantAnalysis::LDA_CLASS_BIASES[NUM_CLASSES] = {
+    -6.45036364f, 4.38645935f, -8.29020691f};
+
+float LinearDiscriminantAnalysis::LDA_CLASS_BIASES_NOT_EMBEDDED[NUM_CLASSES] = {
+    -6.45036364f, 11.38645935f, -8.29020691f};
+
+// Use this configuration when in a room filled with people talking.
+float LinearDiscriminantAnalysis::LDA_CLASS_BIASES_ENV[NUM_CLASSES] = {
+    -3.05036364f, 1.38645935f, -10.29020691f};
 
 ClassificationLabel
     LinearDiscriminantAnalysis::CLASSIFICATION_CLASSES[NUM_CLASSES] = {
-        ClassificationLabel::Fire, ClassificationLabel::Engine,
-        ClassificationLabel::TruckReversing};
-  LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
-
-  CLASSIFICATION_CLASSES = {ClassificationLabel::SomeoneTalking,
-                            ClassificationLabel::Siren,
-                            ClassificationLabel::SmokeAlarm};
+        ClassificationLabel::SomeoneTalking, ClassificationLabel::Siren,
+        ClassificationLabel::SmokeAlarm};
 
 void LinearDiscriminantAnalysis::initializeLDAData() {
-  // Three-class model (fire, engine, truck_reversing) trained on 13 MFCC → 6
+  // Three-class model (talking, siren, smoke alarm) trained on 13 MFCC -> 6
   // PCA features.
 
   LDA_CLASS_WEIGHTS = {3, 6, LDA_CLASS_WEIGHTS_DATA};
@@ -86,8 +53,6 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
   LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA};
 
   this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
-
-  // ldaProjection.classWeights.numCols
 
 #ifndef BUILD_TESTS
   memcpy(this->ldaProjection.classBiases, LDA_CLASS_BIASES,

@@ -39,7 +39,7 @@ class Classification {
    * @param rawAudio Input array of FFT frames, of size frames x
    * (fftSize/2 + 1) [nyquist].
    */
-  void classify(float* rawAudio);
+  void classify(const float* rawAudio);
 
   /**
    * @brief Returns the classification label state value from the classification
@@ -111,6 +111,10 @@ class Classification {
   float pcaFeatureVector[CLASSIFICATION_BUFFER_SIZE * NUM_PCA_COMPONENTS];
 
   FrequencyDomain freq;
+
+  // Normalization array
+
+  float normalized[FFT_BUFFER_SIZE_IN];
 
   /**
    * @brief Builds the STFT matrix representation from FFT frames.

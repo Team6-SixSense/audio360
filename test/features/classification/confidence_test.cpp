@@ -17,7 +17,6 @@
 #include "mp3.h"
 #include "test_helper.h"
 
-
 /**
  * @brief Converts samples from double vector to float vector.
  * @param samples Source samples (double precision).
@@ -57,8 +56,8 @@ static std::vector<float> generateRandomNoise(int numSamples) {
  *       If not implemented, this test validates classification output variance.
  */
 TEST(ConfidenceTest, AmbiguousSampleDetection) {
-  const uint16_t numMelFilters = 6;
-  const uint16_t numDCTCoeff = 6;
+  const uint16_t numMelFilters = NUM_MEL_FILTERS;
+  const uint16_t numDCTCoeff = NUM_DCT_COEFF;
   const uint16_t numPCAComponents = 6;
   const uint16_t numClasses = 3;
 
