@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 
+#include <climits>
 #include <cmath>
 
 #include "classificationLabel.h"
@@ -21,6 +22,8 @@ matrix LDA_CLASS_WEIGHTS;
 
 std::vector<float> LDA_CLASS_BIASES;
 
+std::vector<float> LDA_CLASS_BIASES_ENV;
+
 std::vector<float> LDA_CLASS_BIASES_NOT_EMBEDDED;
 
 std::vector<float> LDA_SCALINGS_DATA;
@@ -30,28 +33,31 @@ matrix LDA_SCALINGS;
 std::vector<ClassificationLabel> CLASSIFICATION_CLASSES;
 
 void LinearDiscriminantAnalysis::initializeLDAData() {
-  // Three-class model (fire, engine, truck_reversing) trained on 13 MFCC → 6
+  // Three-class model (fire, engine, truck_reversing) trained on 13 MFCC →
   // PCA features.
   LDA_CLASS_WEIGHTS_DATA = {
-      0.02029330f,  0.22484505f,  -0.27969456f, 0.04802127f,  0.02491694f,
-      0.13984840f,  0.02037128f,  -1.14728367f, 1.35300350f,  -5.84238291f,
-      -0.02378825f, -5.70755434f, -0.28557804f, -2.88707638f, 3.60632396f,
-      0.51290333f,  -0.34079650f, -0.78794265f};
+      0.19358437f,  1.38794649f,  0.19732946f,  0.19398162f,  -1.01740980f,
+      0.28223020f,  -0.12278274f, -2.84530330f, 0.28168017f,  -0.02063890f,
+      1.65350235f,  -0.30270889f, -1.21890199f, -0.79680419f, -2.88690639f,
+      -1.63528287f, 2.33100653f,  -1.27706242f};
 
   LDA_CLASS_WEIGHTS = {3, 6, LDA_CLASS_WEIGHTS_DATA.data()};
 
-  LDA_CLASS_BIASES = {-1.5f, 0.0f, 21.0f};
-  LDA_CLASS_BIASES_NOT_EMBEDDED = {1.5f, -24.0f, -37.5f};
+  LDA_CLASS_BIASES = {-6.45036364f, 4.38645935f, -8.29020691f};
 
-  LDA_SCALINGS_DATA = {-0.04404649f, -0.01851906f, -0.46230766f, 0.01840315f,
-                       0.57647359f,  -0.01081683f, 0.00610506f,  0.91545147f,
-                       -0.05316798f, -0.01479128f, -0.19400401f, 0.82470751f};
+  // Use this configuration when in a room filled with people talking.
+  LDA_CLASS_BIASES_ENV = {-3.05036364f, 1.38645935f, -10.29020691f};
+  LDA_CLASS_BIASES_NOT_EMBEDDED = {-6.45036364f, 11.38645935f, -8.29020691f};
+
+  LDA_SCALINGS_DATA = {-0.06232077f, -0.17988630f, -0.54079854f, 0.10227066f,
+                       -0.05047226f, -0.33339098f, -0.06615186f, -0.10715678f,
+                       0.42568585f,  0.19358982f,  0.16270618f,  0.17846420f};
 
   LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
 
-  CLASSIFICATION_CLASSES = {ClassificationLabel::Fire,
-                            ClassificationLabel::Engine,
-                            ClassificationLabel::TruckReversing};
+  CLASSIFICATION_CLASSES = {ClassificationLabel::SomeoneTalking,
+                            ClassificationLabel::Siren,
+                            ClassificationLabel::SmokeAlarm};
 
   this->ldaProjection.classWeights = LDA_CLASS_WEIGHTS;
 
@@ -177,13 +183,21 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(
     return ClassificationLabel::Unknown;
   }
 
-  int bestCount = classCounts[0];
   int bestClass = 0;
-  for (int c = 1; c < this->numClasses; ++c) {
-    if (classCounts[c] > bestCount) {
-      bestCount = classCounts[c];
+  int bestAverage = -1 * INT_MAX;
+
+  // Debug: //print average per-class scores and mean confidence.
+  // printf("LDA avg scores:");
+  for (uint16_t c = 0; c < this->numClasses; ++c) {
+    const float avgScore = scoreSums[c] / static_cast<float>(numFrames);
+    if (avgScore > bestAverage) {
+      bestAverage = avgScore;
       bestClass = c;
     }
+    // printf(" [%s]=%.3f", ClassificationClassToString(this->classTypes[c]),
+    //        avgScore);
   }
+  // printf(" | avg confidence=%.3f\n", totalConfidence);
+
   return this->classTypes[bestClass];
 }

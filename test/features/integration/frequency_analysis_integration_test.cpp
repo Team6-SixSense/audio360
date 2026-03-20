@@ -20,7 +20,6 @@
 #include "mp3.h"
 #include "test_helper.h"
 
-
 /**
  * @brief Converts samples from double vector to float vector.
  * @param samples Source samples (double precision).
@@ -107,10 +106,11 @@ TEST(FrequencyAnalysisIntegrationTest,
   EXPECT_GE(directionRad, 0.0f);
   EXPECT_LE(directionRad, TWO_PI_32);
 
-  // Classification check: Should be fire, engine, truck_reversing, or unknown
+  // Classification check: Should be someone_talking, siren, smoke_alarm, or
+  // unknown
   bool classificationAcceptable =
-      (classLabel == "fire" || classLabel == "engine" ||
-       classLabel == "truck_reversing" || classLabel == "unknown");
+      (classLabel == "someone_talking" || classLabel == "siren" ||
+       classLabel == "smoke_alarm" || classLabel == "unknown");
   EXPECT_TRUE(classificationAcceptable)
       << "Classification returned unexpected label: " << classLabel;
 
@@ -173,8 +173,8 @@ TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
     // acceptable)
     EXPECT_FALSE(label.empty())
         << "Classification returned empty label for angle " << angle;
-    bool classAcceptable = (label == "fire" || label == "engine" ||
-                            label == "truck_reversing" || label == "unknown");
+    bool classAcceptable = (label == "someone_talking" || label == "siren" ||
+                            label == "smoke_alarm" || label == "unknown");
     EXPECT_TRUE(classAcceptable)
         << "Angle " << angle << "°: unexpected classification " << label;
 
@@ -232,8 +232,8 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousProcessingPerformance) {
   // "unknown")
   std::string label = classifier.getClassificationLabel();
   EXPECT_FALSE(label.empty());
-  bool classAcceptable = (label == "fire" || label == "engine" ||
-                          label == "truck_reversing" || label == "unknown");
+  bool classAcceptable = (label == "someone_talking" || label == "siren" ||
+                          label == "smoke_alarm" || label == "unknown");
   EXPECT_TRUE(classAcceptable) << "Unexpected classification: " << label;
 
   EXPECT_GE(direction, 0.0f);

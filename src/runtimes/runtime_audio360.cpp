@@ -273,8 +273,10 @@ std::string runClassification(bool newData) {
 
   std::vector<float> mic1Data(MIC_HALF_BUFFER_SIZE);
 
-  for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; i++) {
-    mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
+  for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; ++i) {
+    uint16_t low16 = static_cast<uint16_t>(micA1Buffer[start + i] & 0xFFFF);
+    int16_t s16 = static_cast<int16_t>(low16);
+    mic1Data[i] = static_cast<float>(s16);
   }
 
   std::string classification{};

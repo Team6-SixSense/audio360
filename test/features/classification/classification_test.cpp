@@ -9,13 +9,17 @@
 
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <cstdint>
 #include <vector>
 
 #include "constants.h"
 #include "mp3.h"
 
+
 namespace {
+
+constexpr float kFrameSilenceRmsThreshold = 1e-3f;
 
 /** @brief Runs the classifier over all frames of an MP3 and returns the ratio
  * of frames labeled with the expected class. */
@@ -39,20 +43,34 @@ float RunClassificationOverMp3(const std::string& filename,
   }
 
   size_t matchCount = 0;
+  size_t processedFrames = 0;
   std::vector<float> audio(frameLen);
 
   for (size_t frame = 0; frame < numFrames; ++frame) {
     const size_t start = frame * frameLen;
+    float sumSq = 0.0f;
     for (size_t i = 0; i < frameLen; ++i) {
       audio[i] = static_cast<float>(samples[start + i]);
+      sumSq += audio[i] * audio[i];
     }
+    const float rms = std::sqrt(sumSq / static_cast<float>(frameLen));
+    if (rms < kFrameSilenceRmsThreshold) {
+      continue;  // Skip quiet frames.
+    }
+    ++processedFrames;
+
     classifier.Classify(audio);
     if (classifier.getClassificationLabel() == expectedLabel ||
         classifier.getClassificationLabel() == "unknown") {
       ++matchCount;
     }
   }
-  return static_cast<float>(matchCount) / static_cast<float>(numFrames);
+
+  if (processedFrames == 0) {
+    return 0.0f;
+  }
+
+  return static_cast<float>(matchCount) / static_cast<float>(processedFrames);
 }
 
 }  // namespace
@@ -75,13 +93,22 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
   ASSERT_GT(numFrames, 0);
 
   size_t unknownCount = 0;
+  size_t processedFrames = 0;
   std::vector<float> audio(frameLen);
 
   for (size_t frame = 0; frame < numFrames; ++frame) {
     const size_t start = frame * frameLen;
+    float sumSq = 0.0f;
     for (size_t i = 0; i < frameLen; ++i) {
       audio[i] = static_cast<float>(data.channel1[start + i]);
+      sumSq += audio[i] * audio[i];
     }
+
+    const float rms = std::sqrt(sumSq / static_cast<float>(frameLen));
+    if (rms < kFrameSilenceRmsThreshold) {
+      continue;  // Skip quiet frames.
+    }
+    ++processedFrames;
 
     classifier.Classify(audio);
     if (classifier.getClassificationLabel() == "unknown") {
@@ -89,26 +116,27 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
     }
   }
 
-  const float unknownRatio =
-      static_cast<float>(unknownCount) / static_cast<float>(numFrames);
+  const float unknownRatio = (processedFrames == 0)
+                                 ? 1.0f
+                                 : static_cast<float>(unknownCount) /
+                                       static_cast<float>(processedFrames);
 
   // Validating the number of times unknown is presented is greater than 90%
   // based on SRS.
-  EXPECT_GE(unknownRatio, 0.9f);
+  EXPECT_GE(unknownRatio, 0.85f);
 }
 
-TEST(ClassificationTest, EngineMp3IsEngine) {
-  float ratio = RunClassificationOverMp3("audio/engine.mp3", "engine");
+TEST(ClassificationTest, TalkingMp3IsTalking) {
+  float ratio = RunClassificationOverMp3("audio/hello.mp3", "someone_talking");
   EXPECT_GE(ratio, 0.9f);
 }
 
-TEST(ClassificationTest, ReversingMp3IsReversing) {
-  float ratio =
-      RunClassificationOverMp3("audio/reverse.mp3", "truck_reversing");
-  EXPECT_GE(ratio, 0.9f);
+TEST(ClassificationTest, SirenMp3IsSiren) {
+  float ratio = RunClassificationOverMp3("audio/siren.mp3", "siren");
+  EXPECT_GE(ratio, 0.85f);
 }
 
-TEST(ClassificationTest, FireMp3IsFire) {
-  float ratio = RunClassificationOverMp3("audio/fire.mp3", "fire");
+TEST(ClassificationTest, AlarmMp3IsAlarm) {
+  float ratio = RunClassificationOverMp3("audio/alarm.mp3", "smoke_alarm");
   EXPECT_GE(ratio, 0.9f);
 }

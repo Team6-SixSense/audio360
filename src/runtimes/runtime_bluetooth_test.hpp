@@ -27,7 +27,7 @@ void main_bluetooth_test() {
   setupPeripherals();
 
   VisualizationPacket vizPacket{};
-  vizPacket.classification = ClassificationLabel::Fire;
+  vizPacket.classification = ClassificationLabel::SomeoneTalking;
   vizPacket.direction = DirectionLabel::North;
   vizPacket.priority = 3U;
 
