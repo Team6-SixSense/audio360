@@ -62,8 +62,9 @@ void DiscreteCosineTransform::apply(
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * numMelFilters;
     for (uint16_t melBin = 0; melBin < numMelFilters; ++melBin) {
-      logMel.pData[rowStart + melBin] =
+      const float val =
           std::log(melSpectrogram.pData[rowStart + melBin] + 1e-10f);
+      logMel.pData[rowStart + melBin] = val;
     }
   }
 
@@ -72,4 +73,10 @@ void DiscreteCosineTransform::apply(
                   mfccSpectrogramVector.data());
 
   matrix_mult_f32(&logMel, &this->dctMatrixData.mat, &mfccSpectrogram);
+
+  for (uint16_t frame = 0; frame < numFrames; ++frame) {
+    const size_t rowStart =
+        static_cast<size_t>(frame) * this->numCoefficients;
+    mfccSpectrogram.pData[rowStart + 0] = 0.0f;
+  }
 }

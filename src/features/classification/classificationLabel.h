@@ -12,9 +12,9 @@
 /** @brief Enum holding all classification labels. */
 enum class ClassificationLabel {
   Unknown = 0,
-  Fire = 1,
-  Engine = 2,
-  TruckReversing = 3,
+  SomeoneTalking = 1,
+  Siren = 2,
+  SmokeAlarm = 3,
 };
 
 /**
@@ -26,12 +26,12 @@ enum class ClassificationLabel {
 inline const char* ClassificationClassToString(
     ClassificationLabel classification) {
   switch (classification) {
-    case ClassificationLabel::Fire:
-      return "fire";
-    case ClassificationLabel::Engine:
-      return "engine";
-    case ClassificationLabel::TruckReversing:
-      return "truck_reversing";
+    case ClassificationLabel::SomeoneTalking:
+      return "someone_talking";
+    case ClassificationLabel::Siren:
+      return "siren";
+    case ClassificationLabel::SmokeAlarm:
+      return "smoke_alarm";
     case ClassificationLabel::Unknown:
       return "unknown";
   }
@@ -45,9 +45,9 @@ inline const char* ClassificationClassToString(
  * @return Enum value corresponding to the input label.
  */
 inline ClassificationLabel StringToClassification(std::string classification) {
-  if (classification == "fire") return ClassificationLabel::Fire;
-  if (classification == "engine") return ClassificationLabel::Engine;
-  if (classification == "truck_reversing")
-    return ClassificationLabel::TruckReversing;
+  if (classification == "someone_talking") return ClassificationLabel::SomeoneTalking;
+  if (classification == "siren") return ClassificationLabel::Siren;
+  if (classification == "smoke_alarm")
+    return ClassificationLabel::SmokeAlarm;
   return ClassificationLabel::Unknown;
 }

@@ -8,6 +8,9 @@
 #include "classification.h"
 
 #include <stdio.h>
+#include <algorithm>
+#include <cmath>
+#include <numeric>
 
 #include "constants.h"
 #include "matrix.h"
@@ -52,10 +55,62 @@ std::string Classification::getClassificationLabel() {
 void Classification::Classify(std::vector<float>& rawAudio) {
   const uint16_t numFreqBins = static_cast<uint16_t>(this->n_fft / 2 + 1);
 
-  // Compute FFT and immediately extract power spectrum, discarding other
-  // fields.
+  float maxAbs = 0.0f;
+  for (float v : rawAudio) {
+    maxAbs = std::max(maxAbs, std::fabs(v));
+  }
+
+  std::vector<float> normalized(rawAudio.size());
+  if (maxAbs <= 1.0f) {
+    normalized = rawAudio;
+  } else {
+    constexpr float kDenom = 32767.0f;
+    for (size_t i = 0; i < rawAudio.size(); ++i) {
+      normalized[i] = rawAudio[i] / kDenom;
+    }
+  }
+
+  float frameMean = 0.0f;
+  for (float v : normalized) frameMean += v;
+  frameMean /= static_cast<float>(normalized.size());
+
+  for (float& v : normalized) {
+    v -= frameMean;
+  }
+
+  constexpr float kTargetRms = 0.30f;
+  constexpr float kMinRms = 1e-6f;
+
+  // Compute RMS after mean removal
+  float rms = 0.0f;
+  for (float v : normalized) {
+    rms += v * v;
+  }
+  rms = std::sqrt(rms / static_cast<float>(normalized.size()));
+
+  if (rms > kMinRms) {
+    float gain = kTargetRms / rms;
+
+    // Clamp gain so quiet frames do not blow up too much
+    gain = std::clamp(gain, 0.25f, 4.0f);
+
+    for (float& v : normalized) {
+      v *= gain;
+    }
+  }
+
+  constexpr float kSoftClipDrive = 1.5f;
+  for (float& v : normalized) {
+    v = std::tanh(kSoftClipDrive * v);
+  }
+
+  for (float& v : normalized) {
+    v = std::clamp(v, -1.0f, 1.0f);
+  }
+
+
   FrequencyDomain freq =
-      this->fft.signalToFrequency(rawAudio, WindowFunction::HANN_WINDOW);
+      this->fft.signalToFrequency(normalized, WindowFunction::HANN_WINDOW);
   std::vector<float> power(numFreqBins, 0.0f);
   for (uint16_t i = 0; i < numFreqBins; ++i) {
     power[i] = freq.powerMagnitude[i];

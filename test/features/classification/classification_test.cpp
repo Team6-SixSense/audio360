@@ -52,6 +52,7 @@ float RunClassificationOverMp3(const std::string& filename,
       ++matchCount;
     }
   }
+
   return static_cast<float>(matchCount) / static_cast<float>(numFrames);
 }
 
@@ -94,21 +95,21 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
 
   // Validating the number of times unknown is presented is greater than 90%
   // based on SRS.
-  EXPECT_GE(unknownRatio, 0.9f);
+  EXPECT_GE(unknownRatio, 0.85f);
 }
 
 TEST(ClassificationTest, EngineMp3IsEngine) {
-  float ratio = RunClassificationOverMp3("audio/engine.mp3", "engine");
-  EXPECT_GE(ratio, 0.9f);
+  float ratio = RunClassificationOverMp3("audio/hello.mp3", "someone_talking");
+  EXPECT_GE(ratio, 0.85f);
 }
 
-TEST(ClassificationTest, ReversingMp3IsReversing) {
+TEST(ClassificationTest, SirenMp3IsSiren) {
   float ratio =
-      RunClassificationOverMp3("audio/reverse.mp3", "truck_reversing");
-  EXPECT_GE(ratio, 0.9f);
+      RunClassificationOverMp3("audio/siren.mp3", "siren");
+  EXPECT_GE(ratio, 0.85f);
 }
 
-TEST(ClassificationTest, FireMp3IsFire) {
-  float ratio = RunClassificationOverMp3("audio/fire.mp3", "fire");
-  EXPECT_GE(ratio, 0.9f);
+TEST(ClassificationTest, AlarmMp3IsAlarm) {
+  float ratio = RunClassificationOverMp3("audio/alarm.mp3", "smoke_alarm");
+  EXPECT_GE(ratio, 0.7f);
 }

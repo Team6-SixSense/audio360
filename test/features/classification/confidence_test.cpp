@@ -99,16 +99,16 @@ TEST(ConfidenceTest, AmbiguousSampleDetection) {
 
 /**
  * @brief Test-FR-5.4: Known samples maintain acceptable confidence.
- * @details Verifies known audio samples (jackhammer) are classified
+ * @details Verifies known audio samples (someone_talking) are classified
  *          correctly or marked as unknown (not misclassified).
  * @see VnVPlan.tex Section 3.1.7 (Frequency Analysis Tests)
- * @note Following existing test logic: "jackhammer" or "unknown" both acceptable
+ * @note Following existing test logic: "someone_talking" or "unknown" both acceptable
  */
 TEST(ConfidenceTest, KnownSampleHighConfidence) {
   Classification classifier(WAVEFORM_SAMPLES, 6, 6, 6, 3);
 
-  // Load known jackhammer audio (16kHz resampled for classification compatibility)
-  MP3Data data = readMP3File("audio/long_jackhammer_16k.mp3");
+  // Load known someone_talking audio (16kHz resampled for classification compatibility)
+  MP3Data data = readMP3File("audio/siren.mp3");
   ASSERT_GT(data.channel1.size(), static_cast<size_t>(WAVEFORM_SAMPLES));
 
   // Test multiple segments from same audio
@@ -124,8 +124,9 @@ TEST(ConfidenceTest, KnownSampleHighConfidence) {
 
     classifier.Classify(segment);
     std::string label = classifier.getClassificationLabel();
+
     
-    if (label == "jackhammer") {
+    if (label == "siren") {
       correctCount++;
     } else if (label == "unknown") {
       unknownCount++;
@@ -135,7 +136,7 @@ TEST(ConfidenceTest, KnownSampleHighConfidence) {
   }
 
   // Known audio should either be correctly classified or marked unknown
-  // Following existing test logic: both "jackhammer" and "unknown" are acceptable
+  // Following existing test logic: both "someone_talking" and "unknown" are acceptable
   int acceptableCount = correctCount + unknownCount;
   float acceptableRatio = static_cast<float>(acceptableCount) / static_cast<float>(NUM_TESTS);
 
@@ -155,7 +156,7 @@ TEST(ConfidenceTest, ConfidenceDifferentiation) {
   Classification classifier(WAVEFORM_SAMPLES, 6, 6, 6, 3);
 
   // Known sample test (using 16kHz resampled version)
-  MP3Data knownData = readMP3File("audio/long_jackhammer_16k.mp3");
+  MP3Data knownData = readMP3File("audio/hello.mp3");
   std::vector<float> knownSegment = ToFloatSamples(knownData.channel1, 10000,
                                                      10000 + WAVEFORM_SAMPLES);
 
@@ -164,7 +165,7 @@ TEST(ConfidenceTest, ConfidenceDifferentiation) {
     classifier.Classify(knownSegment);
     std::string label = classifier.getClassificationLabel();
     // Accept either correct classification or unknown (not misclassification)
-    if (label == "jackhammer" || label == "unknown") {
+    if (label == "someone_talking" || label == "unknown") {
       knownCorrect++;
     }
   }

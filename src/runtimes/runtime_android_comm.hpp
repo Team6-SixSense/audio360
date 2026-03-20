@@ -20,7 +20,7 @@ void mainAndroidComm() {
   setupPeripherals();
 
   VisualizationPacket vizPacket{};
-  vizPacket.classification = ClassificationLabel::TruckReversing;
+  vizPacket.classification = ClassificationLabel::SmokeAlarm;
   vizPacket.direction = DirectionLabel::North;
   vizPacket.priority = 3U;
 
