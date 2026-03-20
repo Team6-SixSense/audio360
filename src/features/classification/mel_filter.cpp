@@ -7,11 +7,12 @@
 
 #include "mel_filter.h"
 
-#include <cstdio>
 #include <cmath>
 #include <cstdint>
+#include <cstdio>
 
 #include "matrix.h"
+
 
 // Use float math to reduce code size + CPU (and avoid double temporaries).
 static inline float hz_to_mel_f(float hz) {
@@ -26,8 +27,8 @@ void MelFilter::CreateFilterBank() {
   const int numFreq = static_cast<int>(this->fftSize / 2U + 1U);
 
   // Store TRANSPOSED filter bank directly: (numFreq x numFilters)
-  this->filterBankTData.assign(
-      static_cast<size_t>(numFreq) * this->numFilters, 0.0f);
+  this->filterBankTData.assign(static_cast<size_t>(numFreq) * this->numFilters,
+                               0.0f);
   matrix_init_f32(&this->filterBankT, static_cast<uint16_t>(numFreq),
                   this->numFilters, this->filterBankTData.data());
 
@@ -40,9 +41,8 @@ void MelFilter::CreateFilterBank() {
   // Mel breakpoints in Hz, size = numFilters + 2
   std::vector<float> melHz(static_cast<size_t>(this->numFilters) + 2U, 0.0f);
   for (uint16_t i = 0; i < this->numFilters + 2U; ++i) {
-    const float mel =
-        melMin + (melMax - melMin) * static_cast<float>(i) /
-                     static_cast<float>(this->numFilters + 1U);
+    const float mel = melMin + (melMax - melMin) * static_cast<float>(i) /
+                                   static_cast<float>(this->numFilters + 1U);
     melHz[i] = mel_to_hz_f(mel);
   }
 
@@ -60,9 +60,9 @@ void MelFilter::CreateFilterBank() {
     }
 
     for (int j = 0; j < numFreq; ++j) {
-      const float fftHz = (static_cast<float>(j) *
-                           static_cast<float>(this->sampleFrequency)) /
-                          static_cast<float>(this->fftSize);
+      const float fftHz =
+          (static_cast<float>(j) * static_cast<float>(this->sampleFrequency)) /
+          static_cast<float>(this->fftSize);
 
       const float lower = (fftHz - leftHz) / riseDen;
       const float upper = (rightHz - fftHz) / fallDen;
@@ -78,7 +78,8 @@ void MelFilter::CreateFilterBank() {
   }
 }
 
-MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize, uint16_t sampleFrequency)
+MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize,
+                     uint16_t sampleFrequency)
     : numFilters(numFilters),
       fftSize(fftSize),
       sampleFrequency(sampleFrequency) {
@@ -92,8 +93,10 @@ void MelFilter::apply(matrix& stftMatrix, matrix& melSpectrogram,
   // filterBankT is (numFreq x numFilters)
   // result is (numFrames x numFilters)
 
-  melSpectrogramVector.assign(static_cast<size_t>(numFrames) * this->numFilters, 0.0f);
-  matrix_init_f32(&melSpectrogram, numFrames, this->numFilters, melSpectrogramVector.data());
+  melSpectrogramVector.assign(static_cast<size_t>(numFrames) * this->numFilters,
+                              0.0f);
+  matrix_init_f32(&melSpectrogram, numFrames, this->numFilters,
+                  melSpectrogramVector.data());
 
   // No transpose, no heap allocation here.
   matrix_mult_f32(&stftMatrix, &this->filterBankT, &melSpectrogram);

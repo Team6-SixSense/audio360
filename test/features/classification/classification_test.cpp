@@ -9,12 +9,13 @@
 
 #include <gtest/gtest.h>
 
-#include <cstdint>
 #include <cmath>
+#include <cstdint>
 #include <vector>
 
 #include "constants.h"
 #include "mp3.h"
+
 
 namespace {
 
@@ -52,8 +53,7 @@ float RunClassificationOverMp3(const std::string& filename,
       audio[i] = static_cast<float>(samples[start + i]);
       sumSq += audio[i] * audio[i];
     }
-    const float rms =
-        std::sqrt(sumSq / static_cast<float>(frameLen));
+    const float rms = std::sqrt(sumSq / static_cast<float>(frameLen));
     if (rms < kFrameSilenceRmsThreshold) {
       continue;  // Skip quiet frames.
     }
@@ -70,8 +70,7 @@ float RunClassificationOverMp3(const std::string& filename,
     return 0.0f;
   }
 
-  return static_cast<float>(matchCount) /
-         static_cast<float>(processedFrames);
+  return static_cast<float>(matchCount) / static_cast<float>(processedFrames);
 }
 
 }  // namespace
@@ -105,8 +104,7 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
       sumSq += audio[i] * audio[i];
     }
 
-    const float rms =
-        std::sqrt(sumSq / static_cast<float>(frameLen));
+    const float rms = std::sqrt(sumSq / static_cast<float>(frameLen));
     if (rms < kFrameSilenceRmsThreshold) {
       continue;  // Skip quiet frames.
     }
@@ -118,11 +116,10 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
     }
   }
 
-  const float unknownRatio =
-      (processedFrames == 0)
-          ? 1.0f
-          : static_cast<float>(unknownCount) /
-                static_cast<float>(processedFrames);
+  const float unknownRatio = (processedFrames == 0)
+                                 ? 1.0f
+                                 : static_cast<float>(unknownCount) /
+                                       static_cast<float>(processedFrames);
 
   // Validating the number of times unknown is presented is greater than 90%
   // based on SRS.
@@ -135,8 +132,7 @@ TEST(ClassificationTest, TalkingMp3IsTalking) {
 }
 
 TEST(ClassificationTest, SirenMp3IsSiren) {
-  float ratio =
-      RunClassificationOverMp3("audio/siren.mp3", "siren");
+  float ratio = RunClassificationOverMp3("audio/siren.mp3", "siren");
   EXPECT_GE(ratio, 0.85f);
 }
 

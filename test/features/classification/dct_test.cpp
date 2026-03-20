@@ -93,14 +93,14 @@ TEST(DCTTest, ComputeDCTOnMelSpectrogramProducesExpectedMFCC) {
   // These were validated experimentally using Python to see if relatively the
   // MFCC are obtained.
   std::vector<float> actualFrame1 = {
-      0, 20.2349, 20.8206, 15.1366, 10.8139, 7.1945, 4.3752,
-      3.0178,   1.4158,  0.7228,  -0.0174, -1.6363, -2.0123};
-  std::vector<float> actualFrame2 = {
-      0, 20.1327, 20.8456, 15.5742, 11.3821, 7.3043, 4.4060,
-      2.4799,   0.9329,  0.1191,  0.3618,  -1.2808, -2.3173};
-  std::vector<float> actualFrame3 = {
-      0, 20.8818, 21.4201, 15.7347, 10.5507, 6.1766, 3.1375,
-      2.4075,   1.4275,  0.8910,  0.6098,  -0.9236, -2.0151};
+      0,      20.2349, 20.8206, 15.1366, 10.8139, 7.1945, 4.3752,
+      3.0178, 1.4158,  0.7228,  -0.0174, -1.6363, -2.0123};
+  std::vector<float> actualFrame2 = {0,      20.1327, 20.8456, 15.5742, 11.3821,
+                                     7.3043, 4.4060,  2.4799,  0.9329,  0.1191,
+                                     0.3618, -1.2808, -2.3173};
+  std::vector<float> actualFrame3 = {0,      20.8818, 21.4201, 15.7347, 10.5507,
+                                     6.1766, 3.1375,  2.4075,  1.4275,  0.8910,
+                                     0.6098, -0.9236, -2.0151};
 
   MP3Data data = readMP3File("audio/285_sine.mp3");
   const int offset0 = 100000;  // same style as fft_test.cpp

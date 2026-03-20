@@ -45,9 +45,9 @@ inline const char* ClassificationClassToString(
  * @return Enum value corresponding to the input label.
  */
 inline ClassificationLabel StringToClassification(std::string classification) {
-  if (classification == "someone_talking") return ClassificationLabel::SomeoneTalking;
+  if (classification == "someone_talking")
+    return ClassificationLabel::SomeoneTalking;
   if (classification == "siren") return ClassificationLabel::Siren;
-  if (classification == "smoke_alarm")
-    return ClassificationLabel::SmokeAlarm;
+  if (classification == "smoke_alarm") return ClassificationLabel::SmokeAlarm;
   return ClassificationLabel::Unknown;
 }

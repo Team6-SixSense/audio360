@@ -36,24 +36,22 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
   // Three-class model (fire, engine, truck_reversing) trained on 13 MFCC →
   // PCA features.
   LDA_CLASS_WEIGHTS_DATA = {
-    0.19358437f, 1.38794649f, 0.19732946f, 0.19398162f, -1.01740980f, 0.28223020f, -0.12278274f, -2.84530330f, 0.28168017f, -0.02063890f, 1.65350235f, -0.30270889f, -1.21890199f,
-    -0.79680419f, -2.88690639f, -1.63528287f, 2.33100653f, -1.27706242f};
+      0.19358437f,  1.38794649f,  0.19732946f,  0.19398162f,  -1.01740980f,
+      0.28223020f,  -0.12278274f, -2.84530330f, 0.28168017f,  -0.02063890f,
+      1.65350235f,  -0.30270889f, -1.21890199f, -0.79680419f, -2.88690639f,
+      -1.63528287f, 2.33100653f,  -1.27706242f};
 
   LDA_CLASS_WEIGHTS = {3, 6, LDA_CLASS_WEIGHTS_DATA.data()};
 
-  LDA_CLASS_BIASES = {
-    -6.45036364f, 4.38645935f, -8.29020691f
-};
+  LDA_CLASS_BIASES = {-6.45036364f, 4.38645935f, -8.29020691f};
 
   // Use this configuration when in a room filled with people talking.
-  LDA_CLASS_BIASES_ENV = {
-    -3.05036364f, 1.38645935f, -10.29020691f
-};
+  LDA_CLASS_BIASES_ENV = {-3.05036364f, 1.38645935f, -10.29020691f};
   LDA_CLASS_BIASES_NOT_EMBEDDED = {-6.45036364f, 11.38645935f, -8.29020691f};
 
-  LDA_SCALINGS_DATA = {
-  -0.06232077f, -0.17988630f, -0.54079854f, 0.10227066f, -0.05047226f, -0.33339098f, -0.06615186f, -0.10715678f, 0.42568585f, 0.19358982f, 0.16270618f, 0.17846420f
-};
+  LDA_SCALINGS_DATA = {-0.06232077f, -0.17988630f, -0.54079854f, 0.10227066f,
+                       -0.05047226f, -0.33339098f, -0.06615186f, -0.10715678f,
+                       0.42568585f,  0.19358982f,  0.16270618f,  0.17846420f};
 
   LDA_SCALINGS = {6, 2, LDA_SCALINGS_DATA.data()};
 
@@ -190,15 +188,15 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(
 
   // Debug: //print average per-class scores and mean confidence.
   // printf("LDA avg scores:");
-   for (uint16_t c = 0; c < this->numClasses; ++c) {
-     const float avgScore = scoreSums[c] / static_cast<float>(numFrames);
-     if (avgScore > bestAverage) {
-       bestAverage = avgScore;
-       bestClass = c;
-     }
-     // printf(" [%s]=%.3f", ClassificationClassToString(this->classTypes[c]),
-     //        avgScore);
-   }
+  for (uint16_t c = 0; c < this->numClasses; ++c) {
+    const float avgScore = scoreSums[c] / static_cast<float>(numFrames);
+    if (avgScore > bestAverage) {
+      bestAverage = avgScore;
+      bestClass = c;
+    }
+    // printf(" [%s]=%.3f", ClassificationClassToString(this->classTypes[c]),
+    //        avgScore);
+  }
   // printf(" | avg confidence=%.3f\n", totalConfidence);
 
   return this->classTypes[bestClass];

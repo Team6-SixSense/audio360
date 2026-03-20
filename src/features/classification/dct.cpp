@@ -13,7 +13,6 @@
 
 #include "constants.h"
 
-
 void DiscreteCosineTransform::CreateDCTMatrix() {
   this->dctMatrixData.data.assign(this->numMelFilters * this->numCoefficients,
                                   0.0f);
@@ -75,8 +74,7 @@ void DiscreteCosineTransform::apply(
   matrix_mult_f32(&logMel, &this->dctMatrixData.mat, &mfccSpectrogram);
 
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
-    const size_t rowStart =
-        static_cast<size_t>(frame) * this->numCoefficients;
+    const size_t rowStart = static_cast<size_t>(frame) * this->numCoefficients;
     mfccSpectrogram.pData[rowStart + 0] = 0.0f;
   }
 }

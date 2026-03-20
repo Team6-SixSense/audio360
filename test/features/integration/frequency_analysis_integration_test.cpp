@@ -20,7 +20,6 @@
 #include "mp3.h"
 #include "test_helper.h"
 
-
 /**
  * @brief Converts samples from double vector to float vector.
  * @param samples Source samples (double precision).
@@ -107,7 +106,8 @@ TEST(FrequencyAnalysisIntegrationTest,
   EXPECT_GE(directionRad, 0.0f);
   EXPECT_LE(directionRad, TWO_PI_32);
 
-  // Classification check: Should be someone_talking, siren, smoke_alarm, or unknown
+  // Classification check: Should be someone_talking, siren, smoke_alarm, or
+  // unknown
   bool classificationAcceptable =
       (classLabel == "someone_talking" || classLabel == "siren" ||
        classLabel == "smoke_alarm" || classLabel == "unknown");
