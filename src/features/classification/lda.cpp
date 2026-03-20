@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 
+#include <climits>
 #include <cmath>
 
 #include "classificationLabel.h"
@@ -20,6 +21,8 @@ std::vector<float> LDA_CLASS_WEIGHTS_DATA;
 matrix LDA_CLASS_WEIGHTS;
 
 std::vector<float> LDA_CLASS_BIASES;
+
+std::vector<float> LDA_CLASS_BIASES_ENV;
 
 std::vector<float> LDA_CLASS_BIASES_NOT_EMBEDDED;
 
@@ -40,6 +43,11 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
 
   LDA_CLASS_BIASES = {
     -6.45036364f, 4.38645935f, -8.29020691f
+};
+
+  // Use this configuration when in a room filled with people talking.
+  LDA_CLASS_BIASES_ENV = {
+    -3.05036364f, 1.38645935f, -10.29020691f
 };
   LDA_CLASS_BIASES_NOT_EMBEDDED = {-6.45036364f, 11.38645935f, -8.29020691f};
 
@@ -173,26 +181,25 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(
   }
   totalConfidence /= numFrames;
 
-  // Debug: //print average per-class scores and mean confidence.
-  // printf("LDA avg scores:");
-  //  for (uint16_t c = 0; c < this->numClasses; ++c) {
-  //    const float avgScore = scoreSums[c] / static_cast<float>(numFrames);
-  //    printf(" [%s]=%.3f", ClassificationClassToString(this->classTypes[c]),
-  //           avgScore);
-  //  }
-  // printf(" | avg confidence=%.3f\n", totalConfidence);
-
   if (totalConfidence < CONFIDENCE_THRESHOLD) {
     return ClassificationLabel::Unknown;
   }
 
-  int bestCount = classCounts[0];
   int bestClass = 0;
-  for (int c = 1; c < this->numClasses; ++c) {
-    if (classCounts[c] > bestCount) {
-      bestCount = classCounts[c];
-      bestClass = c;
-    }
-  }
+  int bestAverage = -1 * INT_MAX;
+
+  // Debug: //print average per-class scores and mean confidence.
+  // printf("LDA avg scores:");
+   for (uint16_t c = 0; c < this->numClasses; ++c) {
+     const float avgScore = scoreSums[c] / static_cast<float>(numFrames);
+     if (avgScore > bestAverage) {
+       bestAverage = avgScore;
+       bestClass = c;
+     }
+     // printf(" [%s]=%.3f", ClassificationClassToString(this->classTypes[c]),
+     //        avgScore);
+   }
+  // printf(" | avg confidence=%.3f\n", totalConfidence);
+
   return this->classTypes[bestClass];
 }
