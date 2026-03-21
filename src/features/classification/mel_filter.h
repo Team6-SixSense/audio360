@@ -10,6 +10,7 @@
 
 #include "fft.h"
 #include "matrix.h"
+#include "runtime_audio360.hpp"
 
 struct ShortTimeFourierTransformDomain {
   /** @brief The number of frames stacked to create the stft */
@@ -28,20 +29,30 @@ struct ShortTimeFourierTransformDomain {
 
 class MelFilter {
  public:
-  /** @brief Construct a MelFilter object. */
+  /**
+   * @brief Construct a new Mel Filter object
+   *
+   * @param numFilters The number of mel filters.
+   * @param fftSize The size of FFT input.
+   * @param sampleFrequency The sample frequency in Hz.
+   */
   MelFilter(uint16_t numFilters, uint16_t fftSize, uint16_t sampleFrequency);
 
   /**
    * @brief Apply the Mel filter bank to the input power spectrum.
    *
-   * @param stftPowerSpectrogram Input power spectrum, of size frames x
+   * @param stftMatrix Input power spectrum, of size frames x
    * (fftSize/2 + 1) [nyquist].
    * @param melSpectrogram Output Mel filter bank energies.
+   * @param melSpectrogramVector Contains the data for @ref melSpectrogram.
    */
-  void apply(matrix& stftPowerSpectrogram, matrix& melSpectrogram,
-             std::vector<float>& melSpectrogramVector) const;
+  void apply(matrix& stftMatrix, matrix& melSpectrogram,
+             float* melSpectrogramVector) const;
 
  private:
+  /** @brief Create the Mel filter bank. */
+  void CreateFilterBank();
+
   /** @brief Number of mel filters in the bank. */
   uint16_t numFilters;
 
@@ -55,8 +66,5 @@ class MelFilter {
   matrix filterBankT;
 
   /** @brief Helper of filterBankT, contains the actual data for the matrix */
-  std::vector<float> filterBankTData;
-
-  /** @brief Create the Mel filter bank. */
-  void CreateFilterBank();
+  float filterBankTData[FREQ_DOMAIN_SIZE * NUM_MEL_FILTERS];
 };

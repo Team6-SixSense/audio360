@@ -53,13 +53,13 @@ float RunClassificationOverMp3(const std::string& filename,
       audio[i] = static_cast<float>(samples[start + i]);
       sumSq += audio[i] * audio[i];
     }
+    classifier.classify(audio.data());
     const float rms = std::sqrt(sumSq / static_cast<float>(frameLen));
     if (rms < kFrameSilenceRmsThreshold) {
       continue;  // Skip quiet frames.
     }
     ++processedFrames;
 
-    classifier.Classify(audio);
     if (classifier.getClassificationLabel() == expectedLabel ||
         classifier.getClassificationLabel() == "unknown") {
       ++matchCount;
@@ -110,7 +110,7 @@ TEST(ClassificationTest, SilenceMp3IsUnknown) {
     }
     ++processedFrames;
 
-    classifier.Classify(audio);
+    classifier.classify(audio.data());
     if (classifier.getClassificationLabel() == "unknown") {
       ++unknownCount;
     }

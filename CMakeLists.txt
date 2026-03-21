@@ -6,7 +6,7 @@ project(Audio360 VERSION 1.0 LANGUAGES C CXX ASM)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(LOGGING_ENABLED ON)
+set(LOGGING_ENABLED OFF)
 
 option(ARM_BUILD "ON to build for ARM target." OFF)
 option(PCB_BUILD "ON to build for PCB target" ON)

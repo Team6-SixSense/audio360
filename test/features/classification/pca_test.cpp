@@ -39,9 +39,9 @@ static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
 }
 
 /** @brief Builds a 3-frame MFCC spectrogram from an MP3 segment. */
-static void Make3FrameMFCCSpecFromMP3(
-    const MP3Data& data, int sampleRate, int offset0, matrix& mfccSpec,
-    std::vector<float>& mfccSpectrogramVector) {
+static void Make3FrameMFCCSpecFromMP3(const MP3Data& data, int sampleRate,
+                                      int offset0, matrix& mfccSpec,
+                                      float* mfccSpectrogramVector) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
   const uint16_t numFilters = 6;
   const uint16_t numCepstral = 6;
@@ -55,9 +55,14 @@ static void Make3FrameMFCCSpecFromMP3(
 
   FFT fft(frameSize, static_cast<uint16_t>(sampleRate));
 
-  FrequencyDomain fd0 = fft.signalToFrequency(in0, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd1 = fft.signalToFrequency(in1, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd2 = fft.signalToFrequency(in2, WindowFunction::HANN_WINDOW);
+  FrequencyDomain fd0;
+  fft.signalToFrequency(in0.data(), fd0, WindowFunction::HANN_WINDOW);
+
+  FrequencyDomain fd1;
+  fft.signalToFrequency(in1.data(), fd1, WindowFunction::HANN_WINDOW);
+
+  FrequencyDomain fd2;
+  fft.signalToFrequency(in2.data(), fd2, WindowFunction::HANN_WINDOW);
 
   std::vector<FrequencyDomain> dom;
   dom.push_back(fd0);
@@ -71,7 +76,7 @@ static void Make3FrameMFCCSpecFromMP3(
   MelFilter melFilter(numFilters, frameSize, sampleRate);
 
   matrix melSpec;
-  std::vector<float> melSpectrogramVector;
+  float melSpectrogramVector[CLASSIFICATION_BUFFER_SIZE * NUM_MEL_FILTERS];
   melFilter.apply(stftMatrix, melSpec, melSpectrogramVector);
 
   DiscreteCosineTransform dct(numCepstral, numFilters);
@@ -91,12 +96,12 @@ TEST(PCA, ApplyPCA) {
   PrincipleComponentAnalysis pca(numPCAComponents, numCepstral);
 
   matrix mfccSpec;
-  std::vector<float> mfccSpectrogramVector;
+  float mfccSpectrogramVector[CLASSIFICATION_BUFFER_SIZE * NUM_DCT_COEFF];
   Make3FrameMFCCSpecFromMP3(data, SAMPLE_FREQUENCY, offset0, mfccSpec,
                             mfccSpectrogramVector);
 
   matrix pcaSpec;
-  std::vector<float> pcaFeatureVector;
+  float pcaFeatureVector[CLASSIFICATION_BUFFER_SIZE * NUM_PCA_COMPONENTS];
   pca.apply(mfccSpec, pcaSpec, pcaFeatureVector);
 
   ASSERT_EQ(pcaSpec.numRows, mfccSpec.numRows);

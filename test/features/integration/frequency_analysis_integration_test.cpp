@@ -27,8 +27,8 @@
  * @param end Ending index (exclusive).
  * @return Float vector with converted samples.
  */
-static std::vector<float> ToFloatSamples(const std::vector<double>& samples,
-                                         size_t start, size_t end) {
+static std::vector<float> ToFloatSamplesArray(
+    const std::vector<double>& samples, size_t start, size_t end) {
   std::vector<float> out;
   out.reserve(end - start);
   for (size_t i = start; i < end && i < samples.size(); ++i) {
@@ -62,12 +62,12 @@ static double calculateAngularError(double estimated, double known) {
 TEST(FrequencyAnalysisIntegrationTest,
      SimultaneousClassificationAndDOA_SingleSource) {
   // Initialize classification module
-  const uint16_t numMelFilters = 6;
-  const uint16_t numDCTCoeff = 6;
+  const uint16_t numMelFilters = 13;
+  const uint16_t numDCTCoeff = 13;
   const uint16_t numPCAComponents = 6;
   const uint16_t numClasses = 3;
 
-  Classification classifier(WAVEFORM_SAMPLES, numMelFilters, numDCTCoeff,
+  Classification classifier(WAVEFORM_SAMPLES/2, numMelFilters, numDCTCoeff,
                             numPCAComponents, numClasses);
 
   // Initialize DOA module
@@ -85,21 +85,22 @@ TEST(FrequencyAnalysisIntegrationTest,
 
   // Extract audio segments (using same offset as DOA accuracy test: 0)
   std::vector<float> mic1Input =
-      ToFloatSamples(audioFile1.samples[0], 0, WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(audioFile1.samples[0], 0, WAVEFORM_SAMPLES);
   std::vector<float> mic2Input =
-      ToFloatSamples(audioFile2.samples[0], 0, WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(audioFile2.samples[0], 0, WAVEFORM_SAMPLES);
   std::vector<float> mic3Input =
-      ToFloatSamples(audioFile3.samples[0], 0, WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(audioFile3.samples[0], 0, WAVEFORM_SAMPLES);
   std::vector<float> mic4Input =
-      ToFloatSamples(audioFile4.samples[0], 0, WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(audioFile4.samples[0], 0, WAVEFORM_SAMPLES);
 
   // Run classification (using mic1 as reference)
-  classifier.Classify(mic1Input);
+  classifier.classify(mic1Input.data());
   std::string classLabel = classifier.getClassificationLabel();
 
   // Run DOA estimation (using DOA class with GCC-PHAT algorithm)
   float directionRad = doa.calculateDirection(
-      mic1Input, mic2Input, mic3Input, mic4Input, DOA_Algorithms::GCC_PHAT);
+      mic1Input.data(), mic2Input.data(), mic3Input.data(), mic4Input.data(),
+      DOA_Algorithms::GCC_PHAT);
 
   // Verify both operations succeeded
   EXPECT_FALSE(classLabel.empty()) << "Classification returned empty label";
@@ -139,7 +140,7 @@ TEST(FrequencyAnalysisIntegrationTest,
  * @brief Test classification and DOA from multiple angles.
  */
 TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
-  Classification classifier(WAVEFORM_SAMPLES, 6, 6, 6, 3);
+  Classification classifier(WAVEFORM_SAMPLES/2, 13, 13, 6, 3);
   DOA doa(WAVEFORM_SAMPLES);
 
   std::vector<int> angles = {0, 45, 90, 135, 180};
@@ -155,19 +156,20 @@ TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
 
     // Extract audio segments (using same offset as DOA accuracy test: 0)
     std::vector<float> mic1 =
-        ToFloatSamples(audioFile1.samples[0], 0, WAVEFORM_SAMPLES);
+        ToFloatSamplesArray(audioFile1.samples[0], 0, WAVEFORM_SAMPLES);
     std::vector<float> mic2 =
-        ToFloatSamples(audioFile2.samples[0], 0, WAVEFORM_SAMPLES);
+        ToFloatSamplesArray(audioFile2.samples[0], 0, WAVEFORM_SAMPLES);
     std::vector<float> mic3 =
-        ToFloatSamples(audioFile3.samples[0], 0, WAVEFORM_SAMPLES);
+        ToFloatSamplesArray(audioFile3.samples[0], 0, WAVEFORM_SAMPLES);
     std::vector<float> mic4 =
-        ToFloatSamples(audioFile4.samples[0], 0, WAVEFORM_SAMPLES);
+        ToFloatSamplesArray(audioFile4.samples[0], 0, WAVEFORM_SAMPLES);
 
     // Run both simultaneously
-    classifier.Classify(mic1);
+    classifier.classify(mic1.data());
     std::string label = classifier.getClassificationLabel();
-    float direction = doa.calculateDirection(mic1, mic2, mic3, mic4,
-                                             DOA_Algorithms::GCC_PHAT);
+    float direction =
+        doa.calculateDirection(mic1.data(), mic2.data(), mic3.data(),
+                               mic4.data(), DOA_Algorithms::GCC_PHAT);
 
     // Verify classification succeeded (correct class, similar class, or unknown
     // acceptable)
@@ -195,7 +197,7 @@ TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
  * @brief Test performance of simultaneous classification and DOA.
  */
 TEST(FrequencyAnalysisIntegrationTest, SimultaneousProcessingPerformance) {
-  Classification classifier(WAVEFORM_SAMPLES, 6, 6, 6, 3);
+  Classification classifier(WAVEFORM_SAMPLES/2, 13, 13, 6, 3);
   DOA doa(WAVEFORM_SAMPLES);
 
   // Load test audio
@@ -207,20 +209,21 @@ TEST(FrequencyAnalysisIntegrationTest, SimultaneousProcessingPerformance) {
 
   // Extract audio segments (using same offset as DOA accuracy test: 0)
   std::vector<float> mic1 =
-      ToFloatSamples(audioFile1.samples[0], 0, WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(audioFile1.samples[0], 0, WAVEFORM_SAMPLES);
   std::vector<float> mic2 =
-      ToFloatSamples(audioFile2.samples[0], 0, WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(audioFile2.samples[0], 0, WAVEFORM_SAMPLES);
   std::vector<float> mic3 =
-      ToFloatSamples(audioFile3.samples[0], 0, WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(audioFile3.samples[0], 0, WAVEFORM_SAMPLES);
   std::vector<float> mic4 =
-      ToFloatSamples(audioFile4.samples[0], 0, WAVEFORM_SAMPLES);
+      ToFloatSamplesArray(audioFile4.samples[0], 0, WAVEFORM_SAMPLES);
 
   // Measure combined processing time
   auto start = std::chrono::high_resolution_clock::now();
 
-  classifier.Classify(mic1);
+  classifier.classify(mic1.data());
   float direction =
-      doa.calculateDirection(mic1, mic2, mic3, mic4, DOA_Algorithms::GCC_PHAT);
+      doa.calculateDirection(mic1.data(), mic2.data(), mic3.data(), mic4.data(),
+                             DOA_Algorithms::GCC_PHAT);
 
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double, std::milli> duration = end - start;

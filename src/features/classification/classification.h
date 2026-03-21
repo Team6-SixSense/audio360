@@ -15,20 +15,20 @@
 #include "lda.h"
 #include "mel_filter.h"
 #include "pca.h"
-
+#include "runtime_audio360.hpp"
 
 class Classification {
  public:
   /**
    * @brief Construct a Classification object with processing dimensions.
    *
-   * @param n_fft FFT size used for frequency-domain analysis.
+   * @param fftSize FFT size used for frequency-domain analysis.
    * @param numMelFilters Number of mel filters to apply.
    * @param numDCTCoeff Number of DCT coefficients to retain.
    * @param numPCAComponents Number of PCA components to retain.
    * @param numClasses Number of output classes supported.
    */
-  Classification(uint16_t n_fft, uint16_t numMelFilters, uint16_t numDCTCoeff,
+  Classification(uint16_t fftSize, uint16_t numMelFilters, uint16_t numDCTCoeff,
                  uint16_t numPCAComponents, uint16_t numClasses);
 
   /**
@@ -36,10 +36,10 @@ class Classification {
    *
    * Applies mel filtering, DCT, PCA, and LDA in sequence to infer a class.
    *
-   * @param fftData Input vector of FFT frames, of size frames x
+   * @param rawAudio Input array of FFT frames, of size frames x
    * (fftSize/2 + 1) [nyquist].
    */
-  void Classify(std::vector<float>& rawAudio);
+  void classify(const float* rawAudio);
 
   /**
    * @brief Returns the classification label state value from the classification
@@ -48,8 +48,21 @@ class Classification {
   std::string getClassificationLabel();
 
  private:
+  /**
+   * @brief Builds the STFT matrix representation from FFT frames.
+   *
+   * @param powerSpectra Input vector of power spectra, of size frames x
+   * (fftSize/2 + 1) [nyquist].
+   * @param stftData Output STFT matrix, of dimensions frames x
+   * (fftSize/2 + 1) [nyquist].
+   */
+  void GenerateSTFT(float* powerSpectra, matrix& stftData);
+
   /** @brief FFT size used for frequency-domain processing. */
-  uint16_t n_fft;
+  uint16_t fftSize;
+
+  /** @brief Number of frequency bins. */
+  uint16_t numFreqBins;
 
   /** @brief Number of mel filters applied to the spectrum. */
   uint16_t numMelFilters;
@@ -82,42 +95,39 @@ class Classification {
   ClassificationLabel currClassification;
 
   /** @brief Sliding buffer of power spectra per frame (size: n_fft/2 + 1). */
-  std::vector<std::vector<float>> powerFrames;
+  float powerFrames[CLASSIFICATION_BUFFER_SIZE][(DOA_SAMPLES / 2) + 1];
+
+  /** @brief Index tracking for current frame. */
+  uint8_t currFrameIndex = 0;
+
+  /** @brief The size of the power frame */
+  uint8_t powerFramesSize = 0;
 
   /** @brief Matrix representation of the fftData vector */
   matrix stftSpec;
-
-  /** @brief Helper of stftSpec, contains the actual data for the matrix */
-  std::vector<float> stftDataVector;
 
   /** @brief Matrix that will store the computed mel spectrogram */
   matrix melSpec;
 
   /** @brief Helper of melSpec, contains the actual data for the matrix */
-  std::vector<float> melSpectrogramVector;
+  float melSpectrogramVector[CLASSIFICATION_BUFFER_SIZE * NUM_MEL_FILTERS];
 
   /** @brief Matrix that will store the computed mfcc coefficients for each
    * frame */
   matrix mfccSpec;
 
   /** @brief Helper of mfccSpec, contains the actual data for the matrix */
-  std::vector<float> mfccSpectrogramVector;
+  float mfccSpectrogramVector[CLASSIFICATION_BUFFER_SIZE * NUM_DCT_COEFF];
 
   /** @brief Matrix that will store the data projected onto pca space */
   matrix pcaSpec;
 
   /** @brief Helper of pcaSpec, contains the actual data for the matrix */
-  std::vector<float> pcaFeatureVector;
+  float pcaFeatureVector[CLASSIFICATION_BUFFER_SIZE * NUM_PCA_COMPONENTS];
 
-  /**
-   * @brief Builds the STFT matrix representation from FFT frames.
-   *
-   * @param powerSpectra Input vector of power spectra, of size frames x
-   * (fftSize/2 + 1) [nyquist].
-   * @param stftData Output STFT matrix, of dimensions frames x
-   * (fftSize/2 + 1) [nyquist].
-   * @param stftDataVector Backing storage for the matrix values.
-   */
-  void GenerateSTFT(const std::vector<std::vector<float>>& powerSpectra,
-                    matrix& stftData, std::vector<float>& stftDataVector) const;
+  /** @brief Frequency domain struct. This is where FFT results be stored. */
+  FrequencyDomain freq;
+
+  // Normalization array
+  float normalized[FFT_BUFFER_SIZE_IN];
 };
