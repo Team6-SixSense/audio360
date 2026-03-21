@@ -29,7 +29,13 @@ struct ShortTimeFourierTransformDomain {
 
 class MelFilter {
  public:
-  /** @brief Construct a MelFilter object. */
+  /**
+   * @brief Construct a new Mel Filter object
+   *
+   * @param numFilters The number of mel filters.
+   * @param fftSize The size of FFT input.
+   * @param sampleFrequency The sample frequency in Hz.
+   */
   MelFilter(uint16_t numFilters, uint16_t fftSize, uint16_t sampleFrequency);
 
   /**
@@ -38,11 +44,15 @@ class MelFilter {
    * @param stftMatrix Input power spectrum, of size frames x
    * (fftSize/2 + 1) [nyquist].
    * @param melSpectrogram Output Mel filter bank energies.
+   * @param melSpectrogramVector Contains the data for @ref melSpectrogram.
    */
   void apply(matrix& stftMatrix, matrix& melSpectrogram,
              float* melSpectrogramVector) const;
 
  private:
+  /** @brief Create the Mel filter bank. */
+  void CreateFilterBank();
+
   /** @brief Number of mel filters in the bank. */
   uint16_t numFilters;
 
@@ -57,7 +67,4 @@ class MelFilter {
 
   /** @brief Helper of filterBankT, contains the actual data for the matrix */
   float filterBankTData[FREQ_DOMAIN_SIZE * NUM_MEL_FILTERS];
-
-  /** @brief Create the Mel filter bank. */
-  void CreateFilterBank();
 };

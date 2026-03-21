@@ -31,13 +31,18 @@ class DiscreteCosineTransform {
    *
    * @param melSpectrogram Input Mel spectrogram, of size frames x
    * numMelFilters.
-   * @param dctCoefficients Output DCT coefficients, of size frames x
+   * @param mfccSpectrogram Output DCT coefficients, of size frames x
    * numCoefficients.
+   * @param mfccSpectrogramVector Pointer to data of MFCC spectrogram to make
+   * the matrix
    */
   void apply(const matrix& melSpectrogram, matrix& mfccSpectrogram,
              float* mfccSpectrogramVector);
 
  private:
+  /** @brief Create the DCT transformation matrix. */
+  void CreateDCTMatrix();
+
   /** @brief Number of DCT coefficients to compute. */
   uint16_t numCoefficients;
 
@@ -47,8 +52,6 @@ class DiscreteCosineTransform {
   /** @brief Precomputed DCT transformation matrix storage. */
   dctMatrix dctMatrixData;
 
+  /** @brief Array to hold Log Mel data. */
   float logMelData[CLASSIFICATION_BUFFER_SIZE * NUM_MEL_FILTERS];
-
-  /** @brief Create the DCT transformation matrix. */
-  void CreateDCTMatrix();
 };

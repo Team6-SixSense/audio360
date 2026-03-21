@@ -20,13 +20,23 @@ struct pcaProjectionData {
   /** @brief Mean vector used to center input features. */
   float meanVector[NUM_DCT_COEFF];
 
+  /**
+   * @brief Construct a new pca Projection Data object.
+   *
+   * @param eigenvectors The number of eigenvectors.
+   */
   pcaProjectionData(uint16_t eigenvectors)
       : numEigenvectors(eigenvectors), projectionMatrix(), meanVector() {}
 };
 
 class PrincipleComponentAnalysis {
  public:
-  /** @brief Construct a PrincipleComponentAnalysis object. */
+  /**
+   * @brief Construct a new Principle Component Analysis object.
+   *
+   * @param numEigenvectors The number of eigen vectors.
+   * @param numMFCCCoeffs The number of MFCC coefficients.
+   */
   PrincipleComponentAnalysis(uint16_t numEigenvectors, uint16_t numMFCCCoeffs);
 
   /**
@@ -34,6 +44,7 @@ class PrincipleComponentAnalysis {
    *
    * @param centeredFrame Input centered frame, of size numMFCCCoeffs.
    * @param pcaFrame Output PCA frame, of size numEigenvectors.
+   * @param pcaFeatureVector Contains the data for @ref pcaFrame.
    */
   void projectFrame(const std::vector<float>& centeredFrame,
                     std::vector<float>& pcaFrame,
@@ -45,11 +56,15 @@ class PrincipleComponentAnalysis {
    * @param mfccFeatureVector Input feature matrix, of size featureLength.
    * @param pcaFeature Output PCA feature vector, of size
    * numEigenvectors.
+   * * @param pcaFeatureVector Contains the data for @ref pcaFeature.
    */
   void apply(const matrix& mfccFeatureVector, matrix& pcaFeature,
              float* pcaFeatureVector);
 
  private:
+  /** @brief Initialize PCA data. */
+  void initializePCAData();
+
   /** @brief Number of PCA eigenvectors to keep. */
   uint16_t numEigenvectors;
 
@@ -59,7 +74,6 @@ class PrincipleComponentAnalysis {
   /** @brief Cached PCA projection data (matrix + mean). */
   pcaProjectionData pcaProjection;
 
+  /** @brief Array that holds the centered data. */
   float centeredData[CLASSIFICATION_BUFFER_SIZE * NUM_DCT_COEFF];
-
-  void initializePCAData();
 };

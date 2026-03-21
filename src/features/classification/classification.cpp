@@ -17,7 +17,7 @@
 #include "matrix.h"
 
 void Classification::GenerateSTFT(float* powerSpectra, matrix& stftData) {
-  const uint16_t numFrames = this->size_powerFrames;
+  const uint16_t numFrames = this->powerFramesSize;
 
   matrix_init_f32(&stftData, numFrames, this->num_freq_bins, powerSpectra);
 
@@ -31,17 +31,17 @@ void Classification::GenerateSTFT(float* powerSpectra, matrix& stftData) {
   // }
 }
 
-Classification::Classification(uint16_t n_fft, uint16_t numMelFilters,
+Classification::Classification(uint16_t fftSize, uint16_t numMelFilters,
                                uint16_t numDCTCoeff, uint16_t numPCAComponents,
                                uint16_t numClasses)
-    : n_fft(n_fft),
-      num_freq_bins(n_fft / 2 + 1),
+    : fftSize(fftSize),
+      num_freq_bins(fftSize / 2 + 1),
       numMelFilters(numMelFilters),
       numDCTCoeff(numDCTCoeff),
       numPCAComponents(numPCAComponents),
       numClasses(numClasses),
-      fft(n_fft, SAMPLE_FREQUENCY),
-      melFilter(numMelFilters, n_fft, SAMPLE_FREQUENCY),
+      fft(fftSize, SAMPLE_FREQUENCY),
+      melFilter(numMelFilters, fftSize, SAMPLE_FREQUENCY),
       dct(numDCTCoeff, numMelFilters),
       pca(numPCAComponents, numDCTCoeff),
       lda(numPCAComponents, numClasses),
@@ -59,7 +59,7 @@ void Classification::classify(const float* rawAudio) {
   // fields.
 
   float maxAbs = 0.0f;
-  for (int i = 0; i < n_fft; i++) {
+  for (int i = 0; i < this->fftSize; i++) {
     maxAbs = std::max(maxAbs, std::fabs(rawAudio[i]));
   }
 
@@ -69,24 +69,24 @@ void Classification::classify(const float* rawAudio) {
     memcpy(this->normalized, rawAudio, sizeof(this->normalized));
   } else {
     constexpr float kDenom = 32767.0f;
-    for (size_t i = 0; i < n_fft; ++i) {
+    for (size_t i = 0; i < this->fftSize; ++i) {
       normalized[i] = rawAudio[i] / kDenom;
     }
   }
 
   float frameMean = 0.0f;
-  for (int i = 0; i < n_fft; i++) {
+  for (int i = 0; i < this->fftSize; i++) {
     frameMean += normalized[i];
   }
 
-  frameMean /= static_cast<float>(n_fft);
+  frameMean /= static_cast<float>(this->fftSize);
 
   constexpr float kTargetRms = 0.30f;
   constexpr float kMinRms = 1e-6f;
 
   float rms = 0.0f;
 
-  for (int i = 0; i < n_fft; i++) {
+  for (int i = 0; i < this->fftSize; i++) {
     float v = normalized[i];
     v = v - frameMean;
     normalized[i] = v;
@@ -95,7 +95,7 @@ void Classification::classify(const float* rawAudio) {
     rms += v * v;
   }
 
-  rms = sqrt(rms / static_cast<float>(n_fft));
+  rms = sqrt(rms / static_cast<float>(this->fftSize));
 
   float gain = 1.0f;
 
@@ -108,7 +108,7 @@ void Classification::classify(const float* rawAudio) {
 
   constexpr float kSoftClipDrive = 1.5f;
 
-  for (int i = 0; i < n_fft; i++) {
+  for (int i = 0; i < this->fftSize; i++) {
     float v = normalized[i];
     v = v * gain;
     v = tanh(kSoftClipDrive * v);
@@ -126,12 +126,11 @@ void Classification::classify(const float* rawAudio) {
   this->currFrameIndex =
       (this->currFrameIndex + 1) % CLASSIFICATION_BUFFER_SIZE;
 
-  this->size_powerFrames =
-      (this->size_powerFrames == CLASSIFICATION_BUFFER_SIZE)
-          ? CLASSIFICATION_BUFFER_SIZE
-          : this->size_powerFrames + 1;
+  this->powerFramesSize = (this->powerFramesSize == CLASSIFICATION_BUFFER_SIZE)
+                              ? CLASSIFICATION_BUFFER_SIZE
+                              : this->powerFramesSize + 1;
 
-  if (this->size_powerFrames < CLASSIFICATION_BUFFER_SIZE) {
+  if (this->powerFramesSize < CLASSIFICATION_BUFFER_SIZE) {
     return;
   }
 

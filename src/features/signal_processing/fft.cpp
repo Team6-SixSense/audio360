@@ -38,7 +38,7 @@ FFT::FFT(const FFT& other)
 FFT::~FFT() = default;
 
 void FFT::signalToFrequency(
-    float* signal, FrequencyDomain& out_freq,
+    float* signal, FrequencyDomain& outFreq,
     WindowFunction windowFunction = WindowFunction::NONE) {
   this->insertSignal(signal);
   this->applyWindow(in, windowFunction);  // dont modify input buffer.
@@ -46,7 +46,7 @@ void FFT::signalToFrequency(
   uint8_t ARM_RFFT_FAST_FORWARD = 0U;  // Discrete Fourier Transform.
   arm_rfft_fast_f32(&rfft_instance, in, out, ARM_RFFT_FAST_FORWARD);
 
-  this->createOutput(out_freq);
+  this->createOutput(outFreq);
 }
 
 void FFT::applyWindow(float* signal, WindowFunction windowFunction) {
@@ -66,7 +66,7 @@ void FFT::insertSignal(float* signal) const {
   std::copy(signal, signal + inputSize, in);
 }
 
-void FFT::createOutput(FrequencyDomain& out_freq) {
+void FFT::createOutput(FrequencyDomain& outFreq) {
   uint16_t N = (this->inputSize / 2) + 1;
   uint16_t lastIdx = N - 1;
   float frequency = 0.0f;
@@ -79,15 +79,15 @@ void FFT::createOutput(FrequencyDomain& out_freq) {
   // https://arm-software.github.io/CMSIS-DSP/main/group__RealFFT.html
 
   // DC.
-  insertFrequencyEntry(out_freq, 0, frequency, out[0], 0.0f);
+  insertFrequencyEntry(outFreq, 0, frequency, out[0], 0.0f);
   frequency += frequencyBinSize;
 
   // Middle real and complex values.
   for (int i = 1; i < lastIdx; i++) {
-    insertFrequencyEntry(out_freq, i, frequency, out[2 * i], out[2 * i + 1]);
+    insertFrequencyEntry(outFreq, i, frequency, out[2 * i], out[2 * i + 1]);
     frequency += frequencyBinSize;
   }
 
   // Last real.
-  insertFrequencyEntry(out_freq, lastIdx, frequency, out[1], 0.0f);
+  insertFrequencyEntry(outFreq, lastIdx, frequency, out[1], 0.0f);
 }

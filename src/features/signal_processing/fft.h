@@ -40,12 +40,14 @@ class FFT {
   /**
    * @brief Converts input signal to the frequency domain.
    *
-   * @param signal input signal.
+   * @param signal input signal.3
+   * @param [out] outFreq Frequency domain struct to be populated with frequency
+   * info.
    * @param windowFunction The type of window function to apply to the input
    * signal.
    * @return FrequencyDomain The signal represented in the frequency domain.
    */
-  void signalToFrequency(float* signal, FrequencyDomain& out_freq,
+  void signalToFrequency(float* signal, FrequencyDomain& outFreq,
                          WindowFunction windowFunction);
 
  private:
@@ -87,9 +89,11 @@ class FFT {
   /**
    * @brief Translate FFT algo's output to a portable output to return.
    *
+   * @param [out] outFreq Frequency domain struct to be populated with frequency
+   * info.
    * @return FrequencyDomain frequency output.
    */
-  void createOutput(FrequencyDomain& out_freq);
+  void createOutput(FrequencyDomain& outFreq);
 
   /** @brief The size of the input signal. */
   uint16_t inputSize{0U};

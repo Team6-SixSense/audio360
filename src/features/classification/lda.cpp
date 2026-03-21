@@ -15,6 +15,7 @@
 #include "classificationLabel.h"
 #include "classification_constants.h"
 #include "constants.h"
+#include "logging.hpp"
 
 float LinearDiscriminantAnalysis::LDA_CLASS_WEIGHTS_DATA[NUM_PCA_COMPONENTS *
                                                          NUM_CLASSES] = {
@@ -180,18 +181,18 @@ ClassificationLabel LinearDiscriminantAnalysis::apply(
   int bestClass = 0;
   int bestAverage = -1 * INT_MAX;
 
-  // Debug: //print average per-class scores and mean confidence.
-  // printf("LDA avg scores:");
+  DEBUG("LDA avg scores:");
   for (uint16_t c = 0; c < this->numClasses; ++c) {
     const float avgScore = scoreSums[c] / static_cast<float>(numFrames);
     if (avgScore > bestAverage) {
       bestAverage = avgScore;
       bestClass = c;
     }
-    // printf(" [%s]=%.3f", ClassificationClassToString(this->classTypes[c]),
-    //        avgScore);
+    DEBUG(" [%s]=%.3f",
+          ClassificationClassToString(this->CLASSIFICATION_CLASSES[c]),
+          avgScore);
   }
-  // printf(" | avg confidence=%.3f\n", totalConfidence);
+  DEBUG(" | avg confidence=%.3f\n", totalConfidence);
 
   return this->CLASSIFICATION_CLASSES[bestClass];
 }

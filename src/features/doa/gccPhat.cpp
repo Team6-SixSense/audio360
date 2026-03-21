@@ -22,7 +22,7 @@ GCCPhaT::GCCPhaT(size_t numSamples, int sampleFrequency)
     : numSamples(numSamples),
       sampleFrequency(sampleFrequency),
       fft(numSamples, sampleFrequency),
-      ifft(numSamples){}
+      ifft(numSamples) {}
 
 float GCCPhaT::calculateDirection(float* mic1Data, float* mic2Data,
                                   float* mic3Data, float* mic4Data) {
@@ -52,11 +52,12 @@ float GCCPhaT::estimateInterMicDelay(const FrequencyDomain& freqA,
                                      const FrequencyDomain& freqB,
                                      float maxDelay_s) {
   this->computeGccPhatSpectrum(freqA, freqB);
-  size_t size_corr = 0;
+  size_t crossCorrSize = 0;  // Will be updated by IFFT.
   float* gccPhatCorrelation =
-      ifft.frequencyToTime(this->phatCrossSpectrum, size_corr);
+      ifft.frequencyToTime(this->phatCrossSpectrum, crossCorrSize);
 
-  return this->calculateTimeDelay(gccPhatCorrelation, size_corr, maxDelay_s);
+  return this->calculateTimeDelay(gccPhatCorrelation, crossCorrSize,
+                                  maxDelay_s);
 }
 
 void GCCPhaT::computeGccPhatSpectrum(const FrequencyDomain& freqA,
@@ -81,9 +82,9 @@ void GCCPhaT::computeGccPhatSpectrum(const FrequencyDomain& freqA,
   }
 }
 
-float GCCPhaT::calculateTimeDelay(const float* correlation, size_t size_corr,
-                                  float maxDelay_s) {
-  const int N = static_cast<int>(size_corr);
+float GCCPhaT::calculateTimeDelay(const float* correlation,
+                                  size_t crossCorrSize, float maxDelay_s) {
+  const int N = static_cast<int>(crossCorrSize);
   const int maxLagSamples =
       static_cast<int>(std::ceil(maxDelay_s * sampleFrequency));
   const int searchRange = std::min(maxLagSamples, N / 2 - 1);

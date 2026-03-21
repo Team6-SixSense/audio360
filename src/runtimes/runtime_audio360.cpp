@@ -245,6 +245,7 @@ float runDoA(bool newData) {
                                    micA2BufferFloat, micB2BufferFloat,
                                    DOA_Algorithms::GCC_PHAT);
 #else
+    // Rev0 build.
     angle = doa.calculateDirection(micA1BufferFloat, micA2BufferFloat,
                                    micB2BufferFloat, micB1BufferFloat,
                                    DOA_Algorithms::GCC_PHAT);

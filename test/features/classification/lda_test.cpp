@@ -96,7 +96,6 @@ static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
 
   matrix melSpec;
   std::vector<float> melSpectrogramVector(numFrames * NUM_MEL_FILTERS);
-  // float melSpectrogramVector[CLASSIFICATION_BUFFER_SIZE * NUM_MEL_FILTERS];
   melFilter.apply(stftMatrix, melSpec, melSpectrogramVector.data());
 
   DiscreteCosineTransform dct(numCepstral, numFilters);

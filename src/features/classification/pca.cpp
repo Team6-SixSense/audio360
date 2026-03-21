@@ -14,6 +14,7 @@
 std::vector<float> PCA_MEAN_VECTOR;
 
 std::vector<float> PCA_PROJECTION_MATRIX_DATA;
+
 matrix PCA_PROJECTION_MATRIX;
 
 void PrincipleComponentAnalysis::initializePCAData() {
@@ -47,8 +48,6 @@ void PrincipleComponentAnalysis::initializePCAData() {
   PCA_PROJECTION_MATRIX = {13, 6, PCA_PROJECTION_MATRIX_DATA.data()};
 
   this->pcaProjection.projectionMatrix = PCA_PROJECTION_MATRIX;
-
-  // this->pcaProjection.meanVector = PCA_MEAN_VECTOR.data();
 
   memcpy(this->pcaProjection.meanVector, PCA_MEAN_VECTOR.data(),
          sizeof(float) * 13);

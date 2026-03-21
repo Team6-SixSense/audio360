@@ -32,7 +32,7 @@ IFFT::IFFT(const IFFT& other) : numSamples(other.numSamples) {
 IFFT::~IFFT() = default;
 
 float* IFFT::frequencyToTime(const FrequencyDomain& frequencyDomain,
-                             size_t& out_size) {
+                             size_t& outSize) {
   this->insertSignal(frequencyDomain);
 
   uint8_t ARM_RFFT_FAST_FORWARD = 1U;  // Discrete Inverse Fourier Transform.
@@ -41,13 +41,11 @@ float* IFFT::frequencyToTime(const FrequencyDomain& frequencyDomain,
   this->scaleOutput();
 
   // Copy output data into vector and return.
-  out_size = this->numSamples;
+  outSize = this->numSamples;
   return out;
 }
 
 void IFFT::insertSignal(const FrequencyDomain& frequencyDomain) {
-  // assert(this->numSamples == (frequencyDomain.N - 1) * 2);
-
   // Copy frequency data into input in the format that CMSIS expects.
   // First element is DC, second is last real value. Then rest is each frequency
   // in order taking up two elements with first being real value and seocnd

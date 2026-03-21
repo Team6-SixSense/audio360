@@ -42,11 +42,11 @@ class IFFT {
    * @brief Converts input frequency to the time domain.
    *
    * @param frequency Frequency.
-
+   * @param outSize The number of frequencies after IFFT.
    * @return  The signal represented in the frequency domain.
    */
   float* frequencyToTime(const FrequencyDomain& frequencyDomain,
-                         size_t& out_size);
+                         size_t& outSize);
 
  private:
   /** @brief Initializes FFT instance from CMSIS-DSP lib. */
