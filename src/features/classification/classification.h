@@ -61,7 +61,8 @@ class Classification {
   /** @brief FFT size used for frequency-domain processing. */
   uint16_t fftSize;
 
-  uint16_t num_freq_bins;
+  /** @brief Number of frequency bins. */
+  uint16_t numFreqBins;
 
   /** @brief Number of mel filters applied to the spectrum. */
   uint16_t numMelFilters;

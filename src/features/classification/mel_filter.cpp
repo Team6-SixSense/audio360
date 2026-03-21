@@ -22,6 +22,14 @@ static inline float mel_to_hz_f(float mel) {
   return 700.0f * (std::pow(10.0f, mel / 2595.0f) - 1.0f);
 }
 
+MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize,
+                     uint16_t sampleFrequency)
+    : numFilters(numFilters),
+      fftSize(fftSize),
+      sampleFrequency(sampleFrequency) {
+  this->CreateFilterBank();
+}
+
 void MelFilter::CreateFilterBank() {
   const int numFreq = static_cast<int>(this->fftSize / 2U + 1U);
 
@@ -82,14 +90,6 @@ void MelFilter::CreateFilterBank() {
   }
 
   delete[] melHz;
-}
-
-MelFilter::MelFilter(uint16_t numFilters, uint16_t fftSize,
-                     uint16_t sampleFrequency)
-    : numFilters(numFilters),
-      fftSize(fftSize),
-      sampleFrequency(sampleFrequency) {
-  this->CreateFilterBank();
 }
 
 void MelFilter::apply(matrix& stftMatrix, matrix& melSpectrogram,

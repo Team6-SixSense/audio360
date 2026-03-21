@@ -13,6 +13,16 @@
 
 #include "constants.h"
 
+DiscreteCosineTransform::DiscreteCosineTransform(uint16_t numCoefficients,
+                                                 uint16_t numMelFilters)
+    : numCoefficients(numCoefficients),
+      numMelFilters(numMelFilters),
+      dctMatrixData(numCoefficients) {
+  this->numCoefficients = numCoefficients;
+  this->numMelFilters = numMelFilters;
+  this->CreateDCTMatrix();
+}
+
 void DiscreteCosineTransform::CreateDCTMatrix() {
   matrix_init_f32(&this->dctMatrixData.mat, this->numMelFilters,
                   this->numCoefficients, this->dctMatrixData.data);
@@ -32,16 +42,6 @@ void DiscreteCosineTransform::CreateDCTMatrix() {
           scale;
     }
   }
-}
-
-DiscreteCosineTransform::DiscreteCosineTransform(uint16_t numCoefficients,
-                                                 uint16_t numMelFilters)
-    : numCoefficients(numCoefficients),
-      numMelFilters(numMelFilters),
-      dctMatrixData(numCoefficients) {
-  this->numCoefficients = numCoefficients;
-  this->numMelFilters = numMelFilters;
-  this->CreateDCTMatrix();
 }
 
 void DiscreteCosineTransform::apply(const matrix& melSpectrogram,

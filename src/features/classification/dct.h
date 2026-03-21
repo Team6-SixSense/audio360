@@ -18,7 +18,7 @@ struct dctMatrix {
 
   matrix mat;  // Matrix.
 
-  dctMatrix(uint16_t coeffs) : numCoefficients(coeffs), mat() {}
+  dctMatrix(uint16_t coeffs) : numCoefficients(coeffs), data{}, mat() {}
 };
 
 class DiscreteCosineTransform {

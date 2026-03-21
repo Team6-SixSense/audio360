@@ -45,6 +45,16 @@ ClassificationLabel
         ClassificationLabel::SomeoneTalking, ClassificationLabel::Siren,
         ClassificationLabel::SmokeAlarm};
 
+LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
+                                                       uint16_t numClasses)
+    : numEigenvectors(numEigenvectors),
+      numClasses(numClasses),
+      ldaProjection(numEigenvectors) {
+  this->numEigenvectors = numEigenvectors;
+  this->numClasses = numClasses;
+  this->initializeLDAData();
+}
+
 void LinearDiscriminantAnalysis::initializeLDAData() {
   // Three-class model (talking, siren, smoke alarm) trained on 13 MFCC -> 6
   // PCA features.
@@ -64,15 +74,6 @@ void LinearDiscriminantAnalysis::initializeLDAData() {
 #endif
 
   this->ldaProjection.scalings = LDA_SCALINGS;
-}
-LinearDiscriminantAnalysis::LinearDiscriminantAnalysis(uint16_t numEigenvectors,
-                                                       uint16_t numClasses)
-    : numEigenvectors(numEigenvectors),
-      numClasses(numClasses),
-      ldaProjection(numEigenvectors) {
-  this->numEigenvectors = numEigenvectors;
-  this->numClasses = numClasses;
-  this->initializeLDAData();
 }
 
 ClassificationLabel LinearDiscriminantAnalysis::predictFrameClass(

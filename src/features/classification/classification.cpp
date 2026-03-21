@@ -19,7 +19,7 @@
 void Classification::GenerateSTFT(float* powerSpectra, matrix& stftData) {
   const uint16_t numFrames = this->powerFramesSize;
 
-  matrix_init_f32(&stftData, numFrames, this->num_freq_bins, powerSpectra);
+  matrix_init_f32(&stftData, numFrames, this->numFreqBins, powerSpectra);
 
   // This is unnecessary now
   // for (uint16_t frame = 0; frame < numFrames; ++frame) {
@@ -35,7 +35,7 @@ Classification::Classification(uint16_t fftSize, uint16_t numMelFilters,
                                uint16_t numDCTCoeff, uint16_t numPCAComponents,
                                uint16_t numClasses)
     : fftSize(fftSize),
-      num_freq_bins(fftSize / 2 + 1),
+      numFreqBins(fftSize / 2 + 1),
       numMelFilters(numMelFilters),
       numDCTCoeff(numDCTCoeff),
       numPCAComponents(numPCAComponents),
@@ -45,9 +45,13 @@ Classification::Classification(uint16_t fftSize, uint16_t numMelFilters,
       dct(numDCTCoeff, numMelFilters),
       pca(numPCAComponents, numDCTCoeff),
       lda(numPCAComponents, numClasses),
-      currClassification(ClassificationLabel::Unknown) {
+      currClassification(ClassificationLabel::Unknown),
+      melSpectrogramVector{},
+      mfccSpectrogramVector{},
+      pcaFeatureVector{},
+      normalized{} {
   memset(this->powerFrames, 0,
-         sizeof(float) * (num_freq_bins * CLASSIFICATION_BUFFER_SIZE));
+         sizeof(float) * (this->numFreqBins * CLASSIFICATION_BUFFER_SIZE));
 }
 
 std::string Classification::getClassificationLabel() {
@@ -119,7 +123,7 @@ void Classification::classify(const float* rawAudio) {
   this->fft.signalToFrequency(normalized, freq, WindowFunction::HANN_WINDOW);
   float* power = powerFrames[currFrameIndex];
 
-  for (uint16_t i = 0; i < num_freq_bins; ++i) {
+  for (uint16_t i = 0; i < this->numFreqBins; ++i) {
     power[i] = freq.powerMagnitude[i];
   }
 
