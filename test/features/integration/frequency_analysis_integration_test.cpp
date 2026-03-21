@@ -62,12 +62,12 @@ static double calculateAngularError(double estimated, double known) {
 TEST(FrequencyAnalysisIntegrationTest,
      SimultaneousClassificationAndDOA_SingleSource) {
   // Initialize classification module
-  const uint16_t numMelFilters = 6;
-  const uint16_t numDCTCoeff = 6;
+  const uint16_t numMelFilters = 13;
+  const uint16_t numDCTCoeff = 13;
   const uint16_t numPCAComponents = 6;
   const uint16_t numClasses = 3;
 
-  Classification classifier(WAVEFORM_SAMPLES, numMelFilters, numDCTCoeff,
+  Classification classifier(WAVEFORM_SAMPLES/2, numMelFilters, numDCTCoeff,
                             numPCAComponents, numClasses);
 
   // Initialize DOA module
@@ -140,7 +140,7 @@ TEST(FrequencyAnalysisIntegrationTest,
  * @brief Test classification and DOA from multiple angles.
  */
 TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
-  Classification classifier(WAVEFORM_SAMPLES, 6, 6, 6, 3);
+  Classification classifier(WAVEFORM_SAMPLES/2, 13, 13, 6, 3);
   DOA doa(WAVEFORM_SAMPLES);
 
   std::vector<int> angles = {0, 45, 90, 135, 180};
@@ -197,7 +197,7 @@ TEST(FrequencyAnalysisIntegrationTest, MultipleAngles) {
  * @brief Test performance of simultaneous classification and DOA.
  */
 TEST(FrequencyAnalysisIntegrationTest, SimultaneousProcessingPerformance) {
-  Classification classifier(WAVEFORM_SAMPLES, 6, 6, 6, 3);
+  Classification classifier(WAVEFORM_SAMPLES/2, 13, 13, 6, 3);
   DOA doa(WAVEFORM_SAMPLES);
 
   // Load test audio
