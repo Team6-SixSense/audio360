@@ -98,6 +98,7 @@ urlcolor=cyan          % color of external links
 2026-03-06 & 3.0 & Fault Manager Module transition specifications.\\
 2026-03-06 & 3.1 & Visualization Module transition specifications.\\
 2026-03-07 & 3.2 & DOA Processor Module algorithm specifications.\\
+2026-03-25 & 3.3 & Updating classification labels and accuracy metrics.\\
 \bottomrule
 \end{tabularx}
 
@@ -340,9 +341,11 @@ project.
 \subsubsection{Classification}\label{enum:Classification}
 \begin{enumerate}
   \item NONE = 0: \label{enum:Classification:None} No classification.
-  \item CAR = 1: \label{enum:Classification:Car} Classified car. 
-  \item CLAP = 2: \label{enum:Classification:Clap} Classified clapping. 
-  \item KETTLE = 3: \label{enum:Classification:Kettle} Classified kettle.
+  \item SOMEONE_TALKING = 1: \label{enum:Classification:SomeoneTalking} 
+  Classified someone talking. 
+  \item SIREN = 2: \label{enum:Classification:Siren} Classified siren. 
+  \item SMOKE_ALARM = 3: \label{enum:Classification:SmokeAlarm} 
+  Classified smoke alarm.
 \end{enumerate}
 
 \subsubsection{ConfidenceLevel}\label{enum:ConfidenceLevel}

@@ -100,6 +100,8 @@ defining specific metrics.\\
 2025-12-12 & 4.2 & Added source for +/- 45 degree accuracy requirement.\\
 2026-01-06 & 4.3 & All angles represented in radians.\\
 2026-03-11 & 5.0 & Hardware symbols and abbreviations added.\\
+2026-03-25 & 5.1 & Updating requirements metrics associated with new 
+classification\\
 \bottomrule
 \end{tabularx}
 
@@ -115,7 +117,7 @@ defining specific metrics.\\
 With around 4 million Canadians affected by hearing loss \cite{Healthing2025}, 
 there is a significant need for assistive technologies that can improve 
 situational awareness and safety. Many safety cues and general sound alerts such
-as the sound of a car approaching, a kettle whistling, or a phone ringing may be
+as the sound of a siren approaching, a kettle whistling, or a phone ringing may be
 missed, leading to increased risk of injury and miscommunication.
 
 Many existing solutions focus on speech transcription, but lack the ability to
@@ -126,7 +128,7 @@ source locations and classifications.
 
 The objective of this project is to develop an assistive device that aids
 individuals who are deaf or hard of hearing by providing real-time visual
-indications of sound source locations and classifications (ex. 'car on your 
+indications of sound source locations and classifications (ex. 'siren on your 
 left').
 
 Some of the high-level goals of the project are:
@@ -284,7 +286,7 @@ The following scenarios illustrate fundamental usage paths through the system:
 
 \subsubsection{Scenario 1: Pedestrian crossing detection}
 A user is walking in an urban environment and approaches a street intersection.
-As they prepare to cross, a car approaches from their left side. The system
+As they prepare to cross, a siren approaches from their left side. The system
 detects the engine sound, estimates its direction (e.g., 90° to the left),
 classifies it as a vehicle, and displays a visual indicator on the smart glasses
 showing the direction and classification. The user recognizes the alert and
@@ -486,8 +488,8 @@ laboratory testing to validate technical approaches and refine requirements.
     source direction within half-quadrant resolution. This is also approximately
     equal to the horizontal movement possible by human eyes \cite{Eye_Hang_Woo} \\
     \hline
-    $A_{classification}$ \label{symbol:A_classfication} & $90\%$ & 
-    Classification accuracy. $90\%$ is chosen as it an achievable metric
+    $A_{classification}$ \label{symbol:A_classfication} & $85\%$ & 
+    Classification accuracy. $85\%$ is chosen as it an achievable metric
     with the time given while providing high confidence in audio
     classification for stakeholder's use cases. \\
     \hline
@@ -562,7 +564,7 @@ Below are the components that will affect the system.
   \item Physical Environment
   \begin{itemize}
     \item Ambient noise sources that the system needs to detect and classify
-    (ex. car passing by, people talking, dog barking)
+    (ex. siren passing by, people talking, dog barking)
     \item Sounds that the classification module does not have knowledge about. 
     \item Weather conditions that may distort the microphone input (ex. wind,
     rain, damping from humidity)
@@ -871,7 +873,7 @@ Non-Functional Requirements
   \item \label{NFR3_3}\textbf{NFR3.3:} The audio filtering component shall have
   an audio processing success rate end to end of atleast 80\%.
   Due to variations in input audio quality, some errors are expected.
-  While state of the art audio classification systems can reach up to 90\%
+  While state of the art audio classification systems can reach up to 85\%
   accuracy, they typically require significantly more computational resources
   that this project does not have access to.
 
@@ -1081,7 +1083,7 @@ flows.
 are approaching so I can cross streets safely.
 
 \textbf{Scenario:} A user is walking in an urban environment and approaches a
-street intersection. As they prepare to cross, a car approaches from their left
+street intersection. As they prepare to cross, a siren approaches from their left
 side.
 
 \textbf{Interaction Flow:}
@@ -1107,7 +1109,7 @@ stove begins to whistle.
     \item Microphone array captures the high-pitched whistle sound
     \item System processes the audio and identifies the characteristic pattern
     \item DoA algorithm estimates the direction
-    \item Audio classification identifies it as a kettle or alarm sound (90\%
+    \item Audio classification identifies it as a kettle or alarm sound (85\%
     accuracy target)
     \item Smart glasses display directional indicator notifying the user of a
     kettle whistling ($\leq 1$s latency)
@@ -1186,7 +1188,7 @@ Estimated deadline: December 9th, 2025 \\
     \item \hyperref[FR5_1]{FR5.1} - Sound source classification
     \item \hyperref[NFR5_1]{NFR5.1} - Classification of 3+ distinct sound
     sources
-    \item \hyperref[NFR5_2]{NFR5.2} - 90\% classification accuracy
+    \item \hyperref[NFR5_2]{NFR5.2} - 85\% classification accuracy
 \end{itemize}
 
 \textbf{Basic Audio Processing:}

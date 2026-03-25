@@ -50,12 +50,13 @@
 2025-11-13 & 1.0 & Initial write-up\\
 2026-01-06 & 2.0 & Module type definitions \& formatting section Module
                    Decomposition.\\
-2025-01-06 & 2.1 & Detailed timeline Rev0. \\
-2025-03-07 & 3.0 & Timeline for individual contributions. \\
-2025-03-07 & 3.1 & Uses hierarchy diagram labelling simplified. \\
-2025-03-07 & 3.2 & Removed safety-critical secrete from visualization module.\\
-2025-03-07 & 3.3 & Grammar and spelling fixes. \\
-2025-03-07 & 3.4 & Including module name in table \ref{TblMH}.\\
+2026-01-06 & 2.1 & Detailed timeline Rev0. \\
+2026-03-07 & 3.0 & Timeline for individual contributions. \\
+2026-03-07 & 3.1 & Uses hierarchy diagram labelling simplified. \\
+2026-03-07 & 3.2 & Removed safety-critical secrete from visualization module.\\
+2026-03-07 & 3.3 & Grammar and spelling fixes. \\
+2026-03-07 & 3.4 & Including module name in table \ref{TblMH}.\\
+2026-03-25 & 3.5 & Updating planned classification labels\\
 \bottomrule
 \end{tabularx}
 
@@ -245,11 +246,10 @@ adapted here is called design for change.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acConfidenceAction}:]
   Action when low confidence occurs during audio source classification. \\
-  \textbf{Rationale:} According to \hyperref[SRS-FR5_4]{FR5.4}, the system shall
-  notify user when results from classification is low confidence. However, this
-  may be disregarded if the accuracy of the classification module is near
-  perfect, or the visualization during low confidence may be change to better
-  accommodate the user. 
+  \textbf{Rationale:} According to \hyperref[SRS-FR5_4]{FR5.4}, the system 
+  shall update the classification label to unknown when the classification 
+  is low confidence. However, this will be updated to the true classification 
+  if the accuracy of the classification module is near perfect.
 
 \item[\refstepcounter{acnum} \actheacnum \label{acAudioGen}:] The method of
   generating simulated microphone array input for testing and proof of concept.
@@ -807,7 +807,7 @@ maintain core functionality when possible.
   \item[Services:] Accepts raw input audio, passes the audio through various
   modules to determine the most probable classification and it's confidence.
   Internally determines whether the classification is considered low confidence
-  and outputs the classification with a flag if the confidence is low. 
+  and outputs the classification as known if it is. 
   \item[Implemented By:] \progname
   \item[Type of Module:] Abstract Object
 \end{description}
