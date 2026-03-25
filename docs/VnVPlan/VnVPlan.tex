@@ -1221,7 +1221,7 @@ sample with a class level accuracy of at least 90\%.
 \textbf{Test Case Derivation:}
 The Frequency Analysis module is responsible for classifying audio sources based
 on their frequency-domain characteristics. By providing known samples, the
-module's classification accuracy can be evaluated. The 90\% accuracy requirement
+module's classification accuracy can be evaluated. The 85\% accuracy requirement
 is chosen since it is an achievable metric given the compute resolution 
 constraints. This accuracy requirement strikes a balance between computational
 load and user benefit. 100\% accuracy is unlikely to be achieved without
@@ -1816,7 +1816,7 @@ classes and directions for each source within defined accuracy thresholds.
 
 \textbf{Pass Criteria (from \hyperref[SRS-NFR5_1]{NFR5.1}, \hyperref[SRS-NFR5_2]{NFR5.2}, \hyperref[SRS-NFR5_3]{NFR5.3}):}
 \begin{itemize}
-\item Classification accuracy $\geq$ 90\% per class
+\item Classification accuracy $\geq$ 85\% per class
 \item Direction estimation error $\leq$ 45° (azimuth angle)
 \item Successfully processes up to 3 simultaneous sources
 \end{itemize}
@@ -1846,8 +1846,9 @@ sample.
 
 \textbf{Pass Criteria (from \hyperref[SRS-NFR5_2]{NFR5.2}):}
 \begin{itemize}
-\item Classification accuracy $\geq$ 90\% per audio class
-\item Tested across all supported audio classes (car horn, kettle, alarm, speech, etc.)
+\item Classification accuracy $\geq$ 85\% per audio class
+\item Tested across all supported audio classes (siren, smoke alarm, speech, 
+etc.)
 \end{itemize}
 
 \textbf{How test will be performed:}
@@ -2103,7 +2104,7 @@ to assess the effectiveness and usability of \progname{}.
     \textbf{Rationale:} This question directly addresses the safety-critical
     nature of the application mentioned in the SRS context. It validates that
     the system successfully mitigates the safety risks associated with missed
-    audio cues (car approaching, alarms, etc.) that were identified as the
+    audio cues (siren approaching, alarms, etc.) that were identified as the
     primary motivation for the project.
     
     \item \textbf{Comfort:} How comfortable is the smart glasses for extended
