@@ -42,6 +42,11 @@ static int32_t micB1Buffer[MIC_BUFFER_SIZE];
 static int32_t micA2Buffer[MIC_BUFFER_SIZE];
 static int32_t micB2Buffer[MIC_BUFFER_SIZE];
 
+static float32_t micA1BufferFloat[MIC_HALF_BUFFER_SIZE];
+static float32_t micB1BufferFloat[MIC_HALF_BUFFER_SIZE];
+static float32_t micA2BufferFloat[MIC_HALF_BUFFER_SIZE];
+static float32_t micB2BufferFloat[MIC_HALF_BUFFER_SIZE];
+
 static int micBufferStartPos{0};
 static uint8_t micMainHalf{0}, micMainFull{0}, micDummyHalf{0}, micDummyFull{0};
 
@@ -176,10 +181,10 @@ bool extractMicData() {
       // Clean Destination Cache (USB DMA reads from RAM updated by CPU). Ensure
       // the data we just wrote to larger audio buffer is flushed from Cache to
       // RAM.
-      SCB_CleanDCache_by_Addr((uint32_t*)micA1Buffer[startPos], numBytes);
-      SCB_CleanDCache_by_Addr((uint32_t*)micB1Buffer[startPos], numBytes);
-      SCB_CleanDCache_by_Addr((uint32_t*)micA2Buffer[startPos], numBytes);
-      SCB_CleanDCache_by_Addr((uint32_t*)micB2Buffer[startPos], numBytes);
+      SCB_CleanDCache_by_Addr((uint32_t*)&micA1Buffer[startPos], numBytes);
+      SCB_CleanDCache_by_Addr((uint32_t*)&micB1Buffer[startPos], numBytes);
+      SCB_CleanDCache_by_Addr((uint32_t*)&micA2Buffer[startPos], numBytes);
+      SCB_CleanDCache_by_Addr((uint32_t*)&micB2Buffer[startPos], numBytes);
 
 #ifdef PCB_BUILD
       // we shift down by 8 on the ics434 build to get actual magnitude
@@ -224,33 +229,27 @@ float runDoA(bool newData) {
     start += MIC_HALF_BUFFER_SIZE;
   }
 
-  std::vector<float> mic1Data(MIC_HALF_BUFFER_SIZE);
-  std::vector<float> mic2Data(MIC_HALF_BUFFER_SIZE);
-  std::vector<float> mic3Data(MIC_HALF_BUFFER_SIZE);
-  std::vector<float> mic4Data(MIC_HALF_BUFFER_SIZE);
-
   for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; i++) {
     // Mic 1 is top left, mic 2 is top right, mic 3 is bottom right and mic 4 is
     // bottom left.
-
-#ifdef PCB_BUILD
-    mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
-    mic2Data[i] = static_cast<float>(micB1Buffer[start + i]);
-    mic3Data[i] = static_cast<float>(micA2Buffer[start + i]);
-    mic4Data[i] = static_cast<float>(micB2Buffer[start + i]);
-#else
-    // Rev 0 build.
-    mic1Data[i] = static_cast<float>(micA1Buffer[start + i]);
-    mic2Data[i] = static_cast<float>(micA2Buffer[start + i]);
-    mic3Data[i] = static_cast<float>(micB2Buffer[start + i]);
-    mic4Data[i] = static_cast<float>(micB1Buffer[start + i]);
-#endif
+    micA1BufferFloat[i] = static_cast<float>(micA1Buffer[start + i]);
+    micB1BufferFloat[i] = static_cast<float>(micB1Buffer[start + i]);
+    micA2BufferFloat[i] = static_cast<float>(micA2Buffer[start + i]);
+    micB2BufferFloat[i] = static_cast<float>(micB2Buffer[start + i]);
   }
 
   float angle{0.0};
   try {
-    angle = doa.calculateDirection(mic1Data, mic2Data, mic3Data, mic4Data,
+#ifdef PCB_BUILD
+    angle = doa.calculateDirection(micA1BufferFloat, micB1BufferFloat,
+                                   micA2BufferFloat, micB2BufferFloat,
                                    DOA_Algorithms::GCC_PHAT);
+#else
+    // Rev0 build.
+    angle = doa.calculateDirection(micA1BufferFloat, micA2BufferFloat,
+                                   micB2BufferFloat, micB1BufferFloat,
+                                   DOA_Algorithms::GCC_PHAT);
+#endif
     systemFaultManager.clearDoaError();
   } catch (const AudioProcessingException& e) {
     systemFaultManager.reportDoaError();
@@ -265,23 +264,9 @@ std::string runClassification(bool newData) {
     return classifier.getClassificationLabel();
   }
 
-  // Extract the most recent microphone data.
-  size_t start = micBufferStartPos;
-  if (micMainFull == 1U) {
-    start += MIC_HALF_BUFFER_SIZE;
-  }
-
-  std::vector<float> mic1Data(MIC_HALF_BUFFER_SIZE);
-
-  for (size_t i = 0; i < MIC_HALF_BUFFER_SIZE; ++i) {
-    uint16_t low16 = static_cast<uint16_t>(micA1Buffer[start + i] & 0xFFFF);
-    int16_t s16 = static_cast<int16_t>(low16);
-    mic1Data[i] = static_cast<float>(s16);
-  }
-
   std::string classification{};
   try {
-    classifier.Classify(mic1Data);
+    classifier.classify(micA1BufferFloat);
     classification = classifier.getClassificationLabel();
     systemFaultManager.clearClassficationError();
   } catch (const std::exception& e) {

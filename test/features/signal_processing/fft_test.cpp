@@ -34,8 +34,9 @@ class FFTTest : public ::testing::Test {
 TEST_F(FFTTest, SignalToFrequency_285Hz) {
   // Run FFT.
   FFT fft = FFT(static_cast<uint16_t>(input.size()), 44100);
-  FrequencyDomain frequencyDomain =
-      fft.signalToFrequency(input, WindowFunction::HANN_WINDOW);
+  FrequencyDomain frequencyDomain;
+  fft.signalToFrequency(input.data(), frequencyDomain,
+                        WindowFunction::HANN_WINDOW);
 
   // Assert that frequency closest to 285Hz has the largest magnitude.
   double maxMagnitude{0.0};
@@ -60,8 +61,9 @@ TEST_F(FFTTest, SignalToFrequencyCopy_285Hz) {
   // Run FFT.
   FFT fft = FFT(static_cast<uint16_t>(input.size()), 44100);
   FFT copyFft(fft);
-  FrequencyDomain frequencyDomain =
-      copyFft.signalToFrequency(input, WindowFunction::HANN_WINDOW);
+  FrequencyDomain frequencyDomain;
+  copyFft.signalToFrequency(input.data(), frequencyDomain,
+                            WindowFunction::HANN_WINDOW);
 
   // Assert that frequency closest to 285Hz has the largest magnitude.
   double maxMagnitude{0.0};
@@ -88,8 +90,9 @@ TEST_F(FFTTest, SignalToFrequencyAssignment_285Hz) {
   FFT assignmentFft = FFT(static_cast<uint16_t>(input.size() + 1),
                           44100);  // Plus one to test size re-adjustment.
   assignmentFft = fft;
-  FrequencyDomain frequencyDomain =
-      fft.signalToFrequency(input, WindowFunction::HANN_WINDOW);
+  FrequencyDomain frequencyDomain;
+  fft.signalToFrequency(input.data(), frequencyDomain,
+                        WindowFunction::HANN_WINDOW);
 
   // Assert that frequency closest to 285Hz has the largest magnitude.
   double maxMagnitude{0.0};

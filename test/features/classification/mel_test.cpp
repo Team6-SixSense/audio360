@@ -72,9 +72,14 @@ static void Make3FrameSTFTFromMP3(const MP3Data& data, int sampleRate,
 
   FFT fft(frameSize, static_cast<uint16_t>(sampleRate));
 
-  FrequencyDomain fd0 = fft.signalToFrequency(in0, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd1 = fft.signalToFrequency(in1, WindowFunction::HANN_WINDOW);
-  FrequencyDomain fd2 = fft.signalToFrequency(in2, WindowFunction::HANN_WINDOW);
+  FrequencyDomain fd0;
+  fft.signalToFrequency(in0.data(), fd0, WindowFunction::HANN_WINDOW);
+
+  FrequencyDomain fd1;
+  fft.signalToFrequency(in1.data(), fd1, WindowFunction::HANN_WINDOW);
+
+  FrequencyDomain fd2;
+  fft.signalToFrequency(in2.data(), fd2, WindowFunction::HANN_WINDOW);
 
   std::vector<FrequencyDomain> dom;
   dom.push_back(fd0);
@@ -121,12 +126,14 @@ TEST(MelFilterTest, CreateFilterBankImpulseBinContributesToAtMostTwoMelBands) {
   ;
 
   const uint16_t fftSize = WAVEFORM_SAMPLES;  // matches FFT output size
-  const uint16_t numFilters = 40;
+  const uint16_t numFilters =
+      NUM_MEL_FILTERS;  // we do not support other sizes no more
 
   MelFilter mel(numFilters, fftSize, SAMPLE_FREQUENCY);
 
   matrix melSpec;
-  std::vector<float> melSpectrogramVector;
+  float melSpectrogramVector[CLASSIFICATION_BUFFER_SIZE * NUM_MEL_FILTERS];
+
   mel.apply(stft, melSpec, melSpectrogramVector);
 
   ASSERT_EQ(melSpec.numRows, stft.numRows);

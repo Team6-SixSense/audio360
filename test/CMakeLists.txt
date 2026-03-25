@@ -8,8 +8,9 @@ enable_testing()
 # Download and make GoogleTest available
 include(FetchContent)
 FetchContent_Declare(
-    googletest
-    URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        googletest
+        URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
+        DOWNLOAD_EXTRACT_TIMESTAMP 0
 )
 
 # Prevent GoogleTest from forcing shared CRT on Windows
@@ -27,15 +28,15 @@ add_subdirectory(helper)
 
 # Link test executable against your library + gtest
 target_link_libraries(${TestExecutable} PRIVATE
-    Audio360Lib
-    GTest::gtest_main
-    GTest::gmock_main 
+        Audio360Lib
+        GTest::gtest_main
+        GTest::gmock_main
 )
 
 # Link compile definitions.
 target_compile_definitions(${TestExecutable} PUBLIC
-    ARM_MATH_MATRIX_CHECK
-    BUILD_TESTS
+        ARM_MATH_MATRIX_CHECK
+        BUILD_TESTS
 )
 
 # Register tests with CTest
@@ -43,15 +44,15 @@ include(GoogleTest)
 
 # Store the test executable in the same location as the Audio360 executable.
 set_target_properties(${TestExecutable} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/src"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/src"
 )
 
 # Copy audio test data.
 add_custom_command(
-    TARGET ${TestExecutable}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        TARGET ${TestExecutable}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/audio"
         $<TARGET_FILE_DIR:${TestExecutable}>/audio
-    COMMENT "Copying test data files for ${TestExecutable}"
+        COMMENT "Copying test data files for ${TestExecutable}"
 )

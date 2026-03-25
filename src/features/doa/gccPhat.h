@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include "constants.h"
 #include "doaAlgorithm.h"
 #include "fft.h"
 #include "frequencyDomain.h"
@@ -36,10 +37,8 @@ class GCCPhaT : DoAAlgo {
    * @param mic4Data Microphone 4 audio data.
    * @return float Angle of audio source in radian.
    */
-  float calculateDirection(std::vector<float>& mic1Data,
-                           std::vector<float>& mic2Data,
-                           std::vector<float>& mic3Data,
-                           std::vector<float>& mic4Data) override;
+  float calculateDirection(float* mic1Data, float* mic2Data, float* mic3Data,
+                           float* mic4Data) override;
 
  private:
   /**
@@ -67,11 +66,12 @@ class GCCPhaT : DoAAlgo {
    * @brief Calculate the time delay from the peaks of the GCC PhaT time domain.
    *
    * @param correlation The GCC PhaT cross-correlation in time domain.
+   * @param crossCorrSize Number of samples in the cross-correlation array.
    * @param maxDelay_s The maximum physically allowed time delay between the two
    * audio sources.
    * @return float The time delay of audio signal in seconds.
    */
-  float calculateTimeDelay(const std::vector<float>& correlation,
+  float calculateTimeDelay(const float* correlation, size_t crossCorrSize,
                            float maxDelay_s);
 
   /**
@@ -102,4 +102,16 @@ class GCCPhaT : DoAAlgo {
 
   /** @brief Inverse Fast Fourier Transform (IFFT) instance. */
   IFFT ifft;
+
+  /** @brief Frequency domain of mic 1 audio. */
+  FrequencyDomain mic1FreqDomain;
+
+  /** @brief Frequency domain of mic 2 audio. */
+  FrequencyDomain mic2FreqDomain;
+
+  /** @brief Frequency domain of mic 3 audio. */
+  FrequencyDomain mic3FreqDomain;
+
+  /** @brief Frequency domain of mic 4 audio. */
+  FrequencyDomain mic4FreqDomain;
 };

@@ -41,6 +41,8 @@
 March 9, 2026 & 1.0 & Initial VNV report. \\
 March 11, 2026 & 2.0 & Code coverage exclusion clarification. \\
 March 11, 2026 & 2.1 & Code coverage per module. \\
+March 21, 2026 & 2.2 & Removal of microphone audio size unit test since it
+    is constant now. \\
 \hline
 \end{tabularx}
 
@@ -520,8 +522,7 @@ Estimated directions output in radians, within range [0, 2$\pi$].
 \textbf{Actual Output:}
 Three test cases passed: (1) gccPhatAngleRange verified output in [0, 2$\pi$]
 range for random inputs, (2) NoDoAAlgo verified default angle = 0.0 when
-algorithm disabled, (3) IncorrectMicDataSize verified input validation rejects
-mismatched microphone buffer sizes with logic\_error exception.
+algorithm disabled.
 
 \textbf{Result:} Pass
 
@@ -927,8 +928,6 @@ same reason of mocking complexity.
     gccPhatAngleRange \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{NoDoAAlgo} & NoDoAAlgo \\
     \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{IncorrectMicDataSize} &
-    IncorrectMicDataSize \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{NorthLabel} & NorthLabel \\
     \hline
     \refstepcounter{unitTest} \mtheunitTest \label{NorthWestLabel} &
@@ -1224,9 +1223,6 @@ same reason of mocking complexity.
     \utref{NoDoAAlgo} & 4 microphone streams with random data of same size & run
     DOA on the microphone data with no DOA algo specified  & Returned angle is 0
     & PASS\\ \hline
-    \utref{IncorrectMicDataSize} & 4 microphone streams with random data of
-    different size & run DOA on the microphone data  & An audio processing
-    exception is raised & PASS\\ \hline
     \utref{NorthLabel} & Angle between $\frac{-\pi}{8}$ and $\frac{\pi}{8}$ &
     Retrieve corresponding direction label  & Direction label is North & PASS\\
     \hline

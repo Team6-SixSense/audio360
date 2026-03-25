@@ -13,11 +13,19 @@
 
 #include "constants.h"
 
+DiscreteCosineTransform::DiscreteCosineTransform(uint16_t numCoefficients,
+                                                 uint16_t numMelFilters)
+    : numCoefficients(numCoefficients),
+      numMelFilters(numMelFilters),
+      dctMatrixData(numCoefficients) {
+  this->numCoefficients = numCoefficients;
+  this->numMelFilters = numMelFilters;
+  this->CreateDCTMatrix();
+}
+
 void DiscreteCosineTransform::CreateDCTMatrix() {
-  this->dctMatrixData.data.assign(this->numMelFilters * this->numCoefficients,
-                                  0.0f);
   matrix_init_f32(&this->dctMatrixData.mat, this->numMelFilters,
-                  this->numCoefficients, this->dctMatrixData.data.data());
+                  this->numCoefficients, this->dctMatrixData.data);
 
   const float scale0 = 1.0f / std::sqrt(this->numMelFilters);
   for (int i = 0; i < this->numMelFilters; ++i) {
@@ -36,28 +44,20 @@ void DiscreteCosineTransform::CreateDCTMatrix() {
   }
 }
 
-DiscreteCosineTransform::DiscreteCosineTransform(uint16_t numCoefficients,
-                                                 uint16_t numMelFilters)
-    : numCoefficients(numCoefficients),
-      numMelFilters(numMelFilters),
-      dctMatrixData(numCoefficients) {
-  this->numCoefficients = numCoefficients;
-  this->numMelFilters = numMelFilters;
-  this->CreateDCTMatrix();
-}
-
-void DiscreteCosineTransform::apply(
-    const matrix& melSpectrogram, matrix& mfccSpectrogram,
-    std::vector<float>& mfccSpectrogramVector) const {
+void DiscreteCosineTransform::apply(const matrix& melSpectrogram,
+                                    matrix& mfccSpectrogram,
+                                    float* mfccSpectrogramVector) {
   const uint16_t numFrames = melSpectrogram.numRows;
   const uint16_t numMelFilters = melSpectrogram.numCols;
   if (numMelFilters != this->numMelFilters) {
     return;
   }
 
-  std::vector<float> logMelData(numFrames * numMelFilters, 0.0f);
+  memset(this->logMelData, 0, sizeof(float) * numFrames * numMelFilters);
+
   matrix logMel;
-  matrix_init_f32(&logMel, numFrames, numMelFilters, logMelData.data());
+  matrix_init_f32(&logMel, numFrames, numMelFilters, logMelData);
+
   for (uint16_t frame = 0; frame < numFrames; ++frame) {
     const size_t rowStart = static_cast<size_t>(frame) * numMelFilters;
     for (uint16_t melBin = 0; melBin < numMelFilters; ++melBin) {
@@ -67,9 +67,8 @@ void DiscreteCosineTransform::apply(
     }
   }
 
-  mfccSpectrogramVector.assign(numFrames * this->numCoefficients, 0.0f);
   matrix_init_f32(&mfccSpectrogram, numFrames, this->numCoefficients,
-                  mfccSpectrogramVector.data());
+                  mfccSpectrogramVector);
 
   matrix_mult_f32(&logMel, &this->dctMatrixData.mat, &mfccSpectrogram);
 

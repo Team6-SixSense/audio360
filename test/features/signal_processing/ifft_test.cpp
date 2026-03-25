@@ -21,17 +21,19 @@ class IFFTTest : public ::testing::Test {
  protected:
   void SetUp() override {
     // Create frequency domain with equal amplitude at all frequencies.
-    frequencyDomain = FrequencyDomain(N);
-    frequencyDomain.frequency.assign(N, 1.0f);
-    frequencyDomain.real.assign(N, 1.0f);
-    frequencyDomain.img.assign(N, 0.0f);
-    frequencyDomain.magnitude.assign(N, 1.0f);
-    frequencyDomain.powerMagnitude.assign(N, 1.0f);
+    frequencyDomain.N = N;
+    for (int i = 0; i < N; i++) {
+      frequencyDomain.real[i] = 1.0f;
+      frequencyDomain.img[i] = 0.0f;
+      frequencyDomain.magnitude[i] = 1.0f;
+      frequencyDomain.powerMagnitude[i] = 1.0f;
+      frequencyDomain.frequency[i] = 1.0f;
+    }
   }
 
-  uint16_t N = 17;  // This gives 32 samples which is minimum supported val.
+  uint16_t N = 17;  // This gives 32 samples which is the min. supported val.
 
-  FrequencyDomain frequencyDomain{0};
+  FrequencyDomain frequencyDomain = {};
 };
 
 /** @brief Given a frequency domain with equal amplitude at all frequencies,
@@ -39,7 +41,8 @@ class IFFTTest : public ::testing::Test {
 TEST_F(IFFTTest, AllFrequenciesToImpulse) {
   // Run IFFT.
   IFFT ifft = IFFT((N - 1) * 2);
-  std::vector<float> timeDomain = ifft.frequencyToTime(frequencyDomain);
+  size_t out_size = 0;
+  float* timeDomain = ifft.frequencyToTime(frequencyDomain, out_size);
 
   // Assert output time signal is the impulse response.
   EXPECT_GT(timeDomain[0], PRECISION_ERROR);
@@ -55,7 +58,8 @@ TEST_F(IFFTTest, AllFrequenciesToImpulseCopy) {
   // Run IFFT.
   IFFT ifft = IFFT((N - 1) * 2);
   IFFT copyIfft(ifft);
-  std::vector<float> timeDomain = copyIfft.frequencyToTime(frequencyDomain);
+  size_t out_size = 0;
+  float* timeDomain = copyIfft.frequencyToTime(frequencyDomain, out_size);
 
   // Assert output time signal is the impulse response.
   EXPECT_GT(timeDomain[0], PRECISION_ERROR);
@@ -73,8 +77,8 @@ TEST_F(IFFTTest, AllFrequenciesToImpulseAssignment) {
   IFFT ifft = IFFT(numSamples);
   IFFT assignmentIfft(numSamples + 1);  // Plus one to test size re-adjustment.
   assignmentIfft = ifft;
-  std::vector<float> timeDomain =
-      assignmentIfft.frequencyToTime(frequencyDomain);
+  size_t out_size = 0;
+  float* timeDomain = assignmentIfft.frequencyToTime(frequencyDomain, out_size);
 
   // Assert output time signal is the impulse response.
   EXPECT_GT(timeDomain[0], PRECISION_ERROR);

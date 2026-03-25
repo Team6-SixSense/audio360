@@ -63,3 +63,19 @@ constexpr inline uint8_t BLUTOOTH_CONNECTED = 1U;
 
 // Physics constants.
 constexpr inline float SOUND_AIR_mps = 343.0f;
+
+// FFT BUFFER SIZE CONSTANTS (Tests use 4096 buffer size, runtime only needs
+// 2048)
+#ifdef BUILD_TESTS
+constexpr inline uint16_t FFT_BUFFER_SIZE_IN = WAVEFORM_SAMPLES;
+constexpr inline uint16_t FFT_BUFFER_SIZE_OUT = WAVEFORM_SAMPLES;
+#else
+constexpr inline uint16_t FFT_BUFFER_SIZE_IN = WAVEFORM_SAMPLES / 2;
+constexpr inline uint16_t FFT_BUFFER_SIZE_OUT = WAVEFORM_SAMPLES / 2;
+#endif
+
+#ifdef BUILD_TESTS
+constexpr inline uint16_t FREQ_DOMAIN_SIZE = WAVEFORM_SAMPLES / 2 + 1;
+#else
+constexpr inline uint16_t FREQ_DOMAIN_SIZE = DOA_SAMPLES / 2 + 1;
+#endif

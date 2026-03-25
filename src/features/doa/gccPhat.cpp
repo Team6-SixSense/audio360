@@ -12,7 +12,6 @@
 #include <limits>
 
 #include "angles.hpp"
-#include "constants.h"
 
 constexpr inline float MAX_DELAY_MIC1_2 = MIC1_2_DISTANCE_m / SOUND_AIR_mps;
 constexpr inline float MAX_DELAY_MIC2_3 = MIC2_3_DISTANCE_m / SOUND_AIR_mps;
@@ -22,23 +21,17 @@ constexpr inline float MAX_DELAY_MIC4_1 = MIC4_1_DISTANCE_m / SOUND_AIR_mps;
 GCCPhaT::GCCPhaT(size_t numSamples, int sampleFrequency)
     : numSamples(numSamples),
       sampleFrequency(sampleFrequency),
-      phatCrossSpectrum(numSamples / 2 + 1),
       fft(numSamples, sampleFrequency),
       ifft(numSamples) {}
 
-float GCCPhaT::calculateDirection(std::vector<float>& mic1Data,
-                                  std::vector<float>& mic2Data,
-                                  std::vector<float>& mic3Data,
-                                  std::vector<float>& mic4Data) {
+float GCCPhaT::calculateDirection(float* mic1Data, float* mic2Data,
+                                  float* mic3Data, float* mic4Data) {
   // Compute FT for each input source.
-  FrequencyDomain mic1FreqDomain =
-      fft.signalToFrequency(mic1Data, WindowFunction::HANN_WINDOW);
-  FrequencyDomain mic2FreqDomain =
-      fft.signalToFrequency(mic2Data, WindowFunction::HANN_WINDOW);
-  FrequencyDomain mic3FreqDomain =
-      fft.signalToFrequency(mic3Data, WindowFunction::HANN_WINDOW);
-  FrequencyDomain mic4FreqDomain =
-      fft.signalToFrequency(mic4Data, WindowFunction::HANN_WINDOW);
+
+  fft.signalToFrequency(mic1Data, mic1FreqDomain, WindowFunction::HANN_WINDOW);
+  fft.signalToFrequency(mic2Data, mic2FreqDomain, WindowFunction::HANN_WINDOW);
+  fft.signalToFrequency(mic3Data, mic3FreqDomain, WindowFunction::HANN_WINDOW);
+  fft.signalToFrequency(mic4Data, mic4FreqDomain, WindowFunction::HANN_WINDOW);
 
   // Compute time delay between each microphone. Exclude mics that are diagonal
   // from each other.
@@ -59,10 +52,12 @@ float GCCPhaT::estimateInterMicDelay(const FrequencyDomain& freqA,
                                      const FrequencyDomain& freqB,
                                      float maxDelay_s) {
   this->computeGccPhatSpectrum(freqA, freqB);
-  std::vector<float> gccPhatCorrelation =
-      ifft.frequencyToTime(this->phatCrossSpectrum);
+  size_t crossCorrSize = 0;  // Will be updated by IFFT.
+  float* gccPhatCorrelation =
+      ifft.frequencyToTime(this->phatCrossSpectrum, crossCorrSize);
 
-  return this->calculateTimeDelay(gccPhatCorrelation, maxDelay_s);
+  return this->calculateTimeDelay(gccPhatCorrelation, crossCorrSize,
+                                  maxDelay_s);
 }
 
 void GCCPhaT::computeGccPhatSpectrum(const FrequencyDomain& freqA,
@@ -87,9 +82,9 @@ void GCCPhaT::computeGccPhatSpectrum(const FrequencyDomain& freqA,
   }
 }
 
-float GCCPhaT::calculateTimeDelay(const std::vector<float>& correlation,
-                                  float maxDelay_s) {
-  const int N = static_cast<int>(correlation.size());
+float GCCPhaT::calculateTimeDelay(const float* correlation,
+                                  size_t crossCorrSize, float maxDelay_s) {
+  const int N = static_cast<int>(crossCorrSize);
   const int maxLagSamples =
       static_cast<int>(std::ceil(maxDelay_s * sampleFrequency));
   const int searchRange = std::min(maxLagSamples, N / 2 - 1);

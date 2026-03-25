@@ -57,10 +57,9 @@ static void GenerateSTFT(const std::vector<FrequencyDomain>& audioSignal,
 
 /** @brief Builds a PCA feature matrix from an MP3 segment. */
 static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
-                               matrix& pcaSpec,
-                               std::vector<float>& pcaFeatureVector) {
+                               matrix& pcaSpec, float* pcaFeatureVector) {
   const uint16_t frameSize = WAVEFORM_SAMPLES;
-  const uint16_t numFilters = 6;
+  const uint16_t numFilters = NUM_MEL_FILTERS;
   const uint16_t numCepstral = 6;
   const uint16_t numPCAComponents = 6;
 
@@ -69,7 +68,9 @@ static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
   }
   const size_t availableSamples =
       data.channel1.size() - static_cast<size_t>(offset0);
-  const uint16_t numFrames = availableSamples / frameSize;
+  const uint16_t numFrames = static_cast<uint16_t>(
+      std::min(availableSamples / frameSize,
+               static_cast<size_t>(CLASSIFICATION_BUFFER_SIZE)));
   if (numFrames == 0) {
     return;
   }
@@ -82,7 +83,8 @@ static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
     const size_t start = static_cast<size_t>(offset0) + frame * frameSize;
     std::vector<float> in(data.channel1.begin() + start,
                           data.channel1.begin() + start + frameSize);
-    FrequencyDomain fd = fft.signalToFrequency(in, WindowFunction::HANN_WINDOW);
+    FrequencyDomain fd;
+    fft.signalToFrequency(in.data(), fd, WindowFunction::HANN_WINDOW);
     dom.push_back(fd);
   }
 
@@ -93,13 +95,13 @@ static void MakePCASpecFromMP3(const MP3Data& data, int sampleRate, int offset0,
   MelFilter melFilter(numFilters, frameSize, sampleRate);
 
   matrix melSpec;
-  std::vector<float> melSpectrogramVector;
-  melFilter.apply(stftMatrix, melSpec, melSpectrogramVector);
+  std::vector<float> melSpectrogramVector(numFrames * NUM_MEL_FILTERS);
+  melFilter.apply(stftMatrix, melSpec, melSpectrogramVector.data());
 
   DiscreteCosineTransform dct(numCepstral, numFilters);
   matrix mfccSpec;
-  std::vector<float> mfccSpectrogramVector;
-  dct.apply(melSpec, mfccSpec, mfccSpectrogramVector);
+  std::vector<float> mfccSpectrogramVector(numFrames * numCepstral);
+  dct.apply(melSpec, mfccSpec, mfccSpectrogramVector.data());
 
   PrincipleComponentAnalysis pca(numPCAComponents, numCepstral);
 
@@ -120,7 +122,7 @@ TEST(LDA, ApplyLDANormalPCAFeatures) {
 
   // Create PCA feature vector from MP3 data.
   matrix pcaFeature;
-  std::vector<float> pcaFeatureVector;
+  float pcaFeatureVector[CLASSIFICATION_BUFFER_SIZE * NUM_PCA_COMPONENTS];
   MakePCASpecFromMP3(data, SAMPLE_FREQUENCY, offset0, pcaFeature,
                      pcaFeatureVector);
 

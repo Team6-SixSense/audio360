@@ -6,17 +6,19 @@
  */
 #include <vector>
 
+#include "constants.h"
 #include "matrix.h"
+#include "runtime_audio360.hpp"
 
 /** @brief Struct to hold DCT matrix. */
 struct dctMatrix {
   uint16_t numCoefficients;  // Number of coefficients of in the matrix.
 
-  std::vector<float> data;  // Data representing the matrix.
+  float data[NUM_MEL_FILTERS * NUM_DCT_COEFF];  // Data representing the matrix.
 
   matrix mat;  // Matrix.
 
-  dctMatrix(uint16_t coeffs) : numCoefficients(coeffs), data(), mat() {}
+  dctMatrix(uint16_t coeffs) : numCoefficients(coeffs), data{}, mat() {}
 };
 
 class DiscreteCosineTransform {
@@ -29,13 +31,18 @@ class DiscreteCosineTransform {
    *
    * @param melSpectrogram Input Mel spectrogram, of size frames x
    * numMelFilters.
-   * @param dctCoefficients Output DCT coefficients, of size frames x
+   * @param mfccSpectrogram Output DCT coefficients, of size frames x
    * numCoefficients.
+   * @param mfccSpectrogramVector Pointer to data of MFCC spectrogram to make
+   * the matrix
    */
   void apply(const matrix& melSpectrogram, matrix& mfccSpectrogram,
-             std::vector<float>& mfccSpectrogramVector) const;
+             float* mfccSpectrogramVector);
 
  private:
+  /** @brief Create the DCT transformation matrix. */
+  void CreateDCTMatrix();
+
   /** @brief Number of DCT coefficients to compute. */
   uint16_t numCoefficients;
 
@@ -45,6 +52,6 @@ class DiscreteCosineTransform {
   /** @brief Precomputed DCT transformation matrix storage. */
   dctMatrix dctMatrixData;
 
-  /** @brief Create the DCT transformation matrix. */
-  void CreateDCTMatrix();
+  /** @brief Array to hold Log Mel data. */
+  float logMelData[CLASSIFICATION_BUFFER_SIZE * NUM_MEL_FILTERS];
 };
