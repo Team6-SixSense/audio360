@@ -20,15 +20,6 @@ void Classification::GenerateSTFT(float* powerSpectra, matrix& stftData) {
   const uint16_t numFrames = this->powerFramesSize;
 
   matrix_init_f32(&stftData, numFrames, this->numFreqBins, powerSpectra);
-
-  // This is unnecessary now
-  // for (uint16_t frame = 0; frame < numFrames; ++frame) {
-  //   const size_t rowStart = static_cast<size_t>(frame) * numFreqBins;
-  //   const float* src = &powerSpectra[frame * numFreqBins];
-  //   for (uint16_t bin = 0; bin < numFreqBins; ++bin) {
-  //     stftData.pData[rowStart + bin] = src[bin];
-  //   }
-  // }
 }
 
 Classification::Classification(uint16_t fftSize, uint16_t numMelFilters,
@@ -138,6 +129,8 @@ void Classification::classify(const float* rawAudio) {
     return;
   }
 
+  // Pass pointer to first element in 2D array, we can then use pointer
+  // arithmetic to access all of it.
   this->GenerateSTFT(&powerFrames[0][0], stftSpec);
 
   this->melFilter.apply(stftSpec, melSpec, melSpectrogramVector);
