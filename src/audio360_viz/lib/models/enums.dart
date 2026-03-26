@@ -1,10 +1,10 @@
 /// Classification by the classification module.
-/// Must be in sync with src/features/classifcation/classifcationLabel.h
+/// Must be in sync with src/features/classification/classificationLabel.h
 enum Classification {
-  unKnown,
-  fire,
-  engine,
-  truckReversing,
+  unknown,
+  someoneTalking,
+  siren,
+  smokeAlarm,
 }
 
 /// Quadrant by the DoA module.
@@ -27,13 +27,13 @@ enum SystemFault {
   none,
   hardware,
   classification,
-  doa, 
+  doa,
 }
 
 /// Returns the classification enum value from int value.
 Classification classificationFromInt(int value) {
   if (value < 0 || value >= Classification.values.length) {
-    return Classification.unKnown;
+    return Classification.unknown;
   }
   return Classification.values[value];
 }

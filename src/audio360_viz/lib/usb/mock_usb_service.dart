@@ -32,9 +32,9 @@ final class MockUsbService extends BaseDataService {
   void _sendMockPacket() {
     // Cycle labels predictably so the main project classes all appear.
     const classifications = <Classification>[
-      Classification.fire,
-      Classification.engine,
-      Classification.truckReversing,
+      Classification.someoneTalking,
+      Classification.siren,
+      Classification.smokeAlarm,
     ];
     final classification =
         classifications[_packetCount % classifications.length];

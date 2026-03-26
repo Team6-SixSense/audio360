@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   Packet buildPacket({
-    Classification classification = Classification.truckReversing,
+    Classification classification = Classification.smokeAlarm,
     Quadrant quadrant = Quadrant.northEast,
     SystemFault systemFault = SystemFault.none,
     int priority = 1,
@@ -101,7 +101,7 @@ void main() {
     await pumpScreen(
       tester,
       packet: buildPacket(
-        classification: Classification.engine,
+        classification: Classification.siren,
         quadrant: Quadrant.east,
         priority: 2,
       ),
@@ -113,7 +113,7 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('SOUND DETECTED'), findsOneWidget);
-    expect(find.text('Engine'), findsOneWidget);
+    expect(find.text('Siren'), findsOneWidget);
     expect(find.byType(DirectionReticle), findsOneWidget);
     expect(find.byKey(const ValueKey('bluetooth-connected')), findsOneWidget);
     expect(find.byKey(const ValueKey('notification-panel')), findsOneWidget);
