@@ -220,19 +220,19 @@ class _NotificationPanel extends StatelessWidget {
 
   String _subjectLabel(Classification classification) {
     return switch (classification) {
-      Classification.fire => 'Fire',
-      Classification.engine => 'Engine',
-      Classification.truckReversing => 'Truck Reversing',
-      Classification.unKnown => 'Unknown',
+      Classification.someoneTalking => 'Someone Talking',
+      Classification.siren => 'Siren',
+      Classification.smokeAlarm => 'Smoke Alarm',
+      Classification.unknown => 'Unknown',
     };
   }
 
   IconData _subjectIcon(Classification classification) {
     return switch (classification) {
-      Classification.fire => Icons.local_fire_department_rounded,
-      Classification.engine => Icons.hearing_rounded,
-      Classification.truckReversing => Icons.local_shipping_rounded,
-      Classification.unKnown => Icons.hearing_rounded,
+      Classification.someoneTalking => Icons.record_voice_over_rounded,
+      Classification.siren => Icons.notifications_active_rounded,
+      Classification.smokeAlarm => Icons.warning_amber_rounded,
+      Classification.unknown => Icons.hearing_rounded,
     };
   }
 }
