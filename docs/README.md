@@ -5,7 +5,7 @@ The folders and files for this project are as follows:
     .
     ├── Design                      # Software architecture and design documentation.
     ├── DevelopmentPlan             # Project development plan.
-    ├── Extras                      # Extras documentation (Hardware Report + Audio Theory)
+    ├── Extras                      # Extras documentation (Hardware Report + Software Theory)
     ├── HazardAnalysis              # Hazard Analysis documentation.
     ├── Images                      # Project images.
     ├── Presentations               # Presentation files.
