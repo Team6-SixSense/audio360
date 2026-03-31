@@ -2,6 +2,15 @@
 
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage[x11names]{xcolor}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{xr}
+\usepackage{graphicx}
+
+\externaldocument[SRS-]{../SRS/SRS}
 
 \title{Reflection and Traceability Report on \progname}
 
@@ -81,13 +90,84 @@ and constrained software design decisions. The report is located in
 
 \section{Design Iteration (LO11 (PrototypeIterate))}
 
-\plt{Explain how you arrived at your final design and implementation.  How did
-the design evolve from the first version to the final version?} 
+The final design was reached through an iterative process driven by hardware
+readiness, user feedback, and alignment with the secondary stakeholder needs.
+In the initial implementation presented at the Proof of Concept demo, the
+software algorithms (Direction of Arrival and audio classification) were
+developed entirely in a simulated environment using a Python microphone room
+simulation library. This approach was chosen because the hardware platform was
+not yet stable enough for reliable development. Simulation enabled rapid
+experimentation, validation of algorithm feasibility, and early performance
+comparisons of different implementations without being constrained by incomplete
+hardware. On the hardware side, the system consisted of four microphones
+connected to a microcontroller, capable of synchronous audio sampling,
+figure \ref{fig:hardware_before}.
+While this setup demonstrated that individual software and hardware components
+worked as expected, it did not yet meet the stakeholder's need for an
+integrated, usable system.
 
-\plt{Don't just say what you changed, say why you changed it.  The needs of the
-client should be part of the explanation.  For example, if you made changes in
-response to usability testing, explain what the testing found and what changes
-it led to.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./images/hardware_before.png}
+    \caption{Hardware set-up for Proof of Concept.}
+    \label{fig:hardware_before}
+\end{figure}
+
+As development progressed, the design evolved toward full system integration.
+The software was migrated from Python to C/C++ to be compiled onto the
+microcontroller. In parallel, the hardware underwent significant refinements,
+including improved microphones, more reliable wiring, the addition of bluetooth
+connectivity, and eventual integration into a custom PCB, figure
+\ref{fig:hardware_after}. A key design decision
+that enabled this parallel evolution was the adoption of a layered software
+architecture. By decoupling hardware and software components, the team was able
+to continue developing and testing algorithms independently of hardware
+readiness using mocks in unit tests. This reduced integration risk and ensured
+continuous progress toward a deployable system.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./images/hardware_after.png}
+    \caption{Final hardware.}
+    \label{fig:hardware_after}
+\end{figure}
+
+The user interface design was also refined based on usability considerations.
+The primary stakeholders are individuals who are hard of hearing. Although
+direct testing with this group was not feasible, secondary stakeholders
+(e.x. individuals wearing earplugs or headphones) were asked to participate in
+user testing. Early UI designs were found to be overly intrusive, presenting
+excessive information that interfered with users' daily activities, figure
+\ref{fig:ui_before}. This violates the non-functional requirement for a
+non-intrusive display, \hyperref[SRS-NFR6_2]{NFR6.2}. As a result, the
+interface was simplified to present only essential information
+in a less disruptive manner, figure \ref{fig:ui_after}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./images/ui_before.png}
+    \caption{Initial UI before user testing.}
+    \label{fig:ui_before}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./images/ui_after.png}
+    \caption{UI after user testing.}
+    \label{fig:ui_after}
+\end{figure}
+
+Finally, the audio classification component was refined to better reflect
+meaningful real world use cases. The initial version classified sounds such as
+car horns, jackhammers, and sirens. However, both user feedback and team
+evaluation indicated that some of these sounds were less relevant to the core
+goal of improving situational awareness. The classification categories were
+therefore updated to include sirens, fire alarms, and human talking, which are
+more critical for safety and everyday awareness. This required retraining and
+modifying the classification module, but resulted in a system that better
+serves the stakeholders' priorities.
+
 
 \section{Design Decisions (LO12)}
 
