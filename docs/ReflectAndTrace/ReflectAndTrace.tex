@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage[letterpaper, portrait, margin=1.2in]{geometry}
 
 \usepackage{tabularx}
 \usepackage{booktabs}
@@ -67,9 +68,94 @@ low.}
 
 \subsection{SRS and Hazard Analysis}
 
+\plt{Give a little blurb of the changes that has happened.}
+
+
+\label{tab:srs-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{3.5cm}|p{4.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+        & \textbf{Related Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+        & \textbf{Related Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Sample & Sample & Sample & \href{Sample}{Issue \#1} \\
+    \hline
+
+    \caption{SRS Feedback Tracking and Implementation}
+\end{longtable}
+
+
 \subsection{Design and Design Documentation}
 
+\label{tab:doc-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{3.5cm}|p{4.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous
+        page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Sample & Sample & Sample & \href{Sample}{Issue \#1} \\
+    \hline
+
+    \caption{Design and Desing Documentation Feedback Tracking and 
+        Implementation}
+\end{longtable}
+
 \subsection{VnV Plan and Report}
+
+\label{tab:vnv-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{3.5cm}|p{4.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous
+        page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Sample & Sample & Sample & \href{Sample}{Issue \#1} \\
+    \hline
+
+    \caption{VNV Feedback Tracking and Implementation}
+\end{longtable}
 
 \section{Extras}
 
