@@ -9,8 +9,11 @@
 \usepackage{longtable}
 \usepackage{xr}
 \usepackage{graphicx}
+\usepackage{cite}
 
+\externaldocument[MG-]{../Design/SoftArchitecture/MG}
 \externaldocument[SRS-]{../SRS/SRS}
+\externaldocument[Hardware-]{../Extras/Hardware/HardwareReport}
 
 \title{Reflection and Traceability Report on \progname}
 
@@ -171,9 +174,51 @@ serves the stakeholders' priorities.
 
 \section{Design Decisions (LO12)}
 
-\plt{Reflect and justify your design decisions.  How did limitations,
- assumptions, and constraints influence your decisions?  Discuss each of these
- separately.}
+\subsection{Limitations}
+
+The primary limitation of the system was the restricted computational power and
+memory capacity of the microcontroller. These limitations required careful
+management of memory allocation and algorithmic complexity to ensure real time
+performance without any faults. As a result, the team selected lightweight and
+efficient algorithms. For Direction of Arrival, the GCC-PHAT algorithm was
+chosen due to its relatively low computational complexity, $O(N*log(N))$, and
+suitability for embedded systems. More complex alternatives were avoided as they
+would exceed available resources. Similarly, the audio classification module
+was limited to three classes to remain within memory constraints. This excluded
+more advanced approaches, such as neural networks, which would require
+significantly more memory and processing power than the platform could support.
+
+\subsection{Constriants}
+
+Several constraints from the SRS \cite{SRS} significantly influenced the design.
+\hyperref[SRS-NFR9_1]{NFR9.1} specified that the system must operate as
+a closed system, meaning no external devices or services could be used.
+This constraint was motivated by security considerations. As a result, this
+constraint eliminated the possibility of offloading computation to external
+systems or using external APIs, further reinforcing the need for efficient,
+on-device algorithms.
+
+Another critical constraint was the requirement for synchronization across all
+microphones for accurate DoA operation. This influenced both hardware and
+software design choices. The team selected a microcontroller capable of
+synchronous audio sampling and designed the wiring and software clock
+configuration to ensure all microphones operated on a shared timing source.
+More detailed design decision from microphone synchronization are described in
+section \hyperref[Hardware-sec:mic_sync]{Microphone Synchronization} from the
+Hardware report (Extras) from this constraint.
+
+\subsection{Assumptions}
+
+The team made several \hyperref[MG-SecChange]{assumptions} during development,
+primarily related to the evolving nature of the hardware. Given limited prior
+experience with hardware design, it was assumed that components and
+configurations would change as the project progressed. To mitigate the risks
+associated with this uncertainty, the team adopted a layered software
+architecture that decoupled the core Audio360 processing logic from the hardware
+through a hardware abstraction layer. This design decision allowed software
+development to proceed independently of hardware changes. This approach reduced
+development delays and ensured that the system could adapt to hardware
+modifications without requiring redesign of the core algorithms.
 
 \section{Economic Considerations (LO23)}
 
@@ -224,5 +269,9 @@ to ensure equitable treatment of all stakeholders.}
 
 \plt{What skills/knowledge did you need to acquire for your capstone project
 that was outside of the courses you took?}
+
+\newpage
+\bibliographystyle{IEEEtran}
+\bibliography{../../refs/References}
 
 \end{document}
