@@ -335,16 +335,157 @@ to ensure equitable treatment of all stakeholders.}
 
 \section{Reflection on Capstone}
 
-\plt{This question focuses on what you learned during the course of the capstone project.}
+The capstone project overall was an incredible learning experience. It taught 
+us how different areas of engineering come together in practice, and how much 
+more difficult implementation becomes when software, hardware, and user needs 
+must all be satisfied at the same time. One of the most important lessons from 
+this project was that a technically correct solution is not automatically a 
+useful one. Throughout the project, we had to continually evaluate whether our 
+design choices actually improved situational awareness for our stakeholders, 
+rather than simply demonstrating technical novelty. This became especially 
+clear when we refined the interface after user testing and when we adjusted 
+the classification categories to better reflect sounds that were meaningful 
+in real-world safety contexts. Those decisions showed us that engineering 
+design is not only about building something that works, but about building 
+something that serves the right purpose for the right users.
+
+Another major lesson was the importance of iteration. Early in the project, 
+many of the system components were developed separately: the audio algorithms 
+were validated in simulation, while the hardware existed as a basic 
+multi-microphone setup. Over time, these parts had to be integrated into a 
+cohesive embedded system. This process taught us that first designs are rarely 
+final designs, and that iterative refinement is not a sign of weak planning, 
+but a necessary part of engineering under uncertainty. We learned to treat 
+prototypes as tools for learning rather than as preliminary versions of the 
+final product. The progression from Python-based simulation to C/C++ deployment 
+on the microcontroller, along with hardware revisions and PCB integration, gave 
+us a much better understanding of how to gradually de-risk a system before full 
+deployment.
+
+The project also deepened our understanding of design trade-offs. Many choices 
+that appear straightforward in theory became constrained in practice by limited 
+memory, limited computational power, and the requirement that the system 
+operate as a closed device. These limitations forced us to think more carefully 
+about algorithm selection, modularity, and scope. For example, instead of 
+choosing the most advanced possible methods, we had to choose methods that 
+were efficient enough to run reliably in real time on the available hardware. 
+Interestingly enough, that also pushed us to learn more as well. Rather than 
+relying on simple API calls to exterenal libraries to acommplish our tasks 
+(eg. OpenAI), we had to build in-house simple algorithms that were tailored 
+to our hardware (simple LDA). This taught us that good engineering is often 
+about selecting the most appropriate solution under constraints, not the most 
+sophisticated one in isolation.
+
+A further takeaway from the capstone was the value of architecture and 
+abstraction. Because the hardware platform was still evolving, it would have 
+been easy for software progress to stall. The decision to separate the core 
+processing logic from hardware-specific details through a layered architecture 
+and abstraction layer allowed development to continue even while the hardware 
+changed. This reinforced the idea that good software design is not only about 
+readability or maintainability, but also about enabling progress when parts 
+of a system are unstable or incomplete. In that sense, the project taught us 
+to see architecture as a practical risk-management tool rather than a purely 
+academic concept.
+
+Compared to previous projects, the team driven timeline (where we independently 
+set our development goals and deadlines) really pushed us to learn project 
+management and the importance of planning. We learned that communication and 
+role clarity have a large impact on productivity, especially in 
+multidisciplinary work where progress is not always visible through code commits
+ alone. At the same time, we saw the limits of over-management: although 
+detailed issue tracking improved visibility, it also created overhead and made 
+prioritization harder. This showed us that effective project management is not 
+about maximizing process, but about finding a level of structure that supports 
+the team without slowing it down. That is a lesson that will be valuable in 
+future design projects and professional engineering work.
+
+Overall, the capstone changed our understanding of engineering from a 
+course-based mindset to a systems mindset. In courses, problems are often 
+well-scoped, assumptions are fixed, and success is measured by correctness. 
+In this project, assumptions changed, hardware evolved, user needs shaped 
+design decisions, and success depended on balancing performance, usability, 
+feasibility, and teamwork at once. The project therefore taught us not only 
+technical content, but also how to operate as engineers in an open-ended 
+environment. Our entire team truly had a blast working on this project! 
 
 \subsection{Which Courses Were Relevant}
 
 \plt{Which of the courses you have taken were relevant for the capstone project?}
 
+The courses that were most relevant to the capstone project were:
+
+\begin{itemize}
+    \item Signals and Systems (3MX3)
+    \begin{itemize}
+        \item Taught us how to analyze signals and systems.
+        \item Taught us the Fourier Transforms and how to use it to analyze 
+        signals.
+    \end{itemize}
+    \item Requirements Engineering (3RA3)
+    \begin{itemize}
+        \item Taught us how to engineer requirements for a system.
+        \item Helped a lot with developing our documentation and project plan. 
+    \end{itemize}
+    \item Software Design 2 (3DA4)
+    \begin{itemize}
+        \item Taught us how to design software for a system.
+    \end{itemize}
+    \item Software Architecture (3A04)
+    \begin{itemize}
+        \item Taught us how to design larger systems as independent modules
+        and how to develop to Android devices. 
+    \end{itemize}
+    \item Software Testing (3ST3)
+    \begin{itemize}
+        \item Taught us how to test our software with unit tests and integration
+         tests using testing frameworks.
+    \end{itemize}
+    \item Integrated Engineering Design (2PX3)
+    \begin{itemize}
+        \item Taught us how to design and build a prototype of a system with 
+        various fidelity levels. 
+    \end{itemize}
+    \item Software Development (2AA4 & 2C03)
+    \begin{itemize}
+        \item Taught us the fundamentals of software development and general 
+        good practices for large system developement. 
+    \end{itemize}
+    \item Human Computer Interfaces (4HC3)
+    \begin{itemize}
+        \item Taught us the fundamentals of human computer interfaces and 
+        how to design them with users in mind. 
+        \item Also taught us the method in which to elicit user feedback for 
+        user interface design decisions. 
+    \end{itemize}
+\end{itemize}
+
 \subsection{Knowledge/Skills Outside of Courses}
 
 \plt{What skills/knowledge did you need to acquire for your capstone project
 that was outside of the courses you took?}
+
+The skills/knowledge that were needed for the capstone project that were outside 
+of the courses taken were:
+
+\begin{itemize}
+    \item Embedded Software Development 
+    \begin{itemize}
+        \item Setting up the microcontroller and its peripherals required 
+        knowledge outside of course material since it was hardware related. 
+    \end{itemize}
+    \item Processing Algorithms 
+    \begin{itemize}
+        \item Required for our Direction of Arrival and Audio Classification 
+        algorithms. Though we had the skills of how to implement these 
+        algorithms from our classes, we had to learn about the algorithms to 
+        do so. 
+    \end{itemize}
+    \item Flutter Development 
+    \begin{itemize}
+        \item Required to develop the UI. A new programming language not taught 
+        in class was required for this android visual interface. 
+    \end{itemize}
+\end{itemize}
 
 \newpage
 \bibliographystyle{IEEEtran}
