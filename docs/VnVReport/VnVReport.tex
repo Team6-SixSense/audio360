@@ -22,6 +22,7 @@
 \input{../Common}
 
 \externaldocument[SRS-]{../SRS/SRS}
+\externaldocument[MG-]{../Design/SoftArchitecture/MG}
 
 \begin{document}
 
@@ -45,6 +46,11 @@ March 21, 2026 & 2.2 & Removal of microphone audio size unit test since it
     is constant now. \\
 March 25, 2026 & 2.3 & Updating classification tests performed after 
 classification changes. \\
+March 30, 2026 & 2.4 & CI/CD reflection. \\
+March 30, 2026 & 2.5 & Unit test linking fixes. \\
+March 30, 2026 & 2.6 & Improved unit test module traceability table format. \\
+March 30, 2026 & 2.7 & Specifying quality of NFR achievement for NFR tests that
+    are applicable. \\
 \hline
 \end{tabularx}
 
@@ -687,7 +693,7 @@ well below 10\% threshold. Three test cases passed: SignalToFrequency\_285Hz,
 SignalToFrequencyCopy\_285Hz, SignalToFrequencyAssignment\_285Hz. Total test
 time: 493 ms. Single-tone test adequate for accuracy requirement per VnVPlan.
 
-\textbf{Result:} Pass
+\textbf{Result:} Pass. Meets exceptionally from threshold.
 
 \item{\textbf{Test-NFR3.2} Handle different input signal sizes \\}
 
@@ -704,7 +710,7 @@ sampled within 16 KHz. The measured sampling time of all frame sizes is
 64 KHz which is 400\% above the requirement. Five test cases completed in
 2 ms total.
 
-\textbf{Result:} Pass
+\textbf{Result:} Pass. Supports all defined signal sizes.
 
 \item{\textbf{Test-NFR3.3} Sustained spectral accuracy \\}
 
@@ -722,7 +728,7 @@ error = 6.1\% (all below 10\% threshold). 1,987 of 2,048 bins (97\%) within 5\%
 error. Frequency peaks matched within 1 bin accuracy. Spectral correlation
 coefficient: 0.98.
 
-\textbf{Result:} Pass
+\textbf{Result:} Pass. Meets exceptionally from threshold.
 
 \end{enumerate}
 
@@ -835,7 +841,7 @@ Following established acceptance criterion: both correct identification and
 (100\%). System correctly rejects low-confidence predictions rather than
 producing misclassifications. Test completed in 92 ms.
 
-\textbf{Result:} Pass
+\textbf{Result:} Pass. Accuracy just meets the threshold.
 
 \item{\textbf{Test-NFR5.3} DOA accuracy \\}
 
@@ -858,7 +864,7 @@ degrees). Pass rate: 100\% (8/8 angles within 45 degrees threshold). Mean
 Absolute Error: 1.39 degrees (3.1\% of 45 degrees requirement). Test completed
 in 31 ms.
 
-\textbf{Result:} Pass
+\textbf{Result:} Pass. Error significantly below error threshold.
 
 \end{enumerate}
 
@@ -900,7 +906,7 @@ Usability session conducted with 7 stakeholders (5 hard-of-hearing individuals,
  significant obstruction. Participants noted indicators were "minimally
  distracting" and "clear without blocking view."
 
-\textbf{Result:} Pass
+\textbf{Result:} Pass. Average score is (4.19/5.0) which is considered high.
 
 \end{enumerate}
 	
@@ -1045,12 +1051,14 @@ same reason of mocking complexity.
     ConfidenceDifferentiation \\ \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SilentInputHandling} &
     SilentInputHandling \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ClassifySilenceAsUnknown} &
-    ClassifySilenceAsUnknown \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ClassifySirenAudio} &
-    ClassifySirenAudio \\ \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{ClassifyCarHornAudio} &
-    ClassifyCarHornAudio \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SilenceMp3IsUnknown} &
+    SilenceMp3IsUnknown \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{TalkingMp3IsTalking} &
+    TalkingMp3IsTalking \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{SirenMp3IsSiren} &
+    SirenMp3IsSiren \\ \hline
+    \refstepcounter{unitTest} \mtheunitTest \label{AlarmMp3IsAlarm} &
+    AlarmMp3IsAlarm \\ \hline
 
     % Audio360 Engine Module
     \refstepcounter{unitTest} \mtheunitTest \label{FrequencyInputCapability} &
@@ -1171,7 +1179,7 @@ same reason of mocking complexity.
     \hline
     \refstepcounter{unitTest} \mtheunitTest \label{SubInverse} & SubInverse \\
     \hline
-    \refstepcounter{unitTest} \mtheunitTest \label{SubDimensionMismatchy} &
+    \refstepcounter{unitTest} \mtheunitTest \label{SubDimensionMismatch} &
     SubDimensionMismatch \\ \hline
 
     % Matrix transpose
@@ -1492,7 +1500,7 @@ same reason of mocking complexity.
     \endfirsthead
     \hline
     
-    \utref{ClassifySilenceAsUnknown} & Frames from \texttt{audio/silence.mp3}. &
+    \utref{SilenceMp3IsUnknown} & Frames from \texttt{audio/silence.mp3}. &
     Run classifier over all frames. & At least 95\% of frames labeled
     \texttt{unknown}. & PASS\\
     \hline
@@ -1500,7 +1508,7 @@ same reason of mocking complexity.
     & Run classifier over all frames. & At least 85\% of frames labeled
     \texttt{talking}. & PASS\\
     \hline
-    \utref{ClassifySirenAudio} & Frames from \texttt{audio/siren.mp3}. & Run
+    \utref{SirenMp3IsSiren} & Frames from \texttt{audio/siren.mp3}. & Run
     classifier over all frames. & At least 90\% of frames labeled
     \texttt{siren}. & PASS\\
     \hline
@@ -1961,7 +1969,7 @@ Table \ref{TblFRTrace} shows the mapping between functional requirement tests
 and their corresponding SRS requirements.
 
 {\small
-\begin{longtable}{|p{3.5cm}|p{2.5cm}|p{7cm}|}
+\begin{longtable}{|p{2.5cm}|p{3cm}|p{8cm}|}
 \hline
 \textbf{Test ID} & \textbf{Requirement} & \textbf{Test Description} \\
 \hline
@@ -2055,7 +2063,7 @@ Table \ref{TblNFRTrace} shows the mapping between non-functional requirement
 tests and their corresponding SRS requirements.
 
 {\small
-\begin{longtable}{|p{3.5cm}|p{2cm}|p{7.5cm}|}
+\begin{longtable}{|p{2.5cm}|p{3cm}|p{8cm}|}
 \hline
 \textbf{Test ID} & \textbf{Requirement} & \textbf{Test Description} \\
 \hline
@@ -2130,7 +2138,7 @@ validate, as defined in the Module Guide (MG) and Module Interface Specification
 under test.
 
 {\small
-\begin{longtable}{|p{3.5cm}|p{3cm}|p{6.5cm}|}
+\begin{longtable}{|p{2.5cm}|p{3cm}|p{8cm}|}
 \hline
 \textbf{Test ID} & \textbf{Module(s)} & \textbf{Module Functionality Tested} \\
 \hline
@@ -2225,16 +2233,28 @@ Simultaneous classification \& DOA \\
 Test-NFR5.2 & \hyperref[MG-mClassification]{M19} & Per-class accuracy validation
 \\
 \hline
-Test-FR-5.1, Test-FR-5.4, Test-NFR5.1, Test-NFR5.2 & \hyperref[MG-mMelFilter]{M15} &
+Test-FR-5.1, \newline
+Test-FR-5.4, \newline
+Test-NFR5.1, \newline
+Test-NFR5.2 & \hyperref[MG-mMelFilter]{M15} &
 Mel-scale frequency binning (via M19 pipeline) \\
 \hline
-Test-FR-5.1, Test-FR-5.4, Test-NFR5.1, Test-NFR5.2 & \hyperref[MG-mDCT]{M16} &
+Test-FR-5.1, \newline
+Test-FR-5.4, \newline
+Test-NFR5.1, \newline
+Test-NFR5.2 & \hyperref[MG-mDCT]{M16} &
 MFCC feature extraction (via M19 pipeline) \\
 \hline
-Test-FR-5.1, Test-FR-5.4, Test-NFR5.1, Test-NFR5.2 & \hyperref[MG-mPCA]{M17} &
+Test-FR-5.1, \newline
+Test-FR-5.4, \newline
+Test-NFR5.1, \newline
+Test-NFR5.2 & \hyperref[MG-mPCA]{M17} &
 Dimensionality reduction (via M19 pipeline) \\
 \hline
-Test-FR-5.1, Test-FR-5.4, Test-NFR5.1, Test-NFR5.2 & \hyperref[MG-mLDA]{M18} &
+Test-FR-5.1, \newline
+Test-FR-5.4, \newline
+Test-NFR5.1, \newline
+Test-NFR5.2 & \hyperref[MG-mLDA]{M18} &
 Linear discriminant analysis (via M19 pipeline) \\
 \hline
 \hline
@@ -2431,8 +2451,29 @@ graduate attribute of Reflection.
   harder to realize in a fully working system. For example, 85\% accuracy for
   classification with PCA and LDA seems to be very hard to achieve in this
   scope. Although we are actively trying to fulfill this, it may have to be
-  updated. 
+  updated.
 
+  \item Reflect on your use of CI for continuous integration testing (regression
+  testing). Did your CI work to gatekeep your PRs?  Would it have been helpful
+  if you got your CI working earlier in the project?  What are your plans to use
+  CI for testing in future projects?
+
+  \textbf{Team:} The team implemented several CI workflows across the project to
+  ensure a smooth and reliable development process. All workflows were
+  configured as pull request blockers, preventing faulty code or changes that
+  break existing tests from being merged. This was particularly valuable, as it
+  reduced the need for frequent hardware level verification to confirm that
+  existing functionality remained intact, since hardware availability was
+  limited.
+  
+  The CI pipeline included building the source code using the target hardware's
+  compiler, compiling and executing unit tests, running a C++ static code
+  analyzer, and performing Android static analysis. CI integration was
+  established early in the project, prior to merging code into the main branch,
+  allowing the team to benefit from automated validation from the outset.
+  Based on this experience, the team plans to adopt CI practices in future
+  projects, recognizing its effectiveness in increasing confidence in code
+  quality while significantly reducing the time spent on manual testing.
 \end{enumerate}
 
 \end{document}
