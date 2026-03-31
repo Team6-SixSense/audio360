@@ -1916,16 +1916,17 @@ so that the confidence threshold can be increased to 85\% or higher. This led to
 the next improvement mentioned below. 
 
 \subsubsection{Classification Accuracy Improvement}
-The accuracy of the classification module was low because of two main reasons:
-limited examples in the training dataset and choosing classes that had very
-similar audio signatures (smoke alarm vs siren). To address these issues, the 
-first change that was made was finding another sound dataset that had more 
-examples and more distinct classes to choose from. The dataset that was chosen 
-was the FSD50k sound dataset, which has over 50,000 audio samples across 200 
-classes\cite{FSD50k}. Using this dataset, the second change that was made was 
-changing the list of classes that the system was trained to classify to have 
-more distinct audio signatures. The new classes that are chosen are Someone 
-Talking, Siren and Smoke Alarm. 
+The accuracy of the classification module for car\_horn was around $55\%$, which 
+was way below our plan of $90\%$ accuracy. The accuracy of the classification 
+module was low because of two main reasons: limited examples in the training 
+dataset and choosing classes that had very similar audio signatures (smoke 
+alarm vs siren). To address these issues, the first change that was made was 
+finding another sound dataset that had more examples and more distinct classes 
+to choose from. The dataset that was chosen was the FSD50k sound dataset, which 
+has over 50,000 audio samples across 200 classes\cite{FSD50k}. Using this 
+dataset, the second change that was made was changing the list of classes that 
+the system was trained to classify to have more distinct audio signatures. The 
+new classes that are chosen are Someone Talking, Siren and Smoke Alarm. 
 
 \section{Automated Testing}
 
