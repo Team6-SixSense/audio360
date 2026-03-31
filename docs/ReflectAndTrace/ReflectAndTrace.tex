@@ -46,6 +46,8 @@
     Doc & Document \\
     FR & Functional Requirement \\
     HA & Hazard Analysis \\
+    MG & Module Guide \\
+    MIS & Module Interface specification \\
     NFR & Non-Functional Requirement \\
     SRS & software Requirement specification \\
     TA & Teaching Assistant \\
@@ -78,7 +80,7 @@ be in the GitHub issue that is associated to the feedback.
 \subsection{SRS and Hazard Analysis}
 
 Table \ref{tab:srs-feedback-tracking} outlines all the changes for the SRS
-doument.
+document.
 Table \ref{tab:hazard-feedback-tracking} outlines all the changes for the HA
 document.
 
@@ -237,11 +239,13 @@ document.
         286836e} \\
     \hline
 
-    Team &
+    TA &
     Missing symbols, abbreviations, and accronym table &
     SRS Doc Version 4.1 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/286836e}{Commit
-        286836e} \\
+        286836e} 
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/337}{Issue \#337} \\
     \hline
 
     Team &
@@ -362,6 +366,11 @@ document.
 
 \subsection{Design and Design Documentation}
 
+Due to strong planning ahead of time, there was no feedback received towards the
+design of the project. The team also did not update the design after the initial
+write up of the design document. Thus, table \ref{tab:doc-feedback-tracking}
+outlines the feedback in regards to the design document.
+
 \label{tab:doc-feedback-tracking}
 \begin{longtable}{|p{2cm}|p{4.5cm}|p{3.5cm}|p{3cm}|}
     \hline
@@ -386,13 +395,243 @@ document.
     Sample & Sample & Sample & \href{Sample}{Issue \#1} \\
     \hline
 
-    \caption{Design and Desing Documentation Feedback Tracking and 
+    \caption{Design Documentation Feedback Tracking and 
         Implementation}
 \end{longtable}
 
 \subsection{VnV Plan and Report}
 
-\label{tab:vnv-feedback-tracking}
+Table \ref{tab:vnvplan-feedback-tracking} outlines all the changes for the VnV
+Plan document.
+Table \ref{tab:hazard-feedback-tracking} outlines all the changes for the VnV
+Report document.
+
+\label{tab:vnvplan-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{3.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous
+        page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Peer &
+    Ambiguious latency definition. &
+    VnVPlan Version 2.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/3fc34af}{Commit
+        3fc34af}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/261}{Issue \#261} \\
+    \hline
+
+    Peer &
+    Missing pass fail criteria for some tests. &
+    VnVPlan Version 3.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/4c69951}{Commit
+        4c69951}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/262}{Issue \#262} \\
+    \hline
+
+    Peer &
+    Add testing and validation frameworks. &
+    VnVPlan Version 2.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/09aa9f3}{Commit
+        09aa9f3}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/263}{Issue \#263} \\
+    \hline
+
+    Peer &
+    Add measureable validation thresholds for user testing. &
+    VnVPlan Version 2.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/446ca14}{Commit
+        446ca14}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/264}{Issue \#264} \\
+    \hline
+
+    Peer &
+    Split SRS verification and validation. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/e6b0fa8}{Commit
+        e6b0fa8}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/266}{Issue \#266} \\
+    \hline
+
+    Peer &
+    Mismatch of NFR in VnV Plan tests. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/5ee1b30}{Commit
+        5ee1b30}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/265}{Issue \#265} \\
+    \hline
+
+    Peer \& TA &
+    Clearer design verification checklist. &
+    VnVPlan Version 2.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/182f679}{Commit
+        182f679}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/267}{Issue \#267} \\
+    \hline
+
+    Peer &
+    Non-dynamic testing feasibility. &
+    VnVPlan Version 2.3 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/194f4d1}{Commit
+        194f4d1}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/270}{Issue \#270} \\
+    \hline
+
+    Peer &
+    Missing list of tables. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc10209}{Commit
+        fc10209}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/272}{Issue \#272} \\
+    \hline
+
+    Peer &
+    Missing auxiliary constants definition. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/38c0170}{Commit
+        38c0170}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/273}{Issue \#273} \\
+    \hline
+
+    Peer &
+    Quantify error measurements in Test-FR-1.2. &
+    WONT FIX & 
+    \href{https://github.com/Team6-SixSense/audio360/issues/274}{Issue \#274} \\
+    \hline
+
+    Peer &
+    Clarify logs in Hardware Diagnostics Tests. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/3049095}{Commit
+        3049095}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/275}{Issue \#275} \\
+    \hline
+
+    TA &
+    Missing symbols, abbreviations, and accronym table &
+    VnVPlan Version 2.5 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/286836e}{Commit
+        286836e} 
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/337}{Issue \#337} \\
+    \hline
+
+    TA &
+    Explain the "Why" of primary objectives &
+    VnVPlan Version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    TA &
+    Rationale of accuracy threshold &
+    VnVPlan Version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    TA &
+    Formatting issues: Too much white space &
+    VnVPlan Version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    TA &
+    Remove implementation details from test cases. &
+    VnVPlan Version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    TA &
+    Removing unnecessary test deails. &
+    VnVPlan Version 3.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    Professor &
+    Update Extras. &
+    VnVPlan Version 3.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/a7a739e}{Commit
+        a7a739e}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/404}{Issue \#404} \\
+    \hline
+
+    Team &
+    Update Clang Static Analyzer tool. &
+    VnVPlan Version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/538a19f}{Commit
+        538a19f}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/233}{Issue \#233} \\
+    \hline
+
+    Team &
+    Update Code Coverage tool. &
+    VnVPlan Version 3.5 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/43ab53c}{Commit
+        43ab53c}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/520}{Issue \#520} \\
+    \hline
+
+    Team &
+    Test-FR-2.3 error handling test procedure updated. &
+    VnVPlan Version 4.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/ccd3793}{Commit
+        ccd3793} \\
+    \hline
+
+    Team &
+    Update tests with new classification classes. &
+    VnVPlan Version 4.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/6edf8cc}{Commit
+        6edf8cc}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/642}{Issue \#642} \\
+    \hline
+
+    Team &
+    Specifying Software Theory Report. &
+    VnVPlan Version 4.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/f0e4e4b}{Commit
+        f0e4e4b}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/664}{Issue \#664} \\
+    \hline
+
+    \caption{VnV Plan Feedback Tracking and Implementation}
+\end{longtable}
+
+\label{tab:vnvreport-feedback-tracking}
 \begin{longtable}{|p{2cm}|p{4.5cm}|p{3.5cm}|p{3cm}|}
     \hline
     \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
@@ -416,7 +655,7 @@ document.
     Sample & Sample & Sample & \href{Sample}{Issue \#1} \\
     \hline
 
-    \caption{VNV Feedback Tracking and Implementation}
+    \caption{VnV Report Feedback Tracking and Implementation}
 \end{longtable}
 
 \section{Extras}
