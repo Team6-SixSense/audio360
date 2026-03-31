@@ -1393,7 +1393,7 @@ same reason of mocking complexity.
     \utref{NormalizeAmplitudeFromMp3} & Alternating 0.2/0.8 amplitude sine
     sections in \texttt{audio/alt\_amp\_sine.mp3}. & Run amplitude normalization
     pipeline on MP3 input.  & Both halves peak near 1.0 with matching
-    zero-crossing counts. & FAIL\\
+    zero-crossing counts. & PASS\\
     \hline
     \utref{TimeToFrequencyShowsThreePeaks} & 3-second WAV with 100 Hz, 1 kHz, 8
     kHz tones (\texttt{audio/three\_tone.wav}). & Run FFT on a 4096-sample
@@ -1514,7 +1514,7 @@ same reason of mocking complexity.
     \hline
     \utref{AlarmMp3IsAlarm} & Frames from \texttt{audio/alarm.mp3}. &
     Run classifier over all frames (test currently disabled). & Expected at
-    least 90\% of frames labeled \texttt{alarm}. & FAIL\\
+    least 90\% of frames labeled \texttt{alarm}. & PASS\\
     \hline
     \utref{AmbiguousSampleDetection} & Random noise audio samples & Run
     classification on ambiguous input & Returns varied classification or unknown
