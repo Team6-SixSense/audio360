@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage[letterpaper, portrait, margin=1.2in]{geometry}
 
 \usepackage{tabularx}
 \usepackage{booktabs}
@@ -28,48 +29,962 @@
 
 \maketitle
 
+\newpage
+
+\newpage
+
+\section{Symbols, Abbreviations, and Acronyms}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|} 
+    \hline	
+    \textbf{symbol} & \textbf{description}\\
+    \hline
+    DoA & Direction of Arrival \\
+    Doc & Document \\
+    FR & Functional Requirement \\
+    HA & Hazard Analysis \\
+    MG & Module Guide \\
+    MIS & Module Interface specification \\
+    NFR & Non-Functional Requirement \\
+    SRS & software Requirement specification \\
+    TA & Teaching Assistant \\
+    VnV & Verification and Validation \\
+    \hline
+  \end{tabular}
+  \caption{Symbols, abbreviations and acronyms used in the VnV plan document.}
+\end{table}
+
+See SRS Documentation at
+\hyperref[SRS-sec:symbols]{Symbols, Abbreviations, and Acronyms}
+for a complete table used in \progname.
+
+\newpage
+\tableofcontents
+\listoftables
+\listoffigures
+\newpage
+
 \section{Changes in Response to Feedback}
 
-\plt{Summarize the changes made over the course of the project in response to
-feedback from TAs, the instructor, teammates, other teams, the project
-supervisor (if present), and from user testers.}
+Feedback source that lists "team" indicates that the change request was made
+from one of team members of this project through discussions during team
+meetings or during development.
 
-\plt{For those teams with an external supervisor, please highlight how the feedback 
-from the supervisor shaped your project.  In particular, you should highlight the 
-supervisor's response to your Rev 0 demonstration to them.}
+Any feedback with "WONT FIX" label for Changes Made column means that the team
+will not be addressing the feedback. The rationale for not addressing will
+be in the GitHub issue that is associated to the feedback.
 
-\plt{Version control can make the summary relatively easy, if you used issues
-and meaningful commits.  If you feedback is in an issue, and you responded in
-the issue tracker, you can point to the issue as part of explaining your
-changes.  If addressing the issue required changes to code or documentation, you
-can point to the specific commit that made the changes.  Although the links are
-helpful for the details, you should include a label for each item of feedback so
-that the reader has an idea of what each item is about without the need to click
-on everything to find out.}
-
-\plt{If you were not organized with your commits, traceability between feedback
-and commits will not be feasible to capture after the fact.  You will instead
-need to spend time writing down a summary of the changes made in response to
-each item of feedback.}
-
-\plt{You should address EVERY item of feedback.  A table or itemized list is
-recommended.  You should record every item of feedback, along with the source of
-that feedback and the change you made in response to that feedback.  The
-response can be a change to your documentation, code, or development process.
-The response can also be the reason why no changes were made in response to the
-feedback.  To make this information manageable, you will record the feedback and
-response separately for each deliverable in the sections that follow.}
-
-\plt{If the feedback is general or incomplete, the TA (or instructor) will not
-be able to grade your response to feedback.  In that case your grade on this
-document, and likely the Revision 1 versions of the other documents will be
-low.} 
+No code changes resulted directly from feedback provided by peers, the TA, or
+the supervisor. Peers and the TA were not responsible for reviewing code, and
+feedback on documentation did not influence the code or development process.
+Additionally, the supervisor did not have further input related to code or
+development, as the team had already demonstrated a well-functioning product
+early in the capstone. It is important to note, however, that the team made
+several internal modifications to the code throughout the project. These
+changes arose from experimentation and testing rather than from external
+feedback or documentation revisions.
 
 \subsection{SRS and Hazard Analysis}
 
+Table \ref{tab:srs-feedback-tracking} outlines all the changes for the SRS
+document.
+Table \ref{tab:hazard-feedback-tracking} outlines all the changes for the HA
+document.
+
+% SRS Feedback Table.
+\label{tab:srs-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{3.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+        & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+        & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Peer &
+    Add technical terms to glossary. &
+    SRS Doc version 2.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/6ba4c40}{Commit
+        6ba4c40}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/224}{Issue \#224} \\
+    \hline
+
+    Peer &
+    Missing Context diagram. &
+    SRS Doc version 2.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/f31adb6}{Commit
+        f31adb6}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/223}{Issue \#223} \\
+    \hline
+
+    Supervisor &
+    Decrease sampling rate for feasibility. &
+    SRS Doc version 2.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/56ba2bc}{Commit
+        56ba2bc}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/243}{Issue \#243} \\
+    \hline
+
+    TA &
+    Define symbols for constants + rationale. &
+    SRS Doc version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/8ea30f2}{Commit
+        8ea30f2}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/284}{Issue \#284} \\
+    \hline
+
+    TA &
+    Cite 1 in 10 Canadians with hearing loss. &
+    SRS Doc version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/8ea30f2}{Commit
+        8ea30f2}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/284}{Issue \#284} \\
+    \hline
+
+    TA &
+    Cite 1 in 10 Canadians with hearing loss. &
+    SRS Doc version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/8ea30f2}{Commit
+        8ea30f2}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/284}{Issue \#284} \\
+    \hline
+
+    TA &
+    Removed discomfort invariant from User Safety. &
+    SRS Doc version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/8ea30f2}{Commit
+        8ea30f2}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/284}{Issue \#284} \\
+    \hline
+
+    TA &
+    Component Diagram formatting. &
+    SRS Doc version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/8ea30f2}{Commit
+        8ea30f2}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/284}{Issue \#284} \\
+    \hline
+
+    TA &
+    Functional and Non-Functional requirements lack rationale. &
+    SRS Doc version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/8ea30f2}{Commit
+        8ea30f2}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/284}{Issue \#284} \\
+    \hline
+
+    TA &
+    Component Diagram formatting. &
+    SRS Doc version 3.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/8ea30f2}{Commit
+        8ea30f2}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/284}{Issue \#284} \\
+    \hline
+
+    TA &
+    VnV information is too detailed for SRS. &
+    SRS Doc version 3.3 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/8ea30f2}{Commit
+        8ea30f2}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/284}{Issue \#284} \\
+    \hline
+
+    Peer &
+    Redundant documentation of team roles &
+    SRS Doc updated& 
+    \href{https://github.com/Team6-SixSense/audio360/commit/7300b3b}{Commit
+        7300b3b}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/222}{Issue \#222} \\
+    \hline
+
+    Peer &
+    Missing Traceability between FR and NFR &
+    WONT FIX & 
+    \href{https://github.com/Team6-SixSense/audio360/issues/220}{Issue \#220} \\
+    \hline
+
+    Peer &
+    Abstract sampling rate &
+    WONT FIX & 
+    \href{https://github.com/Team6-SixSense/audio360/issues/219}{Issue \#219} \\
+    \hline
+
+    Team &
+    Software layer abstraction requirement &
+    SRS Doc version 4.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/4319be3}{Commit
+        4319be3} \\
+    \hline
+
+    Team &
+    Missing symbols, abbreviations, and accronym table &
+    SRS Doc version 4.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/286836e}{Commit
+        286836e} \\
+    \hline
+
+    TA &
+    Missing symbols, abbreviations, and accronym table &
+    SRS Doc version 4.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/286836e}{Commit
+        286836e} 
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/337}{Issue \#337} \\
+    \hline
+
+    Team &
+    Add source for angle accuracy for DoA &
+    SRS Doc version 4.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/4c69951}{Commit
+        4c69951} \\
+    \hline
+
+    Peer &
+    Convert all angle representation to radians. &
+    SRS Doc version 4.3 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9ae79c4}{Commit
+        9ae79c4}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/383}{Issue \#383} \\
+    \hline
+
+    Team &
+    Specify classification classes &
+    SRS Doc version 5.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/6edf8cc}{Commit
+        6edf8cc}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/624}{Issue \#624} \\
+    \hline
+
+    Team &
+    Minimal user input requirement needed &
+    SRS Doc version 5.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/f139591}{Commit
+        f139591}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/650}{Issue \#650} \\
+    \hline
+
+    \caption{SRS Feedback Tracking and Implementation}
+\end{longtable}
+
+
+
+% Hazard Analysis Feedback Table.
+\label{tab:hazard-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{3.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+        & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+        & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Supervisor &
+    Decrease sampling rate for feasibility. &
+    HA Doc version 2.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/56ba2bc}{Commit
+        56ba2bc}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/243}{Issue \#243} \\
+    \hline
+
+    TA &
+    Missing rationale for roadmap. &
+    HA Doc version 2.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/e47be90}{Commit
+        e47be90}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/285}{Issue \#285} \\
+    \hline
+
+    TA &
+    Ambiguous lighting condition definition. &
+    HA Doc version 2.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/e47be90}{Commit
+        e47be90} \\
+    \hline
+
+    Peer &
+    Safety requirements to SRS requirement traceability. &
+    HA Doc version 2.3 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/e47be90}{Commit
+        e47be90}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/221}{Issue \#221} \\
+    \hline
+
+    TA &
+    Missing analysis on comfort/harm. &
+    HA Doc version 2.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/94d7bc1}{Commit
+        94d7bc1}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/286}{Issue \#286} \\
+    \hline
+
+    TA &
+    Missing link between FMEA table and safety requirements. &
+    HA Doc version 2.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/94d7bc1}{Commit
+        94d7bc1}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/286}{Issue \#286} \\
+    \hline
+
+    \caption{Hazard Analysis Feedback Tracking and Implementation}
+\end{longtable}
+
+
 \subsection{Design and Design Documentation}
 
+Due to strong planning ahead of time, there was no feedback received towards the
+design of the project. The team also did not update the design after the initial
+write up of the design document. Thus, table \ref{tab:mg-feedback-tracking}
+outlines the feedback in regards to the MG design document, and table
+\ref{tab:mis-feedback-tracking} outlines the feedback in regards to the MIS 
+design document.
+
+\label{tab:mg-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{3.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous
+        page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Peer &
+    Clarification on closed system &
+    MG Doc updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/457d8ed}{Commit
+        457d8ed}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/381}{Issue \#381} \\
+    \hline
+
+    Peer &
+    Convert all angle representation to radians. &
+    MG Doc updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9ae79c4}{Commit
+        9ae79c4}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/383}{Issue \#383} \\
+    \hline
+
+    Peer &
+    Exported constants traceability. &
+    MG Doc updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/1643151}{Commit
+        1643151}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/384}{Issue \#384} \\
+    \hline
+
+    Peer &
+    AC missing from traceability table. &
+    WONT FIX & 
+    \href{https://github.com/Team6-SixSense/audio360/issues/386}{Issue \#386} \\
+    \hline
+
+    Peer &
+    Module type clarity. &
+    MG Doc version 2.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/a67ab08}{Commit
+        a67ab08}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/387}{Issue \#387} \\
+    \hline
+
+    Peer &
+    Document anticipated changes. &
+    WONT FIX & 
+    \href{https://github.com/Team6-SixSense/audio360/issues/388}{Issue \#388} \\
+    \hline
+
+    Peer &
+    MG split SPI and file system. &
+    WONT FIX & 
+    \href{https://github.com/Team6-SixSense/audio360/issues/390}{Issue \#390} \\
+    \hline
+
+    Peer &
+    Define "Output" in Use Hierarchy. &
+    MG Doc updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/28bb900}{Commit
+        28bb900}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/399}{Issue \#399} \\
+    \hline
+
+    TA &
+    Detailed timelines required. &
+    MG Doc version 2.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/766437e}{Commit
+        766437e}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/569}{Issue \#569} \\
+    \hline
+
+    TA &
+    Rationale need for Anticipated Change 6. &
+    MG Doc updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9b8a467}{Commit
+        9b8a467}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/570}{Issue \#570} \\
+    \hline
+
+    TA &
+    Timeline for individual contributions. &
+    MG Doc version 3.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9b8a467}{Commit
+        9b8a467}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/570}{Issue \#570} \\
+    \hline
+
+    TA &
+    Uses hierarchy diagram simplification. &
+    MG Doc version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9b8a467}{Commit
+        9b8a467}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/570}{Issue \#570} \\
+    \hline
+
+    TA &
+    Remove safety critical information logic from Visualization module. &
+    MG Doc version 3.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9b8a467}{Commit
+        9b8a467}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/570}{Issue \#570} \\
+    \hline
+
+    TA &
+    Spelling and grammar fixes. &
+    MG Doc version 3.3 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9b8a467}{Commit
+        9b8a467}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/570}{Issue \#570} \\
+    \hline
+
+    TA &
+    Add module names to module hierarchy table. &
+    MG Doc version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9b8a467}{Commit
+        9b8a467}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/570}{Issue \#570} \\
+    \hline
+
+    \caption{MG Documentation Feedback Tracking and Implementation}
+\end{longtable}
+
+\label{tab:mis-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{3.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous
+        page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+
+    Peer &
+    Clearer assumptions for many modules. &
+    MIS Doc version 2.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/bceb3ca}{Commit
+        bceb3ca}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/382}{Issue \#382} \\
+    \hline
+    
+    Peer &
+    Convert all angle representation to radians. &
+    MIS Doc updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/9ae79c4}{Commit
+        9ae79c4}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/383}{Issue \#383} \\
+    \hline
+
+    Peer &
+    Exported constants traceability. &
+    MIS Doc updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/1643151}{Commit
+        1643151}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/384}{Issue \#384} \\
+    \hline
+
+    Peer &
+    Duplicated Audio360State definition. &
+    MIS Doc updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/d10e851}{Commit
+        d10e851}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/385}{Issue \#385} \\
+    \hline
+
+    Peer &
+    Modules are too low-level. &
+    WONT FIX & 
+    \href{https://github.com/Team6-SixSense/audio360/issues/389}{Issue \#389} \\
+    \hline
+
+    TA &
+    Fault Manager module should be more detailed. &
+    MIS Doc version 3.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/34101a8}{Commit
+        34101a8}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/568}{Issue \#568} \\
+    \hline
+
+    Team &
+    Visualization module should be more detailed. &
+    MIS Doc version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/34101a8}{Commit
+        34101a8} \\
+    \hline
+
+    TA &
+    DoA formalation. &
+    MIS Doc version 3.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/f290eb6}{Commit
+        f290eb6}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/567}{Issue \#567} \\
+    \hline
+
+    \caption{MIS Documentation Feedback Tracking and Implementation}
+\end{longtable}
+
 \subsection{VnV Plan and Report}
+
+Table \ref{tab:vnvplan-feedback-tracking} outlines all the changes for the VnV
+Plan document.
+Table \ref{tab:hazard-feedback-tracking} outlines all the changes for the VnV
+Report document.
+
+\label{tab:vnvplan-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{4.5cm}|p{3.5cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous
+        page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Peer &
+    Ambiguious latency definition. &
+    VnVPlan version 2.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/3fc34af}{Commit
+        3fc34af}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/261}{Issue \#261} \\
+    \hline
+
+    Peer &
+    Missing pass fail criteria for some tests. &
+    VnVPlan version 3.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/4c69951}{Commit
+        4c69951}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/262}{Issue \#262} \\
+    \hline
+
+    Peer &
+    Add testing and validation frameworks. &
+    VnVPlan version 2.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/09aa9f3}{Commit
+        09aa9f3}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/263}{Issue \#263} \\
+    \hline
+
+    Peer &
+    Add measureable validation thresholds for user testing. &
+    VnVPlan version 2.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/446ca14}{Commit
+        446ca14}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/264}{Issue \#264} \\
+    \hline
+
+    Peer &
+    Split SRS verification and validation. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/e6b0fa8}{Commit
+        e6b0fa8}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/266}{Issue \#266} \\
+    \hline
+
+    Peer &
+    Mismatch of NFR in VnV Plan tests. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/5ee1b30}{Commit
+        5ee1b30}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/265}{Issue \#265} \\
+    \hline
+
+    Peer \& TA &
+    Clearer design verification checklist. &
+    VnVPlan version 2.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/182f679}{Commit
+        182f679}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/267}{Issue \#267} \\
+    \hline
+
+    Peer &
+    Non-dynamic testing feasibility. &
+    VnVPlan version 2.3 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/194f4d1}{Commit
+        194f4d1}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/270}{Issue \#270} \\
+    \hline
+
+    Peer &
+    Missing list of tables. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc10209}{Commit
+        fc10209}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/272}{Issue \#272} \\
+    \hline
+
+    Peer &
+    Missing auxiliary constants definition. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/38c0170}{Commit
+        38c0170}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/273}{Issue \#273} \\
+    \hline
+
+    Peer &
+    Quantify error measurements in Test-FR-1.2. &
+    WONT FIX & 
+    \href{https://github.com/Team6-SixSense/audio360/issues/274}{Issue \#274} \\
+    \hline
+
+    Peer &
+    Clarify logs in Hardware Diagnostics Tests. &
+    VnVPlan updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/3049095}{Commit
+        3049095}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/275}{Issue \#275} \\
+    \hline
+
+    TA &
+    Missing symbols, abbreviations, and accronym table &
+    VnVPlan version 2.5 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/286836e}{Commit
+        286836e} 
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/337}{Issue \#337} \\
+    \hline
+
+    TA &
+    Explain the "Why" of primary objectives &
+    VnVPlan version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    TA &
+    Rationale of accuracy threshold &
+    VnVPlan version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    TA &
+    Formatting issues: Too much white space &
+    VnVPlan version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    TA &
+    Remove implementation details from test cases. &
+    VnVPlan version 3.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    TA &
+    Removing unnecessary test deails. &
+    VnVPlan version 3.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
+        fc627ba} \\
+    \hline
+
+    Professor &
+    Update Extras. &
+    VnVPlan version 3.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/a7a739e}{Commit
+        a7a739e}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/404}{Issue \#404} \\
+    \hline
+
+    Team &
+    Update Clang Static Analyzer tool. &
+    VnVPlan version 3.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/538a19f}{Commit
+        538a19f}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/233}{Issue \#233} \\
+    \hline
+
+    Team &
+    Update Code Coverage tool. &
+    VnVPlan version 3.5 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/43ab53c}{Commit
+        43ab53c}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/520}{Issue \#520} \\
+    \hline
+
+    Team &
+    Test-FR-2.3 error handling test procedure updated. &
+    VnVPlan version 4.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/ccd3793}{Commit
+        ccd3793} \\
+    \hline
+
+    Team &
+    Update tests with new classification classes. &
+    VnVPlan version 4.1 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/6edf8cc}{Commit
+        6edf8cc}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/642}{Issue \#642} \\
+    \hline
+
+    Team &
+    Specifying Software Theory Report. &
+    VnVPlan version 4.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/f0e4e4b}{Commit
+        f0e4e4b}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/664}{Issue \#664} \\
+    \hline
+
+    \caption{VnV Plan Feedback Tracking and Implementation}
+\end{longtable}
+
+\label{tab:vnvreport-feedback-tracking}
+\begin{longtable}{|p{2cm}|p{4cm}|p{4cm}|p{3cm}|}
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{4}{c}{{\bfseries Table \thetable\ continued from previous
+        page}} \\
+    \hline
+    \textbf{Feedback Source} & \textbf{Feedback Summary} & \textbf{Changes Made}
+    & \textbf{Related \newline Commits/Issues} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{4}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+    
+    Peer &
+    Clarification on code coveration exclusion. &
+    VnVReport version 2.0 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/13790b1}{Commit
+        13790b1}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/601}{Issue \#601} \\
+    \hline
+
+    Peer &
+    Unclear supporting modules. &
+    VnVReport updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/fa45769}{Commit
+        fa45769}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/602}{Issue \#602} \\
+    \hline
+
+    Peer &
+    Clarify hardware platform comaparison. &
+    VnVReport updated & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/be7cec1}{Commit
+        be7cec1}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/604}{Issue \#604} \\
+    \hline
+
+    Peer &
+    Stakeholder inconsistency across tests &
+    VnVReport version 2.10 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/59afc1b}{Commit
+        59afc1b}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/606}{Issue \#606} \\
+    \hline
+
+    Peer &
+    Explain failed unit tests. &
+    VnVReport version 2.8 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/c7ee32c}{Commit
+        c7ee32c}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/603}{Issue \#603} \\
+    \hline
+
+    Peer &
+    Vague sound classification accuracy results. &
+    VnVReport version 2.9 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/1f7c57d}{Commit
+        1f7c57d}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/599}{Issue \#599} \\
+    \hline
+
+    Team &
+    Removal of microphone different sample size. &
+    VnVReport version 2.2 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/62eb329}{Commit
+        62eb329} \\
+    \hline
+
+    Team &
+    Updated classifcation class tests. &
+    VnVReport version 2.3 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/e001b72}{Commit
+        e001b72}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/624}{Issue \#624} \\
+    \hline
+
+    TA &
+    Missing reflection response on CI/CD. &
+    VnVReport version 2.4 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/a0cb47a}{Commit
+        a0cb47a}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/654}{Issue \#654} \\
+    \hline
+
+    TA &
+    Unit test linking are broken. &
+    VnVReport version 2.5 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/a0cb47a}{Commit
+        a0cb47a}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/654}{Issue \#654} \\
+    \hline
+
+    TA &
+    Formatting of unit test module traceability can be improved. &
+    VnVReport version 2.6 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/a0cb47a}{Commit
+        a0cb47a}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/654}{Issue \#654} \\
+    \hline
+
+    TA &
+    Specifying quality of NFR. &
+    VnVReport version 2.7 & 
+    \href{https://github.com/Team6-SixSense/audio360/commit/a0cb47a}{Commit
+        a0cb47a}
+    \newline
+    \href{https://github.com/Team6-SixSense/audio360/issues/654}{Issue \#654} \\
+    \hline
+
+    \caption{VnV Report Feedback Tracking and Implementation}
+\end{longtable}
 
 \section{Extras}
 
