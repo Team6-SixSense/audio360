@@ -115,50 +115,59 @@ for a complete table used in \progname.
 
 \section{Introduction}
 The Audio360 project has a significant embedded systems component that is not
-fully addressed by other project deliverables. This report documents the hardware
-design decisions made throughout the capstone, from requirements gathering and
-component selection through to physical integration and software co-design.
+fully addressed by other project deliverables. This report documents the
+hardware design decisions made throughout the capstone, from requirements
+gathering and component selection through to physical integration and software
+co-design.
 \bigskip
 
 The report is organized as follows. Section~\ref{sec:hardware} derives the
 hardware requirements from the system SRS and documents the selection and
 specification of each component. Section~\ref{sec:theory} provides the
-theoretical background for the I2S communication protocol and the
-microphone synchronization strategy used to enable direction-of-arrival
-estimation. Section~\ref{sec:integration} describes the physical wiring
-of the microphone array and microcontroller, and traces the system through
-four progressive hardware integration phases. Finally,
-Section~\ref{sec:hw_sw} discusses how hardware constraints shaped key
-software architecture and implementation decisions, including the
-introduction of a hardware abstraction layer.
+theoretical background for the I2S communication protocol and the microphone
+synchronization strategy used to enable direction-of-arrival estimation.
+Section~\ref{sec:integration} describes the physical wiring of the microphone
+array and microcontroller, and traces the system through four progressive
+hardware integration phases. Finally, Section~\ref{sec:hw_sw} discusses how
+hardware constraints shaped key software architecture and implementation
+decisions, including the introduction of a hardware abstraction layer.
 
 
 \section{Hardware}
 \label{sec:hardware}
 
 \subsection{Hardware Requirements}
-The following requirements from the SRS are applicable to the
-embedded hardware:
+The following requirements from the SRS are applicable to the embedded hardware:
 
 \begin{table}[H]
     \centering
     \begin{tabularx}{\textwidth}{|p{3.5cm}|>{\raggedright\arraybackslash}X|p{3.5cm}|}
         \hline
-        \textbf{Requirement} & \textbf{Description} & \textbf{Component}\\ \hline
-        FR1.2 & The firmware shall synchronize audio signals from \textbf{all microphones} & Microcontroller and Microphones\\ \hline
-        NFR1.2 & The firmware shall operate at a rate faster than 16 kHz sample rate of the microphones & Microcontroller\\ \hline
-        FR7.2 & The microphones shall be sensitive to audio waves within the most audible human hearing range (250 Hz - 8 kHz). & Microphones \\ \hline
-        NFR7.1 & The microphones shall be capable of sampling at 16 kHz (2x 8kHz as per Nyquist Theorem). & Microcontroller and Microphones\\ \hline
-        FR 8.1 - 8.2 + NFR 8.1 & The display shall be capable of displaying information to the user without delay & Display Component \\ \hline
-        FR 9.1 + NFR 9.1 - 9.2 + FR 3.4 & MCU shall have a sufficient compute to support sampling and processing 4 microphones at 16 kHz each & Microcontroller \\ \hline
-        E.3 & Maximum product budget of \$500. Components should fit in a small form factor and be viable for outdoor usage.& Every component\\ \hline
+        \textbf{Requirement} & \textbf{Description} & \textbf{Component}\\
+        \hline
+        FR1.2 & The firmware shall synchronize audio signals from \textbf{all
+        microphones} & Microcontroller and Microphones\\ \hline
+        NFR1.2 & The firmware shall operate at a rate faster than 16 kHz sample
+        rate of the microphones & Microcontroller\\ \hline
+        FR7.2 & The microphones shall be sensitive to audio waves within the
+        most audible human hearing range (250 Hz - 8 kHz). & Microphones \\
+        \hline
+        NFR7.1 & The microphones shall be capable of sampling at 16 kHz (2x 8kHz
+        as per Nyquist Theorem). & Microcontroller and Microphones\\ \hline
+        FR 8.1 - 8.2 + NFR 8.1 & The display shall be capable of displaying
+        information to the user without delay & Display Component \\ \hline
+        FR 9.1 + NFR 9.1 - 9.2 + FR 3.4 & MCU shall have a sufficient compute to
+        support sampling and processing 4 microphones at 16 kHz each &
+        Microcontroller \\ \hline
+        E.3 & Maximum product budget of \$500. Components should fit in a small
+        form factor and be viable for outdoor usage.& Every component\\ \hline
     \end{tabularx}
     \caption{Requirements from SRS applicable to hardware.}
     \label{table:hw_req_srs}
 \end{table}
 
 \subsection{Required Hardware Components}
-Based on the described requirements in table \ref{table:hw_req_srs}, the project 
+Based on the described requirements in table \ref{table:hw_req_srs}, the project
 requires the following hardware components:
 
 \begin{itemize}
@@ -166,7 +175,8 @@ requires the following hardware components:
     four individual time synchronized audio streams.
     \item Microphone components that are sensitive to the human audible range
     that are capable of being sampled in a synchronized manner.
-    \item A display component that is portable, non-intrusive and usable outdoors. 
+    \item A display component that is portable, non-intrusive and usable
+    outdoors. 
 \end{itemize}
 
 Additionally, the hardware should be capable of being miniaturized enough in the
@@ -178,36 +188,36 @@ it may be powered using a portable power source such as a battery (E.3.2).
 
 
 Initial hardware selection considerations focused on meeting the microcontroller
-and microphone requirements. There are multiple types of microphones available 
+and microphone requirements. There are multiple types of microphones available
 for use in embedded systems, with the two primary categories being analog and
-digital microphones. Even digital microphones are in fact analog microphones 
+digital microphones. Even digital microphones are in fact analog microphones
 with the analog to digital converter and amplification circuitry built into the
-microphone daughter board. Digital microphones are preferred since they 
+microphone daughter board. Digital microphones are preferred since they
 significantly reduce the electrical design complexity required. This is also
 beneficial since the team does not have significant electrical design experience
 or knowledge on using operational amplifiers. 
 
 \subsubsection{Microphone Selection}
-A quick hardware search for embedded digital microphones yields the INMP441 MEMS 
+A quick hardware search for embedded digital microphones yields the INMP441 MEMS
 (micro electrical mechanical system) microphone as the standard choice for most
-embedded projects. The microphone outputs samples over the I2S protocol described
-in section \ref{sec:i2s_protocol}. Easy to use breakout boards for INMP441
-microphones are also readily available. Analog microphones were researched but
-avoided as it would require extensive circuit design. 
+embedded projects. The microphone outputs samples over the I2S protocol
+described in section \ref{sec:i2s_protocol}. Easy to use breakout boards for
+INMP441 microphones are also readily available. Analog microphones were
+researched but avoided as it would require extensive circuit design. 
 
 
 \subsubsection{Microcontroller Selection}
-The microcontroller selection was much more involved since there are many 
+The microcontroller selection was much more involved since there are many
 options available from multiple brands such as EspressIF, ST Micro Electronics,
 and Texas Instruments. MCUs from each brand tend to specialize in different
-areas such as media, automotive, and hobby projects. One of the key 
-requirements for an MCU for the project is to be able to sample four 
-microphones independently but also in sync to ensure that the samples are 
-time aligned. This would require the MCU to have four independent I2S 
-peripherals which can be synchronized to sample on the same clock edge. 
+areas such as media, automotive, and hobby projects. One of the key requirements
+for an MCU for the project is to be able to sample four microphones
+independently but also in sync to ensure that the samples are time aligned. This
+would require the MCU to have four independent I2S peripherals which can be
+synchronized to sample on the same clock edge. 
 \bigskip
 
-Each of the major manufacturers have relevant search tools to determine which 
+Each of the major manufacturers have relevant search tools to determine which
 MCU from their product lineup meets requirements. Searching for an MCU with four
 independent MCUs on the EspressIF website yields a single result shown in figure
 \ref{fig:esp_search}.
@@ -219,14 +229,14 @@ independent MCUs on the EspressIF website yields a single result shown in figure
     \label{fig:esp_search}
 \end{figure}
 
-Investigating the specifications of the I2S peripherals available reveals that 
+Investigating the specifications of the I2S peripherals available reveals that
 the ESP32-P4 only has three usable I2S peripherals with the fourth one being low
-powered for simple sound detection which makes it unsuitable for the project's 
+powered for simple sound detection which makes it unsuitable for the project's
 requirements \cite{esp32_p4}.
 \bigskip
 
-Search on the Texas Instruments product selector yields only the MSPM0G5187 
-MCU shown in figure \ref{fig:ti_search}, which has inadequate specs for the 
+Search on the Texas Instruments product selector yields only the MSPM0G5187 MCU
+shown in figure \ref{fig:ti_search}, which has inadequate specs for the
 project's use case. The MCU only has two I2S peripherals and 32 kBytes of RAM
 which makes it unusable for the project \cite{ti_mspm0}.
 
@@ -248,26 +258,27 @@ such as the CPU clock speed, RAM size and I2S count being selected.
     \label{fig:stm_search}
 \end{figure}
 
-The list then further needs to be narrowed down to MCUs that have development 
+The list then further needs to be narrowed down to MCUs that have development
 kit boards available for purchase. This is not the case for every MCU and even
 if the MCU has all the peripherals available, they may not be connected to the
 development board pins rendering them unusable. With this criteria the best
 suitable microcontroller was deemed to be the STM32F767ZI MCU since it is
-available as a 144 pin Nucleo Discovery board with four independent I2S 
+available as a 144 pin Nucleo Discovery board with four independent I2S
 interfaces available at the physical pins \cite{digikey_stm32f7}. 
 
 \subsubsection{Output Display}
 
 The output display is responsible for visually notifying the user about the
 status of any sound detections and relative direction. Since the system has to
-be a portable wearable device with mounting points for the microphones, it is 
+be a portable wearable device with mounting points for the microphones, it is
 reasonable to consider heads up display smart glasses for this purpose. They
 offer a transparent display that is visible outdoors with a frame that can be
-used to place microphones. Since this is a relatively new technology in the 
-consumer segment, there are not many options available. The glasses would also 
-require an interface that the system can use to display custom text and graphics.
-The top contenders for this type of smart glasses were the Rokid AR Glasses,
-Inmo XR Glasses, and the Even Realities G2, all shown in figure \ref{fig:ar_glasses}.
+used to place microphones. Since this is a relatively new technology in the
+consumer segment, there are not many options available. The glasses would also
+require an interface that the system can use to display custom text and
+graphics. The top contenders for this type of smart glasses were the Rokid AR
+Glasses, Inmo XR Glasses, and the Even Realities G2, all shown in figure
+\ref{fig:ar_glasses}.
 
 \begin{figure}[H]
     \centering
@@ -277,10 +288,10 @@ Inmo XR Glasses, and the Even Realities G2, all shown in figure \ref{fig:ar_glas
 \end{figure}
 
 At the time of project development, all three products had just been announced
-with no shipping guarantees as they were crowd funded projects \cite{rokid_ks,inmo_ks}. 
-Based on this information, the Rokid glasses were selected since they were the
-cheaper and more lightweight option with a more predictable shipping time of around
-December 2025. 
+with no shipping guarantees as they were crowd funded projects
+\cite{rokid_ks,inmo_ks}. Based on this information, the Rokid glasses were
+selected since they were the cheaper and more lightweight option with a more
+predictable shipping time of around December 2025. 
 
 \begin{figure}[H]
     \centering
@@ -296,12 +307,12 @@ hardware.
 
 \subsubsection{STM microcontoller}
 
-The STM32F767ZI MCU has the following relevant specifications \cite{STM_REFERENCE_MANUAL}:
+The STM32F767ZI MCU has the following relevant specifications
+\cite{STM_REFERENCE_MANUAL}:
 
 \begin{table}[H]
     \centering
-    \begin{tabularx}{\textwidth}{p{4cm}|X}
-        Specification & Description\\ \hline
+    \begin{tabularx}{\textwidth}{p{4cm}|X} Specification & Description\\ \hline
         CPU & Single ARM Cortex M7 Core. \\ \hline
         Max Clock & 216 MHz \\ \hline
         SRAM & 512 KB \\ \hline
@@ -312,21 +323,21 @@ The STM32F767ZI MCU has the following relevant specifications \cite{STM_REFERENC
     \end{tabularx}
 \end{table}
 
-The four independent serial audio interface peripherals, each with their own
-I2S receiver satisfy the project requirements since they can be synchronized to 
+The four independent serial audio interface peripherals, each with their own I2S
+receiver satisfy the project requirements since they can be synchronized to
 sample on a single clock. The overall clock speed is sufficient for required
 processing throughput. 512 KB of static RAM is enough memory to store 4 channels
-of microphone audio with a significant portion available for processing. The 
-MCU also has integrated ARM DSP instructions that can leverage hardware 
-acceleration to perform tasks such as fourier transforms.
+of microphone audio with a significant portion available for processing. The MCU
+also has integrated ARM DSP instructions that can leverage hardware acceleration
+to perform tasks such as fourier transforms.
 
 \subsubsection{Microphone}
-The INMP441 microphone has the following relevant specifications \cite{inmp441_datasheet}:
+The INMP441 microphone has the following relevant specifications
+\cite{inmp441_datasheet}:
 
 \begin{table}[H]
     \centering
-    \begin{tabularx}{\textwidth}{p{4cm}|X}
-        Specification & Description\\ \hline
+    \begin{tabularx}{\textwidth}{p{4cm}|X} Specification & Description\\ \hline
         Audio resolution & 24 bits signed data. \\ \hline
         Signal to Noise Ratio & 61 dBA \\ \hline
         Signal Sensitivity & -26 dBFS \\ \hline
@@ -334,19 +345,19 @@ The INMP441 microphone has the following relevant specifications \cite{inmp441_d
     \end{tabularx}
 \end{table}
 
-The 24 bits of signed data implies 12 bits for the microphone diaphragm extending
-outwards and 12 bits for the diaphragm compressing inwards from sound waves in 
-the air. The resolution along with the flat frequency response from 60 Hz to 15
-kHz makes this microphone an ideal choice for the projects target frequency 
-sensitivity range of 20 Hz - 8 kHz (FR 7.2).
+The 24 bits of signed data implies 12 bits for the microphone diaphragm
+extending outwards and 12 bits for the diaphragm compressing inwards from sound
+waves in the air. The resolution along with the flat frequency response from 60
+Hz to 15 kHz makes this microphone an ideal choice for the projects target
+frequency sensitivity range of 20 Hz - 8 kHz (FR 7.2).
 
 \subsubsection{Rokid AR glasses}
 
-The Rokid AI Glasses have the following relevant specifications \cite{RokidGlasses,rokid_ks}:
+The Rokid AI Glasses have the following relevant specifications
+\cite{RokidGlasses,rokid_ks}:
 \begin{table}[H]
     \centering
-    \begin{tabularx}{\textwidth}{p{4cm}|X}
-        Specification & Description\\ \hline
+    \begin{tabularx}{\textwidth}{p{4cm}|X} Specification & Description\\ \hline
         Display & Dual Waveguide Optical Displays \\ \hline
         Display Colors & Monochrome Green \\ \hline
         Weight & 49 grams \\ \hline
@@ -356,12 +367,13 @@ The Rokid AI Glasses have the following relevant specifications \cite{RokidGlass
 \end{table}
 
 The Rokid AI Glasses run on a standard Android operating system installation
-making it easy to deploy a custom Android app which can communicate with the 
-whole system over various external interfaces such as USB and Bluetooth. The 
+making it easy to deploy a custom Android app which can communicate with the
+whole system over various external interfaces such as USB and Bluetooth. The
 monochrome green displays are projected focused at infinity in front of the user
-with the option to put the display in peripheral vision where it is not obstructive
-to the user. These specifications thus make the Rokid AI glasses an ideal choice
-for this project, especially when considering shipping timelines and cost. 
+with the option to put the display in peripheral vision where it is not
+obstructive to the user. These specifications thus make the Rokid AI glasses an
+ideal choice for this project, especially when considering shipping timelines
+and cost. 
 
 
 \label{sec:theory}
@@ -370,8 +382,8 @@ for this project, especially when considering shipping timelines and cost.
 This section reviews the theoretical background of hardware and software
 integration required for this project. It provides the necessary context to
 understand the design decisions made by the team. The information presented in
-this section comes from Digikey's documentation \cite{I2S} and the 
-STM 32 Reference Manual \cite{STM_REFERENCE_MANUAL}.
+this section comes from Digikey's documentation \cite{I2S} and the STM 32
+Reference Manual \cite{STM_REFERENCE_MANUAL}.
 
 \subsection{I2S Communication Protocol}
 \label{sec:i2s_protocol}
@@ -399,16 +411,16 @@ device generates the clock signals (SCK and WS) and is referred to as the
 controller, while the remaining devices act as peripherals and transmit or
 receive audio data accordingly. In this project, the STM32 microcontroller
 functions as the controller, generating both the serial clock and word select
-signals. The microphones act as peripherals and transmit audio samples on the
-SD line in synchronization with these clocks.
+signals. The microphones act as peripherals and transmit audio samples on the SD
+line in synchronization with these clocks.
 
 Data transmission occurs on either the rising or falling edge of the serial
-clock, depending on the configuration of the devices during initialization.
-The WS signal changes state once per audio frame, indicating whether the
-transmitted data corresponds to the left or right channel. Each audio sample
-is aligned with the WS signal such that one complete word is transmitted per
-channel per frame. Figure~\ref{fig:i2s_protocol} illustrates the timing
-relationship between SCK, WS, and SD.
+clock, depending on the configuration of the devices during initialization. The
+WS signal changes state once per audio frame, indicating whether the transmitted
+data corresponds to the left or right channel. Each audio sample is aligned with
+the WS signal such that one complete word is transmitted per channel per frame.
+Figure~\ref{fig:i2s_protocol} illustrates the timing relationship between SCK,
+WS, and SD.
 
 \begin{figure}[H]
     \centering
@@ -417,16 +429,15 @@ relationship between SCK, WS, and SD.
     \label{fig:i2s_protocol}
 \end{figure}
 
-Audio samples are commonly 16, 24, or 32 bits in length. In this project,
-the microphones output 24 bit samples. Since the STM32 microcontroller store
-data in 32-bit registers, the received samples require post-processing to
-handle proper alignment and padding. This involves shifting the received data.
-The microphones transmit data most significant bit (MSB) first, as defined by
-the I2S standard. This transmission order is independent of the
-microcontroller's internal endianness. Therefore, software must correctly
-reconstruct the sample values from the received byte stream. Figure
-\ref{fig:i2s_protocol} shows how I2S data is received and stored on the
-microcontoller.
+Audio samples are commonly 16, 24, or 32 bits in length. In this project, the
+microphones output 24 bit samples. Since the STM32 microcontroller store data in
+32-bit registers, the received samples require post-processing to handle proper
+alignment and padding. This involves shifting the received data. The microphones
+transmit data most significant bit (MSB) first, as defined by the I2S standard.
+This transmission order is independent of the microcontroller's internal
+endianness. Therefore, software must correctly reconstruct the sample values
+from the received byte stream. Figure \ref{fig:i2s_protocol} shows how I2S data
+is received and stored on the microcontoller.
 
 \begin{figure}[H]
     \centering
@@ -435,9 +446,9 @@ microcontoller.
     \label{fig:i2s_data_transfer}
 \end{figure}
 
-Figure~\ref{fig:mic} shows the I2S microphone used in this project.
-The device provides dedicated pins for the SCK, WS, and SD connections,
-allowing direct interfacing with the microcontroller's I2S peripheral.
+Figure~\ref{fig:mic} shows the I2S microphone used in this project. The device
+provides dedicated pins for the SCK, WS, and SD connections, allowing direct
+interfacing with the microcontroller's I2S peripheral.
 
 \begin{figure}[H]
     \centering
@@ -446,7 +457,7 @@ allowing direct interfacing with the microcontroller's I2S peripheral.
     \label{fig:mic}
 \end{figure}
 
-\subsection{Micophone Synchronization} \label{sec:mic_sync}
+\subsection{Microphone Synchronization} \label{sec:mic_sync}
 
 Microphone synchronization ensures that audio samples captured from multiple
 microphones correspond to the same point in time. This simultaneity is critical
@@ -455,18 +466,17 @@ accurately measuring the time differences at which a sound reaches each
 microphone (\hyperref[SRS-FR1_2]{FR1.2}).
 
 The microphones communicate using the I2S protocol and are synchronized through
-a shared clock. The microcontroller operates as the I2S master and generates
-the SCK and WS signals, while all microphones
-operate as slaves. These signals are distributed to each microphone, ensuring
-that all devices sample audio simultaneously and remain phase-aligned.
-Using a common clock eliminates inter-channel clock drift and minimizes
-sampling jitter between microphones. Furthermore, a shared WS signal
-guarantees that samples from corresponding channels are aligned consistently in
-software buffers for subsequent processing.
+a shared clock. The microcontroller operates as the I2S master and generates the
+SCK and WS signals, while all microphones operate as slaves. These signals are
+distributed to each microphone, ensuring that all devices sample audio
+simultaneously and remain phase-aligned. Using a common clock eliminates
+inter-channel clock drift and minimizes sampling jitter between microphones.
+Furthermore, a shared WS signal guarantees that samples from corresponding
+channels are aligned consistently in software buffers for subsequent processing.
 
-Figure~\ref{fig:mic_wiring} illustrates the microphone wiring.
-The orange wire represents the SCK signal and the green wire represents the
-WS signal. Both signals are common to all microphones in the array.
+Figure~\ref{fig:mic_wiring} illustrates the microphone wiring. The orange wire
+represents the SCK signal and the green wire represents the WS signal. Both
+signals are common to all microphones in the array.
 
 \begin{figure}[H]
     \centering
@@ -484,21 +494,20 @@ WS signal. Both signals are common to all microphones in the array.
 
 Figure~\ref{fig:mic_wiring} illustrates the microphone array wiring
 configuration. As described in Section~\ref{sec:mic_sync}, the SCK and WS
-signals are shared among all microphones to achieve
-synchronized sampling. The left/right (L/R) channel signal is identical for all
-microphones to ensure that each device stores data within the same channel
-frame. In this project, all microphones are storing to left channel
-(arbitrarily chosen).
+signals are shared among all microphones to achieve synchronized sampling. The
+left/right (L/R) channel signal is identical for all microphones to ensure that
+each device stores data within the same channel frame. In this project, all
+microphones are storing to left channel (arbitrarily chosen).
 
 Each microphone has an independent data line (blue wire) that transmits
 digitized audio data to the microcontroller. These data lines are connected to
 the microcontroller input pins PE6, PE3, PD11, and PA0. Power and ground
 connections are supplied to each microphone to ensure proper operation.
 
-A micro-USB cable is used to transmit data from the microcontroller to the
-smart glasses. Data is communicated via the USB transmit (TX) interface.
-Therefore, the connector on the receiving end may vary, provided that the
-connected device operates as a USB host.
+A micro-USB cable is used to transmit data from the microcontroller to the smart
+glasses. Data is communicated via the USB transmit (TX) interface. Therefore,
+the connector on the receiving end may vary, provided that the connected device
+operates as a USB host.
 
 \subsection{Verification}
 
@@ -529,8 +538,8 @@ development using the CLion debugger.
 
 Microphones became available in mid October and were subsequently wired to the
 microcontroller. Initial development began with a single microphone to verify
-configuration and data acquisition before scaling to a
-four microphone synchronized array.
+configuration and data acquisition before scaling to a four microphone
+synchronized array.
 
 To evaluate microphone performance, an SD card module was added to the
 microcontroller, and captured audio data were stored as \texttt{.wav} files for
@@ -546,10 +555,10 @@ array configuration is illustrated in Figure~\ref{fig:mic_wiring}.
 \subsubsection{Phase 3: Glasses Integration and System Validation}
 
 In Phase~3, the microphone array was reconfigured to match the physical
-dimensions of the smart glasses, figure
-\ref{fig:phase3_hardware}. This allowed direction-of-arrival (DoA)
-estimation and sound classification algorithms to be evaluated directly on the
-microcontroller which was representative of the final product.
+dimensions of the smart glasses, figure \ref{fig:phase3_hardware}. This allowed
+direction-of-arrival (DoA) estimation and sound classification algorithms to be
+evaluated directly on the microcontroller which was representative of the final
+product.
 
 During this phase, the smart glasses hardware arrived, enabling the development
 of a custom communication protocol between the microcontroller and the glasses.
@@ -574,8 +583,8 @@ microphones to the PCB pin outs to the microcontroller.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{diagrams/pcb.jpg}
-    \caption{PCB for attatching microphones on the glasses.}
-    \label{fig:pcb}
+    \caption{PCB for attaching microphones on the glasses.}
+    \label{fig:pb}
 \end{figure}
 
 \begin{table}[H]
@@ -596,8 +605,8 @@ microphones to the PCB pin outs to the microcontroller.
 \end{table}
 
 Furthermore, the team changes the microcontroller to glasses communication from
-USB to bluetooth. The reason for this upgrade was because the USB connection
-was not consistent and the available wire connection to the glasses was short.
+USB to bluetooth. The reason for this upgrade was because the USB connection was
+not consistent and the available wire connection to the glasses was short.
 Bluetooth gave the team flexibility to connect to the glasses wirelessly with
 more consistent connection. Figure \ref{fig:bluetooth_wiring} demonstrates the
 wiring for the bluetooth module to the microcontroller.
@@ -643,14 +652,14 @@ directly influenced the overall software design and implementation decisions.
 
 \subsection{Hardware Abstraction Layer}
 
-At the beginning of the project, there was significant uncertainty regarding
-the availability and suitability of the hardware. It was unclear whether the
-team would have access to smart glasses for data visualization or a
-microcontroller capable of processing audio data in real time. To mitigate
-these risks, contingency plans were developed. For example, the smart glasses
-could be replaced with a monitor to display user output, or audio data could be
-collected on the microcontroller and streamed to a laptop with sufficient
-computational resources to execute the \progname{} features.
+At the beginning of the project, there was significant uncertainty regarding the
+availability and suitability of the hardware. It was unclear whether the team
+would have access to smart glasses for data visualization or a microcontroller
+capable of processing audio data in real time. To mitigate these risks,
+contingency plans were developed. For example, the smart glasses could be
+replaced with a monitor to display user output, or audio data could be collected
+on the microcontroller and streamed to a laptop with sufficient computational
+resources to execute the \progname{} features.
 
 Given this uncertainty, the decision was made to abstract the hardware from the
 software implementation by introducing a hardware abstraction layer (HAL),
@@ -687,23 +696,23 @@ As a result, the software was designed to minimize memory usage by reusing
 objects by employing references instead of creating unnecessary copies.
 
 With this constraint, all algorithms were required to be lightweight and
-memory-efficient. This is the primary reason for the team not implementing
-a machine learning model for audio classification or direction of arrival
+memory-efficient. This is the primary reason for the team not implementing a
+machine learning model for audio classification or direction of arrival
 estimation, as there was insufficient memory to store and execute such models.
 Additionally, limited RAM capacity restricted the number of audio samples that
 could be processed simultaneously. While a larger number of samples generally
 improves signal quality and analysis accuracy, memory limitations constrained
-the system to approximately 2000 samples per microphone
-(about 125~ms of audio data).
+the system to approximately 2000 samples per microphone (about 125~ms of audio
+data).
 
 Given the potential for hardware-related failures, the software was designed
 with error detection and recovery mechanisms if possible. All operations
-susceptible to failure, including memory allocation, configuration, and
-hardware initialization, are explicitly checked, and appropriate error codes are
-returned and handled accordingly. Without these safeguards, the system would
-default to an infinite loop of doing nothing, which degrades user experience.
-Incorporating structured error handling also enables more efficient debugging
-of system faults during development.
+susceptible to failure, including memory allocation, configuration, and hardware
+initialization, are explicitly checked, and appropriate error codes are returned
+and handled accordingly. Without these safeguards, the system would default to
+an infinite loop of doing nothing, which degrades user experience. Incorporating
+structured error handling also enables more efficient debugging of system faults
+during development.
 
 \newpage 
 
