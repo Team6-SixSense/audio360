@@ -1,0 +1,15 @@
+﻿Item,Cost,Quantity,Total Cost,Reimbursed by Dept.
+STM32F7 MCU,$25,$2,$100,Yes
+6x INMP441 MICs,$25,1,25,Yes
+USB 3.0 Coupler,$13,1,13,No
+Ugreen USB Convertors,$10.50,1,10.5,No
+USB Y Cable,$10,1,10,No
+ICS 43434 MIC,$3.40,4,13.6,No
+AT 09 Bluetooth Module,$6.50,2,13,No
+3D Printer Filament,$8.00,1,8,No
+3D Scanning for Glasses,$60.00,1,60,No
+PCB Modules,$8.13,1,8.13,No
+Total,,,$261,
+Reimbursed ,,,$125,
+Remaining,,,$136,
+Per Person,,,$27,
