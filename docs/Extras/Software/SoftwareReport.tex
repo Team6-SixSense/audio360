@@ -50,6 +50,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 Mar 7, 2026 & Kalp & Direction of Arrival theory and prototyping sections.\\
+Apr 6, 2026 & Nirmal & Introduction and Classification sections.\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -67,8 +68,27 @@ Mar 7, 2026 & Kalp & Direction of Arrival theory and prototyping sections.\\
 \pagenumbering{arabic}
 
 \section{Introduction}
-\wss{Explain the purpose of this document. Why it was selected for this project.}
-\wss{Briefly outline the structure of the document.}
+
+This document presents the prototyping efforts and theoretical foundations 
+related to the software components of \progname{}. It focuses on two key 
+capabilities: direction of arrival (DoA) estimation and sound classification. 
+It also describes the Python prototyping workflow used to validate algorithms, 
+generate test data, and compare performance. This document was selected 
+because it provides a comprehensive overview of how PyRoomAcoustics was leveraged 
+to simulate exactly how the system would perform in real conditions, which was 
+crucial for validating the algorithms early on. It also provides detailed 
+descriptions of the DoA and classification algorithms that were tested, and the 
+results obtained from those tests, which informed the final design choices for 
+the embedded implementation.
+
+The structure of the document is as follows. Section~\ref{sec:doa} covers the 
+theory and prototyping of DoA estimation, including detailed descriptions of 
+the algorithms used (GCC-PHAT, MUSIC, SRP-PHAT, and FRIDA) and the 
+PyRoomAcoustics simulation workflow. Section~\ref{sec:classification} discusses 
+the sound classification experiments, including dataset preparation and the 
+approaches tested (SVM, Cosine Similarity, and LDA). Each section includes 
+theoretical background, implementation details, and results from the 
+prototyping efforts. 
 
 \section{Direction of Arrival} \label{sec:doa}
 
@@ -375,7 +395,129 @@ conditions.
 
 \section{Classification}
 
-\wss{This section is written by the classification partner.}
+
+Classification of sounds is another key capability of 
+\progname{} (\hyperref[SRS-FR5_1]{FR5.1}). The system must identify the type of 
+sound source (e.g., siren, smoke\_alarm, person\_talking) from the multi-channel 
+audio input provided in the PyRoom simulation. This section presents the 
+theoretical experiments and prototyping efforts related to sound 
+classification, and will give a high level breakdown of the algorithms and 
+approaches used when testing different approaches. 
+
+
+\subsection{Dataset Preparation}
+
+
+The classification experiments relied on a dataset of labeled audio samples 
+representing the target sound classes. The dataset was obtained from a 
+combination of publicly available sound libraries like FSD50k 
+\cite{FSD50k}, and custom 
+recordings of relevant sounds. Based on the desired classes, the final dataset 
+was created using a balanced selection of samples for each class. The audio 
+samples were also preprocessed to ensure consistency in sampling rate (16 kHz), 
+duration (2 seconds), and format (mono). 
+
+
+\subsection{Experiment Approaches}
+
+
+Several classification approaches were explored, including traditional machine 
+learning methods like Support Vector Machines (SVM), and more light weight 
+heuristic based approaches like Cosine Similarity and Linear Discriminant 
+Analysis (LDA). All of these approaches were prototyped in Python and 
+integrated with the continuous simulation script (run_simulation.py) to 
+evaluate their performance on the simulated multi-channel audio data. The 
+following sections will give a high level overview of the approaches used and 
+the results obtained from the experiments.
+
+
+\subsubsection{Support Vector Machines (SVM)}
+
+
+Support Vector Machines (SVM) are a popular supervised learning algorithm for 
+classification tasks. Theoretically, SVMs work by finding the hyperplane that 
+best separates the select classes in the feature space. In our experiments, 
+we extracted 26 Mel-Frequency Cepstral Coefficients (MFCCs) per frame, then 
+aggregated them over the 2 second duration by using the mean and standard 
+deviation. For the purpose of testing and validating with this model, we 
+used a 80-20 train-test split on the dataset and performed 5-fold cross 
+validation. We trained different SVM models with various kernel functions 
+including Standard Scalar, Linear and RBF kernels. The performance of the SVM 
+models seemed to be the best with the RBF kernels, achieving an accuracy of 
+around 85\% on the test set.
+
+
+Although this approach was promising, we noticed there was a problem with 
+efficiency when we tested the trained SVM model on the simulated 
+multi-channel audio data. There was a noticeable delay in the classification 
+outputs when testing this approach on continuous audio data, which is a concern 
+for real time applications like \progname{}, especially since in the real 
+application, this model would be running on an embedded microcontroller with 
+limited computational resources.
+
+
+\subsubsection{Cosine Similarity}
+
+
+Pivoting to approaches that used more heuristic based methods, we explored 
+using Cosine Similarity for classification. This approach is based on the idea 
+of representing each sound class as a vector in a high-dimensional feature 
+space, and then classifying new audio samples by measuring the cosine 
+similarity between the sample's feature vector and class vector. Here, we 
+also used MFCCs as features for each targeted class, 
+and created class vectors by averaging the MFCCs of all samples in each class. 
+
+
+When testing this approach on the simulated multi-channel audio data, we found 
+that although this was a much more efficient approach compared to SVMs, the 
+accuracy was significantly lower, achieving around a 45\% accuracy on the test 
+set. This suggests that while Cosine Similarity is computationally efficient, 
+it may not capture the complex patterns in the audio data as effectively as 
+SVMs.
+
+
+\subsubsection{Linear Discriminant Analysis (LDA)}
+
+
+After testing the SVM and Cosine Similarity approaches, we explored using 
+explored using Linear Discriminant Analysis (LDA) for classification, which 
+is a heuristic based method that seeks to find a linear combination of features 
+that best separate the classes. Theoretically, it is similar to SVMs in that it 
+seeks to find the hyperplane that best separates the classes, but it does so by 
+maximizing the ratio of between-class to within-class variance, rather than 
+maximizing the margins as in SVMs. In this approach there are two main steps 
+involved after the MFCC feature extraction: Principle Component Analysis (PCA) 
+and Linear Discriminant Analysis (LDA). PCA is used to reduce the 
+dimensionality of the feature space by extracting the features that vary the 
+most (considered the most important features). After PCA, LDA is applied to 
+find the linear combination of PCA features that best separate the classes. 
+The result of training are two matrices: the PCA projection matrix which 
+is used to project the original features into the PCA space, and the LDA 
+projection matrix which is used to project the PCA features into the LDA space.
+Evidently, although this approach is conceptually similar to SVMs, it is much 
+more efficient to compute on continuous audio, since it is simply just matrix 
+multiplications. 
+
+
+When testing this approach on the simulated multi-channel audio data, we found
+that the accuracy was around 80\% on the test set, which is slightly lower than 
+the SVM approach, but significantly higher than the Cosine Similarity approach.
+This suggests that LDA is a promising approach for sound classification. And 
+so, in our final prototype implementation, we used LDA for the classification. 
+
+
+Shown below is an image of three audio samples in the resulting LDA space, 
+where we can see that the samples from the same class are clustered together, 
+and the samples from different classes are separated.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{diagrams/lda.png}
+    \caption{Visualization of audio samples in LDA space.}
+    \label{fig:lda_visualization}
+\end{figure}
+
+
 
 \newpage 
 \bibliographystyle{IEEEtran}
