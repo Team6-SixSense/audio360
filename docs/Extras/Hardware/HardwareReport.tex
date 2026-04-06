@@ -54,6 +54,8 @@ April 5, 2026 & Sathurshan, Omar & Hardware report completed.\\
 \end{tabularx}
 \end{table}
 
+\setlength{\parindent}{0pt}
+
 \newpage
 
 \section{Symbols, Abbreviations and Acronyms}
@@ -112,37 +114,208 @@ for a complete table used in \progname.
 \pagenumbering{arabic}
 
 \section{Introduction}
-\wss{Explain the prupose of this document. Why it was selected for this project}
-\wss{Briefly outline the structure of the document}
+The Audio360 project has a significant embedded systems component that is not
+fully addressed by other project deliverables. This report documents the hardware
+design decisions made throughout the capstone, from requirements gathering and
+component selection through to physical integration and software co-design.
+\bigskip
+
+The report is organized as follows. Section~\ref{sec:hardware} derives the
+hardware requirements from the system SRS and documents the selection and
+specification of each component. Section~\ref{sec:theory} provides the
+theoretical background for the I2S communication protocol and the
+microphone synchronization strategy used to enable direction-of-arrival
+estimation. Section~\ref{sec:integration} describes the physical wiring
+of the microphone array and microcontroller, and traces the system through
+four progressive hardware integration phases. Finally,
+Section~\ref{sec:hw_sw} discusses how hardware constraints shaped key
+software architecture and implementation decisions, including the
+introduction of a hardware abstraction layer.
+
 
 \section{Hardware}
+\label{sec:hardware}
 
 \subsection{Hardware Requirements}
-\wss{Write down requirements that applied to hardware from SRS.}
-\wss{Write down any constraints (budget)}
+The following requirements from the SRS are applicable to the
+embedded hardware:
 
-\subsection{Required Hardware Conponents}
-\wss{List what hardware is required based on the requirements from above section.}
-\wss{Explain how each hardware acheives each requirements/ why it is needed?}
-\wss{microcontroller, microphone, Rokid glasses \cite{RokidGlasses}}
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|p{3.5cm}|>{\raggedright\arraybackslash}X|p{3.5cm}|}
+        \hline
+        \textbf{Requirement} & \textbf{Description} & \textbf{Component}\\ \hline
+        FR1.2 & The firmware shall synchronize audio signals from \textbf{all microphones} & Microcontroller and Microphones\\ \hline
+        NFR1.2 & The firmware shall operate at a rate faster than 16 kHz sample rate of the microphones & Microcontroller\\ \hline
+        FR7.2 & The microphones shall be sensitive to audio waves within the most audible human hearing range (250 Hz - 8 kHz). & Microphones \\ \hline
+        NFR7.1 & The microphones shall be capable of sampling at 16 kHz (2x 8kHz as per Nyquist Theorem). & Microcontroller and Microphones\\ \hline
+        FR 8.1 - 8.2 + NFR 8.1 & The display shall be capable of displaying information to the user without delay & Display Component \\ \hline
+        FR 9.1 + NFR 9.1 - 9.2 + FR 3.4 & MCU shall have a sufficient compute to support sampling and processing 4 microphones at 16 kHz each & Microcontroller \\ \hline
+        E.3 & Maximum product budget of \$500. Components should fit in a small form factor and be viable for outdoor usage.& Every component\\ \hline
+    \end{tabularx}
+    \caption{Requirements from SRS applicable to hardware.}
+    \label{table:hw_req_srs}
+\end{table}
+
+\subsection{Required Hardware Components}
+Based on the described requirements in table \ref{table:hw_req_srs}, the project 
+requires the following hardware components:
+
+\begin{itemize}
+    \item A processor with sufficient compute and audio peripherals to handle
+    four individual time synchronized audio streams.
+    \item Microphone components that are sensitive to the human audible range
+    that are capable of being sampled in a synchronized manner.
+    \item A display component that is portable, non-intrusive and usable outdoors. 
+\end{itemize}
+
+Additionally, the hardware should be capable of being miniaturized enough in the
+future to fit in a wearable form factor. Since the hardware is expected to fit
+in a wearable form factor, the power draw needs to be sufficiently low such that
+it may be powered using a portable power source such as a battery (E.3.2).  
 
 \subsection{Hardware Selection Process}
-\wss{Process of selecting hardware to fit requirements and pricing}
-\wss{performance, cost, timing of shipment, etc.}
-\wss{Aleternative hardware}
-\wss{Include links to hardware source}
+
+
+Initial hardware selection considerations focused on meeting the microcontroller
+and microphone requirements. There are multiple types of microphones available 
+for use in embedded systems, with the two primary categories being analog and
+digital microphones. Even digital microphones are in fact analog microphones 
+with the analog to digital converter and amplification circuitry built into the
+microphone daughter board. Digital microphones are preferred since they 
+significantly reduce the electrical design complexity required. This is also
+beneficial since the team does not have significant electrical design experience
+or knowledge on using operational amplifiers. 
+
+\subsubsection{Microphone Selection}
+A quick hardware search for embedded digital microphones yields the INMP441 MEMS 
+(micro electrical mechanical system) microphone as the standard choice for most
+embedded projects. The microphone outputs samples over the I2S protocol described
+in section \ref{sec:i2s_protocol}. Easy to use breakout boards for INMP441
+microphones are also readily available. Analog microphones were researched but
+avoided as it would require extensive circuit design. 
+
+
+\subsubsection{Microcontroller Selection}
+The microcontroller selection was much more involved since there are many 
+options available from multiple brands such as EspressIF, ST Micro Electronics,
+and Texas Instruments. MCUs from each brand tend to specialize in different
+areas such as media, automotive, and hobby projects. One of the key 
+requirements for an MCU for the project is to be able to sample four 
+microphones independently but also in sync to ensure that the samples are 
+time aligned. This would require the MCU to have four independent I2S 
+peripherals which can be synchronized to sample on the same clock edge. 
+\bigskip
+
+Each of the major manufacturers have relevant search tools to determine which 
+MCU from their product lineup meets requirements. Searching for an MCU with four
+independent MCUs on the EspressIF website yields a single result shown in figure
+\ref{fig:esp_search}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{diagrams/esp_search.png}
+    \caption{Searching for MCU on the EspressIF website.}
+    \label{fig:esp_search}
+\end{figure}
+
+Investigating the specifications of the I2S peripherals available reveals that 
+the ESP32-P4 only has three usable I2S peripherals with the fourth one being low
+powered for simple sound detection which makes it unsuitable for the project's 
+requirements \cite{esp32_p4}.
+\bigskip
+
+Search on the Texas Instruments product selector yields only the MSPM0G5187 
+MCU shown in figure \ref{fig:ti_search}, which has inadequate specs for the 
+project's use case. The MCU only has two I2S peripherals and 32 kBytes of RAM
+which makes it unusable for the project \cite{ti_mspm0}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{diagrams/ti_search.png}
+    \caption{Searching for MCU on the TI website.}
+    \label{fig:ti_search}
+\end{figure}
+
+\bigskip
+Finally performing the search on the ST Micro product selector page yields more
+helpful results shown in figure \ref{fig:stm_search} with specific requirements
+such as the CPU clock speed, RAM size and I2S count being selected.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{diagrams/stm_search.png}
+    \caption{Searching for MCU on the STM website.}
+    \label{fig:stm_search}
+\end{figure}
+
+The list then further needs to be narrowed down to MCUs that have development 
+kit boards available for purchase. This is not the case for every MCU and even
+if the MCU has all the peripherals available, they may not be connected to the
+development board pins rendering them unusable. With this criteria the best
+suitable microcontroller was deemed to be the STM32F767ZI MCU since it is
+available as a 144 pin Nucleo Discovery board with four independent I2S 
+interfaces available at the physical pins \cite{digikey_stm32f7}. 
+
+\subsubsection{Output Display}
+
+The output display is responsible for visually notifying the user about the
+status of any sound detections and relative direction. Since the system has to
+be a portable wearable device with mounting points for the microphones, it is 
+reasonable to consider heads up display smart glasses for this purpose. They
+offer a transparent display that is visible outdoors with a frame that can be
+used to place microphones. Since this is a relatively new technology in the 
+consumer segment, there are not many options available. The glasses would also 
+require an interface that the system can use to display custom text and graphics.
+The top contenders for this type of smart glasses were the Rokid AR Glasses,
+Inmo XR Glasses, and the Even Realities G2, all shown in figure \ref{fig:ar_glasses}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{diagrams/different_glasses.png}
+    \caption{Left to Right - Rokid Glasses, INMO XR, Even Realities G2}
+    \label{fig:ar_glasses}
+\end{figure}
+
+At the time of project development, all three products had just been announced
+with no shipping guarantees as they were crowd funded projects \cite{rokid_ks,inmo_ks}. 
+Based on this information, the Rokid glasses were selected since they were the
+cheaper and more lightweight option with a more predictable shipping time of around
+December 2025. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{diagrams/rokid_glasses_display.png}
+    \caption{Rokid AR Glasses Display}
+    \label{fig:rokid_ar_display}
+\end{figure}
+
 
 \subsection{Hardware Specification}
-\wss{Include specification table of each hardware.}
-\wss{Include links to manufacturing documentation whether online or in this repo}
+The following subsections will describe the specifications for the selected
+hardware.
 
 \subsubsection{STM microcontoller}
+
+The STM32F767ZI MCU has the following specifications:
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{p{4cm}|X}
+        Specification & Description\\ \hline
+        CPU & Single ARM Cortex M7 Core. \\ \hline
+        Max Clock & 216 MHz \\ \hline
+        SRAM & 512 KB \\ \hline
+        Serial Audio Interface & 4x SAI + I2S \\ \hline 
+        Flash ROM Memory & 2048 KB \\ \hline
+        SPI Interfaces & 6 Quad SPI channels \\ \hline
+    \end{tabularx}
+\end{table}
 
 \subsubsection{Microphone}
 \wss{Go over each pin}
 
 \subsubsection{Rokid AR glasses}
-
+\label{sec:theory}
 \section{Theory}
 
 This section reviews the theoretical background of hardware and software
@@ -152,6 +325,7 @@ this section comes from Digikey's documentation \cite{I2S} and the
 STM 32 Reference Manual \cite{STM_REFERENCE_MANUAL}.
 
 \subsection{I2S Communication Protocol}
+\label{sec:i2s_protocol}
 
 I2S (Inter-Integrated Circuit Sound) is a serial communication protocol designed
 specifically for the transmission of digital audio data between integrated
@@ -255,6 +429,7 @@ WS signal. Both signals are common to all microphones in the array.
 \end{figure}
 
 \section{Hardware Integration}
+\label{sec:integration}
 
 \subsection{Wiring}
 
@@ -410,6 +585,7 @@ nature of the capstone, physical portability was not a primary design priority.
 \end{figure}
 
 \section{Software-Hardware Integration}
+\label{sec:hw_sw}
 
 This section describes how the software was designed in accordance with the
 hardware architecture. As software engineering students, it was essential to
