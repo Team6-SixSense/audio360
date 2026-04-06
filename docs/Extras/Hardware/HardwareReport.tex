@@ -296,7 +296,7 @@ hardware.
 
 \subsubsection{STM microcontoller}
 
-The STM32F767ZI MCU has the following specifications:
+The STM32F767ZI MCU has the following relevant specifications \cite{STM_REFERENCE_MANUAL}:
 
 \begin{table}[H]
     \centering
@@ -308,13 +308,62 @@ The STM32F767ZI MCU has the following specifications:
         Serial Audio Interface & 4x SAI + I2S \\ \hline 
         Flash ROM Memory & 2048 KB \\ \hline
         SPI Interfaces & 6 Quad SPI channels \\ \hline
+        Hardware Acceleration & ARM CMSIS \\ \hline
     \end{tabularx}
 \end{table}
 
+The four independent serial audio interface peripherals, each with their own
+I2S receiver satisfy the project requirements since they can be synchronized to 
+sample on a single clock. The overall clock speed is sufficient for required
+processing throughput. 512 KB of static RAM is enough memory to store 4 channels
+of microphone audio with a significant portion available for processing. The 
+MCU also has integrated ARM DSP instructions that can leverage hardware 
+acceleration to perform tasks such as fourier transforms.
+
 \subsubsection{Microphone}
-\wss{Go over each pin}
+The INMP441 microphone has the following relevant specifications \cite{inmp441_datasheet}:
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{p{4cm}|X}
+        Specification & Description\\ \hline
+        Audio resolution & 24 bits signed data. \\ \hline
+        Signal to Noise Ratio & 61 dBA \\ \hline
+        Signal Sensitivity & -26 dBFS \\ \hline
+        Frequency Response & Flat from 60 Hz to 15 kHz \\ \hline
+    \end{tabularx}
+\end{table}
+
+The 24 bits of signed data implies 12 bits for the microphone diaphragm extending
+outwards and 12 bits for the diaphragm compressing inwards from sound waves in 
+the air. The resolution along with the flat frequency response from 60 Hz to 15
+kHz makes this microphone an ideal choice for the projects target frequency 
+sensitivity range of 20 Hz - 8 kHz (FR 7.2).
 
 \subsubsection{Rokid AR glasses}
+
+The Rokid AI Glasses have the following relevant specifications \cite{RokidGlasses,rokid_ks}:
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{p{4cm}|X}
+        Specification & Description\\ \hline
+        Display & Dual Waveguide Optical Displays \\ \hline
+        Display Colors & Monochrome Green \\ \hline
+        Weight & 49 grams \\ \hline
+        Operating System & Android 12L \\ \hline
+        External Interfaces & WiFi, Bluetooth, USB 3.0 \\ \hline
+    \end{tabularx}
+\end{table}
+
+The Rokid AI Glasses run on a standard Android operating system installation
+making it easy to deploy a custom Android app which can communicate with the 
+whole system over various external interfaces such as USB and Bluetooth. The 
+monochrome green displays are projected focused at infinity in front of the user
+with the option to put the display in peripheral vision where it is not obstructive
+to the user. These specifications thus make the Rokid AI glasses an ideal choice
+for this project, especially when considering shipping timelines and cost. 
+
+
 \label{sec:theory}
 \section{Theory}
 
