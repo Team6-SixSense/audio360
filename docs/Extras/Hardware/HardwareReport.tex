@@ -49,6 +49,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 Dec 21, 2025 & Sathurshan, Omar & Report outline.\\
+April 5, 2026 & Sathurshan, Omar & Hardware report completed.\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -341,7 +342,7 @@ functionality.
 \subsubsection{Phase 4: PCB Implementation}
 
 In the final phase, the wiring was transitioned from a breadboard based
-prototype to a custom PCB, figure \ref{fig:pb}. This reduced the risk of loose
+prototype to a custom PCB, figure \ref{fig:pcb}. This reduced the risk of loose
 connections, and enhanced the overall appearance and robustness of the final
 product. Table \ref{tab:pcb_mic_info} summarizes the pin connections from the
 microphones to the PCB pin outs to the microcontroller.
@@ -350,7 +351,7 @@ microphones to the PCB pin outs to the microcontroller.
     \centering
     \includegraphics[width=0.5\linewidth]{diagrams/pcb.jpg}
     \caption{PCB for attatching microphones on the glasses.}
-    \label{fig:pb}
+    \label{fig:pcb}
 \end{figure}
 
 \begin{table}[H]
@@ -384,6 +385,30 @@ wiring for the bluetooth module to the microcontroller.
     \label{fig:bluetooth_wiring}
 \end{figure}
 
+With all design changes integrated, the final product is shown in figure
+\ref{fig:final_product_isometric} and figure \ref{fig:final_product_front}.
+The PCB is mounted directly onto a 3D printed frame,
+which will directly mount onto the actual glasses. This is to allow a
+temporarily installment of the hardware as the team could not install a
+permanent solution. Orange wiring is used to organize and route connections
+from the PCB to the microcontroller. At this stage, the microcontroller has not
+yet been mechanically integrated into the glasses. Given the software focused
+nature of the capstone, physical portability was not a primary design priority.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{diagrams/final_product_isometric.png}
+    \caption{Final hardware product isometric view.}
+    \label{fig:final_product_isometric}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{diagrams/final_product_front.jpg}
+    \caption{Final hardware product front view.}
+    \label{fig:final_product_front}
+\end{figure}
+
 \section{Software-Hardware Integration}
 
 This section describes how the software was designed in accordance with the
@@ -404,16 +429,19 @@ computational resources to execute the \progname{} features.
 
 Given this uncertainty, the decision was made to abstract the hardware from the
 software implementation by introducing a hardware abstraction layer (HAL),
-figure \ref{fig:system_layer}.
-This layer provides a uniform software interface that is independent of the
+figure \ref{fig:system_layer}. A layered software architecture is used to
+acheive this as it allows to decouple layers. In this case, the HAL layer
+provides a uniform software interface that is independent of the
 underlying hardware. Only the hardware specific interfacing code must be
-modified if components are replaced.
+modified if components are replaced, which are typically provided by
+manufacturers and require some configuration on the team's end.
 
-The primary benefit of this design choice is improved portability and reduced
-dependency on specific hardware platforms, thereby lowering project risk in the
-context of a software engineering capstone. However, this approach introduces
-additional complexity in both implementation and maintenance of the generalized
-abstraction layer.
+The primary benefit of this design choice is improved software portability and
+reduced dependency on specific hardware platforms, therefore lowering project
+risk in the context of a software engineering capstone. However, this approach
+introduces additional complexity in both implementation and maintenance of the
+generalized abstraction layer. That means that interfacing code between
+software and hardware layer must be generic enough to support easy switching.
 
 The hardware abstraction layer is implemented in $src/hardware\_interface$
 folder. STM32 interfacing code is located in $src/lib/STM32CubeF7$ folder.
