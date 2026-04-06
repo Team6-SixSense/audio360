@@ -49,7 +49,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 Dec 21, 2025 & Sathurshan, Omar & Report outline.\\
-April 5, 2026 & Sathurshan, Omar & Hardware report completed.\\
+April 6, 2026 & Sathurshan, Omar & Hardware report completed.\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -137,34 +137,59 @@ decisions, including the introduction of a hardware abstraction layer.
 \label{sec:hardware}
 
 \subsection{Hardware Requirements}
-The following requirements from the SRS are applicable to the embedded hardware:
+The following requirements from the SRS are applicable to the embedded hardware.
 
-\begin{table}[H]
-    \centering
-    \begin{tabularx}{\textwidth}{|p{3.5cm}|>{\raggedright\arraybackslash}X|p{3.5cm}|}
-        \hline
-        \textbf{Requirement} & \textbf{Description} & \textbf{Component}\\
-        \hline
-        FR1.2 & The firmware shall synchronize audio signals from \textbf{all
+\begin{longtable}{|p{3.5cm}|p{8cm}|p{3.5cm}|}
+    \hline
+    \textbf{Requirement} & \textbf{Description} & \textbf{Component} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{3}{c}{{\bfseries Table \thetable\ continued from previous
+    page}} \\
+    \hline
+    \textbf{Requirement} & \textbf{Description} & \textbf{Component} \\
+    \hline
+    \endhead
+    
+    \hline \multicolumn{3}{|r|}{{Continued on next page}} \\ \hline
+    \endfoot
+    
+    \endlastfoot
+
+    \hyperref[SRS-FR1_2]{FR1.2} &
+        The firmware shall synchronize audio signals from \textbf{all
         microphones} & Microcontroller and Microphones\\ \hline
-        NFR1.2 & The firmware shall operate at a rate faster than 16 kHz sample
+        \hyperref[SRS-NFR1_2]{NFR1.2} &
+        The firmware shall operate at a rate faster than 16 kHz sample
         rate of the microphones & Microcontroller\\ \hline
-        FR7.2 & The microphones shall be sensitive to audio waves within the
+        \hyperref[SRS-FR7_2]{FR7.2} &
+        The microphones shall be sensitive to audio waves within the
         most audible human hearing range (250 Hz - 8 kHz). & Microphones \\
         \hline
-        NFR7.1 & The microphones shall be capable of sampling at 16 kHz (2x 8kHz
+        \hyperref[SRS-NFR7_1]{NFR7.1} &
+        The microphones shall be capable of sampling at 16 kHz (2x 8kHz
         as per Nyquist Theorem). & Microcontroller and Microphones\\ \hline
-        FR 8.1 - 8.2 + NFR 8.1 & The display shall be capable of displaying
+        \hyperref[SRS-FR8_1]{FR8.1} \newline
+        \hyperref[SRS-FR8_2]{FR8.2} \newline
+        \hyperref[SRS-NFR8_1]{NFR8.1} &
+        The display shall be capable of displaying
         information to the user without delay & Display Component \\ \hline
-        FR 9.1 + NFR 9.1 - 9.2 + FR 3.4 & MCU shall have a sufficient compute to
+        \hyperref[SRS-FR3_4]{FR3.4} \newline
+        \hyperref[SRS-FR9_1]{FR9.1} \newline
+        \hyperref[SRS-NFR9_1]{NFR9.1} \newline
+        \hyperref[SRS-NFR9_2]{NFR9.2} &
+        MCU shall have a sufficient compute to
         support sampling and processing 4 microphones at 16 kHz each &
         Microcontroller \\ \hline
-        E.3 & Maximum product budget of \$500. Components should fit in a small
+        \hyperref[SRS-sec:constraints]{E.3} &
+        Maximum product budget of \$500. Components should fit in a small
         form factor and be viable for outdoor usage.& Every component\\ \hline
-    \end{tabularx}
+
+
     \caption{Requirements from SRS applicable to hardware.}
     \label{table:hw_req_srs}
-\end{table}
+\end{longtable}
 
 \subsection{Required Hardware Components}
 Based on the described requirements in table \ref{table:hw_req_srs}, the project
@@ -295,7 +320,7 @@ predictable shipping time of around December 2025.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{diagrams/rokid_glasses_display.png}
+    \includegraphics[width=0.6\linewidth]{diagrams/rokid_glasses_display.png}
     \caption{Rokid AR Glasses Display}
     \label{fig:rokid_ar_display}
 \end{figure}
@@ -307,12 +332,13 @@ hardware.
 
 \subsubsection{STM microcontoller}
 
-The STM32F767ZI MCU has the following relevant specifications
-\cite{STM_REFERENCE_MANUAL}:
+The STM32F767ZI MCU specifications are outlined in table \ref{tab:mcu_spec}.
 
 \begin{table}[H]
     \centering
-    \begin{tabularx}{\textwidth}{p{4cm}|X} Specification & Description\\ \hline
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \textbf{Specification} & \textbf{Description}\\ \hline
         CPU & Single ARM Cortex M7 Core. \\ \hline
         Max Clock & 216 MHz \\ \hline
         SRAM & 512 KB \\ \hline
@@ -321,6 +347,8 @@ The STM32F767ZI MCU has the following relevant specifications
         SPI Interfaces & 6 Quad SPI channels \\ \hline
         Hardware Acceleration & ARM CMSIS \\ \hline
     \end{tabularx}
+    \caption{STM32F767ZI MCU specifications \cite{STM_REFERENCE_MANUAL}.}
+    \label{tab:mcu_spec}
 \end{table}
 
 The four independent serial audio interface peripherals, each with their own I2S
@@ -332,17 +360,20 @@ also has integrated ARM DSP instructions that can leverage hardware acceleration
 to perform tasks such as fourier transforms.
 
 \subsubsection{Microphone}
-The INMP441 microphone has the following relevant specifications
-\cite{inmp441_datasheet}:
+The INMP441 microphone specification are summarized in table \ref{tab:mic_spec}.
 
 \begin{table}[H]
     \centering
-    \begin{tabularx}{\textwidth}{p{4cm}|X} Specification & Description\\ \hline
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \textbf{Specification} & \textbf{Description}\\ \hline
         Audio resolution & 24 bits signed data. \\ \hline
         Signal to Noise Ratio & 61 dBA \\ \hline
         Signal Sensitivity & -26 dBFS \\ \hline
         Frequency Response & Flat from 60 Hz to 15 kHz \\ \hline
     \end{tabularx}
+    \caption{INMP441 micropphone specifications \cite{inmp441_datasheet}.}
+    \label{tab:mic_spec}
 \end{table}
 
 The 24 bits of signed data implies 12 bits for the microphone diaphragm
@@ -353,17 +384,20 @@ frequency sensitivity range of 20 Hz - 8 kHz (FR 7.2).
 
 \subsubsection{Rokid AR glasses}
 
-The Rokid AI Glasses have the following relevant specifications
-\cite{RokidGlasses,rokid_ks}:
+The Rokid AI Glasses specification are outlined in table \ref{tab:rokid_spec}.
 \begin{table}[H]
     \centering
-    \begin{tabularx}{\textwidth}{p{4cm}|X} Specification & Description\\ \hline
+    \begin{tabularx}{\textwidth}{|X|X|}
+        \hline
+        \textbf{Specification} & \textbf{Description}\\ \hline
         Display & Dual Waveguide Optical Displays \\ \hline
         Display Colors & Monochrome Green \\ \hline
         Weight & 49 grams \\ \hline
         Operating System & Android 12L \\ \hline
         External Interfaces & WiFi, Bluetooth, USB 3.0 \\ \hline
     \end{tabularx}
+    \caption{Rokid AI Glasses specifications \cite{RokidGlasses,rokid_ks}.}
+    \label{tab:rokid_spec}
 \end{table}
 
 The Rokid AI Glasses run on a standard Android operating system installation
