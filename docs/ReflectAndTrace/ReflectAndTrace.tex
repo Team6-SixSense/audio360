@@ -1158,19 +1158,21 @@ the extra spatial awareness provided by Audio360. At the current stage of
 project developments, it would require integration with smart glasses manufactured
 by a different company. The product may be directly sold to the glasses manufacturers 
 on a per unit basis as an electronic part or a licensing deal for the hardware 
-and software designs. The following table breaks down the current bill of materials
-for producing the project:
+and software designs. Table \ref{tab:cost_breakdown} breaks down the current
+bill of materials for producing the project.
 
 \begin{table}[H]
     \centering
     \begin{tabularx}{0.7\textwidth}{|p{3.5cm}|p{2cm}|X|X|}
         \hline
-        Part & Quantity &Cost & Total Cost \\ \hline
+        \textbf{Part} & \textbf{Quantity} & \textbf{Cost}
+        & \textbf{Total Cost} \\ \hline
         INMP441 Microphone & 4 & \$1.67 \cite{ics43434_dk} & \$6.68\\ \hline
         STM32F767ZI & 1 & \$13.48 & \$13.48 \cite{stm32f7_cost} \\ \hline
         PCB Manufacturing & 1 & \$2 & \$2 \cite{altium2020} \\ \hline
     \end{tabularx}
     \caption{Cost breakdown per item used to manufacture Audio360.}
+    \label{tab:cost_breakdown}
 \end{table}
 
 The total cost to manufacture should then be around \$22. With a 100\% profit 
