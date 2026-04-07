@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{cite}
 
+
 \externaldocument[MG-]{../Design/SoftArchitecture/MG}
 \externaldocument[SRS-]{../SRS/SRS}
 \externaldocument[Hardware-]{../Extras/Hardware/HardwareReport}
@@ -243,14 +244,14 @@ document.
     \hline
 
     Team &
-    Missing symbols, abbreviations, and accronym table &
+    Missing symbols, abbreviations, and acronym table &
     SRS Doc version 4.1 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/286836e}{Commit
         286836e} \\
     \hline
 
     TA &
-    Missing symbols, abbreviations, and accronym table &
+    Missing symbols, abbreviations, and acronym table &
     SRS Doc version 4.1 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/286836e}{Commit
         286836e} 
@@ -613,7 +614,7 @@ design document.
     \hline
 
     TA &
-    DoA formalation. &
+    DoA formulation. &
     MIS Doc version 3.2 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/f290eb6}{Commit
         f290eb6}
@@ -653,7 +654,7 @@ Report document.
     \endlastfoot
     
     Peer &
-    Ambiguious latency definition. &
+    Ambiguous latency definition. &
     VnVPlan version 2.0 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/3fc34af}{Commit
         3fc34af}
@@ -680,7 +681,7 @@ Report document.
     \hline
 
     Peer &
-    Add measureable validation thresholds for user testing. &
+    Add measurable validation thresholds for user testing. &
     VnVPlan version 2.4 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/446ca14}{Commit
         446ca14}
@@ -758,7 +759,7 @@ Report document.
     \hline
 
     TA &
-    Missing symbols, abbreviations, and accronym table &
+    Missing symbols, abbreviations, and acronym table &
     VnVPlan version 2.5 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/286836e}{Commit
         286836e} 
@@ -795,7 +796,7 @@ Report document.
     \hline
 
     TA &
-    Removing unnecessary test deails. &
+    Removing unnecessary test details. &
     VnVPlan version 3.2 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/fc627ba}{Commit
         fc627ba} \\
@@ -896,7 +897,7 @@ Report document.
     \hline
 
     Peer &
-    Clarify hardware platform comaparison. &
+    Clarify hardware platform comparison. &
     VnVReport updated & 
     \href{https://github.com/Team6-SixSense/audio360/commit/be7cec1}{Commit
         be7cec1}
@@ -939,7 +940,7 @@ Report document.
     \hline
 
     Team &
-    Updated classifcation class tests. &
+    Updated classification class tests. &
     VnVReport version 2.3 & 
     \href{https://github.com/Team6-SixSense/audio360/commit/e001b72}{Commit
         e001b72}
@@ -1103,7 +1104,7 @@ was limited to three classes to remain within memory constraints. This excluded
 more advanced approaches, such as neural networks, which would require
 significantly more memory and processing power than the platform could support.
 
-\subsection{Constriants}
+\subsection{Constraints}
 
 Several constraints from the SRS \cite{SRS} significantly influenced the design.
 \hyperref[SRS-NFR9_1]{NFR9.1} specified that the system must operate as
@@ -1137,12 +1138,52 @@ modifications without requiring redesign of the core algorithms.
 
 \section{Economic Considerations (LO23)}
 
-\plt{Is there a market for your product? What would be involved in marketing your 
-product? What is your estimate of the cost to produce a version that you could 
-sell?  What would you charge for your product?  How many units would you have to 
-sell to make money? If your product isn't something that would be sold, like an 
-open source project, how would you go about attracting users?  How many potential 
-users currently exist?}
+According to StatsCAN, there are over 1.6 million individuals in Canada with a 
+hearing disability with one in seven Canadians over the age of 65 reporting 
+a hearing disability \cite{GovernmentofCanada2026}. This statistic indicates that
+a significant percentage of the population could benefit from a "visual" hearing
+aid like Audio360. Ideally, the product would be classified as an assistive 
+device that individuals may purchase under a medical prescription for the primary
+stakeholders. This would require the product to go through much more rigorous 
+testing and certification. The major benefit would be cost coverage under 
+assistive device programs such as Ontario ADP and other private insurance that cover 
+anywhere between 75\% to 100\% of the device costs \cite{adp2016}. Assistive 
+device certification will incur significant research and development costs that 
+will be reflected in the market price, requiring this route to be carefully 
+considered by doing a detailed cost benefit analysis. The product can be marketed
+and sold directly to our secondary stakeholders such as construction workers. In 
+addition to the direct to consumer model, the product can 
+also be sold directly to companies whose workers may benefit from 
+the extra spatial awareness provided by Audio360. At the current stage of 
+project developments, it would require integration with smart glasses manufactured
+by a different company. The product may be directly sold to the glasses manufacturers 
+on a per unit basis as an electronic part or a licensing deal for the hardware 
+and software designs. Table \ref{tab:cost_breakdown} breaks down the current
+bill of materials for producing the project.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{0.7\textwidth}{|p{3.5cm}|p{2cm}|X|X|}
+        \hline
+        \textbf{Part} & \textbf{Quantity} & \textbf{Cost}
+        & \textbf{Total Cost} \\ \hline
+        INMP441 Microphone & 4 & \$1.67 \cite{ics43434_dk} & \$6.68\\ \hline
+        STM32F767ZI & 1 & \$13.48 & \$13.48 \cite{stm32f7_cost} \\ \hline
+        PCB Manufacturing & 1 & \$2 & \$2 \cite{altium2020} \\ \hline
+    \end{tabularx}
+    \caption{Cost breakdown per item used to manufacture Audio360.}
+    \label{tab:cost_breakdown}
+\end{table}
+
+The total cost to manufacture should then be around \$22. With a 100\% profit 
+margin the product would be sold at \$44 dollars and each unit would generate
+profit. With manufacturing efficiencies accumulated overtime and economies of 
+scale kicking in, it is likely that the cost of manufacturing will fall allowing
+the product to be sold for an even lower price. When considering the large 
+potential customer base discussed earlier, it is likely that the project will 
+generate over \$40 million dollars (\(\$44 \cdot 1,600,000 \cdot 0.56 \))
+in revenue throughout its lifetime. 0.56 is selected as an optimistic estimate
+of the ratio of potential primary stakeholders choosing to purchase the product.
 
 \section{Reflection on Project Management (LO24)}
 
@@ -1237,7 +1278,7 @@ or status updates, would reduce manual effort and help ensure accountability
 without adding unnecessary burden.
 
 Additionally, the team would explicitly incorporate task prioritization into the
-issue tracking system. In this project, tasks were tracked but not expliclity
+issue tracking system. In this project, tasks were tracked but not explicitly
 prioritized, which made it more difficult to identify critical path items and
 prevent bottlenecks. Introducing clear priority levels would improve task
 sequencing and ensure that dependencies are addressed in the correct order.
@@ -1324,7 +1365,7 @@ about algorithm selection, modularity, and scope. For example, instead of
 choosing the most advanced possible methods, we had to choose methods that 
 were efficient enough to run reliably in real time on the available hardware. 
 Interestingly enough, that also pushed us to learn more as well. Rather than 
-relying on simple API calls to exterenal libraries to acommplish our tasks 
+relying on simple API calls to external libraries to accomplish our tasks 
 (eg. OpenAI), we had to build in-house simple algorithms that were tailored 
 to our hardware (simple LDA). This taught us that good engineering is often 
 about selecting the most appropriate solution under constraints, not the most 
@@ -1400,7 +1441,7 @@ The courses that were most relevant to the capstone project were:
     \item Software Development (2AA4 \& 2C03)
     \begin{itemize}
         \item Taught us the fundamentals of software development and general 
-        good practices for large system developement. 
+        good practices for large system development. 
     \end{itemize}
     \item Human Computer Interfaces (4HC3)
     \begin{itemize}
