@@ -51,9 +51,44 @@
 \midrule
 Mar 7, 2026 & Kalp & Direction of Arrival theory and prototyping sections.\\
 Apr 6, 2026 & Nirmal & Introduction and Classification sections.\\
+Apr 6, 2026 & Sathurshan & Editing Document. \\
 \bottomrule
 \end{tabularx}
 \end{table}
+
+\newpage
+
+\section{Symbols, Abbreviations and Acronyms}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|} 
+    \hline		
+    \textbf{symbol} & \textbf{description}\\
+    \hline
+    \progname & 360 Audio analysis system on smart glasses\\ \hline
+    DCT & Discrete Cosine Transform \\ \hline
+    DOA & Direction of Arrival \\ \hline
+    FFT & Fast Fourier Transform \\ \hline
+    FR & Functional Requirement\\ \hline
+    HUD & Heads Up Display \\ \hline
+    LDA & Linear Discriminant Analysis \\ \hline
+    M & Module \\ \hline
+    NFR & Non-Functional Requirement\\ \hline
+    PCA & Principal Component Analysis \\ \hline
+    R/Req & Requirement\\ \hline
+    SRS & Software Requirements Specification\\ \hline
+    SVM & Support Vector Machines\\ \hline
+    T & Test\\ \hline
+    UT & Unit Test\\ \hline
+    VnV & Verification and Validation \\ \hline
+  \end{tabular}
+  \caption{Table of abbreviations and acronyms used in \progname.}
+\end{table}
+
+See SRS Documentation at
+\hyperref[SRS-sec:symbols]{Symbols, Abbreviations, and Acronyms}
+for a complete table used in \progname.
 
 \newpage
 
@@ -74,17 +109,20 @@ related to the software components of \progname{}. It focuses on two key
 capabilities: direction of arrival (DoA) estimation and sound classification. 
 It also describes the Python prototyping workflow used to validate algorithms, 
 generate test data, and compare performance. This document was selected 
-because it provides a comprehensive overview of how PyRoomAcoustics was leveraged 
+because it provides a comprehensive overview of how PyRoomAcoustics
+\cite{pyroomacoustics} was leveraged 
 to simulate exactly how the system would perform in real conditions, which was 
 crucial for validating the algorithms early on. It also provides detailed 
 descriptions of the DoA and classification algorithms that were tested, and the 
 results obtained from those tests, which informed the final design choices for 
 the embedded implementation.
 
-The structure of the document is as follows. Section~\ref{sec:doa} covers the 
+The structure of the document is as follows. The \hyperref[sec:doa]{DoA} section
+covers the 
 theory and prototyping of DoA estimation, including detailed descriptions of 
 the algorithms used (GCC-PHAT, MUSIC, SRP-PHAT, and FRIDA) and the 
-PyRoomAcoustics simulation workflow. Section~\ref{sec:classification} discusses 
+PyRoomAcoustics simulation workflow. The
+\hyperref[sec:classification]{Classification} section discusses 
 the sound classification experiments, including dataset preparation and the 
 approaches tested (SVM, Cosine Similarity, and LDA). Each section includes 
 theoretical background, implementation details, and results from the 
@@ -317,7 +355,7 @@ produces the multi-channel output.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\linewidth]{diagrams/room.png}
+    \includegraphics[width=0.5\linewidth]{diagrams/room.png}
     \caption{Room layout used in PyRoomAcoustics simulation.}
     \label{fig:doa_room_layout}
 \end{figure}
@@ -393,7 +431,27 @@ continuously as new direction estimates are produced. This mode supports
 iterative tuning of algorithm parameters and validation under realistic
 conditions.
 
-\section{Classification}
+\subsection{DoA Embedded Development}
+
+Once the proof of concept for DoA was successfully developed in Python, the
+team proceeded with confidence to migrate the algorithms into production
+source code in C and C++. The implementation is located in the
+\texttt{src/features/doa} directory. The GCC-PHAT algorithm was selected due
+to its lightweight computational requirements, making it well-suited for the
+target microcontroller compute abilities. Additionally, the implementation
+of DoA uses the command software design pattern, which allows the
+substitution of alternative DoA algorithms if the team decided to implement
+more.
+
+Testing of the embedded implementation was conducted using pre-generated
+audio data. Audio samples for each microphone were created using
+PyRoomAcoustics and stored as mp3 files. These samples were then loaded into
+the test environment, where the DoA algorithm was executed. The computed
+angle was compared against the known ground truth, and assertions were used to
+validate the accuracy of the algorithm. The tests all pass within the angle
+accuracy threshold specified in requirement \hyperref[SRS-NFR5_3]{NFR5.3}.
+
+\section{Classification}\label{sec:classification}
 
 
 Classification of sounds is another key capability of 
@@ -402,7 +460,9 @@ sound source (e.g., siren, smoke\_alarm, person\_talking) from the multi-channel
 audio input provided in the PyRoom simulation. This section presents the 
 theoretical experiments and prototyping efforts related to sound 
 classification, and will give a high level breakdown of the algorithms and 
-approaches used when testing different approaches. 
+approaches used when testing different approaches.
+The source code for the embedded software is implemented in
+\textit{src/features/classification}.
 
 
 \subsection{Dataset Preparation}
@@ -410,7 +470,7 @@ approaches used when testing different approaches.
 
 The classification experiments relied on a dataset of labeled audio samples 
 representing the target sound classes. The dataset was obtained from a 
-combination of publicly available sound libraries like FSD50k 
+combination of publicly available sound libraries such as FSD50k 
 \cite{FSD50k}, and custom 
 recordings of relevant sounds. Based on the desired classes, the final dataset 
 was created using a balanced selection of samples for each class. The audio 
